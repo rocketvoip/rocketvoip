@@ -1,5 +1,5 @@
 language: java
-scripts:
+script:
   - mvn test -B
   - mvn failsafe:integration-test -B
 jdk:
