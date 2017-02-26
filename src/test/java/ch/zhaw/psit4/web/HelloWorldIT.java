@@ -32,9 +32,4 @@ public class HelloWorldIT {
                 .andExpect(jsonPath("$.name", is("World")));
     }
 
-
-    @Test
-    public void fail() throws Exception {
-
-    }
 }
