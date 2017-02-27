@@ -1,6 +1,13 @@
 README
 ===
 
+Build Pipeline
+---
+
+CI/CD: [travis-ci](https://travis-ci.org/rocketvoip/rocketvoip)
+Coverage: [Coveralls.io](https://coveralls.io/github/rocketvoip/rocketvoip)
+Code Quality: [Sonar Qube](https://sonarqube.com/dashboard/index?id=ch.zhaw.psit4%3Arocketvoip)
+
 Deployment
 ---
 
