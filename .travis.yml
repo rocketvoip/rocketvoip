@@ -1,7 +1,6 @@
 language: java
 script:
-- mvn test -B
-- mvn failsafe:integration-test -B
+- mvn clean verify jacoco:report coveralls:report
 jdk:
 - oraclejdk8
 deploy:
