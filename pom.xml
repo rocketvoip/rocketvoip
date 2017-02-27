@@ -197,14 +197,6 @@
                 <groupId>org.eluder.coveralls</groupId>
                 <artifactId>coveralls-maven-plugin</artifactId>
                 <version>4.3.0</version>
-                <!-- Submit both jacoco reports -->
-                <configuration>
-                    <jacocoReports>
-                        <jacocoReport>${project.reporting.outputDirectory}/jacoco/jacoco.xml</jacocoReport>
-                        <jacocoReport>${project.reporting.outputDirectory}/jacoco-it/jacoco.xml</jacocoReport>
-                    </jacocoReports>
-
-                </configuration>
                 <!-- We're using travis, so this ain't necessary.
                 <configuration>
                     <repoToken>yourcoverallsprojectrepositorytoken</repoToken>
