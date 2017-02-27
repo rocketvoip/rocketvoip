@@ -10,6 +10,39 @@
     <name>rocketvoip</name>
     <url>https://github.com/rocketvoip/rocketvoip</url>
 
+    <developers>
+        <developer>
+            <id>schoeni</id>
+            <name>Marcel Schoeni</name>
+            <email>schoema1@students.zhaw.ch</email>
+        </developer>
+        <developer>
+            <id>beni</id>
+            <name>Benedikt Herzog</name>
+            <email>herzobe1@students.zhaw.ch</email>
+        </developer>
+        <developer>
+            <id>jona</id>
+            <name>Braun Jona</name>
+            <email>braunjon@students.zhaw.ch</email>
+        </developer>
+        <developer>
+            <id>wittwer</id>
+            <name>Martin Wittwer</name>
+            <email>wittwma1@students.zhaw.ch</email>
+        </developer>
+        <developer>
+            <id>studi</id>
+            <name>Marco Studerus</name>
+            <email>studema6@students.zhaw.ch</email>
+        </developer>
+        <developer>
+            <id>rafi</id>
+            <name>Rafael Ostertag</name>
+            <email>osterraf@students.zhaw.ch</email>
+        </developer>
+    </developers>
+
     <!-- When running `mvn site`, this information will be added to the report -->
     <scm>
         <connection>scm:git:https://github.com/rocketvoip/rocketvoip.git</connection>
