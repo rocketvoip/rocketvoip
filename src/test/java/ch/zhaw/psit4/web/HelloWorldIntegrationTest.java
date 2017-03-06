@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest(HelloWorld.class)
-public class HelloWorldIT {
+public class HelloWorldIntegrationTest {
 
     @Autowired
     private MockMvc mvc;
