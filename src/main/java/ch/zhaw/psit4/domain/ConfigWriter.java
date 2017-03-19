@@ -15,20 +15,13 @@ public class ConfigWriter {
     private static final String SIP_CLIENT_LIST_IS_EMPTY = "sipClientList is empty";
     private static final String SIP_CLIENT_LIST_IS_NULL = "sipClientList is null";
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigWriter.class);
-    private static final String SIPCLIENT_TEMPLATE =
-            "[%s]\n" +
-                    "type=friend\n" +
-                    "context=%s\n" +
-                    "host=dynamic\n" +
-                    "secret=%s\n";
-
 
     /**
-     * Computes a list of sip clients and converts them into a configuration string.
-     * The @{@link RuntimeException} @{@link InvalidConfigurationException} is thrown if the sipClientList is null or the list is empty.
+     * Processes a list of sip clients and converts them into a configuration string.
      *
-     * @param sipClientList a list filed with @{@link SipClient}
+     * @param sipClientList can't be null or empty
      * @return the configuration string for the sip clients
+     * @throws InvalidConfigurationException if the sipClientList is null or the list is empty
      */
     public String writeSipClientConfiguration(List<SipClient> sipClientList) {
         if (sipClientList == null) {
@@ -47,32 +40,43 @@ public class ConfigWriter {
 
         StringBuilder stringBuilder = new StringBuilder();
 
-        String sipClientUsername;
-        String sipClientCompany;
-        String sipClientSecret;
-
-        String sipClientString;
-
         for (SipClient sipClient : sipClientList) {
-            if (sipClient != null) {
-
-                sipClientUsername = sipClient.getUsername();
-                sipClientCompany = sipClient.getCompany();
-                sipClientSecret = sipClient.getSecret();
-
-                sipClientString = String.format(SIPCLIENT_TEMPLATE, sipClientUsername, sipClientCompany, sipClientSecret);
-
-                if ((sipClientUsername != null) && (sipClientCompany != null) && (sipClientSecret != null)) {
-                    stringBuilder.append(sipClientString);
-                } else {
-                    LOGGER.warn("at least one value of the following sipClient was null:\n" + sipClientString);
-                }
-            } else {
-                LOGGER.warn("a sipClient is null");
+            if (isSipClientValid(sipClient)) {
+                stringBuilder.append("[");
+                stringBuilder.append(sipClient.getUsername());
+                stringBuilder.append("]\n");
+                stringBuilder.append("type=friend\n");
+                stringBuilder.append("context=");
+                stringBuilder.append(sipClient.getCompany());
+                stringBuilder.append("\n");
+                stringBuilder.append("host=dynamic\n");
+                stringBuilder.append("secret=");
+                stringBuilder.append(sipClient.getSecret());
+                stringBuilder.append("\n\n");
             }
         }
 
         return stringBuilder.toString();
+    }
+
+    private boolean isSipClientValid(SipClient sipClient) {
+        if (sipClient == null) {
+            LOGGER.warn("a sipClient is null");
+            return false;
+        }
+        if (sipClient.getUsername() == null) {
+            LOGGER.warn("Username of a sipClient was null");
+            return false;
+        }
+        if (sipClient.getCompany() == null) {
+            LOGGER.warn("Company of a sipClient was null");
+            return false;
+        }
+        if (sipClient.getSecret() == null) {
+            LOGGER.warn("Secret of a sipClient was null");
+            return false;
+        }
+        return true;
     }
 
 }

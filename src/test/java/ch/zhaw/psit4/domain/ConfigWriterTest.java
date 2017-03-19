@@ -58,12 +58,12 @@ public class ConfigWriterTest {
                 "type=friend\n" +
                 "context=acme\n" +
                 "host=dynamic\n" +
-                "secret=Secret1\n" +
+                "secret=Secret1\n\n" +
                 "[User3]\n" +
                 "type=friend\n" +
                 "context=acme\n" +
                 "host=dynamic\n" +
-                "secret=Secret3\n";
+                "secret=Secret3\n\n";
 
         assertThat(actual, equalTo(expected));
     }
@@ -81,15 +81,44 @@ public class ConfigWriterTest {
     }
 
     @Test
+    public void testClientWithNullUsername() throws Exception {
+        List<SipClient> sipClientList = generateSipClientList(1, "acme");
+        sipClientList.get(0).setUsername(null);
+
+        String actual = createConfigString(sipClientList);
+        String expected = "";
+
+        assertThat(actual, equalTo(expected));
+    }
+
+    @Test
+    public void testClientWithNullCompany() throws Exception {
+        List<SipClient> sipClientList = generateSipClientList(1, "acme");
+        sipClientList.get(0).setCompany(null);
+
+        String actual = createConfigString(sipClientList);
+        String expected = "";
+
+        assertThat(actual, equalTo(expected));
+    }
+
+    @Test
+    public void testClientWithNullSecret() throws Exception {
+        List<SipClient> sipClientList = generateSipClientList(1, "acme");
+        sipClientList.get(0).setSecret(null);
+
+        String actual = createConfigString(sipClientList);
+        String expected = "";
+
+        assertThat(actual, equalTo(expected));
+    }
+
+    @Test
     public void testSingleClient() throws Exception {
         List<SipClient> sipClientList = generateSipClientList(1, "acme");
 
         String actual = createConfigString(sipClientList);
-        String expected = "[User1]\n" +
-                "type=friend\n" +
-                "context=acme\n" +
-                "host=dynamic\n" +
-                "secret=Secret1\n";
+        String expected = generateSipClientConfig(1, "acme");
 
         assertThat(actual, equalTo(expected));
     }
@@ -99,51 +128,17 @@ public class ConfigWriterTest {
         List<SipClient> sipClientList = generateSipClientList(2, "acme");
 
         String actual = createConfigString(sipClientList);
-        String expected = "[User1]\n" +
-                "type=friend\n" +
-                "context=acme\n" +
-                "host=dynamic\n" +
-                "secret=Secret1\n" +
-                "[User2]\n" +
-                "type=friend\n" +
-                "context=acme\n" +
-                "host=dynamic\n" +
-                "secret=Secret2\n";
+        String expected = generateSipClientConfig(2, "acme");
 
         assertThat(actual, equalTo(expected));
     }
 
     @Test
-    public void testFiveClients() throws Exception {
-        List<SipClient> sipClientList = generateSipClientList(5, "acme");
+    public void testManyClients() throws Exception {
+        List<SipClient> sipClientList = generateSipClientList(100, "acme");
 
         String actual = createConfigString(sipClientList);
-        String expected = "[User1]\n" +
-                "type=friend\n" +
-                "context=acme\n" +
-                "host=dynamic\n" +
-                "secret=Secret1\n" +
-                "[User2]\n" +
-                "type=friend\n" +
-                "context=acme\n" +
-                "host=dynamic\n" +
-                "secret=Secret2\n" +
-                "[User3]\n" +
-                "type=friend\n" +
-                "context=acme\n" +
-                "host=dynamic\n" +
-                "secret=Secret3\n" +
-                "[User4]\n" +
-                "type=friend\n" +
-                "context=acme\n" +
-                "host=dynamic\n" +
-                "secret=Secret4\n" +
-                "[User5]\n" +
-                "type=friend\n" +
-                "context=acme\n" +
-                "host=dynamic\n" +
-                "secret=Secret5\n";
-
+        String expected = generateSipClientConfig(100, "acme");
         assertThat(actual, equalTo(expected));
     }
 
@@ -166,6 +161,18 @@ public class ConfigWriterTest {
         sipClient.setUsername("User" + i);
         sipClient.setSecret("Secret" + i);
         return sipClient;
+    }
+
+    private String generateSipClientConfig(int number, String company) {
+        String config = "";
+        for (int i = 1; i <= number; i++) {
+            config += "[User" + i + "]\n" +
+                    "type=friend\n" +
+                    "context=" + company + "\n" +
+                    "host=dynamic\n" +
+                    "secret=Secret" + i + "\n\n";
+        }
+        return config;
     }
 
 }
