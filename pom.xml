@@ -81,6 +81,20 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
+        <!-- JPA w/ Hibernate -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.4.1210</version>
+        </dependency>
+
+
         <!-- Test framework -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -90,6 +104,14 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+
+        <!-- In memory test database for tests -->
+        <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
@@ -138,28 +160,24 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.7.9</version>
+                <configuration>
+                    <!-- Add class files, not to be included in coverage here -->
+                    <excludes>
+                        <exclude>ch/zhaw/psit4/RocketVoip.class</exclude>
+                    </excludes>
+                </configuration>
                 <executions>
                     <execution>
                         <id>default-prepare-agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
-                        <configuration>
-                            <excludes>
-                                <exclude>ch/zhaw/psit4/RocketVoip.class</exclude>
-                            </excludes>
-                        </configuration>
                     </execution>
                     <execution>
                         <id>default-prepare-agent-integration</id>
                         <goals>
                             <goal>prepare-agent-integration</goal>
                         </goals>
-                        <configuration>
-                            <excludes>
-                                <exclude>ch/zhaw/psit4/RocketVoip.class</exclude>
-                            </excludes>
-                        </configuration>
                     </execution>
                     <execution>
                         <id>default-report</id>
@@ -173,26 +191,28 @@
                             <goal>report-integration</goal>
                         </goals>
                     </execution>
-                    <!--                    <execution>
-                                            <id>default-check</id>
-                                            <goals>
-                                                <goal>check</goal>
-                                            </goals>
-                                            <configuration>
-                                                <rules>&lt;!&ndash; implementation is needed only for Maven 2 &ndash;&gt;
-                                                    <rule implementation="org.jacoco.maven.RuleConfiguration">
-                                                        <element>BUNDLE</element>
-                                                        <limits>&lt;!&ndash; implementation is needed only for Maven 2 &ndash;&gt;
-                                                            <limit implementation="org.jacoco.report.check.Limit">
-                                                                <counter>COMPLEXITY</counter>
-                                                                <value>COVEREDRATIO</value>
-                                                                <minimum>0.60</minimum>
-                                                            </limit>
-                                                        </limits>
-                                                    </rule>
-                                                </rules>
-                                            </configuration>
-                                        </execution>-->
+                    <!--
+                    <execution>
+                        <id>default-check</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>COMPLEXITY</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.95</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
+                    -->
                 </executions>
             </plugin>
 
