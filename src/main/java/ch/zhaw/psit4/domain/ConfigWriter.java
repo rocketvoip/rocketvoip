@@ -25,7 +25,7 @@ public class ConfigWriter {
      * @return the configuration string for the sip clients
      * @throws InvalidConfigurationException if the sipClientList is null or the list is empty
      */
-    public String writeSipClientConfiguration(List<SipClient> sipClientList) {
+    public String generateSipClientConfiguration(List<SipClient> sipClientList) {
         return sipClientConfigurationInterface.generateSipClientConfiguration(sipClientList);
     }
 

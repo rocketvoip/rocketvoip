@@ -44,6 +44,8 @@ public class SipClientConfigurationV11 implements SipClientConfigurationInterfac
             }
             stringBuilder.append("[");
             stringBuilder.append(sipClient.getUsername());
+            stringBuilder.append("-");
+            stringBuilder.append(sipClient.getCompany());
             stringBuilder.append("]\n");
             stringBuilder.append("type=friend\n");
             stringBuilder.append("context=");

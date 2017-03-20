@@ -54,12 +54,12 @@ public class SipClientConfigurationV11Test {
         sipClientList.add(generateSipClient(3, "acme"));
 
         String actual = createConfigString(sipClientList);
-        String expected = "[User1]\n" +
+        String expected = "[User1-acme]\n" +
                 "type=friend\n" +
                 "context=acme\n" +
                 "host=dynamic\n" +
                 "secret=Secret1\n\n" +
-                "[User3]\n" +
+                "[User3-acme]\n" +
                 "type=friend\n" +
                 "context=acme\n" +
                 "host=dynamic\n" +
@@ -166,7 +166,7 @@ public class SipClientConfigurationV11Test {
     private String generateSipClientConfig(int number, String company) {
         String config = "";
         for (int i = 1; i <= number; i++) {
-            config += "[User" + i + "]\n" +
+            config += "[User" + i + "-" + company + "]\n" +
                     "type=friend\n" +
                     "context=" + company + "\n" +
                     "host=dynamic\n" +

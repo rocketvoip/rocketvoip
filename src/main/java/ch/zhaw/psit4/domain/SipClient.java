@@ -9,7 +9,6 @@ public class SipClient {
     private String company;
     private String username;
     private String secret;
-    private String label;
     private String phoneNumber;
     private String id;
 
@@ -35,14 +34,6 @@ public class SipClient {
 
     public void setSecret(String secret) {
         this.secret = secret;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
     }
 
     public String getPhoneNumber() {
