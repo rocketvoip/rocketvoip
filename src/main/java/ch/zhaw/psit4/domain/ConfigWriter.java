@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Generates the sip client configuration.
  *
- * @author braunjon
+ * @author Jona Braun
  */
 public class ConfigWriter {
     private static final String SIP_CLIENT_LIST_IS_EMPTY = "sipClientList is empty";
@@ -41,19 +41,21 @@ public class ConfigWriter {
         StringBuilder stringBuilder = new StringBuilder();
 
         for (SipClient sipClient : sipClientList) {
-            if (isSipClientValid(sipClient)) {
-                stringBuilder.append("[");
-                stringBuilder.append(sipClient.getUsername());
-                stringBuilder.append("]\n");
-                stringBuilder.append("type=friend\n");
-                stringBuilder.append("context=");
-                stringBuilder.append(sipClient.getCompany());
-                stringBuilder.append("\n");
-                stringBuilder.append("host=dynamic\n");
-                stringBuilder.append("secret=");
-                stringBuilder.append(sipClient.getSecret());
-                stringBuilder.append("\n\n");
+            if (!isSipClientValid(sipClient)) {
+                continue;
             }
+            stringBuilder.append("[");
+            stringBuilder.append(sipClient.getUsername());
+            stringBuilder.append("]\n");
+            stringBuilder.append("type=friend\n");
+            stringBuilder.append("context=");
+            stringBuilder.append(sipClient.getCompany());
+            stringBuilder.append("\n");
+            stringBuilder.append("host=dynamic\n");
+            stringBuilder.append("secret=");
+            stringBuilder.append(sipClient.getSecret());
+            stringBuilder.append("\n\n");
+
         }
 
         return stringBuilder.toString();

@@ -14,7 +14,7 @@ import static org.junit.Assert.assertThat;
 /**
  * Test for @{@link ConfigWriter}.
  *
- * @author braunjon
+ * @author Jona Braun
  */
 public class ConfigWriterTest {
 
