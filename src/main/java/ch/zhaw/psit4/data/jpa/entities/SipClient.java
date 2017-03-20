@@ -1,4 +1,4 @@
-package ch.zhaw.psit4.data.jpa.entitis;
+package ch.zhaw.psit4.data.jpa.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;

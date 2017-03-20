@@ -1,15 +1,14 @@
-package ch.zhaw.psit4.data.jpa.entitis;
+package ch.zhaw.psit4.data.jpa.entities;
 
 import java.io.Serializable;
+
+import javax.persistence.*;
 
 /**
  * Table for company admins
  * One company has multi admins
  * Created by beni on 20.03.17.
  */
-
-import javax.persistence.*;
-
 @Entity
 public class CompanyAdmin implements Serializable {
 

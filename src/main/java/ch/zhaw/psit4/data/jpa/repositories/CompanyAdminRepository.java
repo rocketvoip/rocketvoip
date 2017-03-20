@@ -1,6 +1,7 @@
-package ch.zhaw.psit4.database.repositories;
+package ch.zhaw.psit4.data.jpa.repositories;
 
-import ch.zhaw.psit4.database.entities.CompanyAdmin;
+import ch.zhaw.psit4.data.jpa.entities.Company;
+import ch.zhaw.psit4.data.jpa.entities.CompanyAdmin;
 import org.springframework.data.repository.CrudRepository;
 
 /**
