@@ -1,6 +1,7 @@
 package ch.zhaw.psit4.database.repositories;
 
-import ch.zhaw.psit4.database.entities.Company;
+import ch.zhaw.psit4.data.jpa.repositories.CompanyRepository;
+import ch.zhaw.psit4.data.jpa.entities.Company;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,8 +23,8 @@ public class CompanyRepositoryTest {
 
     @Before
     public void setUp() throws Exception {
-        Company company = new Company();
-        company.setName("Test Company");
+        Company company = new Company("Test Company");
+        //company.setName("Test Company");
         companyRepository.save(company);
     }
 
