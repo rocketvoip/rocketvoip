@@ -1,4 +1,4 @@
-package ch.zhaw.psit4.data.jpa.entitys;
+package ch.zhaw.psit4.data.jpa.entitis;
 
 import java.io.Serializable;
 
@@ -41,5 +41,35 @@ public class CompanyAdmin implements Serializable {
     }
 
 
+    public Company getCompany() {
+        return company;
+    }
 
+    public void setCompany(Company company) {
+        this.company = company;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 }
