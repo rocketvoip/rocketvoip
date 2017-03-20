@@ -1,11 +1,9 @@
-package ch.zhaw.psit4.data.jpa.entitys;
+package ch.zhaw.psit4.data.jpa.entitis;
 
 /**
  * Table for companys
  * Created by beni on 20.03.17.
  */
-
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 import java.io.Serializable;
 
