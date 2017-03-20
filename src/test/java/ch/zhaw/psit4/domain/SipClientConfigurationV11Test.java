@@ -12,17 +12,17 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 /**
- * Test for @{@link ConfigWriter}.
+ * Test for SipClientConfigurationV11.
  *
  * @author Jona Braun
  */
-public class ConfigWriterTest {
+public class SipClientConfigurationV11Test {
 
-    private ConfigWriter configWriter;
+    private SipClientConfigurationV11 sipClientConfigurationV11;
 
     @Before
     public void setUp() throws Exception {
-        configWriter = new ConfigWriter();
+        sipClientConfigurationV11 = new SipClientConfigurationV11();
     }
 
     @Test(expected = InvalidConfigurationException.class)
@@ -143,7 +143,7 @@ public class ConfigWriterTest {
     }
 
     private String createConfigString(List<SipClient> sipClientList) {
-        return configWriter.writeSipClientConfiguration(sipClientList);
+        return sipClientConfigurationV11.generateSipClientConfiguration(sipClientList);
     }
 
     private List<SipClient> generateSipClientList(int number, String company) {
