@@ -15,7 +15,7 @@ import java.util.List;
 public class SipClientConfigurationV11 implements SipClientConfigurationInterface {
     private static final String SIP_CLIENT_LIST_IS_EMPTY = "sipClientList is empty";
     private static final String SIP_CLIENT_LIST_IS_NULL = "sipClientList is null";
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigWriter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SipClientConfigurationV11.class);
 
     /**
      * @inheritDoc
