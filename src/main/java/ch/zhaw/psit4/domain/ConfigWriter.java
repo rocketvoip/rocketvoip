@@ -1,6 +1,7 @@
 package ch.zhaw.psit4.domain;
 
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
+import ch.zhaw.psit4.domain.interfaces.SipClientConfigurationInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +16,12 @@ public class ConfigWriter {
     private static final String SIP_CLIENT_LIST_IS_EMPTY = "sipClientList is empty";
     private static final String SIP_CLIENT_LIST_IS_NULL = "sipClientList is null";
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigWriter.class);
+    private SipClientConfigurationInterface sipClientConfigurationInterface;
+
+    public ConfigWriter(SipClientConfigurationInterface sipClientConfigurationInterface) {
+        this.sipClientConfigurationInterface = sipClientConfigurationInterface;
+    }
+
 
     /**
      * Processes a list of sip clients and converts them into a configuration string.
