@@ -44,6 +44,7 @@ public class ConfigZipWriter {
             zos.close();
         } catch (IOException e) {
             LOGGER.error("io error in zip file creation", e);
+            // throw new Exception
         }
         return baos;
     }
