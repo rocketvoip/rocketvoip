@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,9 +18,12 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/v1")
 public class ConfigurationController {
+    private static final String ZIP_FILE_NAME = "config.zip";
 
     @GetMapping(value = "/configuration/zip", produces = "application/zip")
-    public byte[] getVersionedConfig() {
+    public byte[] getAsteriskConfiguration(HttpServletResponse response) {
+
+        response.addHeader("Content-Disposition", "attachment; filename=" + ZIP_FILE_NAME);
 
         SipClientConfigurationV11 sipClientConfigurationV11 = new SipClientConfigurationV11();
         ConfigWriter configWriter = new ConfigWriter(sipClientConfigurationV11);

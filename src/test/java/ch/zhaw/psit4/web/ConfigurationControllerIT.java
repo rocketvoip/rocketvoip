@@ -24,16 +24,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest(ConfigurationController.class)
-public class ConfigurationControllerTest {
+public class ConfigurationControllerIT {
 
     @Autowired
     private MockMvc mvc;
 
     @Test
-    public void getVersionedConfigZipTest() throws Exception {
+    public void getAsteriskConfigurationTestResponseHeader() throws Exception {
         MvcResult mvcResult = this.mvc.perform(get("/v1/configuration/zip")
                 .accept("application/zip"))
                 .andExpect(status().isOk())
+                .andReturn();
+
+        String contentDisposition = mvcResult.getResponse().getHeader("Content-Disposition");
+
+        assertEquals("attachment; filename=config.zip", contentDisposition);
+    }
+
+    @Test
+    public void getAsteriskConfigurationTestZipAttachment() throws Exception {
+        MvcResult mvcResult = this.mvc.perform(get("/v1/configuration/zip"))
                 .andReturn();
 
         ByteArrayInputStream bais = new ByteArrayInputStream(mvcResult.getResponse().getContentAsByteArray());
