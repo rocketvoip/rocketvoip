@@ -28,15 +28,27 @@ public class CompanyAdmin implements Serializable {
     @Column(nullable = false)
     private String username;
 
+    public String getSecret() {
+        return secret;
+    }
+
+    public void setSecret(String secret) {
+        this.secret = secret;
+    }
+
+    @Column(nullable = false)
+    private String secret;
+
     protected CompanyAdmin(){
 
     }
 
-    public CompanyAdmin(Company company, String firstname, String lastname, String username){
+    public CompanyAdmin(Company company, String firstname, String lastname, String username, String secret){
         this.company = company;
         this.firstname = firstname;
         this.lastname = lastname;
         this.username = username;
+        this.secret = secret;
     }
 
 
