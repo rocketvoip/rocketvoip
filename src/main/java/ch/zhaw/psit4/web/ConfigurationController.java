@@ -1,17 +1,14 @@
 package ch.zhaw.psit4.web;
 
-import ch.zhaw.psit4.domain.ConfigWriter;
-import ch.zhaw.psit4.domain.ConfigZipWriter;
-import ch.zhaw.psit4.domain.SipClient;
-import ch.zhaw.psit4.domain.SipClientConfigurationV11;
+import ch.zhaw.psit4.services.ServiceConfigController;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
+ * Is responsible for the rest endpoint for the configuration.
+ *
  * @author Jona Braun
  */
 @RestController
@@ -20,36 +17,11 @@ public class ConfigurationController {
     private static final String ZIP_FILE_NAME = "config.zip";
 
     @GetMapping(value = "/configuration/zip", produces = "application/zip")
-    public byte[] getAsteriskConfiguration(HttpServletResponse response) {
+    public byte[] getAsteriskConfiguration(HttpServletResponse response, ServiceConfigController serviceConfigController) {
 
-        response.addHeader("Content-Disposition", "attachment; filename=" + ZIP_FILE_NAME);
+        response.addHeader("Content-Disposition", "attachment; filename=" + ConfigurationController.ZIP_FILE_NAME);
 
-        SipClientConfigurationV11 sipClientConfigurationV11 = new SipClientConfigurationV11();
-        ConfigWriter configWriter = new ConfigWriter(sipClientConfigurationV11);
-
-        List<SipClient> sipClientList = getSipClientList();
-
-        String sipClientConf = configWriter.generateSipClientConfiguration(sipClientList);
-
-        //TODO get dial plan configuration
-
-        ConfigZipWriter configZipWriter = new ConfigZipWriter(sipClientConf, "");
-
-        return configZipWriter.writeConfigurationZipFile().toByteArray();
-    }
-
-    private List<SipClient> getSipClientList() {
-        // TODO get sip clients form the database
-        SipClient sipClient = new SipClient();
-        sipClient.setUsername("user1");
-        sipClient.setPhoneNumber("1234");
-        sipClient.setCompany("acme");
-        sipClient.setSecret("secret1");
-
-        ArrayList<SipClient> sipClientArrayList = new ArrayList<>();
-        sipClientArrayList.add(sipClient);
-
-        return sipClientArrayList;
+        return serviceConfigController.getAsteriskConfiguration().toByteArray();
     }
 
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR,
