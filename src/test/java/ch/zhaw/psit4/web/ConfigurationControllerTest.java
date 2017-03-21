@@ -31,7 +31,7 @@ public class ConfigurationControllerTest {
 
     @Test
     public void getVersionedConfigZipTest() throws Exception {
-        MvcResult mvcResult = this.mvc.perform(get("/v1/configuration")
+        MvcResult mvcResult = this.mvc.perform(get("/v1/configuration/zip")
                 .accept("application/zip"))
                 .andExpect(status().isOk())
                 .andReturn();
