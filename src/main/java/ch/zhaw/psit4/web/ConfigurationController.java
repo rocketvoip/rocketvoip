@@ -4,9 +4,8 @@ import ch.zhaw.psit4.domain.ConfigWriter;
 import ch.zhaw.psit4.domain.ConfigZipWriter;
 import ch.zhaw.psit4.domain.SipClient;
 import ch.zhaw.psit4.domain.SipClientConfigurationV11;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
@@ -33,6 +32,7 @@ public class ConfigurationController {
         String sipClientConf = configWriter.generateSipClientConfiguration(sipClientList);
 
         //TODO get dial plan configuration
+
         ConfigZipWriter configZipWriter = new ConfigZipWriter(sipClientConf, "");
 
         return configZipWriter.writeConfigurationZipFile().toByteArray();
@@ -50,5 +50,13 @@ public class ConfigurationController {
         sipClientArrayList.add(sipClient);
 
         return sipClientArrayList;
+    }
+
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR,
+            reason = "internal error")  // 500
+    @ExceptionHandler(RuntimeException.class)
+    public void handelInternalException(HttpServletResponse response, Exception ex) {
+        response.reset();
+        //TODO add standard exception handling
     }
 }

@@ -1,5 +1,6 @@
 package ch.zhaw.psit4.domain;
 
+import ch.zhaw.psit4.domain.exceptions.ZipFileCreationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,28 +24,29 @@ public class ConfigZipWriter {
     public ConfigZipWriter(String sipClientConf, String dialPlanConf) {
         this.sipClientConf = sipClientConf;
         this.dialPlanConf = dialPlanConf;
-
     }
 
     /**
      * Creates a OutputStream containing the zipped configuration.
      *
      * @return the ByteArrayOutputStream containing the zipped configuration files
+     * @throws ZipFileCreationException if there is an io error when creating the zip file.
      */
     public ByteArrayOutputStream writeConfigurationZipFile() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ZipOutputStream zos = new ZipOutputStream(baos);
 
-        ZipEntry sipClientConfEntry = new ZipEntry(SIP_CONFIG_FILE_NAME);
-        ZipEntry dialPlanConfEntry = new ZipEntry(DIAL_PLAN_CONFIG_FILE_NAME);
+        try (ZipOutputStream zos = new ZipOutputStream(baos)) {
 
-        try {
+            ZipEntry sipClientConfEntry = new ZipEntry(SIP_CONFIG_FILE_NAME);
+            ZipEntry dialPlanConfEntry = new ZipEntry(DIAL_PLAN_CONFIG_FILE_NAME);
+
             writeZipEntry(zos, sipClientConfEntry, sipClientConf.getBytes());
             writeZipEntry(zos, dialPlanConfEntry, dialPlanConf.getBytes());
-            zos.close();
+
         } catch (IOException e) {
-            LOGGER.error("io error in zip file creation", e);
-            // throw new Exception
+            String errorMessage = "io error in zip file creation";
+            LOGGER.error(errorMessage, e);
+            throw new ZipFileCreationException(errorMessage, e);
         }
         return baos;
     }
