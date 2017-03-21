@@ -28,8 +28,6 @@ public class SipClient implements Serializable {
     @Column(nullable = false)
     private String secret;
 
-
-
     protected SipClient(){
 
     }
@@ -38,6 +36,7 @@ public class SipClient implements Serializable {
         this.company = company;
         this.label = label;
         this.phoneNr = phoneNr;
+        this.secret = secret;
     }
 
 
