@@ -23,7 +23,7 @@ public class SipClient implements Serializable {
     private String label;
 
     @Column(nullable = false)
-    private int phoneNr;
+    private String phoneNr;
 
     @Column(nullable = false)
     private String secret;
@@ -32,7 +32,7 @@ public class SipClient implements Serializable {
 
     }
 
-    public SipClient(Company company, String label, int phoneNr, String secret) {
+    public SipClient(Company company, String label, String phoneNr, String secret) {
         this.company = company;
         this.label = label;
         this.phoneNr = phoneNr;
@@ -63,11 +63,11 @@ public class SipClient implements Serializable {
         this.label = label;
     }
 
-    public int getPhoneNr() {
+    public String getPhoneNr() {
         return phoneNr;
     }
 
-    public void setPhoneNr(int phoneNr) {
+    public void setPhoneNr(String phoneNr) {
         this.phoneNr = phoneNr;
     }
 
