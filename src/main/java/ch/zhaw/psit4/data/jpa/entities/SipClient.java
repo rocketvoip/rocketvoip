@@ -10,9 +10,6 @@ import java.io.Serializable;
  */
 
 @Entity
-@Table(
-        uniqueConstraints = @UniqueConstraint(columnNames = {"company", "label", "phoneNr"})
-)
 public class SipClient implements Serializable {
 
     @Id
