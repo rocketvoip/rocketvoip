@@ -28,17 +28,24 @@ public class SipClient implements Serializable {
     @Column(nullable = false)
     private String secret;
 
-    protected SipClient(){
+    protected SipClient() {
 
     }
 
-    public SipClient(Company company, String label, int phoneNr, String secret){
+    public SipClient(Company company, String label, int phoneNr, String secret) {
         this.company = company;
         this.label = label;
         this.phoneNr = phoneNr;
         this.secret = secret;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public Company getCompany() {
         return company;
