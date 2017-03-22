@@ -1,4 +1,4 @@
-package ch.zhaw.psit4.domain;
+package ch.zhaw.psit4.domain.SipClient;
 
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import org.junit.Before;

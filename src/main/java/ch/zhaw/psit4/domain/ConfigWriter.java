@@ -1,5 +1,6 @@
 package ch.zhaw.psit4.domain;
 
+import ch.zhaw.psit4.domain.SipClient.SipClient;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import ch.zhaw.psit4.domain.interfaces.SipClientConfigurationInterface;
 

@@ -1,4 +1,4 @@
-package ch.zhaw.psit4.domain;
+package ch.zhaw.psit4.domain.SipClient;
 
 /**
  * Holds the data for a SIP-Client.
