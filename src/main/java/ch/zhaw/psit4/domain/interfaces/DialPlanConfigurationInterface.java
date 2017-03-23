@@ -1,7 +1,7 @@
 package ch.zhaw.psit4.domain.interfaces;
 
-import ch.zhaw.psit4.domain.DialPlan.DialPlanContext;
-import ch.zhaw.psit4.domain.SipClient.SipClient;
+import ch.zhaw.psit4.domain.dialplan.DialPlanContext;
+import ch.zhaw.psit4.domain.sipclient.SipClient;
 
 import java.util.List;
 

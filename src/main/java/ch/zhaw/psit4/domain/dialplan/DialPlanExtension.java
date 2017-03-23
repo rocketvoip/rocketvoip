@@ -1,6 +1,6 @@
-package ch.zhaw.psit4.domain.DialPlan;
+package ch.zhaw.psit4.domain.dialplan;
 
-import ch.zhaw.psit4.domain.DialPlan.interfaces.DialPlanApplication;
+import ch.zhaw.psit4.domain.dialplan.interfaces.DialPlanApplication;
 
 /**
  * @author Jona Braun

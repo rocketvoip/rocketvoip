@@ -1,6 +1,6 @@
-package ch.zhaw.psit4.domain.DialPlan;
+package ch.zhaw.psit4.domain.dialplan;
 
-import ch.zhaw.psit4.domain.SipClient.SipClient;
+import ch.zhaw.psit4.domain.sipclient.SipClient;
 import org.junit.Test;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package ch.zhaw.psit4.domain.DialPlan;
+package ch.zhaw.psit4.domain.dialplan;
 
 import java.util.List;
 

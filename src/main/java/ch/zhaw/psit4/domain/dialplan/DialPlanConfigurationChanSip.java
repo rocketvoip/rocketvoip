@@ -1,8 +1,8 @@
-package ch.zhaw.psit4.domain.DialPlan;
+package ch.zhaw.psit4.domain.dialplan;
 
-import ch.zhaw.psit4.domain.DialPlan.DialPlanApplication.Dial;
-import ch.zhaw.psit4.domain.SipClient.SipClient;
+import ch.zhaw.psit4.domain.dialplan.application.Dial;
 import ch.zhaw.psit4.domain.interfaces.DialPlanConfigurationInterface;
+import ch.zhaw.psit4.domain.sipclient.SipClient;
 
 import java.util.ArrayList;
 import java.util.List;
