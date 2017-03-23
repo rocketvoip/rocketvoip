@@ -2,9 +2,9 @@ package ch.zhaw.psit4.services;
 
 import ch.zhaw.psit4.domain.ConfigWriter;
 import ch.zhaw.psit4.domain.ConfigZipWriter;
-import ch.zhaw.psit4.domain.SipClient.SipClient;
-import ch.zhaw.psit4.domain.SipClient.SipClientConfigurationChanSip;
 import ch.zhaw.psit4.domain.interfaces.SipClientConfigurationInterface;
+import ch.zhaw.psit4.domain.sipclient.SipClient;
+import ch.zhaw.psit4.domain.sipclient.SipClientConfigurationChanSip;
 import ch.zhaw.psit4.services.interfaces.ServiceConfigControllerInterface;
 import org.springframework.stereotype.Service;
 

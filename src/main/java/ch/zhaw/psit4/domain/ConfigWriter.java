@@ -1,8 +1,8 @@
 package ch.zhaw.psit4.domain;
 
-import ch.zhaw.psit4.domain.SipClient.SipClient;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import ch.zhaw.psit4.domain.interfaces.SipClientConfigurationInterface;
+import ch.zhaw.psit4.domain.sipclient.SipClient;
 
 import java.util.List;
 
