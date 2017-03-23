@@ -68,6 +68,15 @@ public class SipClientServiceImplIT {
         assertThat(actual, almostEqualTo(sipClientDto));
     }
 
+    @Test
+    public void getSipClient() throws Exception {
+        SipClientDto sipClientDto = createTestSipClientDto(1);
+
+        SipClientDto actual = sipClientServiceInterface.createSipClient(company, sipClientDto);
+
+        assertThat(sipClientDto, almostEqualTo(actual));
+    }
+
     @Test(expected = SipClientRetrievalException.class)
     public void deleteSipClient() throws Exception {
         SipClientDto sipClientDto = createTestSipClientDto(1);
