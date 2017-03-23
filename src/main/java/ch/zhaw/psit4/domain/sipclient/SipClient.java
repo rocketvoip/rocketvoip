@@ -51,4 +51,15 @@ public class SipClient {
     public void setId(String id) {
         this.id = id;
     }
+
+    /**
+     * Puts the together the label.
+     *
+     * @return the label of a sip client
+     */
+    public String getLabel() {
+        return username + "-" + company;
+    }
+
+
 }

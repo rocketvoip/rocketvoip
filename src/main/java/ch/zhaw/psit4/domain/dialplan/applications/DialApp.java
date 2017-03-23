@@ -1,4 +1,4 @@
-package ch.zhaw.psit4.domain.dialplan.application;
+package ch.zhaw.psit4.domain.dialplan.applications;
 
 import ch.zhaw.psit4.domain.dialplan.interfaces.DialPlanApplication;
 import ch.zhaw.psit4.domain.sipclient.SipClient;
@@ -47,8 +47,7 @@ public class Dial implements DialPlanApplication {
                 stringBuilder.append("PSIP/");
             }
 
-            //TODO add String label to SipClient
-            stringBuilder.append(sipClient.getUsername() + "-" + sipClient.getCompany());
+            stringBuilder.append(sipClient.getLabel());
 
             if (sipClientList.size() > index) {
                 stringBuilder.append("&");
