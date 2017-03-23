@@ -1,5 +1,6 @@
 package ch.zhaw.psit4.domain.dialplan;
 
+import ch.zhaw.psit4.domain.interfaces.DialPlanConfigurationInterface;
 import ch.zhaw.psit4.domain.sipclient.SipClient;
 import org.junit.Test;
 
@@ -11,12 +12,12 @@ import static org.junit.Assert.assertEquals;
 /**
  * @author Jona Braun
  */
-public class DialPlanConfigurationChanSipTest {
+public class DialAppPlanConfigurationChanSipTest {
 
     @Test
     public void generateDialPlanConfiguration() throws Exception {
         List<SipClient> sipClientList = generateSipClientList(1, "acme");
-        DialPlanConfigurationChanSip dialPlanConfigurationChanSip = new DialPlanConfigurationChanSip();
+        DialPlanConfigurationInterface dialPlanConfigurationChanSip = new DialPlanConfigurationChanSip();
 
         String extensionConf = dialPlanConfigurationChanSip.generateDialPlanConfiguration(sipClientList, null);
         String expected = "[simple-dial-plan]\n" +

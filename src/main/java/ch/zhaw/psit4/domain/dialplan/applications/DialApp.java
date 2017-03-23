@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * @author Jona Braun
  */
-public class Dial implements DialPlanApplication {
+public class DialApp implements DialPlanApplication {
 
     private Technology technology;
     private List<SipClient> sipClientList;
@@ -20,7 +20,7 @@ public class Dial implements DialPlanApplication {
      * @param sipClientList the clients to call/dial
      * @param timeout       the number of seconds it is attempt to dial the specified clients
      */
-    public Dial(Technology technology, List<SipClient> sipClientList, String timeout) {
+    public DialApp(Technology technology, List<SipClient> sipClientList, String timeout) {
         this.technology = technology;
         this.sipClientList = sipClientList;
         this.timeout = timeout;

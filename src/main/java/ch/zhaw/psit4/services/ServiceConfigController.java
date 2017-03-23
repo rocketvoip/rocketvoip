@@ -2,6 +2,8 @@ package ch.zhaw.psit4.services;
 
 import ch.zhaw.psit4.domain.ConfigWriter;
 import ch.zhaw.psit4.domain.ConfigZipWriter;
+import ch.zhaw.psit4.domain.dialplan.DialPlanConfigurationChanSip;
+import ch.zhaw.psit4.domain.interfaces.DialPlanConfigurationInterface;
 import ch.zhaw.psit4.domain.interfaces.SipClientConfigurationInterface;
 import ch.zhaw.psit4.domain.sipclient.SipClient;
 import ch.zhaw.psit4.domain.sipclient.SipClientConfigurationChanSip;
@@ -30,17 +32,17 @@ public class ServiceConfigController implements ServiceConfigControllerInterface
      */
     @Override
     public ByteArrayOutputStream getAsteriskConfiguration() {
-
-        SipClientConfigurationInterface sipClientConfiguration = new SipClientConfigurationChanSip();
-        ConfigWriter configWriter = new ConfigWriter(sipClientConfiguration);
-
         List<SipClient> sipClientList = getSipClientList();
 
+        SipClientConfigurationInterface sipClientConfiguration = new SipClientConfigurationChanSip();
+        DialPlanConfigurationInterface dialPlanConfigurationChanSip = new DialPlanConfigurationChanSip();
+
+        ConfigWriter configWriter = new ConfigWriter(sipClientConfiguration, dialPlanConfigurationChanSip);
+
         String sipClientConf = configWriter.generateSipClientConfiguration(sipClientList);
+        String dialPlanConf = configWriter.generateDialPlanConfiguration(sipClientList, null);
 
-        //TODO get dial plan configuration
-
-        ConfigZipWriter configZipWriter = new ConfigZipWriter(sipClientConf, "");
+        ConfigZipWriter configZipWriter = new ConfigZipWriter(sipClientConf, dialPlanConf);
 
         return configZipWriter.writeConfigurationZipFile();
     }

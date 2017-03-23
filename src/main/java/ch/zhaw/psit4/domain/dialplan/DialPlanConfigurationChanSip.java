@@ -1,6 +1,6 @@
 package ch.zhaw.psit4.domain.dialplan;
 
-import ch.zhaw.psit4.domain.dialplan.application.Dial;
+import ch.zhaw.psit4.domain.dialplan.applications.DialApp;
 import ch.zhaw.psit4.domain.interfaces.DialPlanConfigurationInterface;
 import ch.zhaw.psit4.domain.sipclient.SipClient;
 
@@ -14,8 +14,11 @@ public class DialPlanConfigurationChanSip implements DialPlanConfigurationInterf
 
     @Override
     public String generateDialPlanConfiguration(List<SipClient> sipClientList, List<DialPlanContext> dialPlanContextList) {
+        //TODO add null handling
+
         DialPlanContext dialPlanContext = getSimpleDialPlan(sipClientList);
 
+        //TODO process the dialPlanContextList
 
         return dialPlanContextToString(dialPlanContext);
     }
@@ -27,7 +30,6 @@ public class DialPlanConfigurationChanSip implements DialPlanConfigurationInterf
         stringBuilder.append(dialPlanContext.getContextName());
         stringBuilder.append("]\n");
         for (DialPlanExtension dialPlanExtension : dialPlanContext.getDialPlanExtensionList()) {
-
             stringBuilder.append("exten=> ");
             stringBuilder.append(dialPlanExtension.getPhoneNumber());
             stringBuilder.append(", ");
@@ -54,9 +56,9 @@ public class DialPlanConfigurationChanSip implements DialPlanConfigurationInterf
 
             List<SipClient> sipClients = new ArrayList<>();
             sipClients.add(sipClient);
-            Dial dial = new Dial(Dial.Technology.SIP, sipClients, "30");
+            DialApp dialApp = new DialApp(DialApp.Technology.SIP, sipClients, "30");
 
-            dialPlanExtension.setDialPlanApplication(dial);
+            dialPlanExtension.setDialPlanApplication(dialApp);
 
         }
 
