@@ -2,8 +2,9 @@ package ch.zhaw.psit4.services;
 
 import ch.zhaw.psit4.domain.ConfigWriter;
 import ch.zhaw.psit4.domain.ConfigZipWriter;
-import ch.zhaw.psit4.domain.SipClient;
-import ch.zhaw.psit4.domain.SipClientConfigurationV11;
+import ch.zhaw.psit4.domain.SipClient.SipClient;
+import ch.zhaw.psit4.domain.SipClient.SipClientConfigurationChanSip;
+import ch.zhaw.psit4.domain.interfaces.SipClientConfigurationInterface;
 import ch.zhaw.psit4.services.interfaces.ServiceConfigControllerInterface;
 import org.springframework.stereotype.Service;
 
@@ -27,10 +28,11 @@ public class ServiceConfigController implements ServiceConfigControllerInterface
      * @throws ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException
      * @throws ch.zhaw.psit4.domain.exceptions.ZipFileCreationException
      */
+    @Override
     public ByteArrayOutputStream getAsteriskConfiguration() {
 
-        SipClientConfigurationV11 sipClientConfigurationV11 = new SipClientConfigurationV11();
-        ConfigWriter configWriter = new ConfigWriter(sipClientConfigurationV11);
+        SipClientConfigurationInterface sipClientConfiguration = new SipClientConfigurationChanSip();
+        ConfigWriter configWriter = new ConfigWriter(sipClientConfiguration);
 
         List<SipClient> sipClientList = getSipClientList();
 

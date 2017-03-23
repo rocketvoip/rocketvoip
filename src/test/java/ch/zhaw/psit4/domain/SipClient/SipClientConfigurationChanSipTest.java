@@ -1,4 +1,4 @@
-package ch.zhaw.psit4.domain;
+package ch.zhaw.psit4.domain.SipClient;
 
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import org.junit.Before;
@@ -12,17 +12,17 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 /**
- * Test for SipClientConfigurationV11.
+ * Test for SipClientConfigurationChanSip.
  *
  * @author Jona Braun
  */
-public class SipClientConfigurationV11Test {
+public class SipClientConfigurationChanSipTest {
 
-    private SipClientConfigurationV11 sipClientConfigurationV11;
+    private SipClientConfigurationChanSip sipClientConfigurationChanSip;
 
     @Before
     public void setUp() throws Exception {
-        sipClientConfigurationV11 = new SipClientConfigurationV11();
+        sipClientConfigurationChanSip = new SipClientConfigurationChanSip();
     }
 
     @Test(expected = InvalidConfigurationException.class)
@@ -143,7 +143,7 @@ public class SipClientConfigurationV11Test {
     }
 
     private String createConfigString(List<SipClient> sipClientList) {
-        return sipClientConfigurationV11.generateSipClientConfiguration(sipClientList);
+        return sipClientConfigurationChanSip.generateSipClientConfiguration(sipClientList);
     }
 
     private List<SipClient> generateSipClientList(int number, String company) {

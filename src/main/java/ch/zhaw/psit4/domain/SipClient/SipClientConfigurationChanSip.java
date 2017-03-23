@@ -1,4 +1,4 @@
-package ch.zhaw.psit4.domain;
+package ch.zhaw.psit4.domain.SipClient;
 
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import ch.zhaw.psit4.domain.interfaces.SipClientConfigurationInterface;
@@ -12,10 +12,10 @@ import java.util.List;
  *
  * @author Rafael Ostertag
  */
-public class SipClientConfigurationV11 implements SipClientConfigurationInterface {
+public class SipClientConfigurationChanSip implements SipClientConfigurationInterface {
     private static final String SIP_CLIENT_LIST_IS_EMPTY = "sipClientList is empty";
     private static final String SIP_CLIENT_LIST_IS_NULL = "sipClientList is null";
-    private static final Logger LOGGER = LoggerFactory.getLogger(SipClientConfigurationV11.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SipClientConfigurationChanSip.class);
 
     /**
      * @inheritDoc
@@ -43,9 +43,7 @@ public class SipClientConfigurationV11 implements SipClientConfigurationInterfac
                 continue;
             }
             stringBuilder.append("[");
-            stringBuilder.append(sipClient.getUsername());
-            stringBuilder.append("-");
-            stringBuilder.append(sipClient.getCompany());
+            stringBuilder.append(sipClient.getLabel());
             stringBuilder.append("]\n");
             stringBuilder.append("type=friend\n");
             stringBuilder.append("context=");

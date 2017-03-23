@@ -1,4 +1,4 @@
-package ch.zhaw.psit4.domain;
+package ch.zhaw.psit4.domain.SipClient;
 
 /**
  * Holds the data for a SIP-Client.
@@ -51,4 +51,15 @@ public class SipClient {
     public void setId(String id) {
         this.id = id;
     }
+
+    /**
+     * Puts the together the label.
+     *
+     * @return the label of a sip client
+     */
+    public String getLabel() {
+        return username + "-" + company;
+    }
+
+
 }
