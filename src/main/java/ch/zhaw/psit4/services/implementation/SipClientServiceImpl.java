@@ -8,6 +8,8 @@ import ch.zhaw.psit4.services.exceptions.SipClientCreationException;
 import ch.zhaw.psit4.services.exceptions.SipClientDeletionException;
 import ch.zhaw.psit4.services.exceptions.SipClientRetrievalException;
 import ch.zhaw.psit4.services.interfaces.SipClientServiceInterface;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,6 +20,8 @@ import java.util.List;
  */
 @Service
 public class SipClientServiceImpl implements SipClientServiceInterface {
+    public static final String COULD_NOT_CREATE_SIP_CLIENT_MESSAGE = "Could not create SIP Client";
+    private static final Logger LOGGER = LoggerFactory.getLogger(SipClientServiceImpl.class);
     private SipClientRepository sipClientRepository;
 
     public SipClientServiceImpl(SipClientRepository sipClientRepository) {
@@ -55,7 +59,8 @@ public class SipClientServiceImpl implements SipClientServiceInterface {
             sipClient = sipClientRepository.save(sipClient);
             return sipClientEntityToSipClientDto(sipClient);
         } catch (Exception e) {
-            throw new SipClientCreationException("Could not create SIP Client", e);
+            LOGGER.error(COULD_NOT_CREATE_SIP_CLIENT_MESSAGE, e);
+            throw new SipClientCreationException(COULD_NOT_CREATE_SIP_CLIENT_MESSAGE, e);
         }
     }
 
@@ -63,7 +68,9 @@ public class SipClientServiceImpl implements SipClientServiceInterface {
     public SipClientDto getSipClient(long id) {
         SipClient sipClient = sipClientRepository.findOne(id);
         if (sipClient == null) {
-            throw new SipClientRetrievalException(String.format("Could not find SIP Client with id %d", id));
+            String message = String.format("Could not find SIP Client with id %d", id);
+            LOGGER.error(message);
+            throw new SipClientRetrievalException(message);
         }
         return sipClientEntityToSipClientDto(sipClient);
     }
@@ -73,7 +80,9 @@ public class SipClientServiceImpl implements SipClientServiceInterface {
         try {
             sipClientRepository.delete(id);
         } catch (Exception e) {
-            throw new SipClientDeletionException(String.format("Could not delete SIP Client with id %d", id), e);
+            String message = String.format("Could not delete SIP Client with id %d", id);
+            LOGGER.error(message, e);
+            throw new SipClientDeletionException(message, e);
         }
     }
 }
