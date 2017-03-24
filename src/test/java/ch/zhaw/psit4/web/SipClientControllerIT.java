@@ -17,8 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import static ch.zhaw.psit4.helper.matchers.SipClientDtoEqualTo.sipClientDtoEqualTo;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayContainingInAnyOrder;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -78,7 +77,8 @@ public class SipClientControllerIT {
         ).andExpect(
                 status().isNotFound()
         ).andExpect(
-                jsonPath("$.reason").value(equalTo("Could not find SIP Client with id " + NON_EXISTING_USER_ID))
+                jsonPath("$.reason").value(startsWith("Could not delete SIP Client with id " +
+                        NON_EXISTING_USER_ID))
         );
     }
 
@@ -141,6 +141,14 @@ public class SipClientControllerIT {
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
         ).andExpect(
                 status().isNoContent()
+        );
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/v1/sipclients/{id}", createdSipClient1.getId())
+                        .accept(MediaType.APPLICATION_JSON_UTF8)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        ).andExpect(
+                status().isNotFound()
         );
     }
 

@@ -56,7 +56,7 @@ public class SipClientController {
     @DeleteMapping(path = "/sipclients/{id}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType
             .APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<Void> deleteSipCLient(@PathVariable long id) {
-        sipClientServiceInterface.getSipClient(id);
+        sipClientServiceInterface.deleteSipClient(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
