@@ -1,8 +1,7 @@
 package ch.zhaw.psit4.data.jpa.entities;
 
-import java.io.Serializable;
-
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * Table for company admins
@@ -27,6 +26,20 @@ public class CompanyAdmin implements Serializable {
 
     @Column(nullable = false)
     private String username;
+    @Column(nullable = false)
+    private String secret;
+
+    protected CompanyAdmin() {
+
+    }
+
+    public CompanyAdmin(Company company, String firstname, String lastname, String username, String secret) {
+        this.company = company;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.username = username;
+        this.secret = secret;
+    }
 
     public String getSecret() {
         return secret;
@@ -35,22 +48,6 @@ public class CompanyAdmin implements Serializable {
     public void setSecret(String secret) {
         this.secret = secret;
     }
-
-    @Column(nullable = false)
-    private String secret;
-
-    protected CompanyAdmin(){
-
-    }
-
-    public CompanyAdmin(Company company, String firstname, String lastname, String username, String secret){
-        this.company = company;
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.username = username;
-        this.secret = secret;
-    }
-
 
     public Company getCompany() {
         return company;

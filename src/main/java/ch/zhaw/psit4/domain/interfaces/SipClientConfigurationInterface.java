@@ -7,6 +7,7 @@ import java.util.List;
 /**
  * @author Rafael Ostertag
  */
+@FunctionalInterface
 public interface SipClientConfigurationInterface {
 
     /**
