@@ -3,6 +3,8 @@ package ch.zhaw.psit4.domain.dialplan;
 import ch.zhaw.psit4.domain.dialplan.interfaces.DialPlanApplication;
 
 /**
+ * Represents one extension in an asterisk dial plan.
+ *
  * @author Jona Braun
  */
 public class DialPlanExtension {

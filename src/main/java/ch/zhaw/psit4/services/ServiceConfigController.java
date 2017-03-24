@@ -27,8 +27,8 @@ public class ServiceConfigController implements ServiceConfigControllerInterface
      * and returns it as zip file in a {@link ByteArrayOutputStream}.
      *
      * @return ByteArrayOutputStream of the zipped asterisk configuration
-     * @throws ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException
-     * @throws ch.zhaw.psit4.domain.exceptions.ZipFileCreationException
+     * @throws ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException if config is invalid
+     * @throws ch.zhaw.psit4.domain.exceptions.ZipFileCreationException      if zip file creation fails
      */
     @Override
     public ByteArrayOutputStream getAsteriskConfiguration() {

@@ -6,6 +6,8 @@ import ch.zhaw.psit4.domain.sipclient.SipClient;
 import java.util.List;
 
 /**
+ * Represents the Dial-Application(-Call) of asterisk.
+ *
  * @author Jona Braun
  */
 public class DialApp implements DialPlanApplication {
@@ -28,7 +30,7 @@ public class DialApp implements DialPlanApplication {
 
 
     /**
-     * Puts together the asterisk application call.
+     * Puts together the asterisk dial application call.
      *
      * @return the asterisk application call
      */

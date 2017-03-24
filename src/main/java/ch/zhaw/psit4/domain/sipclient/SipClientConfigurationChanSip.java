@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 /**
- * Generates the SIP client configuration.
+ * Generates the SIP client configuration according to the asterisk chanel driver chan_sip.
  *
  * @author Rafael Ostertag
  */

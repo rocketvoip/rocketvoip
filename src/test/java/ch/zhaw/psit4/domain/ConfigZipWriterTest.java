@@ -23,7 +23,7 @@ public class ConfigZipWriterTest {
     private static final int NUMBER_OF_FILES = 2;
 
     private static final String SIP_CLIENT_CONF = "[sip-client1]\ncontent=test";
-    private static final String DIAL_PLAN_CLIENT_CONF = "[company1]\nextern => 555,1,Dial(SIP/sip-client1,20)\n";
+    private static final String DIAL_PLAN_CLIENT_CONF = "[company1]\nexten => 555,1,Dial(SIP/sip-client1,20)\n";
 
     private ConfigZipWriter configZipWriter;
 
@@ -57,7 +57,7 @@ public class ConfigZipWriterTest {
         int iteration = 0;
         while ((zipEntry = zipInputStream.getNextEntry()) != null) {
             if (iteration >= NUMBER_OF_FILES) {
-                new AssertionError("the zip contains more then two files");
+                throw new AssertionError("the zip contains more then two files");
             }
             fileName[iteration] = zipEntry.getName();
 

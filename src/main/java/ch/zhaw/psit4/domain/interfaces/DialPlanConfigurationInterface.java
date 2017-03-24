@@ -6,13 +6,16 @@ import ch.zhaw.psit4.domain.sipclient.SipClient;
 import java.util.List;
 
 /**
+ * Puts together the dial plan of asterisk.
+ *
  * @author Jona Braun
  */
+@FunctionalInterface
 public interface DialPlanConfigurationInterface {
 
 
     /**
-     * Creates the dial plan configuration according to asterisk chan_sip driver standard.
+     * Creates the dial plan configuration according to asterisk driver standard.
      *
      * @param sipClientList       the sip client list
      * @param dialPlanContextList all dial plan contexts

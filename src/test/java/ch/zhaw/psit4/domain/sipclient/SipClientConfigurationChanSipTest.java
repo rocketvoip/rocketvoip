@@ -39,7 +39,7 @@ public class SipClientConfigurationChanSipTest {
 
     @Test
     public void testNullClient() throws Exception {
-        List<SipClient> sipClientList = new ArrayList<SipClient>();
+        List<SipClient> sipClientList = new ArrayList<>();
         sipClientList.add(null);
 
         String actual = createConfigString(sipClientList);
@@ -50,7 +50,7 @@ public class SipClientConfigurationChanSipTest {
 
     @Test
     public void testNullClientInBetween() throws Exception {
-        List<SipClient> sipClientList = new ArrayList<SipClient>();
+        List<SipClient> sipClientList = new ArrayList<>();
         sipClientList.add(generateSipClient(1, "acme"));
         sipClientList.add(null);
         sipClientList.add(generateSipClient(3, "acme"));
@@ -72,7 +72,7 @@ public class SipClientConfigurationChanSipTest {
 
     @Test
     public void testClientWithNullValues() throws Exception {
-        List<SipClient> sipClientList = new ArrayList<SipClient>();
+        List<SipClient> sipClientList = new ArrayList<>();
 
         sipClientList.add(new SipClient());
 

@@ -8,10 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Puts together the whole dial plan for the asterisk channel driver chan_sip.
+ *
  * @author Jona Braun
  */
 public class DialPlanConfigurationChanSip implements DialPlanConfigurationInterface {
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public String generateDialPlanConfiguration(List<SipClient> sipClientList, List<DialPlanContext> dialPlanContextList) {
         //TODO add null handling

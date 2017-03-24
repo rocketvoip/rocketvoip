@@ -3,10 +3,11 @@ package ch.zhaw.psit4.services.interfaces;
 import java.io.ByteArrayOutputStream;
 
 /**
- * Puts togehter the asterisk configuration.
+ * Puts together the asterisk configuration.
  *
  * @author Jona Braun
  */
+@FunctionalInterface
 public interface ServiceConfigControllerInterface {
 
     /**

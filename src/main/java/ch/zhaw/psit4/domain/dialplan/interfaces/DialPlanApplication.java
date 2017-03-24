@@ -5,6 +5,7 @@ package ch.zhaw.psit4.domain.dialplan.interfaces;
  *
  * @author Jona Braun
  */
+@FunctionalInterface
 public interface DialPlanApplication {
 
     /**
