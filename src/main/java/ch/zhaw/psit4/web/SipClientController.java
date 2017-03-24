@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
+ * Sip Client REST controller.
+ *
  * @author Rafael Ostertag
  */
 @RestController

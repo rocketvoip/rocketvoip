@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Implements SipClientServiceInterface.
+ *
  * @author Rafael Ostertag
  */
 @Service
@@ -28,6 +30,12 @@ public class SipClientServiceImpl implements SipClientServiceInterface {
         this.sipClientRepository = sipClientRepository;
     }
 
+    /**
+     * Convert a SipClient entity to a SipClientDto.
+     *
+     * @param sipClient SipClient entity.
+     * @return SipClientDto instance
+     */
     public static SipClientDto sipClientEntityToSipClientDto(SipClient sipClient) {
         SipClientDto sipClientDto = new SipClientDto();
         sipClientDto.setId(sipClient.getId());
@@ -37,6 +45,13 @@ public class SipClientServiceImpl implements SipClientServiceInterface {
         return sipClientDto;
     }
 
+    /**
+     * Convert a SipClientDto to a SipClient entity. A Company entity is required for the conversion.
+     *
+     * @param company      Company entity the SipClient entity belongs to.
+     * @param sipClientDto SipClientDto instance to be converted
+     * @return SipClient entity instance.
+     */
     public static SipClient sipClientDtoToSipClientEntity(Company company, SipClientDto sipClientDto) {
         return new SipClient(company, sipClientDto.getName(), sipClientDto.getPhone(), sipClientDto
                 .getSecret());
