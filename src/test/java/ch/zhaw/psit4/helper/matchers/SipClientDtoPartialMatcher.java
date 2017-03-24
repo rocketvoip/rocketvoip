@@ -11,16 +11,16 @@ import org.hamcrest.TypeSafeMatcher;
  *
  * @author Rafael Ostertag
  */
-public class SipClientDtoMatcher extends TypeSafeMatcher<SipClientDto> {
-    SipClientDto expected;
+public class SipClientDtoPartialMatcher extends TypeSafeMatcher<SipClientDto> {
+    private final SipClientDto expected;
 
-    private SipClientDtoMatcher(SipClientDto expected) {
+    private SipClientDtoPartialMatcher(SipClientDto expected) {
         this.expected = expected;
     }
 
     @Factory
-    public static Matcher almostEqualTo(SipClientDto other) {
-        return new SipClientDtoMatcher(other);
+    public static Matcher sipClientDtoAlmostEqualTo(SipClientDto other) {
+        return new SipClientDtoPartialMatcher(other);
     }
 
     @Override

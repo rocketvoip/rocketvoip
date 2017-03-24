@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static ch.zhaw.psit4.helper.matchers.SipClientDtoMatcher.almostEqualTo;
+import static ch.zhaw.psit4.helper.matchers.SipClientDtoPartialMatcher.sipClientDtoAlmostEqualTo;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
@@ -54,7 +54,7 @@ public class SipClientServiceImplIT {
         testSipClient1.setId(1);
         SipClientDto testSipClient2 = SipClientGenerator.createTestSipClientDto(2);
         testSipClient2.setId(2);
-        assertThat(actual, containsInAnyOrder(almostEqualTo(testSipClient1), almostEqualTo
+        assertThat(actual, containsInAnyOrder(sipClientDtoAlmostEqualTo(testSipClient1), sipClientDtoAlmostEqualTo
                 (testSipClient2)));
     }
 
@@ -64,7 +64,7 @@ public class SipClientServiceImplIT {
 
         SipClientDto actual = sipClientServiceInterface.createSipClient(sipClientGenerator.getCompany(), sipClientDto);
 
-        assertThat(actual, almostEqualTo(sipClientDto));
+        assertThat(actual, sipClientDtoAlmostEqualTo(sipClientDto));
     }
 
     @Test
@@ -73,7 +73,7 @@ public class SipClientServiceImplIT {
 
         SipClientDto actual = sipClientServiceInterface.createSipClient(sipClientGenerator.getCompany(), sipClientDto);
 
-        assertThat(sipClientDto, almostEqualTo(actual));
+        assertThat(sipClientDto, sipClientDtoAlmostEqualTo(actual));
     }
 
     @Test(expected = SipClientRetrievalException.class)
