@@ -1,4 +1,4 @@
-package ch.zhaw.psit4.services.implementation.matchers;
+package ch.zhaw.psit4.helper.matchers;
 
 import ch.zhaw.psit4.dto.SipClientDto;
 import org.hamcrest.Description;

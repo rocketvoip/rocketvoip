@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static ch.zhaw.psit4.services.implementation.matchers.SipClientDtoMatcher.almostEqualTo;
+import static ch.zhaw.psit4.helper.matchers.SipClientDtoMatcher.almostEqualTo;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
