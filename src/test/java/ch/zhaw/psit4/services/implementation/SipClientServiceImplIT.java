@@ -4,6 +4,7 @@ import ch.zhaw.psit4.data.jpa.entities.Company;
 import ch.zhaw.psit4.data.jpa.repositories.CompanyRepository;
 import ch.zhaw.psit4.data.jpa.repositories.SipClientRepository;
 import ch.zhaw.psit4.dto.SipClientDto;
+import ch.zhaw.psit4.helper.SipClientGenerator;
 import ch.zhaw.psit4.services.exceptions.SipClientCreationException;
 import ch.zhaw.psit4.services.exceptions.SipClientDeletionException;
 import ch.zhaw.psit4.services.exceptions.SipClientRetrievalException;
@@ -30,15 +31,13 @@ import static org.junit.Assert.assertThat;
 @SpringBootTest
 @Transactional
 public class SipClientServiceImplIT {
-    private static final long NON_EXISTING_ID = 100;
+    private final SipClientGenerator sipClientGenerator = new SipClientGenerator();
     @Autowired
     private CompanyRepository companyRepository;
     @Autowired
     private SipClientRepository sipClientRepository;
     @Autowired
     private SipClientServiceInterface sipClientServiceInterface;
-
-    private Company company;
 
     @Before
     public void setUp() throws Exception {
@@ -51,9 +50,9 @@ public class SipClientServiceImplIT {
 
         assertThat(actual, hasSize(2));
 
-        SipClientDto testSipClient1 = createTestSipClientDto(1);
+        SipClientDto testSipClient1 = SipClientGenerator.createTestSipClientDto(1);
         testSipClient1.setId(1);
-        SipClientDto testSipClient2 = createTestSipClientDto(2);
+        SipClientDto testSipClient2 = SipClientGenerator.createTestSipClientDto(2);
         testSipClient2.setId(2);
         assertThat(actual, containsInAnyOrder(almostEqualTo(testSipClient1), almostEqualTo
                 (testSipClient2)));
@@ -61,26 +60,26 @@ public class SipClientServiceImplIT {
 
     @Test
     public void createSipClient() throws Exception {
-        SipClientDto sipClientDto = createTestSipClientDto(1);
+        SipClientDto sipClientDto = SipClientGenerator.createTestSipClientDto(1);
 
-        SipClientDto actual = sipClientServiceInterface.createSipClient(company, sipClientDto);
+        SipClientDto actual = sipClientServiceInterface.createSipClient(sipClientGenerator.getCompany(), sipClientDto);
 
         assertThat(actual, almostEqualTo(sipClientDto));
     }
 
     @Test
     public void getSipClient() throws Exception {
-        SipClientDto sipClientDto = createTestSipClientDto(1);
+        SipClientDto sipClientDto = SipClientGenerator.createTestSipClientDto(1);
 
-        SipClientDto actual = sipClientServiceInterface.createSipClient(company, sipClientDto);
+        SipClientDto actual = sipClientServiceInterface.createSipClient(sipClientGenerator.getCompany(), sipClientDto);
 
         assertThat(sipClientDto, almostEqualTo(actual));
     }
 
     @Test(expected = SipClientRetrievalException.class)
     public void deleteSipClient() throws Exception {
-        SipClientDto sipClientDto = createTestSipClientDto(1);
-        sipClientDto = sipClientServiceInterface.createSipClient(company, sipClientDto);
+        SipClientDto sipClientDto = SipClientGenerator.createTestSipClientDto(1);
+        sipClientDto = sipClientServiceInterface.createSipClient(sipClientGenerator.getCompany(), sipClientDto);
 
         sipClientServiceInterface.deleteSipClient(sipClientDto.getId());
 
@@ -89,35 +88,21 @@ public class SipClientServiceImplIT {
 
     @Test(expected = SipClientDeletionException.class)
     public void deleteNonExistingSipClient() throws Exception {
-        sipClientServiceInterface.deleteSipClient(NON_EXISTING_ID);
+        sipClientServiceInterface.deleteSipClient(SipClientGenerator.NON_EXISTING_ID);
     }
 
     @Test(expected = SipClientCreationException.class)
     public void createInvalidSipClient() throws Exception {
-        sipClientServiceInterface.createSipClient(company,
+        sipClientServiceInterface.createSipClient(sipClientGenerator.getCompany(),
                 new SipClientDto());
-    }
-
-    private SipClientDto createTestSipClientDto(int number) {
-        SipClientDto sipClientDto = new SipClientDto();
-        sipClientDto.setName("Name" + number);
-        sipClientDto.setPhone("Phone" + number);
-        sipClientDto.setSecret("Secret" + number);
-
-        return sipClientDto;
-    }
-
-    private ch.zhaw.psit4.data.jpa.entities.SipClient createSipClientEntity(int number) {
-        return new ch.zhaw.psit4.data.jpa.entities.SipClient(company, "Name" + number,
-                "Phone" + number, "Secret" + number);
     }
 
     private void setupDatabase() {
         Company company = new Company("testCompany");
-        this.company = companyRepository.save(company);
+        this.sipClientGenerator.setCompany(companyRepository.save(company));
 
-        sipClientRepository.save(createSipClientEntity(1));
-        sipClientRepository.save(createSipClientEntity(2));
+        sipClientRepository.save(sipClientGenerator.createSipClientEntity(1));
+        sipClientRepository.save(sipClientGenerator.createSipClientEntity(2));
     }
 
 }
