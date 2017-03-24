@@ -47,23 +47,24 @@ public class DialPlanConfigurationChanSip implements DialPlanConfigurationInterf
         DialPlanContext dialPlanContext = new DialPlanContext();
         dialPlanContext.setContextName("simple-dial-plan");
 
-        DialPlanExtension dialPlanExtension = new DialPlanExtension();
+        List<DialPlanExtension> dialPlanExtensionList = new ArrayList<>();
 
         for (SipClient sipClient : sipClientList) {
+            DialPlanExtension dialPlanExtension = new DialPlanExtension();
 
             dialPlanExtension.setPhoneNumber(sipClient.getPhoneNumber());
             dialPlanExtension.setPriority("1");
 
             List<SipClient> sipClients = new ArrayList<>();
             sipClients.add(sipClient);
+
             DialApp dialApp = new DialApp(DialApp.Technology.SIP, sipClients, "30");
 
             dialPlanExtension.setDialPlanApplication(dialApp);
 
-        }
+            dialPlanExtensionList.add(dialPlanExtension);
 
-        List<DialPlanExtension> dialPlanExtensionList = new ArrayList<>();
-        dialPlanExtensionList.add(dialPlanExtension);
+        }
 
         dialPlanContext.setDialPlanExtensionList(dialPlanExtensionList);
 

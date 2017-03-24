@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static ch.zhaw.psit4.domain.SipClientTestHelper.generateSipClient;
+import static ch.zhaw.psit4.domain.SipClientTestHelper.generateSipClientList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -144,23 +146,6 @@ public class SipClientConfigurationChanSipTest {
 
     private String createConfigString(List<SipClient> sipClientList) {
         return sipClientConfigurationChanSip.generateSipClientConfiguration(sipClientList);
-    }
-
-    private List<SipClient> generateSipClientList(int number, String company) {
-        List<SipClient> sipClientList = new ArrayList<>();
-        for (int i = 1; i <= number; i++) {
-            SipClient sipClient = generateSipClient(i, company);
-            sipClientList.add(sipClient);
-        }
-        return sipClientList;
-    }
-
-    private SipClient generateSipClient(int i, String company) {
-        SipClient sipClient = new SipClient();
-        sipClient.setCompany(company);
-        sipClient.setUsername("User" + i);
-        sipClient.setSecret("Secret" + i);
-        return sipClient;
     }
 
     private String generateSipClientConfig(int number, String company) {

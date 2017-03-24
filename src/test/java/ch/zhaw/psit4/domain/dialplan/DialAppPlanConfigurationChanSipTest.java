@@ -1,10 +1,10 @@
 package ch.zhaw.psit4.domain.dialplan;
 
+import ch.zhaw.psit4.domain.SipClientTestHelper;
 import ch.zhaw.psit4.domain.interfaces.DialPlanConfigurationInterface;
 import ch.zhaw.psit4.domain.sipclient.SipClient;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -15,35 +15,37 @@ import static org.junit.Assert.assertEquals;
 public class DialAppPlanConfigurationChanSipTest {
 
     @Test
-    public void generateDialPlanConfiguration() throws Exception {
-        List<SipClient> sipClientList = generateSipClientList(1, "acme");
+    public void generateSimpleDialPlanConfigurationOneEntry() throws Exception {
+        List<SipClient> sipClientList = SipClientTestHelper.generateSipClientList(1, "acme");
         DialPlanConfigurationInterface dialPlanConfigurationChanSip = new DialPlanConfigurationChanSip();
 
         String extensionConf = dialPlanConfigurationChanSip.generateDialPlanConfiguration(sipClientList, null);
-        String expected = "[simple-dial-plan]\n" +
-                "exten=> 1, 1, Dial(SIP/User1-acme, 30)\n\n";
+        String expected = getSimpleDialPlan(1);
 
         assertEquals(expected, extensionConf);
 
     }
 
-    //TODO remove duplicated code
-    private List<SipClient> generateSipClientList(int number, String company) {
-        List<SipClient> sipClientList = new ArrayList<>();
+    @Test
+    public void generateSimpleDialPlanConfigurationMultipleEntries() throws Exception {
+        List<SipClient> sipClientList = SipClientTestHelper.generateSipClientList(10, "acme");
+        DialPlanConfigurationInterface dialPlanConfigurationChanSip = new DialPlanConfigurationChanSip();
+
+        String extensionConf = dialPlanConfigurationChanSip.generateDialPlanConfiguration(sipClientList, null);
+        String expected = getSimpleDialPlan(10);
+
+        assertEquals(expected, extensionConf);
+
+    }
+
+    private String getSimpleDialPlan(int number) {
+        String simpleDialPlan = "[simple-dial-plan]\n";
         for (int i = 1; i <= number; i++) {
-            SipClient sipClient = generateSipClient(i, company);
-            sipClientList.add(sipClient);
+
+            simpleDialPlan += "exten=> " +
+                    i + ", 1, Dial(SIP/User" +
+                    i + "-acme, 30)\n";
         }
-        return sipClientList;
+        return simpleDialPlan + "\n";
     }
-
-    private SipClient generateSipClient(int i, String company) {
-        SipClient sipClient = new SipClient();
-        sipClient.setCompany(company);
-        sipClient.setUsername("User" + i);
-        sipClient.setSecret("Secret" + i);
-        sipClient.setPhoneNumber("" + i);
-        return sipClient;
-    }
-
 }
