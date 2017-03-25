@@ -1,15 +1,12 @@
 package ch.zhaw.psit4.domain;
 
+import ch.zhaw.psit4.helper.ZipStreamTestHelper;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
-import static org.junit.Assert.assertArrayEquals;
 
 /**
  * Test for ConfigZipWriter.
@@ -24,7 +21,7 @@ public class ConfigZipWriterTest {
 
     private static final String SIP_CLIENT_CONF = "[sip-client1]\ncontent=test";
     private static final String DIAL_PLAN_CLIENT_CONF = "[company1]\nexten => 555,1,Dial(SIP/sip-client1,20)\n";
-
+    private final ZipStreamTestHelper zipStreamTestHelper = new ZipStreamTestHelper();
     private ConfigZipWriter configZipWriter;
 
     @Before
@@ -39,45 +36,11 @@ public class ConfigZipWriterTest {
 
         ZipInputStream zipConfigInputStream = new ZipInputStream(new ByteArrayInputStream(configZipFileBaos.toByteArray()));
 
-        String[] expectedFileName = {SIP_CONF_FILE_NAME, DIAL_PLAN_CONF_FILE_NAME};
+        String[] expectedFileNames = {SIP_CONF_FILE_NAME, DIAL_PLAN_CONF_FILE_NAME};
         String[] expectedFileContent = {SIP_CLIENT_CONF, DIAL_PLAN_CLIENT_CONF};
 
-        String[] fileName = new String[NUMBER_OF_FILES];
-        String[] fileContent = new String[NUMBER_OF_FILES];
+        zipStreamTestHelper.testZipEntryContent(zipConfigInputStream, expectedFileNames, expectedFileContent);
 
-        readZipEntries(zipConfigInputStream, fileName, fileContent);
-
-        assertArrayEquals(expectedFileName, fileName);
-        assertArrayEquals(expectedFileContent, fileContent);
-
-    }
-
-    private void readZipEntries(ZipInputStream zipInputStream, String[] fileName, String[] fileContent) throws IOException {
-        ZipEntry zipEntry;
-        int iteration = 0;
-        while ((zipEntry = zipInputStream.getNextEntry()) != null) {
-            if (iteration >= NUMBER_OF_FILES) {
-                throw new AssertionError("the zip contains more then two files");
-            }
-            fileName[iteration] = zipEntry.getName();
-
-            ByteArrayOutputStream fileContentBaos = new ByteArrayOutputStream();
-
-            byte[] byteBuffer = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = zipInputStream.read(byteBuffer)) != -1) {
-                fileContentBaos.write(byteBuffer, 0, bytesRead);
-            }
-
-            fileContent[iteration] = fileContentBaos.toString();
-
-            fileContentBaos.close();
-
-            zipInputStream.closeEntry();
-
-            iteration++;
-        }
-        zipInputStream.close();
     }
 
 }

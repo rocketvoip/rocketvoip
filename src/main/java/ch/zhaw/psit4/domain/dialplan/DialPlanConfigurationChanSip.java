@@ -1,6 +1,7 @@
 package ch.zhaw.psit4.domain.dialplan;
 
 import ch.zhaw.psit4.domain.dialplan.applications.DialApp;
+import ch.zhaw.psit4.domain.helper.SipClientValidator;
 import ch.zhaw.psit4.domain.interfaces.DialPlanConfigurationInterface;
 import ch.zhaw.psit4.domain.sipclient.SipClient;
 
@@ -13,13 +14,14 @@ import java.util.List;
  * @author Jona Braun
  */
 public class DialPlanConfigurationChanSip implements DialPlanConfigurationInterface {
+    private final SipClientValidator sipClientValidator = new SipClientValidator();
 
     /**
      * @inheritDoc
      */
     @Override
     public String generateDialPlanConfiguration(List<SipClient> sipClientList, List<DialPlanContext> dialPlanContextList) {
-        //TODO add null handling
+        sipClientValidator.validateSipClientList(sipClientList);
 
         DialPlanContext dialPlanContext = getSimpleDialPlan(sipClientList);
 
@@ -55,6 +57,10 @@ public class DialPlanConfigurationChanSip implements DialPlanConfigurationInterf
         List<DialPlanExtension> dialPlanExtensionList = new ArrayList<>();
 
         for (SipClient sipClient : sipClientList) {
+            if (!sipClientValidator.isSipClientValid(sipClient)) {
+                continue;
+            }
+
             DialPlanExtension dialPlanExtension = new DialPlanExtension();
 
             dialPlanExtension.setPhoneNumber(sipClient.getPhoneNumber());

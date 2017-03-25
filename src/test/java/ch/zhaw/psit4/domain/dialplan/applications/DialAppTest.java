@@ -1,6 +1,6 @@
 package ch.zhaw.psit4.domain.dialplan.applications;
 
-import ch.zhaw.psit4.domain.SipClientTestHelper;
+import ch.zhaw.psit4.domain.helper.SipClientTestHelper;
 import ch.zhaw.psit4.domain.sipclient.SipClient;
 import org.junit.Test;
 
@@ -14,11 +14,13 @@ import static org.junit.Assert.assertEquals;
 public class DialAppTest {
 
     private static final String TIMEOUT = "30";
+    private final SipClientTestHelper sipClientTestHelper = new SipClientTestHelper();
+    private List<SipClient> sipClientList;
 
     @Test
     public void getApplicationCallOneSIPClient() throws Exception {
 
-        List<SipClient> sipClientList = SipClientTestHelper.generateSipClientList(1, "acme");
+        sipClientList = sipClientTestHelper.generateSipClientList(1, "acme");
 
         DialApp dialApp = new DialApp(DialApp.Technology.SIP, sipClientList, TIMEOUT);
 
@@ -31,7 +33,7 @@ public class DialAppTest {
     @Test
     public void getApplicationCallMultipleSIPClients() throws Exception {
 
-        List<SipClient> sipClientList = SipClientTestHelper.generateSipClientList(5, "acme");
+        sipClientList = sipClientTestHelper.generateSipClientList(5, "acme");
 
         DialApp dialApp = new DialApp(DialApp.Technology.SIP, sipClientList, TIMEOUT);
 
@@ -44,7 +46,7 @@ public class DialAppTest {
     @Test
     public void getApplicationCallMultiplePSIPClients() throws Exception {
 
-        List<SipClient> sipClientList = SipClientTestHelper.generateSipClientList(2, "acme");
+        sipClientList = sipClientTestHelper.generateSipClientList(2, "acme");
 
         DialApp dialApp = new DialApp(DialApp.Technology.PSIP, sipClientList, TIMEOUT);
 
@@ -59,7 +61,7 @@ public class DialAppTest {
         String dialAppCall = "Dial(";
         for (int i = 1; i <= number; i++) {
             dialAppCall += technology
-                    + "/User" + i + "-acme";
+                    + "/Name" + i + "-acme";
             if (number > i) {
                 dialAppCall += "&";
             }

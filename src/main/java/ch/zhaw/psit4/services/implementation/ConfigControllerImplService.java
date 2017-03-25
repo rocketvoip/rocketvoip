@@ -1,5 +1,6 @@
 package ch.zhaw.psit4.services.implementation;
 
+import ch.zhaw.psit4.data.jpa.repositories.SipClientRepository;
 import ch.zhaw.psit4.domain.ConfigWriter;
 import ch.zhaw.psit4.domain.ConfigZipWriter;
 import ch.zhaw.psit4.domain.dialplan.DialPlanConfigurationChanSip;
@@ -7,7 +8,7 @@ import ch.zhaw.psit4.domain.interfaces.DialPlanConfigurationInterface;
 import ch.zhaw.psit4.domain.interfaces.SipClientConfigurationInterface;
 import ch.zhaw.psit4.domain.sipclient.SipClient;
 import ch.zhaw.psit4.domain.sipclient.SipClientConfigurationChanSip;
-import ch.zhaw.psit4.services.interfaces.ServiceConfigControllerInterface;
+import ch.zhaw.psit4.services.interfaces.ConfigControllerServiceInterface;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -20,7 +21,16 @@ import java.util.List;
  * @author Jona Braun
  */
 @Service
-public class ConfigControllerServiceImpl implements ServiceConfigControllerInterface {
+public class ConfigControllerImplService implements ConfigControllerServiceInterface {
+    private SipClientConfigurationInterface sipClientConfiguration;
+    private DialPlanConfigurationInterface dialPlanConfigurationChanSip;
+    private SipClientRepository sipClientRepository;
+
+    public ConfigControllerImplService(SipClientRepository sipClientRepository) {
+        this.sipClientRepository = sipClientRepository;
+        sipClientConfiguration = new SipClientConfigurationChanSip();
+        dialPlanConfigurationChanSip = new DialPlanConfigurationChanSip();
+    }
 
     /**
      * Puts together the asterisk configuration
@@ -34,9 +44,6 @@ public class ConfigControllerServiceImpl implements ServiceConfigControllerInter
     public ByteArrayOutputStream getAsteriskConfiguration() {
         List<SipClient> sipClientList = getSipClientList();
 
-        SipClientConfigurationInterface sipClientConfiguration = new SipClientConfigurationChanSip();
-        DialPlanConfigurationInterface dialPlanConfigurationChanSip = new DialPlanConfigurationChanSip();
-
         ConfigWriter configWriter = new ConfigWriter(sipClientConfiguration, dialPlanConfigurationChanSip);
 
         String sipClientConf = configWriter.generateSipClientConfiguration(sipClientList);
@@ -48,16 +55,23 @@ public class ConfigControllerServiceImpl implements ServiceConfigControllerInter
     }
 
     private List<SipClient> getSipClientList() {
-        // TODO get sip clients form the database
-        SipClient sipClient = new SipClient();
-        sipClient.setUsername("user1");
-        sipClient.setPhoneNumber("1234");
-        sipClient.setCompany("acme");
-        sipClient.setSecret("secret1");
+        List<SipClient> sipClientList = new ArrayList<>();
+        for (ch.zhaw.psit4.data.jpa.entities.SipClient sipClient : sipClientRepository.findAll()) {
+            SipClient sipClientDomain = sipClientEntityToSipClient(sipClient);
+            sipClientList.add(sipClientDomain);
+        }
+        return sipClientList;
+    }
 
-        ArrayList<SipClient> sipClientArrayList = new ArrayList<>();
-        sipClientArrayList.add(sipClient);
+    private SipClient sipClientEntityToSipClient(ch.zhaw.psit4.data.jpa.entities.SipClient sipClient) {
+        SipClient sipClientDomain = new SipClient();
 
-        return sipClientArrayList;
+        sipClientDomain.setUsername(sipClient.getLabel());
+        sipClientDomain.setPhoneNumber(sipClient.getPhoneNr());
+        sipClientDomain.setCompany(sipClient.getCompany().getName());
+        sipClientDomain.setSecret(sipClient.getSecret());
+        sipClientDomain.setId(sipClient.getId());
+
+        return sipClientDomain;
     }
 }

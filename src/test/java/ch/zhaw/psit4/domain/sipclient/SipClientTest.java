@@ -26,4 +26,14 @@ public class SipClientTest {
         assertEquals(expected, sipClient.getLabel());
     }
 
+    @Test
+    public void getLabel1() throws Exception {
+        String user = "userxy";
+        String company = "The Company AG";
+        String expected = user + "-" + "The-Company-AG";
+        sipClient.setUsername(user);
+        sipClient.setCompany(company);
+        assertEquals(expected, sipClient.getLabel());
+    }
+
 }
