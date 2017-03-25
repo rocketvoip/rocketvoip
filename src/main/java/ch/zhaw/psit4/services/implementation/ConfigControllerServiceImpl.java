@@ -1,4 +1,4 @@
-package ch.zhaw.psit4.services;
+package ch.zhaw.psit4.services.implementation;
 
 import ch.zhaw.psit4.domain.ConfigWriter;
 import ch.zhaw.psit4.domain.ConfigZipWriter;
@@ -20,7 +20,7 @@ import java.util.List;
  * @author Jona Braun
  */
 @Service
-public class ServiceConfigController implements ServiceConfigControllerInterface {
+public class ConfigControllerServiceImpl implements ServiceConfigControllerInterface {
 
     /**
      * Puts together the asterisk configuration
