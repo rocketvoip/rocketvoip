@@ -41,28 +41,28 @@ public class SipClientController {
         return companyRepository.save(company);
     }
 
-    @GetMapping(path = "/sipclients", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType
+    @GetMapping(path = "/sipclients", produces = MediaType
             .APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<List<SipClientDto>> getAllSipClient() {
         return new ResponseEntity<>
                 (sipClientServiceInterface.getAllSipClients(), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/sipclients/{id}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType
+    @GetMapping(path = "/sipclients/{id}", produces = MediaType
             .APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<SipClientDto> getSipClient(@PathVariable long id) {
         return new ResponseEntity<>
                 (sipClientServiceInterface.getSipClient(id), HttpStatus.OK);
     }
 
-    @DeleteMapping(path = "/sipclients/{id}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType
+    @DeleteMapping(path = "/sipclients/{id}", produces = MediaType
             .APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<Void> deleteSipCLient(@PathVariable long id) {
         sipClientServiceInterface.deleteSipClient(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping(path = "/sipclients", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType
+    @PostMapping(path = "/sipclients", produces = MediaType
             .APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<SipClientDto> createSipClient(@RequestBody SipClientDto sipClientDto) {
         return new ResponseEntity<>(
