@@ -8,6 +8,7 @@ import ch.zhaw.psit4.helper.SipClientGenerator;
 import ch.zhaw.psit4.services.exceptions.SipClientCreationException;
 import ch.zhaw.psit4.services.exceptions.SipClientDeletionException;
 import ch.zhaw.psit4.services.exceptions.SipClientRetrievalException;
+import ch.zhaw.psit4.services.exceptions.SipClientUpdateException;
 import ch.zhaw.psit4.services.interfaces.SipClientServiceInterface;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static ch.zhaw.psit4.helper.matchers.SipClientDtoEqualTo.sipClientDtoEqualTo;
 import static ch.zhaw.psit4.helper.matchers.SipClientDtoPartialMatcher.sipClientDtoAlmostEqualTo;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
@@ -95,6 +97,32 @@ public class SipClientServiceImplIT {
     public void createInvalidSipClient() throws Exception {
         sipClientServiceInterface.createSipClient(sipClientGenerator.getCompany(),
                 new SipClientDto());
+    }
+
+    @Test(expected = SipClientUpdateException.class)
+    public void updateInvalidSipClient() throws Exception {
+        SipClientDto nonExitstingSipClient = SipClientGenerator.createTestSipClientDto(SipClientGenerator
+                .NON_EXISTING_ID);
+        sipClientServiceInterface.updateSipClient(sipClientGenerator.getCompany(), nonExitstingSipClient);
+    }
+
+    @Test
+    public void updateSipClient() throws Exception {
+        SipClientDto sipClientDto = SipClientGenerator.createTestSipClientDto(1);
+        SipClientDto newlyCreatedSipClient = sipClientServiceInterface.createSipClient(sipClientGenerator.getCompany(),
+                sipClientDto);
+
+        assertThat(newlyCreatedSipClient, sipClientDtoAlmostEqualTo(sipClientDto));
+
+        SipClientDto sipClientUpdate = SipClientGenerator.createTestSipClientDto(2);
+        sipClientUpdate.setId(newlyCreatedSipClient.getId());
+
+        SipClientDto updatedSipClient = sipClientServiceInterface.updateSipClient(sipClientGenerator.getCompany(),
+                sipClientUpdate);
+
+        SipClientDto actual = sipClientServiceInterface.getSipClient(newlyCreatedSipClient.getId());
+
+        assertThat(sipClientUpdate, sipClientDtoEqualTo(actual));
     }
 
     private void setupDatabase() {

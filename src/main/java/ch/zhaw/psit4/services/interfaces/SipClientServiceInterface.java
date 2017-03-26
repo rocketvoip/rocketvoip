@@ -34,6 +34,16 @@ public interface SipClientServiceInterface {
     SipClientDto createSipClient(Company company, SipClientDto newSipClient);
 
     /**
+     * Updated existing SipClient.
+     *
+     * @param company      Company the SipClient belongs to
+     * @param sipClientDto SipClient to be updated.
+     * @return SipClient instance.
+     * @throws SipClientCreationException Implementations are expected to throw SipClientUpdateException on error.
+     */
+    SipClientDto updateSipClient(Company company, SipClientDto sipClientDto);
+
+    /**
      * Retrieve SipClient by ID.
      *
      * @param id ID of SipClient
