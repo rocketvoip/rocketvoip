@@ -27,4 +27,13 @@ public class UtilitiesTest {
         assertThat(actual.getReason(), equalTo("Message1"));
     }
 
+    @Test
+    public void nestedExceptionWithNullMessage() throws Exception {
+        Throwable throwable2 = new Throwable();
+        Throwable throwable1 = new RuntimeException("Message1", throwable2);
+
+        ErrorDto actual = Utilities.exceptionToErrorDto(throwable1);
+        assertThat(actual.getReason(), equalTo("Message1"));
+    }
+
 }

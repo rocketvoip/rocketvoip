@@ -62,6 +62,13 @@ public class SipClientController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @PutMapping(path = "/sipclients/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<SipClientDto> updateSipClient(@PathVariable long id, @RequestBody SipClientDto sipClientDto) {
+        sipClientDto.setId(id);
+        return new ResponseEntity<>(sipClientServiceInterface.updateSipClient(testCompany, sipClientDto),
+                HttpStatus.OK);
+    }
+
     @PostMapping(path = "/sipclients", produces = MediaType
             .APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<SipClientDto> createSipClient(@RequestBody SipClientDto sipClientDto) {

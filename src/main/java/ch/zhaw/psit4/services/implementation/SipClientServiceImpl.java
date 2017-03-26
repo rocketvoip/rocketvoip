@@ -7,6 +7,7 @@ import ch.zhaw.psit4.dto.SipClientDto;
 import ch.zhaw.psit4.services.exceptions.SipClientCreationException;
 import ch.zhaw.psit4.services.exceptions.SipClientDeletionException;
 import ch.zhaw.psit4.services.exceptions.SipClientRetrievalException;
+import ch.zhaw.psit4.services.exceptions.SipClientUpdateException;
 import ch.zhaw.psit4.services.interfaces.SipClientServiceInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,6 +77,24 @@ public class SipClientServiceImpl implements SipClientServiceInterface {
         } catch (Exception e) {
             LOGGER.error(COULD_NOT_CREATE_SIP_CLIENT_MESSAGE, e);
             throw new SipClientCreationException(COULD_NOT_CREATE_SIP_CLIENT_MESSAGE, e);
+        }
+    }
+
+    @Override
+    public SipClientDto updateSipClient(Company company, SipClientDto sipClientDto) {
+        try {
+            SipClient existingSipClient = sipClientRepository.findOne(sipClientDto.getId());
+            existingSipClient.setCompany(company);
+            existingSipClient.setLabel(sipClientDto.getName());
+            existingSipClient.setPhoneNr(sipClientDto.getPhone());
+            existingSipClient.setSecret(sipClientDto.getSecret());
+
+            existingSipClient = sipClientRepository.save(existingSipClient);
+            return sipClientEntityToSipClientDto(existingSipClient);
+        } catch (Exception e) {
+            String message = String.format("Could not update SIP Client with id %d", sipClientDto.getId());
+            LOGGER.error(message, e);
+            throw new SipClientUpdateException(message, e);
         }
     }
 
