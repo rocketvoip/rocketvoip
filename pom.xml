@@ -199,18 +199,24 @@
                     </execution>
                     <execution>
                         <id>default-report</id>
+                        <configuration>
+                            <dataFile>${project.build.directory}/coverage/jacoco-ut.exec</dataFile>
+                        </configuration>
                         <goals>
                             <goal>report</goal>
                         </goals>
                     </execution>
                     <execution>
                         <id>default-report-integration</id>
+                        <configuration>
+                            <dataFile>${project.build.directory}/coverage/jacoco-it.exec</dataFile>
+                        </configuration>
                         <goals>
                             <goal>report-integration</goal>
                         </goals>
                     </execution>
                     <execution>
-                        <id>merge-coverage</id>
+                        <id>default-merge</id>
                         <configuration>
                             <fileSets>
                                 <fileSet>
