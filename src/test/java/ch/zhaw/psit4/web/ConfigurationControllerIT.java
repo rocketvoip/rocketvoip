@@ -54,22 +54,17 @@ public class ConfigurationControllerIT {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
     }
 
-    //TODO fix tests for exceptions
-    // for some reason the status 406 is returned
-    /*
     @Test
     public void testNoSipClients() throws Exception {
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/v1/configuration/zip")
                         .accept(MediaType.ALL)
-                        .contentType(MediaType.ALL)
         ).andExpect(
                 status().isInternalServerError()
         ).andExpect(
                 jsonPath("$.reason").value("sipClientList is empty")
         );
     }
-    */
 
     @Test
     public void getAsteriskConfigurationTestZipAttachment() throws Exception {
