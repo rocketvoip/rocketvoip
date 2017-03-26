@@ -69,7 +69,7 @@ public class SipClientControllerIT {
     }
 
     @Test
-    public void deleteNonExistingSipCLient() throws Exception {
+    public void deleteNonExistingSipClient() throws Exception {
         mockMvc.perform(
                 MockMvcRequestBuilders.delete("/v1/sipclients/{id}", NON_EXISTING_USER_ID)
                         .accept(MediaType.APPLICATION_JSON_UTF8)
@@ -80,6 +80,52 @@ public class SipClientControllerIT {
                 jsonPath("$.reason").value(startsWith("Could not delete SIP Client with id " +
                         NON_EXISTING_USER_ID))
         );
+    }
+
+    @Test
+    public void updateNonExistingSipClient() throws Exception {
+        SipClientDto sipClientDto = SipClientGenerator.createTestSipClientDto(1);
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/v1/sipclients/{id}", NON_EXISTING_USER_ID)
+                        .content(Json.toJson(sipClientDto))
+                        .accept(MediaType.APPLICATION_JSON_UTF8)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        ).andExpect(
+                status().isBadRequest()
+        );
+    }
+
+    @Test
+    public void updateSipClient() throws Exception {
+        SipClientDto createdSipClient1 = createSipClient(1);
+
+
+        SipClientDto updatedSipClient = SipClientGenerator.createTestSipClientDto(2);
+        updatedSipClient.setId(createdSipClient1.getId());
+
+        String putResult = mockMvc.perform(
+                MockMvcRequestBuilders.put("/v1/sipclients/{id}", createdSipClient1.getId())
+                        .accept(MediaType.APPLICATION_JSON_UTF8)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(Json.toJson(updatedSipClient))
+        ).andExpect(
+                status().isOk()
+        ).andReturn().getResponse().getContentAsString();
+
+        SipClientDto actual = Json.toObjectTypeSafe(putResult, SipClientDto.class);
+        assertThat(actual, sipClientDtoEqualTo(updatedSipClient));
+
+        String response = mockMvc.perform(
+                MockMvcRequestBuilders.get("/v1/sipclients/{id}", createdSipClient1.getId())
+                        .accept(MediaType.APPLICATION_JSON_UTF8)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        ).andExpect(
+                status().isOk()
+        ).andReturn().getResponse().getContentAsString();
+
+        actual = Json.toObjectTypeSafe(response, SipClientDto.class);
+
+        assertThat(actual, sipClientDtoEqualTo(updatedSipClient));
     }
 
     @Test
