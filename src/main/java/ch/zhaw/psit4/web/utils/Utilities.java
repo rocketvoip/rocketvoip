@@ -24,6 +24,10 @@ public final class Utilities {
 
         Throwable cause = e.getCause();
         String secondaryMessage = cause != null ? cause.getMessage() : "";
+        // It is still possible for secondary message to be null, even if the cause is set, for instance
+        // NullPointerException does not set a message.
+        secondaryMessage = secondaryMessage == null ? "" : secondaryMessage;
+
 
         if (secondaryMessage.isEmpty()) {
             errorDto.setReason(primaryMessage);
