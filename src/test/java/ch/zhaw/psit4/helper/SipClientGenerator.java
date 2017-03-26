@@ -11,7 +11,7 @@ public class SipClientGenerator {
     public SipClientGenerator() {
     }
 
-    public static SipClientDto createTestSipClientDto(int number) {
+    public static SipClientDto createTestSipClientDto(long number) {
         SipClientDto sipClientDto = new SipClientDto();
         sipClientDto.setName("Name" + number);
         sipClientDto.setPhone("Phone" + number);
