@@ -1,4 +1,4 @@
-package ch.zhaw.psit4.domain;
+package ch.zhaw.psit4.domain.sipclient;
 
 /**
  * Holds the data for a SIP-Client.
@@ -10,14 +10,16 @@ public class SipClient {
     private String username;
     private String secret;
     private String phoneNumber;
-    private String id;
+    private long id;
 
     public String getCompany() {
         return company;
     }
 
     public void setCompany(String company) {
-        this.company = company;
+        if (company != null) {
+            this.company = company.replaceAll(" ", "-");
+        }
     }
 
     public String getUsername() {
@@ -44,11 +46,24 @@ public class SipClient {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
+
+    /**
+     * Puts the together the label.
+     *
+     * @return the label of a sip client
+     */
+    public String getLabel() {
+        String label = username + "-" + company;
+        label = label.replaceAll(" ", "-");
+        return label;
+    }
+
+
 }

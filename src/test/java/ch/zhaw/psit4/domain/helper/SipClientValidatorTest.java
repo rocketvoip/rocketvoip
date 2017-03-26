@@ -1,0 +1,63 @@
+package ch.zhaw.psit4.domain.helper;
+
+import ch.zhaw.psit4.domain.sipclient.SipClient;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+/**
+ * @author Jona Braun
+ */
+public class SipClientValidatorTest {
+    private final SipClientTestHelper sipClientTestHelper = new SipClientTestHelper();
+    private SipClientValidator sipClientValidator;
+    private SipClient sipClient;
+
+    @Before
+    public void setup() {
+        sipClientValidator = new SipClientValidator();
+        sipClient = new SipClient();
+        sipClient = generateOneSipClient();
+    }
+
+    @Test
+    public void testClientWithNullUsername() throws Exception {
+        sipClient.setUsername(null);
+        assertFalse(sipClientValidator.isSipClientValid(sipClient));
+    }
+
+    @Test
+    public void testClientWithNullCompany() throws Exception {
+        sipClient = new SipClient();
+        // set everything except the company
+        sipClient.setPhoneNumber("1");
+        sipClient.setSecret("");
+        sipClient.setId(1);
+        sipClient.setUsername("");
+        assertFalse(sipClientValidator.isSipClientValid(sipClient));
+    }
+
+    @Test
+    public void testClientWithNullSecret() throws Exception {
+        sipClient.setSecret(null);
+        assertFalse(sipClientValidator.isSipClientValid(sipClient));
+    }
+
+    @Test
+    public void testClientWithNullPhoneNumber() throws Exception {
+        sipClient.setPhoneNumber(null);
+        assertFalse(sipClientValidator.isSipClientValid(sipClient));
+    }
+
+    @Test
+    public void testClientWithNoNullValues() throws Exception {
+        assertTrue(sipClientValidator.isSipClientValid(sipClient));
+    }
+
+    private SipClient generateOneSipClient() {
+        return sipClientTestHelper.generateSipClient(1, "acme");
+    }
+
+}
