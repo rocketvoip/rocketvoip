@@ -18,7 +18,7 @@ public class SipClientConfigurationV11 implements SipClientConfigurationInterfac
     private static final Logger LOGGER = LoggerFactory.getLogger(SipClientConfigurationV11.class);
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     @Override
     public String generateSipClientConfiguration(List<SipClient> sipClientList) {
