@@ -171,18 +171,28 @@
                 <configuration>
                     <!-- Add class files, not to be included in coverage here -->
                     <excludes>
-                        <exclude>ch/zhaw/psit4/RocketVoip.class</exclude>
+                        <exclude>**/RocketVoip.*</exclude>
+                        <exclude>**/exceptions/*</exclude>
+                        <exclude>**/entities/*</exclude>
+                        <exclude>dto/*</exclude>
+                        <exclude>**/domain/SipClient.*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
                     <execution>
                         <id>default-prepare-agent</id>
+                        <configuration>
+                            <destFile>${project.build.directory}/coverage/jacoco-ut.exec</destFile>
+                        </configuration>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
                     <execution>
                         <id>default-prepare-agent-integration</id>
+                        <configuration>
+                            <destFile>${project.build.directory}/coverage/jacoco-it.exec</destFile>
+                        </configuration>
                         <goals>
                             <goal>prepare-agent-integration</goal>
                         </goals>
@@ -197,6 +207,23 @@
                         <id>default-report-integration</id>
                         <goals>
                             <goal>report-integration</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>merge-coverage</id>
+                        <configuration>
+                            <fileSets>
+                                <fileSet>
+                                    <directory>${project.build.directory}/coverage</directory>
+                                    <includes>
+                                        <include>*.exec</include>
+                                    </includes>
+                                </fileSet>
+                            </fileSets>
+                            <destFile>${project.build.directory}/jacoco.exec</destFile>
+                        </configuration>
+                        <goals>
+                            <goal>merge</goal>
                         </goals>
                     </execution>
                     <!--
