@@ -34,9 +34,9 @@ public class SipClientController {
     }
 
     private Company getTestCompany(CompanyRepository companyRepository) {
-        Company company = companyRepository.findByName("Test Company");
+        Company company = companyRepository.findByName("TestCompany");
         if (company == null) {
-            company = new Company("Test Company");
+            company = new Company("TestCompany");
         }
         return companyRepository.save(company);
     }

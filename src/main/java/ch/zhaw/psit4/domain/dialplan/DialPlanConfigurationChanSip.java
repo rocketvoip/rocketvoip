@@ -23,11 +23,11 @@ public class DialPlanConfigurationChanSip implements DialPlanConfigurationInterf
     public String generateDialPlanConfiguration(List<SipClient> sipClientList, List<DialPlanContext> dialPlanContextList) {
         sipClientValidator.validateSipClientList(sipClientList);
 
-        DialPlanContext dialPlanContext = getSimpleDialPlan(sipClientList);
-
-        //TODO process the dialPlanContextList
-
-        return dialPlanContextToString(dialPlanContext);
+        StringBuilder stringBuilder = new StringBuilder();
+        for(DialPlanContext dialPlanContext : dialPlanContextList){
+            stringBuilder.append(dialPlanContextToString(dialPlanContext));
+        }
+        return stringBuilder.toString();
     }
 
     private String dialPlanContextToString(DialPlanContext dialPlanContext) {
@@ -49,36 +49,4 @@ public class DialPlanConfigurationChanSip implements DialPlanConfigurationInterf
         return stringBuilder.toString();
     }
 
-    private DialPlanContext getSimpleDialPlan(List<SipClient> sipClientList) {
-
-        DialPlanContext dialPlanContext = new DialPlanContext();
-        dialPlanContext.setContextName("simple-dial-plan");
-
-        List<DialPlanExtension> dialPlanExtensionList = new ArrayList<>();
-
-        for (SipClient sipClient : sipClientList) {
-            if (!sipClientValidator.isSipClientValid(sipClient)) {
-                continue;
-            }
-
-            DialPlanExtension dialPlanExtension = new DialPlanExtension();
-
-            dialPlanExtension.setPhoneNumber(sipClient.getPhoneNumber());
-            dialPlanExtension.setPriority("1");
-
-            List<SipClient> sipClients = new ArrayList<>();
-            sipClients.add(sipClient);
-
-            DialApp dialApp = new DialApp(DialApp.Technology.SIP, sipClients, "30");
-
-            dialPlanExtension.setDialPlanApplication(dialApp);
-
-            dialPlanExtensionList.add(dialPlanExtension);
-
-        }
-
-        dialPlanContext.setDialPlanExtensionList(dialPlanExtensionList);
-
-        return dialPlanContext;
-    }
 }

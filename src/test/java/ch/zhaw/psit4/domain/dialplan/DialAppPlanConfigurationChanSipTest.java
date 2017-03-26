@@ -31,6 +31,7 @@ public class DialAppPlanConfigurationChanSipTest {
         dialPlanConfigurationChanSip = new DialPlanConfigurationChanSip();
     }
 
+
     @Test(expected = InvalidConfigurationException.class)
     public void testNullConfiguration() throws Exception {
         createSimpleDialPlanString(null);
@@ -41,6 +42,7 @@ public class DialAppPlanConfigurationChanSipTest {
         createSimpleDialPlanString(Collections.emptyList());
     }
 
+    /*
     @Test
     public void testNullClient() throws Exception {
         List<SipClient> sipClientList = new ArrayList<>();
@@ -74,9 +76,11 @@ public class DialAppPlanConfigurationChanSipTest {
         assertEquals(expected, extensionConf);
 
     }
-
+*/
     private String createSimpleDialPlanString(List<SipClient> sipClientList) {
         return dialPlanConfigurationChanSip.generateDialPlanConfiguration(sipClientList, null);
     }
+
+
 
 }
