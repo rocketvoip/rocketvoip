@@ -32,7 +32,6 @@ public class SipClientValidator {
             LOGGER.error(SIP_CLIENT_LIST_IS_EMPTY);
             throw new InvalidConfigurationException(SIP_CLIENT_LIST_IS_EMPTY);
         }
-
     }
 
     /**

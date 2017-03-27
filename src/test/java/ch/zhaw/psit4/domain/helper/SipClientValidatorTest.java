@@ -1,8 +1,11 @@
 package ch.zhaw.psit4.domain.helper;
 
+import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import ch.zhaw.psit4.domain.sipclient.SipClient;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Collections;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -20,6 +23,16 @@ public class SipClientValidatorTest {
         sipClientValidator = new SipClientValidator();
         sipClient = new SipClient();
         sipClient = generateOneSipClient();
+    }
+
+    @Test(expected = InvalidConfigurationException.class)
+    public void validateDialPlanContextListNull() throws Exception {
+        sipClientValidator.validateSipClientList(null);
+    }
+
+    @Test(expected = InvalidConfigurationException.class)
+    public void validateDialPlanContextListEmpty() throws Exception {
+        sipClientValidator.validateSipClientList(Collections.emptyList());
     }
 
     @Test

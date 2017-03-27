@@ -16,7 +16,7 @@ import java.util.List;
 public class DialPlanContextValidator {
 
     private static final String DIAL_PLAN_CONTEXT_LIST_IS_NULL = "dial context list is null";
-    private static final String DIAL_PLAN_CONTEXT_LIST_IS_EMTPY = "dial context list is empty";
+    private static final String DIAL_PLAN_CONTEXT_LIST_IS_EMPTY = "dial context list is empty";
     private static final Logger LOGGER = LoggerFactory.getLogger(DialPlanContextValidator.class);
 
     /**
@@ -31,8 +31,8 @@ public class DialPlanContextValidator {
             throw new InvalidConfigurationException(DIAL_PLAN_CONTEXT_LIST_IS_NULL);
         }
         if (dialPlanContextList.isEmpty()) {
-            LOGGER.error(DIAL_PLAN_CONTEXT_LIST_IS_EMTPY);
-            throw new InvalidConfigurationException(DIAL_PLAN_CONTEXT_LIST_IS_EMTPY);
+            LOGGER.error(DIAL_PLAN_CONTEXT_LIST_IS_EMPTY);
+            throw new InvalidConfigurationException(DIAL_PLAN_CONTEXT_LIST_IS_EMPTY);
         }
     }
 
