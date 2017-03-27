@@ -53,7 +53,7 @@ public class ConfigControllerServiceImplIT {
         ByteArrayOutputStream baos = configControllerServiceInterface.getAsteriskConfiguration();
         ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(baos.toByteArray()));
 
-        String[] expectedNames = {"sip.conf", "extension.conf"};
+        String[] expectedNames = {"sip.conf", "extensions.conf"};
         String[] expectedContent = {sipClientTestHelper.generateSipClientConfig(1, COMPANY),
                 dialPlanTestHelper.getSimpleDialPlan(1)};
 

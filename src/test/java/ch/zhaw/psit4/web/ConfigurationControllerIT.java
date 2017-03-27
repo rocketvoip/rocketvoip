@@ -79,7 +79,7 @@ public class ConfigurationControllerIT {
 
         ZipInputStream zipInputStream = new ZipInputStream(bais);
 
-        String[] expectedNames = {"sip.conf", "extension.conf"};
+        String[] expectedNames = {"sip.conf", "extensions.conf"};
         String[] expectedContent = {sipClientTestHelper.generateSipClientConfig(1, "Test Company"),
                 dialPlanTestHelper.getSimpleDialPlan(1, "Test Company")};
 
