@@ -16,7 +16,7 @@ import java.util.zip.ZipInputStream;
 public class ConfigZipWriterTest {
 
     private static final String SIP_CONF_FILE_NAME = "sip.conf";
-    private static final String DIAL_PLAN_CONF_FILE_NAME = "extension.conf";
+    private static final String DIAL_PLAN_CONF_FILE_NAME = "extensions.conf";
     private static final int NUMBER_OF_FILES = 2;
 
     private static final String SIP_CLIENT_CONF = "[sip-client1]\ncontent=test";

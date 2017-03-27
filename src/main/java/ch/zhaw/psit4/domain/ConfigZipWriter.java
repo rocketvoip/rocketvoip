@@ -16,7 +16,7 @@ import java.util.zip.ZipOutputStream;
  */
 public class ConfigZipWriter {
     private static final String SIP_CONFIG_FILE_NAME = "sip.conf";
-    private static final String DIAL_PLAN_CONFIG_FILE_NAME = "extension.conf";
+    private static final String DIAL_PLAN_CONFIG_FILE_NAME = "extensions.conf";
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigZipWriter.class);
     private String sipClientConf;
     private String dialPlanConf;
