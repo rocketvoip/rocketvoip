@@ -1,5 +1,7 @@
 package ch.zhaw.psit4.web;
 
+import ch.zhaw.psit4.data.jpa.repositories.CompanyRepository;
+import ch.zhaw.psit4.data.jpa.repositories.SipClientRepository;
 import ch.zhaw.psit4.domain.helper.DialPlanTestHelper;
 import ch.zhaw.psit4.domain.helper.SipClientTestHelper;
 import ch.zhaw.psit4.dto.SipClientDto;
@@ -39,13 +41,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
 public class ConfigurationControllerIT {
-
+    private static final String COMPANY = "acme1";
     private final SipClientTestHelper sipClientTestHelper = new SipClientTestHelper();
     private final DialPlanTestHelper dialPlanTestHelper = new DialPlanTestHelper();
     private final ZipStreamTestHelper zipStreamTestHelper = new ZipStreamTestHelper();
 
     @Autowired
     private WebApplicationContext wac;
+
+    @Autowired
+    private CompanyRepository companyRepository;
+
+    @Autowired
+    private SipClientRepository sipClientRepository;
 
     private MockMvc mockMvc;
 
@@ -68,7 +76,9 @@ public class ConfigurationControllerIT {
 
     @Test
     public void getAsteriskConfigurationTestZipAttachment() throws Exception {
-        createSipClient(1);
+        for (int i = 1; i <= 12; i++) {
+            createSipClient(i);
+        }
 
         MvcResult mvcResult = this.mockMvc.perform(get("/v1/configuration/zip"))
                 .andReturn();
@@ -80,8 +90,8 @@ public class ConfigurationControllerIT {
         ZipInputStream zipInputStream = new ZipInputStream(bais);
 
         String[] expectedNames = {"sip.conf", "extensions.conf"};
-        String[] expectedContent = {sipClientTestHelper.generateSipClientConfig(1, "TestCompany"),
-                dialPlanTestHelper.getSimpleDialPlan(1, 1, "TestCompany")};
+        String[] expectedContent = {sipClientTestHelper.generateSipClientConfig(12, "TestCompany"),
+                dialPlanTestHelper.getSimpleDialPlanEntrySameCompany(12, "TestCompany")};
 
         zipStreamTestHelper.testZipEntryContent(zipInputStream, expectedNames, expectedContent);
     }

@@ -17,45 +17,37 @@ public class DialPlanTestHelper {
     private SipClientTestHelper sipClientTestHelper = new SipClientTestHelper();
 
     /**
-     * Creates a dial plan with company name "acme0", "acme1", ...
+     * Creates a dial plan with the company name prefix "acme".
      *
-     * @param numberOfContext the number of contexts
-     * @param numberOfClients the number of sip clients per context
+     * @param numberOfContext the number of contexts (companies)
+     * @param numberOfClients the number of sip clients per context (company)
      * @return the dial plan
      */
     public String getSimpleDialPlan(int numberOfContext, int numberOfClients) {
-        return getSimpleDialPlan(numberOfContext, numberOfClients, "acme");
+        return getSimpleDialPlanWithCompanyPrefix(numberOfContext, numberOfClients, "acme");
+    }
+
+    /**
+     * Generates a simple dial plan with one company.
+     *
+     * @param numberOfEntries number of entries in the dial plan
+     * @param company         the company name for the dial plan entries
+     * @return the dial plan config
+     */
+    public String getSimpleDialPlanEntrySameCompany(int numberOfEntries, String company) {
+        return getSimpleDialPlanContext(numberOfEntries, company);
     }
 
 
-    public String getSimpleDialPlan(int numberOfContext, int numberOfClients, String company) {
-
+    private String getSimpleDialPlanWithCompanyPrefix(int numberOfContext, int numberOfClients, String company) {
         String dialPlan = "";
         for (int i = 1; i <= numberOfContext; i++) {
             dialPlan += getSimpleDialPlanContext(numberOfClients, company + i);
         }
-
         return dialPlan;
     }
 
-    /**
-     * Generates a simple dial plan with company "acme".
-     *
-     * @param number the number of sip clients for the simple dial plan
-     * @return the generated dial plan
-     */
-    public String getSimpleDialPlanContext(int number) {
-        return getSimpleDialPlanContext(number, "acme");
-    }
-
-    /**
-     * Generates a simple dial plan.
-     *
-     * @param number  the number of sip clients
-     * @param company the company of the sip clients
-     * @return the generated dial plan
-     */
-    public String getSimpleDialPlanContext(int number, String company) {
+    private String getSimpleDialPlanContext(int number, String company) {
         String simpleDialPlan = "[" + company + "]\n";
         for (int i = 1; i <= number; i++) {
 
@@ -68,7 +60,7 @@ public class DialPlanTestHelper {
     }
 
     /**
-     * Generates a list of dial plan contexts with company names "acme0", "amce1", ...
+     * Generates a list of dial plan contexts with company names "acme0", "acme1", ...
      *
      * @param numberOfContexts number of contexts to create
      * @param numberOfClients  number of clients per context to create

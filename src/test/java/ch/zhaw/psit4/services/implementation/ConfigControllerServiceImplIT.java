@@ -27,7 +27,7 @@ import java.util.zip.ZipInputStream;
 @Transactional
 public class ConfigControllerServiceImplIT {
 
-    private static final String COMPANY = "acme";
+    private static final String COMPANY = "acme1";
     private final ZipStreamTestHelper zipStreamTestHelper = new ZipStreamTestHelper();
     private final SipClientTestHelper sipClientTestHelper = new SipClientTestHelper();
     private DialPlanTestHelper dialPlanTestHelper = new DialPlanTestHelper();
@@ -54,8 +54,8 @@ public class ConfigControllerServiceImplIT {
         ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(baos.toByteArray()));
 
         String[] expectedNames = {"sip.conf", "extensions.conf"};
-        String[] expectedContent = {sipClientTestHelper.generateSipClientConfig(1, COMPANY),
-                dialPlanTestHelper.getSimpleDialPlan(1, 1, COMPANY)};
+        String[] expectedContent = {sipClientTestHelper.generateSipClientConfig(1, 1),
+                dialPlanTestHelper.getSimpleDialPlan(1, 1)};
 
         zipStreamTestHelper.testZipEntryContent(zipInputStream, expectedNames, expectedContent);
 
@@ -63,6 +63,7 @@ public class ConfigControllerServiceImplIT {
 
     private void setupDatabase(int number) {
         Company company = new Company(COMPANY);
+        companyRepository.deleteAll();
         companyRepository.save(company);
         for (int i = 1; i <= number; i++) {
             sipClientRepository.save(sipClientTestHelper.createSipClientEntity(i, company));
