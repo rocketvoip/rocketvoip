@@ -1,11 +1,8 @@
 package ch.zhaw.psit4.domain.dialplan;
 
-import ch.zhaw.psit4.domain.dialplan.applications.DialApp;
-import ch.zhaw.psit4.domain.helper.SipClientValidator;
+import ch.zhaw.psit4.domain.helper.DialPlanContextValidator;
 import ch.zhaw.psit4.domain.interfaces.DialPlanConfigurationInterface;
-import ch.zhaw.psit4.domain.sipclient.SipClient;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,17 +11,19 @@ import java.util.List;
  * @author Jona Braun
  */
 public class DialPlanConfigurationChanSip implements DialPlanConfigurationInterface {
-    private final SipClientValidator sipClientValidator = new SipClientValidator();
+    private final DialPlanContextValidator dialPlanContextValidator = new DialPlanContextValidator();
 
     /**
      * @inheritDoc
      */
     @Override
-    public String generateDialPlanConfiguration(List<SipClient> sipClientList, List<DialPlanContext> dialPlanContextList) {
-        sipClientValidator.validateSipClientList(sipClientList);
-
+    public String generateDialPlanConfiguration(List<DialPlanContext> dialPlanContextList) {
+        dialPlanContextValidator.validateDialPlanContextList(dialPlanContextList);
         StringBuilder stringBuilder = new StringBuilder();
-        for(DialPlanContext dialPlanContext : dialPlanContextList){
+        for (DialPlanContext dialPlanContext : dialPlanContextList) {
+            if (!dialPlanContextValidator.isDialPlanContextValid(dialPlanContext)) {
+                continue;
+            }
             stringBuilder.append(dialPlanContextToString(dialPlanContext));
         }
         return stringBuilder.toString();
@@ -37,6 +36,7 @@ public class DialPlanConfigurationChanSip implements DialPlanConfigurationInterf
         stringBuilder.append(dialPlanContext.getContextName());
         stringBuilder.append("]\n");
         for (DialPlanExtension dialPlanExtension : dialPlanContext.getDialPlanExtensionList()) {
+
             stringBuilder.append("exten=> ");
             stringBuilder.append(dialPlanExtension.getPhoneNumber());
             stringBuilder.append(", ");

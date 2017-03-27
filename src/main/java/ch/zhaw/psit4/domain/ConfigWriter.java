@@ -39,13 +39,12 @@ public class ConfigWriter {
     /**
      * Processes a list of sip clients and DialPlan and converts them into a configuration string.
      *
-     * @param sipClientList       can't be null or empty
      * @param dialPlanContextList can be null
      * @return the configuration string for the sip clients
      * @throws InvalidConfigurationException if the sipClientList is null or the list is empty
      */
-    public String generateDialPlanConfiguration(List<SipClient> sipClientList, List<DialPlanContext> dialPlanContextList) {
-        return dialPlanConfiguration.generateDialPlanConfiguration(sipClientList, dialPlanContextList);
+    public String generateDialPlanConfiguration(List<DialPlanContext> dialPlanContextList) {
+        return dialPlanConfiguration.generateDialPlanConfiguration(dialPlanContextList);
     }
 
 }

@@ -55,7 +55,7 @@ public class ConfigControllerServiceImplIT {
 
         String[] expectedNames = {"sip.conf", "extensions.conf"};
         String[] expectedContent = {sipClientTestHelper.generateSipClientConfig(1, COMPANY),
-                dialPlanTestHelper.getSimpleDialPlan(1)};
+                dialPlanTestHelper.getSimpleDialPlan(1, 1, COMPANY)};
 
         zipStreamTestHelper.testZipEntryContent(zipInputStream, expectedNames, expectedContent);
 

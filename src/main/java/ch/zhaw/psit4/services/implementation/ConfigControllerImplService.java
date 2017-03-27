@@ -60,7 +60,7 @@ public class ConfigControllerImplService implements ConfigControllerServiceInter
         ConfigWriter configWriter = new ConfigWriter(sipClientConfiguration, dialPlanConfigurationChanSip);
 
         String sipClientConf = configWriter.generateSipClientConfiguration(sipClientList);
-        String dialPlanConf = configWriter.generateDialPlanConfiguration(sipClientList, dialPlanContextList);
+        String dialPlanConf = configWriter.generateDialPlanConfiguration(dialPlanContextList);
 
         ConfigZipWriter configZipWriter = new ConfigZipWriter(sipClientConf, dialPlanConf);
 
