@@ -56,6 +56,19 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <profiles>
+        <profile>
+            <id>inmemorydb</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.hsqldb</groupId>
+                    <artifactId>hsqldb</artifactId>
+                    <scope>runtime</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
     <!--
     Please refer to the Spring Boot Reference for more information
     http://docs.spring.io/spring-boot/docs/1.5.1.RELEASE/reference/htmlsingle/
@@ -87,16 +100,19 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.4.1210</version>
+        </dependency>
+
 
         <!-- Test framework -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
         <!-- In memory test database for tests -->
@@ -155,32 +171,65 @@
                 <configuration>
                     <!-- Add class files, not to be included in coverage here -->
                     <excludes>
-                        <exclude>ch/zhaw/psit4/RocketVoip.class</exclude>
+                        <exclude>**/RocketVoip.*</exclude>
+                        <exclude>**/exceptions/*</exclude>
+                        <exclude>**/entities/*</exclude>
+                        <exclude>dto/*</exclude>
+                        <exclude>**/domain/SipClient.*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
                     <execution>
                         <id>default-prepare-agent</id>
+                        <configuration>
+                            <destFile>${project.build.directory}/coverage/jacoco-ut.exec</destFile>
+                        </configuration>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
                     <execution>
                         <id>default-prepare-agent-integration</id>
+                        <configuration>
+                            <destFile>${project.build.directory}/coverage/jacoco-it.exec</destFile>
+                        </configuration>
                         <goals>
                             <goal>prepare-agent-integration</goal>
                         </goals>
                     </execution>
                     <execution>
                         <id>default-report</id>
+                        <configuration>
+                            <dataFile>${project.build.directory}/coverage/jacoco-ut.exec</dataFile>
+                        </configuration>
                         <goals>
                             <goal>report</goal>
                         </goals>
                     </execution>
                     <execution>
                         <id>default-report-integration</id>
+                        <configuration>
+                            <dataFile>${project.build.directory}/coverage/jacoco-it.exec</dataFile>
+                        </configuration>
                         <goals>
                             <goal>report-integration</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>default-merge</id>
+                        <configuration>
+                            <fileSets>
+                                <fileSet>
+                                    <directory>${project.build.directory}/coverage</directory>
+                                    <includes>
+                                        <include>*.exec</include>
+                                    </includes>
+                                </fileSet>
+                            </fileSets>
+                            <destFile>${project.build.directory}/jacoco.exec</destFile>
+                        </configuration>
+                        <goals>
+                            <goal>merge</goal>
                         </goals>
                     </execution>
                     <!--
