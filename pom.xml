@@ -107,6 +107,15 @@
             <version>9.4.1210</version>
         </dependency>
 
+        <!--
+        JWT authentication
+        -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.7.0</version>
+        </dependency>
+
 
         <!-- Test framework -->
         <dependency>
