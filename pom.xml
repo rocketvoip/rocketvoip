@@ -185,6 +185,7 @@
                         <exclude>**/entities/*</exclude>
                         <exclude>dto/*</exclude>
                         <exclude>**/domain/SipClient.*</exclude>
+                        <exclude>**/WebConfiguration.*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
