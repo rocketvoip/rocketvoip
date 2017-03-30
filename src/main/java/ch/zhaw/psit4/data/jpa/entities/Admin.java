@@ -7,7 +7,7 @@ import java.io.Serializable;
  * Created by beni on 20.03.17.
  */
 @Entity
-public class User implements Serializable {
+public class Admin implements Serializable {
 
     @Id
     @GeneratedValue
@@ -29,11 +29,11 @@ public class User implements Serializable {
     @Column
     private boolean superAdmin;
 
-    protected User() {
+    protected Admin() {
 
     }
 
-    public User(Company company, String firstname, String lastname, String username, String password, boolean
+    public Admin(Company company, String firstname, String lastname, String username, String password, boolean
             superAdmin) {
         this.company = company;
         this.firstname = firstname;
