@@ -4,18 +4,16 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 /**
- * Table for company admins
- * One company has multi admins
  * Created by beni on 20.03.17.
  */
 @Entity
-public class CompanyAdmin implements Serializable {
+public class User implements Serializable {
 
     @Id
     @GeneratedValue
     private long id;
 
-    @ManyToOne(optional = false)
+    @ManyToMany
     private Company company;
 
     @Column(nullable = false)
@@ -28,17 +26,29 @@ public class CompanyAdmin implements Serializable {
     private String username;
     @Column(nullable = false)
     private String password;
+    @Column
+    private boolean superAdmin;
 
-    protected CompanyAdmin() {
+    protected User() {
 
     }
 
-    public CompanyAdmin(Company company, String firstname, String lastname, String username, String password) {
+    public User(Company company, String firstname, String lastname, String username, String password, boolean
+            superAdmin) {
         this.company = company;
         this.firstname = firstname;
         this.lastname = lastname;
         this.username = username;
         this.password = password;
+        this.superAdmin = superAdmin;
+    }
+
+    public boolean isSuperAdmin() {
+        return superAdmin;
+    }
+
+    public void setSuperAdmin(boolean superAdmin) {
+        this.superAdmin = superAdmin;
     }
 
     public String getPassword() {
