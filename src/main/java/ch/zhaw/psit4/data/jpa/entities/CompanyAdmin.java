@@ -27,26 +27,26 @@ public class CompanyAdmin implements Serializable {
     @Column(nullable = false)
     private String username;
     @Column(nullable = false)
-    private String secret;
+    private String password;
 
     protected CompanyAdmin() {
 
     }
 
-    public CompanyAdmin(Company company, String firstname, String lastname, String username, String secret) {
+    public CompanyAdmin(Company company, String firstname, String lastname, String username, String password) {
         this.company = company;
         this.firstname = firstname;
         this.lastname = lastname;
         this.username = username;
-        this.secret = secret;
+        this.password = password;
     }
 
-    public String getSecret() {
-        return secret;
+    public String getPassword() {
+        return password;
     }
 
-    public void setSecret(String secret) {
-        this.secret = secret;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Company getCompany() {
