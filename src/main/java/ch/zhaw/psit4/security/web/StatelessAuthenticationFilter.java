@@ -1,10 +1,10 @@
 package ch.zhaw.psit4.security.web;
 
+import ch.zhaw.psit4.security.auxiliary.UserAuthentication;
 import ch.zhaw.psit4.security.jwt.TokenAuthenticationService;
 import io.jsonwebtoken.JwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
@@ -33,14 +33,18 @@ public class StatelessAuthenticationFilter extends GenericFilterBean {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
         try {
-            Authentication authentication = tokenAuthenticationService.getAuthentication((HttpServletRequest)
+            OUR_LOGGER.debug("Process JWT authentication token");
+            UserAuthentication authentication = tokenAuthenticationService.getAuthentication((HttpServletRequest)
                     servletRequest);
             authentication.setAuthenticated(true);
+
             SecurityContextHolder.getContext().setAuthentication(authentication);
             filterChain.doFilter(servletRequest, servletResponse);
             SecurityContextHolder.getContext().setAuthentication(null);
+
+            OUR_LOGGER.info("Authenticated request for {}", authentication.getName());
         } catch (AuthenticationException | JwtException e) {
-            OUR_LOGGER.error("Log in error: {}", e.getMessage(), e);
+            OUR_LOGGER.error("Error processing JWT token: {}", e.getMessage(), e);
             SecurityContextHolder.clearContext();
             ((HttpServletResponse) servletResponse).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }

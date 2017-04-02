@@ -8,6 +8,8 @@ import ch.zhaw.psit4.security.auxiliary.LoginData;
 import ch.zhaw.psit4.security.auxiliary.UserAuthentication;
 import ch.zhaw.psit4.security.jwt.TokenAuthenticationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,6 +25,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter {
+    private static final Logger OUR_LOGGER = LoggerFactory.getLogger(StatelessLoginFilter.class);
+
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private final TokenAuthenticationService tokenAuthenticationService;
     private final UserDetailsService userDetailsService;
@@ -44,6 +48,7 @@ public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter
         final UsernamePasswordAuthenticationToken authenticationToken = loginData
                 .toUsernamePasswordAuthenticationToken();
 
+        OUR_LOGGER.debug("Trying to authenticate user '{}'", loginData.getUsername());
         return getAuthenticationManager().authenticate(authenticationToken);
     }
 
@@ -56,5 +61,6 @@ public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter
 
         userAuthentication.setAuthenticated(true);
         SecurityContextHolder.getContext().setAuthentication(userAuthentication);
+        OUR_LOGGER.info("Successfully authenticated '{}'", authenticatedUser.getUsername());
     }
 }
