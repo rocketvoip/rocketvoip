@@ -20,7 +20,7 @@ public class SipClientTestHelper {
     /**
      * Creates a jpa sip client
      *
-     * @param number  the number for the phone and appended to "User" and "Secret"
+     * @param number  the number for the phone and appended to "Admin" and "Secret"
      * @param company the company belonging the sip client
      * @return the jpa sip client
      */
@@ -82,7 +82,7 @@ public class SipClientTestHelper {
     /**
      * Generates one domain specific sip client.
      *
-     * @param number  the number which is appended to the "User" and the "Secret" of the sip client.
+     * @param number  the number which is appended to the "Admin" and the "Secret" of the sip client.
      * @param company the company for the sip clients
      * @return the generated sip client
      */

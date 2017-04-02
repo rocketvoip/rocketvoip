@@ -1,5 +1,7 @@
 package ch.zhaw.psit4.data.jpa.entities;
 
+import ch.zhaw.psit4.data.jpa.entities.converters.PasswordHashConverter;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Collection;
@@ -26,6 +28,7 @@ public class Admin implements Serializable {
     @Column(nullable = false)
     private String username;
     @Column(nullable = false)
+    @Convert(converter = PasswordHashConverter.class)
     private String password;
     @Column
     private boolean superAdmin;
