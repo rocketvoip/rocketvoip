@@ -1,4 +1,4 @@
-package ch.zhaw.psit4.data.jpa.auxilliary;
+package ch.zhaw.psit4.data.jpa.auxiliary;
 
 import ch.zhaw.psit4.data.jpa.entities.Admin;
 import ch.zhaw.psit4.data.jpa.repositories.AdminRepository;
