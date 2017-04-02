@@ -49,9 +49,7 @@ public class CompanyServiceImpl implements CompanyServiceInterface {
      * @return Company instance
      */
     public Company companyDtoToCompanyEntity(CompanyDto companyDto) {
-        Company company = new Company(companyDto.getName());
-        company.setId(companyDto.getId());
-        return company;
+        return new Company(companyDto.getName());
     }
 
     @Override
