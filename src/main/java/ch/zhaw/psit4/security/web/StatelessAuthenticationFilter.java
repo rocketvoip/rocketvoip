@@ -16,6 +16,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 /**
  * @author Rafael Ostertag
@@ -34,15 +35,23 @@ public class StatelessAuthenticationFilter extends GenericFilterBean {
             throws IOException, ServletException {
         try {
             OUR_LOGGER.debug("Process JWT authentication token");
-            UserAuthentication authentication = tokenAuthenticationService.getAuthentication((HttpServletRequest)
-                    servletRequest);
-            authentication.setAuthenticated(true);
+            Optional<UserAuthentication> authentication = Optional.of(
+                    tokenAuthenticationService.getAuthentication((HttpServletRequest) servletRequest)
+            );
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            authentication.ifPresent(x -> {
+                x.setAuthenticated(true);
+                SecurityContextHolder.getContext().setAuthentication(x);
+            });
+
             filterChain.doFilter(servletRequest, servletResponse);
             SecurityContextHolder.getContext().setAuthentication(null);
 
-            OUR_LOGGER.info("Authenticated request for {}", authentication.getName());
+            authentication.ifPresent(
+                    x -> OUR_LOGGER.info("Authenticated request for {}", x.getName())
+            );
+        } catch (NullPointerException e) {
+            OUR_LOGGER.error("No authentication token found", e);
         } catch (AuthenticationException | JwtException e) {
             OUR_LOGGER.error("Error processing JWT token: {}", e.getMessage(), e);
             SecurityContextHolder.clearContext();
