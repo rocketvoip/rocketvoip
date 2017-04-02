@@ -1,4 +1,4 @@
-package ch.zhaw.psit4.security.auxilliary;
+package ch.zhaw.psit4.security.auxiliary;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;

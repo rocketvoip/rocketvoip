@@ -1,6 +1,6 @@
 package ch.zhaw.psit4.security.web;
 
-import ch.zhaw.psit4.security.auxilliary.SecurityConstants;
+import ch.zhaw.psit4.security.auxiliary.SecurityConstants;
 import ch.zhaw.psit4.security.jwt.TokenAuthenticationService;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;

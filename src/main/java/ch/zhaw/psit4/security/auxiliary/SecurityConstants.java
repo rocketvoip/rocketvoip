@@ -1,4 +1,4 @@
-package ch.zhaw.psit4.security.auxilliary;
+package ch.zhaw.psit4.security.auxiliary;
 
 /**
  * @author Rafael Ostertag

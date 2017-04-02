@@ -1,4 +1,4 @@
-package ch.zhaw.psit4.security.auxilliary;
+package ch.zhaw.psit4.security.auxiliary;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

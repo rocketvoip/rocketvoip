@@ -1,7 +1,7 @@
 package ch.zhaw.psit4.security.config;
 
 import ch.zhaw.psit4.data.jpa.repositories.AdminRepository;
-import ch.zhaw.psit4.security.auxilliary.UserDetailsServiceImpl;
+import ch.zhaw.psit4.security.auxiliary.UserDetailsServiceImpl;
 import ch.zhaw.psit4.security.jwt.TokenAuthenticationService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

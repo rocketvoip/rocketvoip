@@ -1,6 +1,6 @@
 package ch.zhaw.psit4.security.jwt;
 
-import ch.zhaw.psit4.security.auxilliary.UserAuthentication;
+import ch.zhaw.psit4.security.auxiliary.UserAuthentication;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

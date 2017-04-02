@@ -1,4 +1,4 @@
-package ch.zhaw.psit4.security.auxilliary;
+package ch.zhaw.psit4.security.auxiliary;
 
 import ch.zhaw.psit4.data.jpa.entities.Admin;
 import org.springframework.security.core.GrantedAuthority;

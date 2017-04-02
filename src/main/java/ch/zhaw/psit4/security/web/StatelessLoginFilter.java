@@ -4,8 +4,8 @@ package ch.zhaw.psit4.security.web;
  * @author Rafael Ostertag
  */
 
-import ch.zhaw.psit4.security.auxilliary.LoginData;
-import ch.zhaw.psit4.security.auxilliary.UserAuthentication;
+import ch.zhaw.psit4.security.auxiliary.LoginData;
+import ch.zhaw.psit4.security.auxiliary.UserAuthentication;
 import ch.zhaw.psit4.security.jwt.TokenAuthenticationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.authentication.AuthenticationManager;
