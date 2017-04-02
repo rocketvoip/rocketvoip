@@ -5,7 +5,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import javax.persistence.AttributeConverter;
 
 /**
- * Convert a String to a Bcryp hash
+ * Convert a String to a Bcrypt hash.
  *
  * @author Rafael Ostertag
  */
