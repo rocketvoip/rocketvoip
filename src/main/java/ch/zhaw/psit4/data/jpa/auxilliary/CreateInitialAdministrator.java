@@ -11,6 +11,8 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 
 /**
+ * Component taking care of creating an Administrator account in a pristine database.
+ *
  * @author Rafael Ostertag
  */
 @Component
@@ -53,6 +55,9 @@ public class CreateInitialAdministrator {
         return adminRepository.count() != 0;
     }
 
+    /**
+     * Run after construction.
+     */
     @PostConstruct
     public void init() {
         createInitialAdminAccount();
