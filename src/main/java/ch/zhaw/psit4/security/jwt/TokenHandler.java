@@ -1,5 +1,6 @@
 package ch.zhaw.psit4.security.jwt;
 
+import ch.zhaw.psit4.security.auxiliary.SecurityConstants;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -8,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Rafael Ostertag
@@ -33,8 +33,7 @@ public class TokenHandler {
 
     public String createTokenForUser(UserDetails userDetails) {
         Date now = new Date();
-        // TODO: Fix magic constant
-        Date expiration = new Date(now.getTime() + TimeUnit.HOURS.toMillis(1l));
+        Date expiration = new Date(now.getTime() + SecurityConstants.TOKEN_EXPIRATION_IN_MILLIS);
         return Jwts.builder()
                 .setId(UUID.randomUUID().toString())
                 .setSubject(userDetails.getUsername())
