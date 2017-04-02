@@ -5,7 +5,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import javax.persistence.AttributeConverter;
 
 /**
- * Convert a String to a Bcrypt hash.
+ * Password Converter. Converts clear text passwords to BCrypt hashes when written to database. Hash is returned
+ * unaltered when reading from database.
  *
  * @author Rafael Ostertag
  */
