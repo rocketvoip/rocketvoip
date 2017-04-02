@@ -1,7 +1,6 @@
 package ch.zhaw.psit4.security.jwt;
 
 import ch.zhaw.psit4.security.auxiliary.UserAuthentication;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
@@ -27,7 +26,7 @@ public class TokenAuthenticationService {
         return token;
     }
 
-    public Authentication getAuthentication(HttpServletRequest request) {
+    public UserAuthentication getAuthentication(HttpServletRequest request) {
         final String token = request.getHeader(AUTH_HEADER_NAME);
         if (token != null) {
             final UserDetails userDetails = tokenHandler.parseUserFromToken(token);
