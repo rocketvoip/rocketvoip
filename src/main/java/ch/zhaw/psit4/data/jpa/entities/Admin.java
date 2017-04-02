@@ -2,6 +2,7 @@ package ch.zhaw.psit4.data.jpa.entities;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Collection;
 
 /**
  * Created by beni on 20.03.17.
@@ -14,7 +15,7 @@ public class Admin implements Serializable {
     private long id;
 
     @ManyToMany
-    private Company company;
+    private Collection<Company> company;
 
     @Column(nullable = false)
     private String firstname;
@@ -33,7 +34,8 @@ public class Admin implements Serializable {
 
     }
 
-    public Admin(Company company, String firstname, String lastname, String username, String password, boolean
+    public Admin(Collection<Company> company, String firstname, String lastname, String username, String password,
+                 boolean
             superAdmin) {
         this.company = company;
         this.firstname = firstname;
@@ -59,11 +61,11 @@ public class Admin implements Serializable {
         this.password = password;
     }
 
-    public Company getCompany() {
+    public Collection<Company> getCompany() {
         return company;
     }
 
-    public void setCompany(Company company) {
+    public void setCompany(Collection<Company> company) {
         this.company = company;
     }
 
