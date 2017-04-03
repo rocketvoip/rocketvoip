@@ -1,6 +1,7 @@
 package ch.zhaw.psit4.security.config;
 
 import ch.zhaw.psit4.data.jpa.repositories.AdminRepository;
+import ch.zhaw.psit4.security.auxiliary.SecurityConstants;
 import ch.zhaw.psit4.security.auxiliary.UserDetailsServiceImpl;
 import ch.zhaw.psit4.security.jwt.TokenAuthenticationService;
 import org.springframework.context.annotation.Bean;
@@ -40,8 +41,8 @@ public class SpringBeans {
         config.addAllowedOrigin("*");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
-        config.addExposedHeader("Authorization");
         config.addExposedHeader("Content-Type");
+        config.addExposedHeader(SecurityConstants.AUTH_HEADER_NAME);
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
