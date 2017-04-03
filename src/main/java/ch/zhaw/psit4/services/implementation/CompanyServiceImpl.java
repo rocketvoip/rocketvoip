@@ -35,7 +35,7 @@ public class CompanyServiceImpl implements CompanyServiceInterface {
      * @param companyEntity Company entity
      * @return CompanyDto instance
      */
-    public CompanyDto companyEntityToCompanyDto(Company companyEntity) {
+    public static CompanyDto companyEntityToCompanyDto(Company companyEntity) {
         CompanyDto companyDto = new CompanyDto();
         companyDto.setId(companyEntity.getId());
         companyDto.setName(companyEntity.getName());
@@ -48,7 +48,7 @@ public class CompanyServiceImpl implements CompanyServiceInterface {
      * @param companyDto instance to be converted
      * @return Company instance
      */
-    public Company companyDtoToCompanyEntity(CompanyDto companyDto) {
+    public static Company companyDtoToCompanyEntity(CompanyDto companyDto) {
         return new Company(companyDto.getName());
     }
 
