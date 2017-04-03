@@ -3,7 +3,8 @@ package ch.zhaw.psit4.web;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import ch.zhaw.psit4.domain.exceptions.ZipFileCreationException;
 import ch.zhaw.psit4.dto.ErrorDto;
-import ch.zhaw.psit4.services.implementation.ConfigControllerImplService;
+import ch.zhaw.psit4.services.implementation.ConfigServiceImpl;
+import ch.zhaw.psit4.services.interfaces.ConfigServiceInterface;
 import ch.zhaw.psit4.web.utils.Utilities;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,10 +26,10 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping(path = "/v1")
 public class ConfigurationController {
     private static final String ZIP_FILE_NAME = "config.zip";
-    private ConfigControllerImplService configControllerServiceImpl;
+    private ConfigServiceInterface configServiceInterface;
 
-    public ConfigurationController(ConfigControllerImplService configControllerServiceImpl) {
-        this.configControllerServiceImpl = configControllerServiceImpl;
+    public ConfigurationController(ConfigServiceImpl configServiceInterface) {
+        this.configServiceInterface = configServiceInterface;
     }
 
 
@@ -41,7 +42,7 @@ public class ConfigurationController {
         // TODO: Is there a better way?
         httpHeaders.set(HttpHeaders.CONTENT_DISPOSITION,
                 String.format("attachment; filename=\"%s\"", ZIP_FILE_NAME));
-        byte[] returnValue = configControllerServiceImpl.getAsteriskConfiguration().toByteArray();
+        byte[] returnValue = configServiceInterface.getAsteriskConfiguration().toByteArray();
         return new ResponseEntity<byte[]>(returnValue, httpHeaders, HttpStatus.OK);
     }
 
