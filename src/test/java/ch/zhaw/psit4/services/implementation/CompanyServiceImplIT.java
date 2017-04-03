@@ -1,6 +1,5 @@
 package ch.zhaw.psit4.services.implementation;
 
-import ch.zhaw.psit4.data.jpa.entities.Company;
 import ch.zhaw.psit4.data.jpa.repositories.CompanyRepository;
 import ch.zhaw.psit4.dto.CompanyDto;
 import ch.zhaw.psit4.services.exceptions.CompanyCreationException;
@@ -16,7 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static ch.zhaw.psit4.helper.matchers.CompanyDtoEqualTo.companyDtoEqualTo;
@@ -33,6 +31,7 @@ import static org.junit.Assert.assertThat;
 @Transactional
 public class CompanyServiceImplIT {
     private static final long NON_EXISTENT_COMPANY_ID = 124;
+    private final CompanyGenerator companyGenerator = new CompanyGenerator();
     @Autowired
     private CompanyRepository companyRepository;
 
@@ -47,13 +46,13 @@ public class CompanyServiceImplIT {
     @Test
     public void getAllCompanies() throws Exception {
         // TODO exception when number is set to more then one ?!
-        companyRepository.save(createCompanies(1));
+        companyRepository.save(companyGenerator.createCompanies(1));
 
         List<CompanyDto> companyDtoList = companyServiceImpl.getAllCompanies();
 
         assertThat(companyDtoList, hasSize(1));
 
-        CompanyDto companyDto1 = getCompanyDto(1);
+        CompanyDto companyDto1 = companyGenerator.getCompanyDto(1);
         // CompanyDto companyDto2 = getCompanyDto(2);
 
         // assertThat(companyDtoList, containsInAnyOrder(companyDtoAlmostEqualTo(companyDto1), companyDtoAlmostEqualTo(companyDto2)));
@@ -62,7 +61,7 @@ public class CompanyServiceImplIT {
 
     @Test
     public void createCompany() throws Exception {
-        CompanyDto companyDto = getCompanyDto(1);
+        CompanyDto companyDto = companyGenerator.getCompanyDto(1);
         CompanyDto actual = companyServiceImpl.createCompany(companyDto);
 
         assertThat(actual, companyDtoAlmostEqualTo(companyDto));
@@ -71,12 +70,12 @@ public class CompanyServiceImplIT {
 
     @Test
     public void updateCompany() throws Exception {
-        CompanyDto companyDto = getCompanyDto(1);
+        CompanyDto companyDto = companyGenerator.getCompanyDto(1);
         CompanyDto newlyCreatedCompany = companyServiceImpl.createCompany(companyDto);
 
         assertThat(newlyCreatedCompany, companyDtoAlmostEqualTo(companyDto));
 
-        CompanyDto companyUpdate = getCompanyDto(2);
+        CompanyDto companyUpdate = companyGenerator.getCompanyDto(2);
         companyUpdate.setId(newlyCreatedCompany.getId());
 
         CompanyDto actual = companyServiceImpl.updateCompany(companyUpdate);
@@ -86,7 +85,7 @@ public class CompanyServiceImplIT {
 
     @Test
     public void getCompany() throws Exception {
-        CompanyDto companyDto = getCompanyDto(10);
+        CompanyDto companyDto = companyGenerator.getCompanyDto(10);
 
         CompanyDto actualCreated = companyServiceImpl.createCompany(companyDto);
 
@@ -97,7 +96,7 @@ public class CompanyServiceImplIT {
 
     @Test(expected = CompanyRetrievalException.class)
     public void deleteCompany() throws Exception {
-        CompanyDto companyDto = getCompanyDto(10);
+        CompanyDto companyDto = companyGenerator.getCompanyDto(10);
 
         CompanyDto actualCreated = companyServiceImpl.createCompany(companyDto);
 
@@ -118,26 +117,11 @@ public class CompanyServiceImplIT {
 
     @Test(expected = CompanyUpdateException.class)
     public void updateInvalidCompany() throws Exception {
-        companyServiceImpl.updateCompany(getCompanyDto(NON_EXISTENT_COMPANY_ID));
+        companyServiceImpl.updateCompany(companyGenerator.getCompanyDto(NON_EXISTENT_COMPANY_ID));
     }
 
     private void resetDatabase() {
         companyRepository.deleteAll();
     }
 
-    private List<Company> createCompanies(int number) {
-        List<Company> companies = new ArrayList<>();
-        for (int i = 0; i < number; i++) {
-            Company company = new Company("testCompany" + number);
-            companies.add(company);
-        }
-        return companies;
-    }
-
-    private CompanyDto getCompanyDto(long number) {
-        CompanyDto companyDto = new CompanyDto();
-        companyDto.setName("testCompany" + number);
-        companyDto.setId(number);
-        return companyDto;
-    }
 }
