@@ -43,7 +43,7 @@ public class CreateInitialAdministrator {
     }
 
     private Admin createInitialAdminAccountEntity(String password) {
-        return new Admin(null, "RocketVoip", "Administrator", "masteradmin", password, true);
+        return new Admin(null, "RocketVoip", "Administrator", "masteradmin@rocketvoip.local", password, true);
     }
 
     private String createRandomPassword() {
