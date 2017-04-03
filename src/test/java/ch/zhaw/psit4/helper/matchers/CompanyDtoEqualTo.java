@@ -19,7 +19,7 @@ public class CompanyDtoEqualTo extends TypeSafeMatcher<CompanyDto> {
     }
 
     @Factory
-    public static Matcher companyDtoEqualTo(CompanyDto other) {
+    public static Matcher<CompanyDto> companyDtoEqualTo(CompanyDto other) {
         return new CompanyDtoEqualTo(other);
     }
 

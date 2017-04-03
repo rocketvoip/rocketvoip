@@ -2,6 +2,7 @@ package ch.zhaw.psit4.services.implementation;
 
 import ch.zhaw.psit4.data.jpa.repositories.CompanyRepository;
 import ch.zhaw.psit4.dto.CompanyDto;
+import ch.zhaw.psit4.helper.CompanyGenerator;
 import ch.zhaw.psit4.services.exceptions.CompanyCreationException;
 import ch.zhaw.psit4.services.exceptions.CompanyDeletionException;
 import ch.zhaw.psit4.services.exceptions.CompanyRetrievalException;
@@ -19,7 +20,7 @@ import java.util.List;
 
 import static ch.zhaw.psit4.helper.matchers.CompanyDtoEqualTo.companyDtoEqualTo;
 import static ch.zhaw.psit4.helper.matchers.CompanyDtoPartialMatcher.companyDtoAlmostEqualTo;
-import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 
@@ -46,22 +47,22 @@ public class CompanyServiceImplIT {
     @Test
     public void getAllCompanies() throws Exception {
         // TODO exception when number is set to more then one ?!
-        companyRepository.save(companyGenerator.createCompanies(1));
+        companyRepository.save(CompanyGenerator.createCompanies(1));
 
         List<CompanyDto> companyDtoList = companyServiceImpl.getAllCompanies();
 
         assertThat(companyDtoList, hasSize(1));
 
-        CompanyDto companyDto1 = companyGenerator.getCompanyDto(1);
+        CompanyDto companyDto1 = CompanyGenerator.getCompanyDto(1);
         // CompanyDto companyDto2 = getCompanyDto(2);
 
         // assertThat(companyDtoList, containsInAnyOrder(companyDtoAlmostEqualTo(companyDto1), companyDtoAlmostEqualTo(companyDto2)));
-        assertThat(companyDtoList, containsInAnyOrder(companyDtoAlmostEqualTo(companyDto1)));
+        assertThat(companyDtoList, contains(companyDtoAlmostEqualTo(companyDto1)));
     }
 
     @Test
     public void createCompany() throws Exception {
-        CompanyDto companyDto = companyGenerator.getCompanyDto(1);
+        CompanyDto companyDto = CompanyGenerator.getCompanyDto(1);
         CompanyDto actual = companyServiceImpl.createCompany(companyDto);
 
         assertThat(actual, companyDtoAlmostEqualTo(companyDto));
@@ -70,12 +71,12 @@ public class CompanyServiceImplIT {
 
     @Test
     public void updateCompany() throws Exception {
-        CompanyDto companyDto = companyGenerator.getCompanyDto(1);
+        CompanyDto companyDto = CompanyGenerator.getCompanyDto(1);
         CompanyDto newlyCreatedCompany = companyServiceImpl.createCompany(companyDto);
 
         assertThat(newlyCreatedCompany, companyDtoAlmostEqualTo(companyDto));
 
-        CompanyDto companyUpdate = companyGenerator.getCompanyDto(2);
+        CompanyDto companyUpdate = CompanyGenerator.getCompanyDto(2);
         companyUpdate.setId(newlyCreatedCompany.getId());
 
         CompanyDto actual = companyServiceImpl.updateCompany(companyUpdate);
@@ -85,7 +86,7 @@ public class CompanyServiceImplIT {
 
     @Test
     public void getCompany() throws Exception {
-        CompanyDto companyDto = companyGenerator.getCompanyDto(10);
+        CompanyDto companyDto = CompanyGenerator.getCompanyDto(10);
 
         CompanyDto actualCreated = companyServiceImpl.createCompany(companyDto);
 
@@ -96,7 +97,7 @@ public class CompanyServiceImplIT {
 
     @Test(expected = CompanyRetrievalException.class)
     public void deleteCompany() throws Exception {
-        CompanyDto companyDto = companyGenerator.getCompanyDto(10);
+        CompanyDto companyDto = CompanyGenerator.getCompanyDto(10);
 
         CompanyDto actualCreated = companyServiceImpl.createCompany(companyDto);
 
@@ -117,7 +118,7 @@ public class CompanyServiceImplIT {
 
     @Test(expected = CompanyUpdateException.class)
     public void updateInvalidCompany() throws Exception {
-        companyServiceImpl.updateCompany(companyGenerator.getCompanyDto(NON_EXISTENT_COMPANY_ID));
+        companyServiceImpl.updateCompany(CompanyGenerator.getCompanyDto(NON_EXISTENT_COMPANY_ID));
     }
 
     private void resetDatabase() {

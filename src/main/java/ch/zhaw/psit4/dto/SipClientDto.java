@@ -13,6 +13,7 @@ public class SipClientDto {
     private String phone;
     private String secret;
     private long id;
+    private CompanyDto company;
 
     public String getName() {
         return name;
@@ -46,4 +47,11 @@ public class SipClientDto {
         this.id = id;
     }
 
+    public CompanyDto getCompany() {
+        return company;
+    }
+
+    public void setCompany(CompanyDto company) {
+        this.company = company;
+    }
 }

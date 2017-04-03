@@ -2,12 +2,10 @@ package ch.zhaw.psit4.services.implementation;
 
 import ch.zhaw.psit4.data.jpa.entities.Company;
 import ch.zhaw.psit4.data.jpa.entities.SipClient;
+import ch.zhaw.psit4.data.jpa.repositories.CompanyRepository;
 import ch.zhaw.psit4.data.jpa.repositories.SipClientRepository;
 import ch.zhaw.psit4.dto.SipClientDto;
-import ch.zhaw.psit4.services.exceptions.SipClientCreationException;
-import ch.zhaw.psit4.services.exceptions.SipClientDeletionException;
-import ch.zhaw.psit4.services.exceptions.SipClientRetrievalException;
-import ch.zhaw.psit4.services.exceptions.SipClientUpdateException;
+import ch.zhaw.psit4.services.exceptions.*;
 import ch.zhaw.psit4.services.interfaces.SipClientServiceInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +14,9 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ch.zhaw.psit4.services.implementation.CompanyServiceImpl.companyDtoToCompanyEntity;
+import static ch.zhaw.psit4.services.implementation.CompanyServiceImpl.companyEntityToCompanyDto;
+
 /**
  * Implements SipClientServiceInterface.
  *
@@ -23,12 +24,14 @@ import java.util.List;
  */
 @Service
 public class SipClientServiceImpl implements SipClientServiceInterface {
-    public static final String COULD_NOT_CREATE_SIP_CLIENT_MESSAGE = "Could not create SIP Client";
+    private static final String COULD_NOT_CREATE_SIP_CLIENT_MESSAGE = "Could not create SIP Client";
     private static final Logger LOGGER = LoggerFactory.getLogger(SipClientServiceImpl.class);
     private SipClientRepository sipClientRepository;
+    private CompanyRepository companyRepository;
 
-    public SipClientServiceImpl(SipClientRepository sipClientRepository) {
+    public SipClientServiceImpl(SipClientRepository sipClientRepository, CompanyRepository companyRepository) {
         this.sipClientRepository = sipClientRepository;
+        this.companyRepository = companyRepository;
     }
 
     /**
@@ -43,19 +46,22 @@ public class SipClientServiceImpl implements SipClientServiceInterface {
         sipClientDto.setName(sipClient.getLabel());
         sipClientDto.setSecret(sipClient.getSecret());
         sipClientDto.setPhone(sipClient.getPhoneNr());
+        sipClientDto.setCompany(companyEntityToCompanyDto(sipClient.getCompany()));
         return sipClientDto;
     }
 
     /**
-     * Convert a SipClientDto to a SipClient entity. A Company entity is required for the conversion.
+     * Convert a SipClientDto to a SipClient entity. A Company Dto is required for the conversion.
+     * Note that the id of the SipClient won't be converted.
      *
-     * @param company      Company entity the SipClient entity belongs to.
      * @param sipClientDto SipClientDto instance to be converted
      * @return SipClient entity instance.
      */
-    public static SipClient sipClientDtoToSipClientEntity(Company company, SipClientDto sipClientDto) {
-        return new SipClient(company, sipClientDto.getName(), sipClientDto.getPhone(), sipClientDto
-                .getSecret());
+    public static SipClient sipClientDtoToSipClientEntity(SipClientDto sipClientDto) {
+        Company company = companyDtoToCompanyEntity(sipClientDto.getCompany());
+        company.setId(sipClientDto.getCompany().getId());
+        return new SipClient(company, sipClientDto.getName(),
+                sipClientDto.getPhone(), sipClientDto.getSecret());
     }
 
     @Override
@@ -69,9 +75,11 @@ public class SipClientServiceImpl implements SipClientServiceInterface {
     }
 
     @Override
-    public SipClientDto createSipClient(Company company, SipClientDto newSipClient) {
+    public SipClientDto createSipClient(SipClientDto newSipClient) {
         try {
-            SipClient sipClient = sipClientDtoToSipClientEntity(company, newSipClient);
+            checkCompanyExistence(newSipClient, getExistingCompany(newSipClient));
+
+            SipClient sipClient = sipClientDtoToSipClientEntity(newSipClient);
             sipClient = sipClientRepository.save(sipClient);
             return sipClientEntityToSipClientDto(sipClient);
         } catch (Exception e) {
@@ -81,10 +89,13 @@ public class SipClientServiceImpl implements SipClientServiceInterface {
     }
 
     @Override
-    public SipClientDto updateSipClient(Company company, SipClientDto sipClientDto) {
+    public SipClientDto updateSipClient(SipClientDto sipClientDto) {
         try {
+            Company existingCompany = getExistingCompany(sipClientDto);
+            checkCompanyExistence(sipClientDto, existingCompany);
+
             SipClient existingSipClient = sipClientRepository.findOne(sipClientDto.getId());
-            existingSipClient.setCompany(company);
+            existingSipClient.setCompany(existingCompany);
             existingSipClient.setLabel(sipClientDto.getName());
             existingSipClient.setPhoneNr(sipClientDto.getPhone());
             existingSipClient.setSecret(sipClientDto.getSecret());
@@ -117,6 +128,23 @@ public class SipClientServiceImpl implements SipClientServiceInterface {
             String message = String.format("Could not delete SIP Client with id %d", id);
             LOGGER.error(message, e);
             throw new SipClientDeletionException(message, e);
+        }
+    }
+
+    private Company getExistingCompany(SipClientDto sipClientDto) {
+        if (sipClientDto.getCompany() == null) {
+            String message = "Company was null";
+            LOGGER.error(message);
+            throw new CompanyRetrievalException(message);
+        }
+        return companyRepository.findOne(sipClientDto.getCompany().getId());
+    }
+
+    private void checkCompanyExistence(SipClientDto sipClientDto, Company existingCompany) {
+        if (existingCompany == null) {
+            String message = String.format("Could not find company with id %d", sipClientDto.getCompany().getId());
+            LOGGER.error(message);
+            throw new CompanyRetrievalException(message);
         }
     }
 }

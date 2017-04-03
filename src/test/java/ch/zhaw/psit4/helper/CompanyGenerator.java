@@ -1,4 +1,4 @@
-package ch.zhaw.psit4.services.implementation;
+package ch.zhaw.psit4.helper;
 
 import ch.zhaw.psit4.data.jpa.entities.Company;
 import ch.zhaw.psit4.dto.CompanyDto;
@@ -10,16 +10,19 @@ public class CompanyGenerator {
     public CompanyGenerator() {
     }
 
-    public List<Company> createCompanies(int number) {
-        List<Company> companies = new ArrayList<Company>();
+    public static List<Company> createCompanies(int number) {
+        List<Company> companies = new ArrayList<>();
         for (int i = 0; i < number; i++) {
-            Company company = new Company("testCompany" + number);
-            companies.add(company);
+            companies.add(getCompanyEntity(number));
         }
         return companies;
     }
 
-    public CompanyDto getCompanyDto(long number) {
+    public static Company getCompanyEntity(int number) {
+        return new Company("testCompany" + number);
+    }
+
+    public static CompanyDto getCompanyDto(long number) {
         CompanyDto companyDto = new CompanyDto();
         companyDto.setName("testCompany" + number);
         companyDto.setId(number);
