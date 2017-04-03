@@ -76,9 +76,8 @@ public class SipClientServiceImpl implements SipClientServiceInterface {
 
     @Override
     public SipClientDto createSipClient(SipClientDto newSipClient) {
+        checkCompanyExistence(newSipClient, getExistingCompany(newSipClient));
         try {
-            checkCompanyExistence(newSipClient, getExistingCompany(newSipClient));
-
             SipClient sipClient = sipClientDtoToSipClientEntity(newSipClient);
             sipClient = sipClientRepository.save(sipClient);
             return sipClientEntityToSipClientDto(sipClient);
@@ -90,9 +89,9 @@ public class SipClientServiceImpl implements SipClientServiceInterface {
 
     @Override
     public SipClientDto updateSipClient(SipClientDto sipClientDto) {
+        Company existingCompany = getExistingCompany(sipClientDto);
+        checkCompanyExistence(sipClientDto, existingCompany);
         try {
-            Company existingCompany = getExistingCompany(sipClientDto);
-            checkCompanyExistence(sipClientDto, existingCompany);
 
             SipClient existingSipClient = sipClientRepository.findOne(sipClientDto.getId());
             existingSipClient.setCompany(existingCompany);
@@ -134,6 +133,11 @@ public class SipClientServiceImpl implements SipClientServiceInterface {
     private Company getExistingCompany(SipClientDto sipClientDto) {
         if (sipClientDto.getCompany() == null) {
             String message = "Company was null";
+            LOGGER.error(message);
+            throw new CompanyRetrievalException(message);
+        }
+        if (sipClientDto.getCompany().getId() == null) {
+            String message = "Company id was null";
             LOGGER.error(message);
             throw new CompanyRetrievalException(message);
         }
