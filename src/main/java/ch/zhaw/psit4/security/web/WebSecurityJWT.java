@@ -45,6 +45,7 @@ public class WebSecurityJWT extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
+                .cors().and()
                 .authorizeRequests()
                 .antMatchers("/v1/login").permitAll()
                 .antMatchers("/v1/sipclient/**").hasRole(SecurityConstants.COMPANY_ADMIN_ROLE_NAME)
