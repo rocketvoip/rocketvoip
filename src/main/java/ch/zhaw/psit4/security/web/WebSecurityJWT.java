@@ -48,8 +48,8 @@ public class WebSecurityJWT extends WebSecurityConfigurerAdapter {
                 .cors().and()
                 .authorizeRequests()
                 .antMatchers("/v1/login").permitAll()
-                .antMatchers("/v1/sipclient/**").hasRole(SecurityConstants.COMPANY_ADMIN_ROLE_NAME)
-                .antMatchers("/v1/company/**").hasRole(SecurityConstants.CONFIG_ADMIN_ROLE_NAME)
+                .antMatchers("/v1/sipclients/**").hasRole(SecurityConstants.COMPANY_ADMIN_ROLE_NAME)
+                .antMatchers("/v1/companies/**").hasRole(SecurityConstants.CONFIG_ADMIN_ROLE_NAME)
                 .antMatchers("/v1/config/**").hasRole(SecurityConstants.CONFIG_ADMIN_ROLE_NAME)
                 .anyRequest().authenticated();
 

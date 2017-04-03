@@ -48,10 +48,14 @@ public class AdminDetails implements UserDetails {
 
     private void computeAuthorities() {
         // Every admin has this role
-        grantedAuthorityList.add(new SimpleGrantedAuthority(SecurityConstants.COMPANY_ADMIN_ROLE_NAME));
+        grantedAuthorityList.add(makeAuthorityFromName(SecurityConstants.COMPANY_ADMIN_ROLE_NAME));
         if (superAdmin) {
-            grantedAuthorityList.add(new SimpleGrantedAuthority(SecurityConstants.CONFIG_ADMIN_ROLE_NAME));
+            grantedAuthorityList.add(makeAuthorityFromName(SecurityConstants.CONFIG_ADMIN_ROLE_NAME));
         }
+    }
+
+    private SimpleGrantedAuthority makeAuthorityFromName(String name) {
+        return new SimpleGrantedAuthority(SecurityConstants.ROLE_PREFIX + name);
     }
 
     private void initializeFromAdmin(Admin admin) {

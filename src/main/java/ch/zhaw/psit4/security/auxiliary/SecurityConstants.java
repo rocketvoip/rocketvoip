@@ -10,6 +10,7 @@ public final class SecurityConstants {
     public static final String COMPANY_ADMIN_ROLE_NAME = "COMPANY_ADMIN";
     public static final String AUTH_HEADER_NAME = "X-AUTH-TOKEN";
     public static final long TOKEN_EXPIRATION_IN_MILLIS = TimeUnit.HOURS.toMillis(1l);
+    public static final String ROLE_PREFIX = "ROLE_";
 
 
     private SecurityConstants() {
