@@ -5,6 +5,7 @@ import ch.zhaw.psit4.dto.SipClientDto;
 import ch.zhaw.psit4.services.exceptions.SipClientCreationException;
 import ch.zhaw.psit4.services.exceptions.SipClientDeletionException;
 import ch.zhaw.psit4.services.exceptions.SipClientRetrievalException;
+import ch.zhaw.psit4.services.exceptions.SipClientUpdateException;
 
 import java.util.List;
 
@@ -39,7 +40,7 @@ public interface SipClientServiceInterface {
      * @param company      Company the SipClient belongs to
      * @param sipClientDto SipClient to be updated.
      * @return SipClient instance.
-     * @throws SipClientCreationException Implementations are expected to throw SipClientUpdateException on error.
+     * @throws SipClientUpdateException Implementations are expected to throw SipClientUpdateException on error.
      */
     SipClientDto updateSipClient(Company company, SipClientDto sipClientDto);
 
