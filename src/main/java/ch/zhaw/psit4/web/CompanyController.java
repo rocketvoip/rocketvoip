@@ -4,6 +4,7 @@ import ch.zhaw.psit4.dto.CompanyDto;
 import ch.zhaw.psit4.dto.ErrorDto;
 import ch.zhaw.psit4.services.exceptions.CompanyDeletionException;
 import ch.zhaw.psit4.services.exceptions.CompanyRetrievalException;
+import ch.zhaw.psit4.services.implementation.CompanyServiceImpl;
 import ch.zhaw.psit4.services.interfaces.CompanyServiceInterface;
 import ch.zhaw.psit4.web.utils.Utilities;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ import java.util.List;
 public class CompanyController {
     private final CompanyServiceInterface companyServiceInterface;
 
-    public CompanyController(CompanyServiceInterface companyServiceImpl) {
+    public CompanyController(CompanyServiceImpl companyServiceImpl) {
         this.companyServiceInterface = companyServiceImpl;
     }
 
