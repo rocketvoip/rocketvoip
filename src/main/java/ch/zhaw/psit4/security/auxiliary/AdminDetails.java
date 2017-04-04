@@ -30,6 +30,10 @@ public class AdminDetails implements UserDetails {
         computeAuthorities();
     }
 
+    public boolean isSuperAdmin() {
+        return superAdmin;
+    }
+
     public String getFirstname() {
         return firstname;
     }
