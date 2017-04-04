@@ -19,7 +19,7 @@ public class SipClientDtoPartialMatcher extends TypeSafeMatcher<SipClientDto> {
     }
 
     @Factory
-    public static Matcher sipClientDtoAlmostEqualTo(SipClientDto other) {
+    public static Matcher<SipClientDto> sipClientDtoAlmostEqualTo(SipClientDto other) {
         return new SipClientDtoPartialMatcher(other);
     }
 

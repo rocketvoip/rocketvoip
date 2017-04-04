@@ -19,7 +19,7 @@ public class SipClientDtoEqualTo extends TypeSafeMatcher<SipClientDto> {
     }
 
     @Factory
-    public static Matcher sipClientDtoEqualTo(SipClientDto other) {
+    public static Matcher<SipClientDto> sipClientDtoEqualTo(SipClientDto other) {
         return new SipClientDtoEqualTo(other);
     }
 

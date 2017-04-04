@@ -7,7 +7,7 @@ import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import ch.zhaw.psit4.domain.helper.DialPlanTestHelper;
 import ch.zhaw.psit4.domain.helper.SipClientTestHelper;
 import ch.zhaw.psit4.helper.ZipStreamTestHelper;
-import ch.zhaw.psit4.services.interfaces.ConfigControllerServiceInterface;
+import ch.zhaw.psit4.services.interfaces.ConfigServiceInterface;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,18 +39,18 @@ public class ConfigControllerServiceImplIT {
     private SipClientRepository sipClientRepository;
 
     @Autowired
-    private ConfigControllerServiceInterface configControllerServiceInterface;
+    private ConfigServiceInterface configServiceInterface;
 
     @Test(expected = InvalidConfigurationException.class)
     public void getAsteriskConfigurationWithNoSipClients() throws Exception {
-        configControllerServiceInterface.getAsteriskConfiguration();
+        configServiceInterface.getAsteriskConfiguration();
     }
 
     @Test
     public void getAsteriskConfigurationWithOneSipClient() throws Exception {
         setupDatabase(1);
 
-        ByteArrayOutputStream baos = configControllerServiceInterface.getAsteriskConfiguration();
+        ByteArrayOutputStream baos = configServiceInterface.getAsteriskConfiguration();
         ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(baos.toByteArray()));
 
         String[] expectedNames = {"sip.conf", "extensions.conf"};
