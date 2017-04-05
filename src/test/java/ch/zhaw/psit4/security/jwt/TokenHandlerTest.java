@@ -6,21 +6,26 @@ import ch.zhaw.psit4.security.jwt.mocks.UserDetailsServiceMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import static ch.zhaw.psit4.helper.matchers.AdminDetailsEqualTo.adminDetailsEqualTo;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
 
 /**
  * @author Rafael Ostertag
  */
 public class TokenHandlerTest {
     private TokenHandler tokenHandler;
+    private UserDetailsService userDetailsServiceMock;
     private Admin admin;
 
     @Before
     public void setUp() throws Exception {
         admin = new Admin(null, "testfirstname", "testlastname", "test", "testpw", false);
-        tokenHandler = new TokenHandler("testsecret", UserDetailsServiceMock.makeMockForAdmin(admin));
+        userDetailsServiceMock = UserDetailsServiceMock.makeMockForAdmin(admin);
+        tokenHandler = new TokenHandler("testsecret", userDetailsServiceMock);
     }
 
     @Test
@@ -31,5 +36,6 @@ public class TokenHandlerTest {
         UserDetails actual = tokenHandler.parseUserFromToken(token);
 
         assertThat((AdminDetails) actual, adminDetailsEqualTo(adminDetails));
+        verify(userDetailsServiceMock, atLeastOnce()).loadUserByUsername(adminDetails.getUsername());
     }
 }
