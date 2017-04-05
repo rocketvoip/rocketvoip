@@ -1,8 +1,9 @@
 package ch.zhaw.psit4.security.jwt;
 
 import ch.zhaw.psit4.data.jpa.entities.Admin;
+import ch.zhaw.psit4.helper.AdminUserFixture;
+import ch.zhaw.psit4.helper.mocks.UserDetailsServiceMock;
 import ch.zhaw.psit4.security.auxiliary.AdminDetails;
-import ch.zhaw.psit4.security.jwt.mocks.UserDetailsServiceMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,7 +24,7 @@ public class TokenHandlerTest {
 
     @Before
     public void setUp() throws Exception {
-        admin = new Admin(null, "testfirstname", "testlastname", "test", "testpw", false);
+        admin = AdminUserFixture.createAdminEntityFixture();
         userDetailsServiceMock = UserDetailsServiceMock.makeMockForAdmin(admin);
         tokenHandler = new TokenHandler("testsecret", userDetailsServiceMock);
     }
