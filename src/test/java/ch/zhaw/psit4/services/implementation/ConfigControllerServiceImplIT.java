@@ -61,6 +61,21 @@ public class ConfigControllerServiceImplIT {
 
     }
 
+    @Test
+    public void getAsteriskConfigurationWithMultipleSipClients() throws Exception {
+        setupDatabase(2);
+
+        ByteArrayOutputStream baos = configServiceInterface.getAsteriskConfiguration();
+        ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(baos.toByteArray()));
+
+        String[] expectedNames = {"sip.conf", "extensions.conf"};
+        String[] expectedContent = {sipClientTestHelper.generateSipClientConfig(1, 2),
+                dialPlanTestHelper.getSimpleDialPlan(1, 2)};
+
+        zipStreamTestHelper.testZipEntryContent(zipInputStream, expectedNames, expectedContent);
+
+    }
+
     private void setupDatabase(int number) {
         Company company = new Company(COMPANY);
         companyRepository.deleteAll();

@@ -5,7 +5,10 @@ import ch.zhaw.psit4.data.jpa.entities.SipClient;
 import ch.zhaw.psit4.data.jpa.repositories.CompanyRepository;
 import ch.zhaw.psit4.data.jpa.repositories.SipClientRepository;
 import ch.zhaw.psit4.dto.SipClientDto;
-import ch.zhaw.psit4.services.exceptions.*;
+import ch.zhaw.psit4.services.exceptions.SipClientCreationException;
+import ch.zhaw.psit4.services.exceptions.SipClientDeletionException;
+import ch.zhaw.psit4.services.exceptions.SipClientRetrievalException;
+import ch.zhaw.psit4.services.exceptions.SipClientUpdateException;
 import ch.zhaw.psit4.services.interfaces.SipClientServiceInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,7 +79,6 @@ public class SipClientServiceImpl implements SipClientServiceInterface {
 
     @Override
     public SipClientDto createSipClient(SipClientDto newSipClient) {
-        checkCompanyExistence(newSipClient, getExistingCompany(newSipClient));
         try {
             SipClient sipClient = sipClientDtoToSipClientEntity(newSipClient);
             sipClient = sipClientRepository.save(sipClient);
@@ -89,8 +91,7 @@ public class SipClientServiceImpl implements SipClientServiceInterface {
 
     @Override
     public SipClientDto updateSipClient(SipClientDto sipClientDto) {
-        Company existingCompany = getExistingCompany(sipClientDto);
-        checkCompanyExistence(sipClientDto, existingCompany);
+        Company existingCompany = companyRepository.findOne(sipClientDto.getCompany().getId());
         try {
 
             SipClient existingSipClient = sipClientRepository.findOne(sipClientDto.getId());
@@ -127,28 +128,6 @@ public class SipClientServiceImpl implements SipClientServiceInterface {
             String message = String.format("Could not delete SIP Client with id %d", id);
             LOGGER.error(message, e);
             throw new SipClientDeletionException(message, e);
-        }
-    }
-
-    private Company getExistingCompany(SipClientDto sipClientDto) {
-        if (sipClientDto.getCompany() == null) {
-            String message = "Company was null";
-            LOGGER.error(message);
-            throw new CompanyRetrievalException(message);
-        }
-        if (sipClientDto.getCompany().getId() == null) {
-            String message = "Company id was null";
-            LOGGER.error(message);
-            throw new CompanyRetrievalException(message);
-        }
-        return companyRepository.findOne(sipClientDto.getCompany().getId());
-    }
-
-    private void checkCompanyExistence(SipClientDto sipClientDto, Company existingCompany) {
-        if (existingCompany == null) {
-            String message = String.format("Could not find company with id %d", sipClientDto.getCompany().getId());
-            LOGGER.error(message);
-            throw new CompanyRetrievalException(message);
         }
     }
 }
