@@ -1,6 +1,7 @@
 package ch.zhaw.psit4.data.jpa.entities;
 
-import ch.zhaw.psit4.data.jpa.entities.converters.PasswordHashConverter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -11,6 +12,7 @@ import java.util.Collection;
  */
 @Entity
 public class Admin implements Serializable {
+    private static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 
     @Id
     @GeneratedValue
@@ -28,7 +30,6 @@ public class Admin implements Serializable {
     @Column(nullable = false)
     private String username;
     @Column(nullable = false)
-    @Convert(converter = PasswordHashConverter.class)
     private String password;
     @Column
     private boolean superAdmin;
@@ -44,7 +45,7 @@ public class Admin implements Serializable {
         this.firstname = firstname;
         this.lastname = lastname;
         this.username = username;
-        this.password = password;
+        setPassword(password);
         this.superAdmin = superAdmin;
     }
 
@@ -61,7 +62,7 @@ public class Admin implements Serializable {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = PASSWORD_ENCODER.encode(password);
     }
 
     public Collection<Company> getCompany() {
