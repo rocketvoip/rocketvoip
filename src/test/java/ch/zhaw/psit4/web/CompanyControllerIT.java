@@ -2,8 +2,9 @@ package ch.zhaw.psit4.web;
 
 import ch.zhaw.psit4.data.jpa.repositories.CompanyRepository;
 import ch.zhaw.psit4.dto.CompanyDto;
+import ch.zhaw.psit4.helper.CompanyGenerator;
 import ch.zhaw.psit4.helper.Json;
-import ch.zhaw.psit4.services.implementation.CompanyGenerator;
+import ch.zhaw.psit4.helper.RESTObjectCreator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import static ch.zhaw.psit4.helper.matchers.CompanyDtoEqualTo.companyDtoEqualTo;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayContainingInAnyOrder;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -33,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class CompanyControllerIT {
     private static final String V1_COMPANIES_PATH = "/v1/companies";
     private static final int NON_EXISTING_COMPANY_ID = 100;
-    private final CompanyGenerator companyGenerator = new CompanyGenerator();
+    private final RESTObjectCreator restObjectCreator = new RESTObjectCreator();
 
     @Autowired
     private CompanyRepository companyRepository;
@@ -46,7 +48,7 @@ public class CompanyControllerIT {
     @Before
     public void setUp() throws Exception {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
-
+        restObjectCreator.setMockMvc(mockMvc);
         companyRepository.deleteAll();
     }
 
@@ -92,7 +94,7 @@ public class CompanyControllerIT {
 
     @Test
     public void updateNonExistingCompany() throws Exception {
-        CompanyDto companyDto = companyGenerator.getCompanyDto(1);
+        CompanyDto companyDto = CompanyGenerator.getCompanyDto(1);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.put(V1_COMPANIES_PATH + "/{id}", NON_EXISTING_COMPANY_ID)
@@ -119,7 +121,7 @@ public class CompanyControllerIT {
 
     @Test
     public void createCompany() throws Exception {
-        CompanyDto createdCompanyDto = createNewCompany(1);
+        CompanyDto createdCompanyDto = restObjectCreator.createNewCompany(1);
 
         String response = mockMvc.perform(
                 MockMvcRequestBuilders.get(V1_COMPANIES_PATH + "/{id}", createdCompanyDto.getId())
@@ -136,8 +138,8 @@ public class CompanyControllerIT {
 
     @Test
     public void getAllCompanies() throws Exception {
-        CompanyDto createdCompanyDto1 = createNewCompany(1);
-        CompanyDto createdCompanyDto2 = createNewCompany(2);
+        CompanyDto createdCompanyDto1 = restObjectCreator.createNewCompany(1);
+        CompanyDto createdCompanyDto2 = restObjectCreator.createNewCompany(2);
 
         String response = mockMvc.perform(
                 MockMvcRequestBuilders.get(V1_COMPANIES_PATH)
@@ -159,9 +161,9 @@ public class CompanyControllerIT {
 
     @Test
     public void updateCompany() throws Exception {
-        CompanyDto createdCompany1 = createNewCompany(1);
+        CompanyDto createdCompany1 = restObjectCreator.createNewCompany(1);
 
-        CompanyDto updatedCompany = companyGenerator.getCompanyDto(2);
+        CompanyDto updatedCompany = CompanyGenerator.getCompanyDto(2);
 
         updatedCompany.setId(createdCompany1.getId());
 
@@ -192,7 +194,7 @@ public class CompanyControllerIT {
 
     @Test
     public void deleteCompany() throws Exception {
-        CompanyDto createdCompany1 = createNewCompany(1);
+        CompanyDto createdCompany1 = restObjectCreator.createNewCompany(1);
         mockMvc.perform(
                 MockMvcRequestBuilders.delete(V1_COMPANIES_PATH + "/{id}", createdCompany1.getId())
                         .accept(MediaType.APPLICATION_JSON_UTF8)
@@ -208,24 +210,5 @@ public class CompanyControllerIT {
         ).andExpect(
                 status().isNotFound()
         );
-    }
-
-    private CompanyDto createNewCompany(int number) throws Exception {
-        CompanyDto companyDto = companyGenerator.getCompanyDto(number);
-
-        String creationResponse = mockMvc.perform(
-                MockMvcRequestBuilders.post(V1_COMPANIES_PATH)
-                        .content(Json.toJson(companyDto))
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
-        ).andExpect(
-                status().isCreated()
-        ).andExpect(
-                jsonPath("$.id").value(not(equalTo(companyDto.getId())))
-        ).andExpect(
-                jsonPath("$.name").value(equalTo(companyDto.getName()))
-        ).andReturn().getResponse().getContentAsString();
-
-        return Json.toObjectTypeSafe(creationResponse, CompanyDto.class);
     }
 }

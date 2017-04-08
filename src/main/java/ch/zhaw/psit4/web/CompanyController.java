@@ -23,8 +23,8 @@ import java.util.List;
 public class CompanyController {
     private final CompanyServiceInterface companyServiceInterface;
 
-    public CompanyController(CompanyServiceInterface companyServiceImpl) {
-        this.companyServiceInterface = companyServiceImpl;
+    public CompanyController(CompanyServiceInterface companyService) {
+        this.companyServiceInterface = companyService;
     }
 
     @GetMapping(path = "/companies", produces = MediaType

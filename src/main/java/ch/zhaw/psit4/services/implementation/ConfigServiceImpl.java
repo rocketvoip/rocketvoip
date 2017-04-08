@@ -14,7 +14,7 @@ import ch.zhaw.psit4.domain.interfaces.DialPlanConfigurationInterface;
 import ch.zhaw.psit4.domain.interfaces.SipClientConfigurationInterface;
 import ch.zhaw.psit4.domain.sipclient.SipClient;
 import ch.zhaw.psit4.domain.sipclient.SipClientConfigurationChanSip;
-import ch.zhaw.psit4.services.interfaces.ConfigControllerServiceInterface;
+import ch.zhaw.psit4.services.interfaces.ConfigServiceInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -29,15 +29,15 @@ import java.util.List;
  * @author Jona Braun
  */
 @Service
-public class ConfigControllerImplService implements ConfigControllerServiceInterface {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigControllerImplService.class);
+public class ConfigServiceImpl implements ConfigServiceInterface {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigServiceImpl.class);
     private final SipClientValidator sipClientValidator = new SipClientValidator();
     private SipClientConfigurationInterface sipClientConfiguration;
     private DialPlanConfigurationInterface dialPlanConfigurationChanSip;
     private SipClientRepository sipClientRepository;
     private CompanyRepository companyRepository;
 
-    public ConfigControllerImplService(SipClientRepository sipClientRepository, CompanyRepository companyRepository) {
+    public ConfigServiceImpl(SipClientRepository sipClientRepository, CompanyRepository companyRepository) {
         this.sipClientRepository = sipClientRepository;
         this.companyRepository = companyRepository;
         sipClientConfiguration = new SipClientConfigurationChanSip();

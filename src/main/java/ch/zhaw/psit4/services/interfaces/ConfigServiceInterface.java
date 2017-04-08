@@ -8,7 +8,7 @@ import java.io.ByteArrayOutputStream;
  * @author Jona Braun
  */
 @FunctionalInterface
-public interface ConfigControllerServiceInterface {
+public interface ConfigServiceInterface {
 
     /**
      * Puts together the asterisk configuration.

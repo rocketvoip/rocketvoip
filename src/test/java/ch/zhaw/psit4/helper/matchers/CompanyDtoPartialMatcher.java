@@ -19,7 +19,7 @@ public class CompanyDtoPartialMatcher extends TypeSafeMatcher<CompanyDto> {
     }
 
     @Factory
-    public static Matcher companyDtoAlmostEqualTo(CompanyDto other) {
+    public static Matcher<CompanyDto> companyDtoAlmostEqualTo(CompanyDto other) {
         return new CompanyDtoPartialMatcher(other);
     }
 
