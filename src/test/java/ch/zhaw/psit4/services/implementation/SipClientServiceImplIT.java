@@ -7,7 +7,10 @@ import ch.zhaw.psit4.fixtures.database.BeanConfiguration;
 import ch.zhaw.psit4.fixtures.database.CompanyEntity;
 import ch.zhaw.psit4.fixtures.database.DatabaseFixtureBuilder;
 import ch.zhaw.psit4.fixtures.dto.SipClientGenerator;
-import ch.zhaw.psit4.services.exceptions.*;
+import ch.zhaw.psit4.services.exceptions.SipClientCreationException;
+import ch.zhaw.psit4.services.exceptions.SipClientDeletionException;
+import ch.zhaw.psit4.services.exceptions.SipClientRetrievalException;
+import ch.zhaw.psit4.services.exceptions.SipClientUpdateException;
 import ch.zhaw.psit4.services.interfaces.SipClientServiceInterface;
 import org.junit.Before;
 import org.junit.Test;
@@ -102,8 +105,8 @@ public class SipClientServiceImplIT {
         sipClientServiceInterface.createSipClient(sipClientDto);
     }
 
-    @Test(expected = CompanyRetrievalException.class)
-    public void createSipClientNonExistentCompanyID() throws Exception {
+    @Test(expected = SipClientCreationException.class)
+    public void createSipClientNonExistentCompany() throws Exception {
         Company companyNonExistentID = CompanyEntity.createCompany(123);
         companyNonExistentID.setId((long) 123);
 
