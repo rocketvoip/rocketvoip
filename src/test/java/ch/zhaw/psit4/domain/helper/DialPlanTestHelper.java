@@ -4,6 +4,8 @@ import ch.zhaw.psit4.domain.dialplan.DialPlanContext;
 import ch.zhaw.psit4.domain.dialplan.DialPlanExtension;
 import ch.zhaw.psit4.domain.dialplan.applications.DialApp;
 import ch.zhaw.psit4.domain.sipclient.SipClient;
+import ch.zhaw.psit4.fixtures.general.CompanyData;
+import ch.zhaw.psit4.fixtures.general.SipClientData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,19 +14,17 @@ import java.util.List;
  * Helper for a domain specific dial plan.
  */
 public class DialPlanTestHelper {
-    private static final String USERNAME = "Name";
-    private static final String PHONE = "Phone";
     private SipClientTestHelper sipClientTestHelper = new SipClientTestHelper();
 
     /**
-     * Creates a dial plan with the company name prefix "acme".
+     * Creates a dial plan with the company name prefix CompanyData.COMPANY_PREFIX.
      *
      * @param numberOfContext the number of contexts (companies)
      * @param numberOfClients the number of sip clients per context (company)
      * @return the dial plan
      */
     public String getSimpleDialPlan(int numberOfContext, int numberOfClients) {
-        return getSimpleDialPlanWithCompanyPrefix(numberOfContext, numberOfClients, "acme");
+        return getSimpleDialPlanWithCompanyPrefix(numberOfContext, numberOfClients, CompanyData.COMPANY_PREFIX);
     }
 
     /**
@@ -52,8 +52,8 @@ public class DialPlanTestHelper {
         for (int i = 1; i <= number; i++) {
 
             simpleDialPlan += "exten=> " +
-                    PHONE + i + ", 1, " +
-                    "Dial(SIP/" + USERNAME + i + "-" +
+                    SipClientData.getSipClientPhoneNumber(i) + ", 1, " +
+                    "Dial(SIP/" + SipClientData.getSipClientLabel(i) + "-" +
                     company.replaceAll(" ", "-") + ", 30)\n";
         }
         return simpleDialPlan + "\n";
@@ -80,19 +80,20 @@ public class DialPlanTestHelper {
      * Generates one DialPlanContext
      *
      * @param numberOfClients number of clients in this context
-     * @param companyNumber   then number appended to "acme"
+     * @param companyNumber   then number appended to CompanyData.COMPANY_PREFIX
      * @return the generated context
      */
     public DialPlanContext getDialPlanContext(int numberOfClients, int companyNumber) {
         DialPlanContext dialPlanContext = new DialPlanContext();
-        dialPlanContext.setContextName("acme" + companyNumber);
+        dialPlanContext.setContextName(CompanyData.COMPANY_PREFIX + companyNumber);
         List<DialPlanExtension> dialPlanExtensionList = getDialPlanExtensionList(numberOfClients, companyNumber);
         dialPlanContext.setDialPlanExtensionList(dialPlanExtensionList);
         return dialPlanContext;
     }
 
     private List<DialPlanExtension> getDialPlanExtensionList(int numberOfClients, int companyNumber) {
-        List<SipClient> sipClients = sipClientTestHelper.generateSipClientList(numberOfClients, "acme" + companyNumber);
+        List<SipClient> sipClients = sipClientTestHelper.generateSipClientList(numberOfClients, CompanyData
+                .COMPANY_PREFIX + companyNumber);
         List<DialPlanExtension> dialPlanExtensionList = new ArrayList<>();
         for (int j = 1; j <= numberOfClients; j++) {
 

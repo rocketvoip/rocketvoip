@@ -6,7 +6,7 @@ import ch.zhaw.psit4.dto.SipClientDto;
 import ch.zhaw.psit4.fixtures.database.BeanConfiguration;
 import ch.zhaw.psit4.fixtures.database.CompanyEntity;
 import ch.zhaw.psit4.fixtures.database.DatabaseFixtureBuilder;
-import ch.zhaw.psit4.fixtures.dto.SipClientGenerator;
+import ch.zhaw.psit4.fixtures.dto.SipClientDtoGenerator;
 import ch.zhaw.psit4.services.exceptions.SipClientCreationException;
 import ch.zhaw.psit4.services.exceptions.SipClientDeletionException;
 import ch.zhaw.psit4.services.exceptions.SipClientRetrievalException;
@@ -74,7 +74,7 @@ public class SipClientServiceImplIT {
         CompanyDto companyDto = CompanyServiceImpl.companyEntityToCompanyDto(
                 databaseFixtureBuilder2.getCompany()
         );
-        SipClientDto sipClientDto = SipClientGenerator.createTestSipClientDto(
+        SipClientDto sipClientDto = SipClientDtoGenerator.createTestSipClientDto(
                 companyDto,
                 2
         );
@@ -100,7 +100,7 @@ public class SipClientServiceImplIT {
 
     @Test(expected = SipClientCreationException.class)
     public void createSipClientNullCompany() throws Exception {
-        SipClientDto sipClientDto = SipClientGenerator.createTestSipClientDto((CompanyDto) null, 10);
+        SipClientDto sipClientDto = SipClientDtoGenerator.createTestSipClientDto((CompanyDto) null, 10);
 
         sipClientServiceInterface.createSipClient(sipClientDto);
     }
@@ -110,7 +110,7 @@ public class SipClientServiceImplIT {
         Company companyNonExistentID = CompanyEntity.createCompany(123);
         companyNonExistentID.setId((long) 123);
 
-        SipClientDto sipClientDto = SipClientGenerator.createTestSipClientDto(companyNonExistentID, 10);
+        SipClientDto sipClientDto = SipClientDtoGenerator.createTestSipClientDto(companyNonExistentID, 10);
 
         sipClientServiceInterface.createSipClient(sipClientDto);
     }
@@ -127,7 +127,7 @@ public class SipClientServiceImplIT {
 
     @Test(expected = SipClientDeletionException.class)
     public void deleteNonExistingSipClient() throws Exception {
-        sipClientServiceInterface.deleteSipClient(SipClientGenerator.NON_EXISTING_ID);
+        sipClientServiceInterface.deleteSipClient(SipClientDtoGenerator.NON_EXISTING_ID);
     }
 
     @Test(expected = SipClientCreationException.class)
@@ -148,9 +148,9 @@ public class SipClientServiceImplIT {
         );
 
         SipClientDto nonExistingSipClient =
-                SipClientGenerator.createTestSipClientDto(
+                SipClientDtoGenerator.createTestSipClientDto(
                         existingCompanyDto,
-                        SipClientGenerator.NON_EXISTING_ID
+                        SipClientDtoGenerator.NON_EXISTING_ID
                 );
         sipClientServiceInterface.updateSipClient(nonExistingSipClient);
     }
@@ -161,7 +161,7 @@ public class SipClientServiceImplIT {
                 databaseFixtureBuilder2.getSipClientList().get(2)
         );
 
-        SipClientDto newSipClientDto = SipClientGenerator.createTestSipClientDto((CompanyDto) null, 4);
+        SipClientDto newSipClientDto = SipClientDtoGenerator.createTestSipClientDto((CompanyDto) null, 4);
         newSipClientDto.setId(existingSipClientDto.getId());
         newSipClientDto.setCompany(existingSipClientDto.getCompany());
 

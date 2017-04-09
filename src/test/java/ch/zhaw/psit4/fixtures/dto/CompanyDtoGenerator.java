@@ -3,8 +3,8 @@ package ch.zhaw.psit4.fixtures.dto;
 import ch.zhaw.psit4.dto.CompanyDto;
 import ch.zhaw.psit4.fixtures.general.CompanyData;
 
-public final class CompanyGenerator {
-    private CompanyGenerator() {
+public final class CompanyDtoGenerator {
+    private CompanyDtoGenerator() {
         // intentionally empty
     }
 

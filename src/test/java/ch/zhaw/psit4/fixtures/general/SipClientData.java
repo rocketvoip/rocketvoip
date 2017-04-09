@@ -6,12 +6,16 @@ package ch.zhaw.psit4.fixtures.general;
  * @author Rafael Ostertag
  */
 public final class SipClientData {
+
+    public static final String SIP_CLIENT_SECRET_PREFIX = "SipClientSecret";
+    public static final String SIP_CLIENT_LABEL_PREFIX = "SipClientLabel";
+
     private SipClientData() {
         // intentionally empty
     }
 
     public static String getSipClientSecret(int number) {
-        return "SipClientSecret" + number;
+        return SIP_CLIENT_SECRET_PREFIX + number;
     }
 
     public static String getSipClientPhoneNumber(int number) {
@@ -19,6 +23,6 @@ public final class SipClientData {
     }
 
     public static String getSipClientLabel(int number) {
-        return "SipClientLabel" + number;
+        return SIP_CLIENT_LABEL_PREFIX + number;
     }
 }

@@ -3,7 +3,7 @@ package ch.zhaw.psit4.web;
 import ch.zhaw.psit4.dto.CompanyDto;
 import ch.zhaw.psit4.fixtures.database.BeanConfiguration;
 import ch.zhaw.psit4.fixtures.database.DatabaseFixtureBuilder;
-import ch.zhaw.psit4.fixtures.dto.CompanyGenerator;
+import ch.zhaw.psit4.fixtures.dto.CompanyDtoGenerator;
 import ch.zhaw.psit4.helper.Json;
 import ch.zhaw.psit4.services.implementation.CompanyServiceImpl;
 import org.junit.Before;
@@ -97,7 +97,7 @@ public class CompanyControllerIT {
 
     @Test
     public void updateNonExistingCompany() throws Exception {
-        CompanyDto companyDto = CompanyGenerator.getCompanyDto(1);
+        CompanyDto companyDto = CompanyDtoGenerator.getCompanyDto(1);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.put(V1_COMPANIES_PATH + "/{id}", NON_EXISTING_COMPANY_ID)
@@ -124,7 +124,7 @@ public class CompanyControllerIT {
 
     @Test
     public void createCompany() throws Exception {
-        CompanyDto companyDto = CompanyGenerator.getCompanyDto(1);
+        CompanyDto companyDto = CompanyDtoGenerator.getCompanyDto(1);
 
         String creationResponse = mockMvc.perform(
                 MockMvcRequestBuilders.post("/v1/companies")
@@ -189,7 +189,7 @@ public class CompanyControllerIT {
                 databaseFixtureBuilder1.getCompany()
         );
 
-        CompanyDto updatedCompany = CompanyGenerator.getCompanyDto(2);
+        CompanyDto updatedCompany = CompanyDtoGenerator.getCompanyDto(2);
         updatedCompany.setId(existingCompany.getId());
 
         String putResult = mockMvc.perform(

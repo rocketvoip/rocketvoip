@@ -7,10 +7,10 @@ import ch.zhaw.psit4.fixtures.general.SipClientData;
 
 import static ch.zhaw.psit4.services.implementation.CompanyServiceImpl.companyEntityToCompanyDto;
 
-public final class SipClientGenerator {
+public final class SipClientDtoGenerator {
     public static final long NON_EXISTING_ID = 100;
 
-    private SipClientGenerator() {
+    private SipClientDtoGenerator() {
         // intentionally empty
     }
 

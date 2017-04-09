@@ -3,7 +3,7 @@ package ch.zhaw.psit4.services.implementation;
 import ch.zhaw.psit4.dto.CompanyDto;
 import ch.zhaw.psit4.fixtures.database.BeanConfiguration;
 import ch.zhaw.psit4.fixtures.database.DatabaseFixtureBuilder;
-import ch.zhaw.psit4.fixtures.dto.CompanyGenerator;
+import ch.zhaw.psit4.fixtures.dto.CompanyDtoGenerator;
 import ch.zhaw.psit4.services.exceptions.CompanyCreationException;
 import ch.zhaw.psit4.services.exceptions.CompanyDeletionException;
 import ch.zhaw.psit4.services.exceptions.CompanyRetrievalException;
@@ -58,13 +58,13 @@ public class CompanyServiceImplIT {
 
         assertThat(companyDtoList, hasSize(1));
 
-        CompanyDto companyDto1 = CompanyGenerator.getCompanyDto(1);
+        CompanyDto companyDto1 = CompanyDtoGenerator.getCompanyDto(1);
         assertThat(companyDtoList, contains(companyDtoAlmostEqualTo(companyDto1)));
     }
 
     @Test
     public void createCompany() throws Exception {
-        CompanyDto companyDto = CompanyGenerator.getCompanyDto(1);
+        CompanyDto companyDto = CompanyDtoGenerator.getCompanyDto(1);
         CompanyDto actual = companyServiceImpl.createCompany(companyDto);
 
         assertThat(actual, companyDtoAlmostEqualTo(companyDto));
@@ -73,12 +73,12 @@ public class CompanyServiceImplIT {
 
     @Test
     public void updateCompany() throws Exception {
-        CompanyDto companyDto = CompanyGenerator.getCompanyDto(1);
+        CompanyDto companyDto = CompanyDtoGenerator.getCompanyDto(1);
         CompanyDto newlyCreatedCompany = companyServiceImpl.createCompany(companyDto);
 
         assertThat(newlyCreatedCompany, companyDtoAlmostEqualTo(companyDto));
 
-        CompanyDto companyUpdate = CompanyGenerator.getCompanyDto(2);
+        CompanyDto companyUpdate = CompanyDtoGenerator.getCompanyDto(2);
         companyUpdate.setId(newlyCreatedCompany.getId());
 
         CompanyDto actual = companyServiceImpl.updateCompany(companyUpdate);
@@ -88,7 +88,7 @@ public class CompanyServiceImplIT {
 
     @Test
     public void getCompany() throws Exception {
-        CompanyDto companyDto = CompanyGenerator.getCompanyDto(10);
+        CompanyDto companyDto = CompanyDtoGenerator.getCompanyDto(10);
 
         CompanyDto actualCreated = companyServiceImpl.createCompany(companyDto);
 
@@ -99,7 +99,7 @@ public class CompanyServiceImplIT {
 
     @Test(expected = CompanyRetrievalException.class)
     public void deleteCompany() throws Exception {
-        CompanyDto companyDto = CompanyGenerator.getCompanyDto(10);
+        CompanyDto companyDto = CompanyDtoGenerator.getCompanyDto(10);
 
         CompanyDto actualCreated = companyServiceImpl.createCompany(companyDto);
 
@@ -120,7 +120,7 @@ public class CompanyServiceImplIT {
 
     @Test(expected = CompanyUpdateException.class)
     public void updateInvalidCompany() throws Exception {
-        companyServiceImpl.updateCompany(CompanyGenerator.getCompanyDto(NON_EXISTENT_COMPANY_ID));
+        companyServiceImpl.updateCompany(CompanyDtoGenerator.getCompanyDto(NON_EXISTENT_COMPANY_ID));
     }
 
 }
