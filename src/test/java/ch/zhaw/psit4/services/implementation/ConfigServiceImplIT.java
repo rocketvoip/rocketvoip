@@ -25,7 +25,7 @@ import java.util.zip.ZipInputStream;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public class ConfigControllerServiceImplIT {
+public class ConfigServiceImplIT {
 
     private static final String COMPANY = "acme1";
     private final ZipStreamTestHelper zipStreamTestHelper = new ZipStreamTestHelper();
