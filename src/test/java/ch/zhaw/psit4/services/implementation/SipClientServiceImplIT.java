@@ -95,12 +95,9 @@ public class SipClientServiceImplIT {
         assertThat(expectedSipClientDto, sipClientDtoEqualTo(actual));
     }
 
-    @Test(expected = CompanyRetrievalException.class)
-    public void createSipClientNullCompanyID() throws Exception {
-        Company companyNullID = CompanyEntity.createCompany(0);
-        companyNullID.setId(null);
-
-        SipClientDto sipClientDto = SipClientGenerator.createTestSipClientDto(companyNullID, 10);
+    @Test(expected = SipClientCreationException.class)
+    public void createSipClientNullCompany() throws Exception {
+        SipClientDto sipClientDto = SipClientGenerator.createTestSipClientDto((CompanyDto) null, 10);
 
         sipClientServiceInterface.createSipClient(sipClientDto);
     }
