@@ -37,6 +37,18 @@ public class DatabaseFixtureBuilder {
         this.sipClientList = new HashMap<>();
     }
 
+    public SipClientRepository getSipClientRepository() {
+        return sipClientRepository;
+    }
+
+    public AdminRepository getAdminRepository() {
+        return adminRepository;
+    }
+
+    public CompanyRepository getCompanyRepository() {
+        return companyRepository;
+    }
+
     public DatabaseFixtureBuilder company(int number) {
         company.clear();
         company.add(CompanyEntity.createCompany(number));
