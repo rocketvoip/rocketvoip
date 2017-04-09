@@ -4,7 +4,7 @@ import ch.zhaw.psit4.dto.CompanyDto;
 import ch.zhaw.psit4.dto.SipClientDto;
 import ch.zhaw.psit4.fixtures.database.BeanConfiguration;
 import ch.zhaw.psit4.fixtures.database.DatabaseFixtureBuilder;
-import ch.zhaw.psit4.fixtures.dto.SipClientGenerator;
+import ch.zhaw.psit4.fixtures.dto.SipClientDtoGenerator;
 import ch.zhaw.psit4.helper.Json;
 import ch.zhaw.psit4.services.implementation.CompanyServiceImpl;
 import ch.zhaw.psit4.services.implementation.SipClientServiceImpl;
@@ -98,7 +98,7 @@ public class SipClientControllerIT {
 
     @Test
     public void updateNonExistingSipClient() throws Exception {
-        SipClientDto sipClientDto = SipClientGenerator.createTestSipClientDto((CompanyDto) null, 1);
+        SipClientDto sipClientDto = SipClientDtoGenerator.createTestSipClientDto((CompanyDto) null, 1);
         mockMvc.perform(
                 MockMvcRequestBuilders.put("/v1/sipclients/{id}", NON_EXISTING_USER_ID)
                         .content(Json.toJson(sipClientDto))
@@ -115,7 +115,7 @@ public class SipClientControllerIT {
         SipClientDto existingSipClient = SipClientServiceImpl.sipClientEntityToSipClientDto
                 (databaseFixtureBuilder1.getSipClientList().get(1));
 
-        SipClientDto updatedSipClient = SipClientGenerator.createTestSipClientDto(existingSipClient.getCompany(), 2);
+        SipClientDto updatedSipClient = SipClientDtoGenerator.createTestSipClientDto(existingSipClient.getCompany(), 2);
         updatedSipClient.setId(existingSipClient.getId());
 
         String putResult = mockMvc.perform(
@@ -163,7 +163,7 @@ public class SipClientControllerIT {
                 databaseFixtureBuilder2.getCompany()
         );
 
-        SipClientDto sipClientDto = SipClientGenerator.createTestSipClientDto(companyDto, 3);
+        SipClientDto sipClientDto = SipClientDtoGenerator.createTestSipClientDto(companyDto, 3);
         String creationResponse = mockMvc.perform(
                 MockMvcRequestBuilders.post("/v1/sipclients")
                         .content(Json.toJson(sipClientDto))
