@@ -1,7 +1,5 @@
 package ch.zhaw.psit4.web;
 
-import ch.zhaw.psit4.data.jpa.repositories.CompanyRepository;
-import ch.zhaw.psit4.data.jpa.repositories.SipClientRepository;
 import ch.zhaw.psit4.domain.helper.DialPlanTestHelper;
 import ch.zhaw.psit4.domain.helper.SipClientTestHelper;
 import ch.zhaw.psit4.dto.CompanyDto;
@@ -45,12 +43,6 @@ public class ConfigurationControllerIT {
 
     @Autowired
     private WebApplicationContext wac;
-
-    @Autowired
-    private CompanyRepository companyRepository;
-
-    @Autowired
-    private SipClientRepository sipClientRepository;
 
     private MockMvc mockMvc;
 
