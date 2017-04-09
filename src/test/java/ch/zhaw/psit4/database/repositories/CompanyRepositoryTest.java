@@ -1,21 +1,17 @@
 package ch.zhaw.psit4.database.repositories;
 
 import ch.zhaw.psit4.data.jpa.entities.Company;
-import ch.zhaw.psit4.data.jpa.repositories.AdminRepository;
 import ch.zhaw.psit4.data.jpa.repositories.CompanyRepository;
-import ch.zhaw.psit4.data.jpa.repositories.SipClientRepository;
+import ch.zhaw.psit4.fixtures.database.BeanConfiguration;
 import ch.zhaw.psit4.fixtures.database.CompanyEntity;
 import ch.zhaw.psit4.fixtures.database.DatabaseFixtureBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -26,6 +22,7 @@ import static org.junit.Assert.assertThat;
  */
 @RunWith(SpringRunner.class)
 @DataJpaTest
+@Import(BeanConfiguration.class)
 public class CompanyRepositoryTest {
     @Autowired
     private ApplicationContext applicationContext;
@@ -48,14 +45,4 @@ public class CompanyRepositoryTest {
         assertThat(actual.getName(), equalTo(CompanyEntity.getCompanyName(1)));
     }
 
-    @TestConfiguration
-    public static class Configuration {
-        @Bean
-        @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-        public static DatabaseFixtureBuilder databaseFixtureBuilder(CompanyRepository companyRepository,
-                                                                    AdminRepository adminRepository,
-                                                                    SipClientRepository sipClientRepository) {
-            return new DatabaseFixtureBuilder(companyRepository, adminRepository, sipClientRepository);
-        }
-    }
 }
