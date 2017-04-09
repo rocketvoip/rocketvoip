@@ -1,17 +1,21 @@
 package ch.zhaw.psit4.services.implementation;
 
-import ch.zhaw.psit4.data.jpa.repositories.CompanyRepository;
 import ch.zhaw.psit4.dto.CompanyDto;
-import ch.zhaw.psit4.helper.CompanyGenerator;
+import ch.zhaw.psit4.fixtures.database.BeanConfiguration;
+import ch.zhaw.psit4.fixtures.database.DatabaseFixtureBuilder;
+import ch.zhaw.psit4.fixtures.dto.CompanyGenerator;
 import ch.zhaw.psit4.services.exceptions.CompanyCreationException;
 import ch.zhaw.psit4.services.exceptions.CompanyDeletionException;
 import ch.zhaw.psit4.services.exceptions.CompanyRetrievalException;
 import ch.zhaw.psit4.services.exceptions.CompanyUpdateException;
 import ch.zhaw.psit4.services.interfaces.CompanyServiceInterface;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,28 +33,32 @@ import static org.junit.Assert.assertThat;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
+@Import(BeanConfiguration.class)
 public class CompanyServiceImplIT {
     private static final long NON_EXISTENT_COMPANY_ID = 124;
-    private final CompanyGenerator companyGenerator = new CompanyGenerator();
+    private DatabaseFixtureBuilder databaseFixtureBuilder;
+
     @Autowired
-    private CompanyRepository companyRepository;
+    private ApplicationContext applicationContext;
 
     @Autowired
     private CompanyServiceInterface companyServiceImpl;
 
+    @Before
+    public void setUp() throws Exception {
+        databaseFixtureBuilder = applicationContext.getBean(DatabaseFixtureBuilder.class);
+    }
+
     @Test
     public void getAllCompanies() throws Exception {
         // TODO exception when number is set to more then one ?!
-        companyRepository.save(CompanyGenerator.createCompanies(1));
+        databaseFixtureBuilder.company(1).build();
 
         List<CompanyDto> companyDtoList = companyServiceImpl.getAllCompanies();
 
         assertThat(companyDtoList, hasSize(1));
 
         CompanyDto companyDto1 = CompanyGenerator.getCompanyDto(1);
-        // CompanyDto companyDto2 = getCompanyDto(2);
-
-        // assertThat(companyDtoList, containsInAnyOrder(companyDtoAlmostEqualTo(companyDto1), companyDtoAlmostEqualTo(companyDto2)));
         assertThat(companyDtoList, contains(companyDtoAlmostEqualTo(companyDto1)));
     }
 

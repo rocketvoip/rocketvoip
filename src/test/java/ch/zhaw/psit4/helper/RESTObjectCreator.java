@@ -2,6 +2,8 @@ package ch.zhaw.psit4.helper;
 
 import ch.zhaw.psit4.dto.CompanyDto;
 import ch.zhaw.psit4.dto.SipClientDto;
+import ch.zhaw.psit4.fixtures.dto.CompanyGenerator;
+import ch.zhaw.psit4.fixtures.dto.SipClientGenerator;
 import org.hamcrest.CoreMatchers;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;

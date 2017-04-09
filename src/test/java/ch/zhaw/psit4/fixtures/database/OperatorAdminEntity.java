@@ -1,6 +1,7 @@
 package ch.zhaw.psit4.fixtures.database;
 
 import ch.zhaw.psit4.data.jpa.entities.Admin;
+import ch.zhaw.psit4.fixtures.general.OperatorAdminData;
 
 /**
  * Create Operator Admin entity fixtures. Difference to Admin entities is simply the superAdmin flag
@@ -21,27 +22,11 @@ public final class OperatorAdminEntity {
      */
     public static Admin createOperatorAdmin(int number) {
         return new Admin(null,
-                getOperatorAdminFirstname(number),
-                getOperatorAdminLastname(number),
-                getOperatorAdminUsername(number),
-                getOperatorAdminPassword(number),
+                OperatorAdminData.getOperatorAdminFirstname(number),
+                OperatorAdminData.getOperatorAdminLastname(number),
+                OperatorAdminData.getOperatorAdminUsername(number),
+                OperatorAdminData.getOperatorAdminPassword(number),
                 false);
-    }
-
-    public static String getOperatorAdminFirstname(int number) {
-        return "OperatorAdmin Firstname " + number;
-    }
-
-    public static String getOperatorAdminLastname(int number) {
-        return "OperatorAdmin Lastname " + number;
-    }
-
-    public static String getOperatorAdminPassword(int number) {
-        return "OperatorAdmin Password " + number;
-    }
-
-    public static String getOperatorAdminUsername(int number) {
-        return "operatoradmin.user" + number + "@local.host";
     }
 
 

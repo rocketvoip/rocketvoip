@@ -2,9 +2,9 @@ package ch.zhaw.psit4.web;
 
 import ch.zhaw.psit4.dto.CompanyDto;
 import ch.zhaw.psit4.dto.SipClientDto;
+import ch.zhaw.psit4.fixtures.dto.SipClientGenerator;
 import ch.zhaw.psit4.helper.Json;
 import ch.zhaw.psit4.helper.RESTObjectCreator;
-import ch.zhaw.psit4.helper.SipClientGenerator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

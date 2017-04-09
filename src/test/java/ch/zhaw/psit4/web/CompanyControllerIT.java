@@ -2,7 +2,7 @@ package ch.zhaw.psit4.web;
 
 import ch.zhaw.psit4.data.jpa.repositories.CompanyRepository;
 import ch.zhaw.psit4.dto.CompanyDto;
-import ch.zhaw.psit4.helper.CompanyGenerator;
+import ch.zhaw.psit4.fixtures.dto.CompanyGenerator;
 import ch.zhaw.psit4.helper.Json;
 import ch.zhaw.psit4.helper.RESTObjectCreator;
 import org.junit.Before;
