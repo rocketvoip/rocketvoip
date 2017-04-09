@@ -41,7 +41,7 @@ public class ConfigurationControllerIT {
     private final SipClientTestHelper sipClientTestHelper = new SipClientTestHelper();
     private final DialPlanTestHelper dialPlanTestHelper = new DialPlanTestHelper();
     private final ZipStreamTestHelper zipStreamTestHelper = new ZipStreamTestHelper();
-    private final RESTObjectCreator restObjectCreator = new RESTObjectCreator();
+    private RESTObjectCreator restObjectCreator;
 
     @Autowired
     private WebApplicationContext wac;
@@ -57,7 +57,7 @@ public class ConfigurationControllerIT {
     @Before
     public void setUp() throws Exception {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
-        restObjectCreator.setMockMvc(mockMvc);
+        restObjectCreator = new RESTObjectCreator(mockMvc, null);
     }
 
     @Test

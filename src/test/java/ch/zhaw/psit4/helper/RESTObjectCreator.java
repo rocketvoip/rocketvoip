@@ -17,36 +17,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class RESTObjectCreator {
 
-    private SipClientGenerator sipClientGenerator = new SipClientGenerator();
     private MockMvc mockMvc;
+    private CompanyDto companyDto;
 
-    /**
-     * Set the mockMvc and the companyDto before calling this method.
-     *
-     * @param number number of sipClient
-     * @return SipClientDto returned
-     * @throws Exception if Json.toJson failed
-     */
-    public SipClientDto createSipClient(int number) throws Exception {
-        SipClientDto sipClientDto = sipClientGenerator.createTestSipClientDto(number);
-        String creationResponse = mockMvc.perform(
-                MockMvcRequestBuilders.post("/v1/sipclients")
-                        .content(Json.toJson(sipClientDto))
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
-        ).andExpect(
-                MockMvcResultMatchers.status().isCreated()
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.id").value(CoreMatchers.not(CoreMatchers.equalTo(sipClientDto.getId())))
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.name").value(CoreMatchers.equalTo(sipClientDto.getName()))
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.phone").value(CoreMatchers.equalTo(sipClientDto.getPhone()))
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.secret").value(CoreMatchers.equalTo(sipClientDto.getSecret()))
-        ).andReturn().getResponse().getContentAsString();
+    public RESTObjectCreator(MockMvc mockMvc, CompanyDto companyDto) {
+        this.mockMvc = mockMvc;
+        this.companyDto = companyDto;
+    }
 
-        return Json.toObjectTypeSafe(creationResponse, SipClientDto.class);
+    public CompanyDto getCompanyDto() {
+        return companyDto;
+    }
+
+    public void setCompanyDto(CompanyDto companyDto) {
+        this.companyDto = companyDto;
     }
 
     /**
@@ -75,11 +59,34 @@ public class RESTObjectCreator {
         return Json.toObjectTypeSafe(creationResponse, CompanyDto.class);
     }
 
-    public void setMockMvc(MockMvc mockMvc) {
-        this.mockMvc = mockMvc;
+    /**
+     * Set the mockMvc and the companyDto before calling this method.
+     *
+     * @param number number of sipClient
+     * @return SipClientDto returned
+     * @throws Exception if Json.toJson failed
+     */
+    public SipClientDto createSipClient(int number) throws Exception {
+        SipClientDto sipClientDto = SipClientGenerator.createTestSipClientDto(companyDto, number);
+        String creationResponse = mockMvc.perform(
+                MockMvcRequestBuilders.post("/v1/sipclients")
+                        .content(Json.toJson(sipClientDto))
+                        .accept(MediaType.APPLICATION_JSON_UTF8)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        ).andExpect(
+                MockMvcResultMatchers.status().isCreated()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.id").value(CoreMatchers.not(CoreMatchers.equalTo(sipClientDto.getId())))
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.name").value(CoreMatchers.equalTo(sipClientDto.getName()))
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.phone").value(CoreMatchers.equalTo(sipClientDto.getPhone()))
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.secret").value(CoreMatchers.equalTo(sipClientDto.getSecret()))
+        ).andReturn().getResponse().getContentAsString();
+
+        return Json.toObjectTypeSafe(creationResponse, SipClientDto.class);
     }
 
-    public void setCompanyDto(CompanyDto companyDto) {
-        sipClientGenerator.setCompanyDto(companyDto);
-    }
+
 }
