@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CompanyGenerator {
-    public CompanyGenerator() {
+    private CompanyGenerator() {
     }
 
     public static List<Company> createCompanies(int number) {

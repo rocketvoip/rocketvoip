@@ -4,7 +4,6 @@ import ch.zhaw.psit4.dto.ErrorDto;
 import ch.zhaw.psit4.dto.SipClientDto;
 import ch.zhaw.psit4.services.exceptions.SipClientDeletionException;
 import ch.zhaw.psit4.services.exceptions.SipClientRetrievalException;
-import ch.zhaw.psit4.services.implementation.SipClientServiceImpl;
 import ch.zhaw.psit4.services.interfaces.SipClientServiceInterface;
 import ch.zhaw.psit4.web.utils.Utilities;
 import org.springframework.http.HttpStatus;
@@ -24,7 +23,7 @@ import java.util.List;
 public class SipClientController {
     private final SipClientServiceInterface sipClientServiceInterface;
 
-    public SipClientController(SipClientServiceImpl sipClientService) {
+    public SipClientController(SipClientServiceInterface sipClientService) {
         this.sipClientServiceInterface = sipClientService;
     }
 

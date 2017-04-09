@@ -7,7 +7,10 @@ import ch.zhaw.psit4.dto.CompanyDto;
 import ch.zhaw.psit4.dto.SipClientDto;
 import ch.zhaw.psit4.helper.CompanyGenerator;
 import ch.zhaw.psit4.helper.SipClientGenerator;
-import ch.zhaw.psit4.services.exceptions.*;
+import ch.zhaw.psit4.services.exceptions.SipClientCreationException;
+import ch.zhaw.psit4.services.exceptions.SipClientDeletionException;
+import ch.zhaw.psit4.services.exceptions.SipClientRetrievalException;
+import ch.zhaw.psit4.services.exceptions.SipClientUpdateException;
 import ch.zhaw.psit4.services.interfaces.SipClientServiceInterface;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,6 +49,7 @@ public class SipClientServiceImplIT {
     @Before
     public void setUp() throws Exception {
         setupDatabase();
+        sipClientGenerator.setCompany(company1);
     }
 
     @Test
@@ -54,9 +58,10 @@ public class SipClientServiceImplIT {
 
         assertThat(actual, hasSize(2));
 
-        SipClientDto testSipClient1 = SipClientGenerator.createTestSipClientDto(company1, 1);
+        SipClientDto testSipClient1 = sipClientGenerator.createTestSipClientDto(1);
         testSipClient1.setId(1);
-        SipClientDto testSipClient2 = SipClientGenerator.createTestSipClientDto(company2, 2);
+        sipClientGenerator.setCompany(company2);
+        SipClientDto testSipClient2 = sipClientGenerator.createTestSipClientDto(2);
         testSipClient2.setId(2);
         assertThat(actual, containsInAnyOrder(sipClientDtoAlmostEqualTo(testSipClient1), sipClientDtoAlmostEqualTo
                 (testSipClient2)));
@@ -64,7 +69,7 @@ public class SipClientServiceImplIT {
 
     @Test
     public void createSipClient() throws Exception {
-        SipClientDto sipClientDto = SipClientGenerator.createTestSipClientDto(company1, 1);
+        SipClientDto sipClientDto = sipClientGenerator.createTestSipClientDto(1);
 
         SipClientDto actual = sipClientServiceInterface.createSipClient(sipClientDto);
 
@@ -73,7 +78,7 @@ public class SipClientServiceImplIT {
 
     @Test
     public void getSipClient() throws Exception {
-        SipClientDto sipClientDto = SipClientGenerator.createTestSipClientDto(company1, 10);
+        SipClientDto sipClientDto = sipClientGenerator.createTestSipClientDto(10);
 
         SipClientDto actualCreated = sipClientServiceInterface.createSipClient(sipClientDto);
 
@@ -82,28 +87,30 @@ public class SipClientServiceImplIT {
         assertThat(sipClientDto, sipClientDtoAlmostEqualTo(actual));
     }
 
-    @Test(expected = CompanyRetrievalException.class)
+    @Test(expected = SipClientCreationException.class)
     public void createSipClientNullCompanyID() throws Exception {
         Company companyNullID = CompanyGenerator.getCompanyEntity(123);
 
-        SipClientDto sipClientDto = SipClientGenerator.createTestSipClientDto(companyNullID, 10);
+        sipClientGenerator.setCompany(companyNullID);
+        SipClientDto sipClientDto = sipClientGenerator.createTestSipClientDto(10);
 
         sipClientServiceInterface.createSipClient(sipClientDto);
     }
 
-    @Test(expected = CompanyRetrievalException.class)
+    @Test(expected = SipClientCreationException.class)
     public void createSipClientNonExistentCompanyID() throws Exception {
         Company companyNonExistentID = CompanyGenerator.getCompanyEntity(123);
         companyNonExistentID.setId((long) 123);
 
-        SipClientDto sipClientDto = SipClientGenerator.createTestSipClientDto(companyNonExistentID, 10);
+        sipClientGenerator.setCompany(companyNonExistentID);
+        SipClientDto sipClientDto = sipClientGenerator.createTestSipClientDto(10);
 
         sipClientServiceInterface.createSipClient(sipClientDto);
     }
 
     @Test(expected = SipClientRetrievalException.class)
     public void deleteSipClient() throws Exception {
-        SipClientDto sipClientDto = SipClientGenerator.createTestSipClientDto(company1, 1);
+        SipClientDto sipClientDto = sipClientGenerator.createTestSipClientDto(1);
         sipClientDto = sipClientServiceInterface.createSipClient(sipClientDto);
 
         sipClientServiceInterface.deleteSipClient(sipClientDto.getId());
@@ -119,26 +126,27 @@ public class SipClientServiceImplIT {
     @Test(expected = SipClientCreationException.class)
     public void createInvalidSipClient() throws Exception {
         SipClientDto sipClientDto = new SipClientDto();
-        CompanyDto companyDto = SipClientGenerator.createTestSipClientDto(company1, 1).getCompany();
+        CompanyDto companyDto = sipClientGenerator.createTestSipClientDto(1).getCompany();
         sipClientDto.setCompany(companyDto);
         sipClientServiceInterface.createSipClient(sipClientDto);
     }
 
     @Test(expected = SipClientUpdateException.class)
     public void updateInvalidSipClient() throws Exception {
-        SipClientDto nonExistingSipClient = SipClientGenerator.createTestSipClientDto(company1, SipClientGenerator
+        SipClientDto nonExistingSipClient = sipClientGenerator.createTestSipClientDto(SipClientGenerator
                 .NON_EXISTING_ID);
         sipClientServiceInterface.updateSipClient(nonExistingSipClient);
     }
 
     @Test
     public void updateSipClient() throws Exception {
-        SipClientDto sipClientDto = SipClientGenerator.createTestSipClientDto(company1, 1);
+        SipClientDto sipClientDto = sipClientGenerator.createTestSipClientDto(1);
         SipClientDto newlyCreatedSipClient = sipClientServiceInterface.createSipClient(sipClientDto);
 
         assertThat(newlyCreatedSipClient, sipClientDtoAlmostEqualTo(sipClientDto));
 
-        SipClientDto sipClientUpdate = SipClientGenerator.createTestSipClientDto(company2, 2);
+        sipClientGenerator.setCompany(company2);
+        SipClientDto sipClientUpdate = sipClientGenerator.createTestSipClientDto(2);
         sipClientUpdate.setId(newlyCreatedSipClient.getId());
 
         SipClientDto updatedSipClient = sipClientServiceInterface.updateSipClient(

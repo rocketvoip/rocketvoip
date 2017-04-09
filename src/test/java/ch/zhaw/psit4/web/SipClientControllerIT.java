@@ -35,6 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class SipClientControllerIT {
     private static final int NON_EXISTING_USER_ID = 100;
     private final RESTObjectCreator restObjectCreator = new RESTObjectCreator();
+    private final SipClientGenerator sipClientGenerator = new SipClientGenerator();
 
     @Autowired
     private WebApplicationContext wac;
@@ -47,6 +48,8 @@ public class SipClientControllerIT {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
         restObjectCreator.setMockMvc(mockMvc);
         companyDto = restObjectCreator.createNewCompany(1);
+        restObjectCreator.setCompanyDto(companyDto);
+        sipClientGenerator.setCompanyDto(companyDto);
     }
 
     @Test
@@ -91,7 +94,7 @@ public class SipClientControllerIT {
 
     @Test
     public void updateNonExistingSipClient() throws Exception {
-        SipClientDto sipClientDto = SipClientGenerator.createTestSipClientDto(companyDto, 1);
+        SipClientDto sipClientDto = sipClientGenerator.createTestSipClientDto(1);
         mockMvc.perform(
                 MockMvcRequestBuilders.put("/v1/sipclients/{id}", NON_EXISTING_USER_ID)
                         .content(Json.toJson(sipClientDto))
@@ -104,9 +107,9 @@ public class SipClientControllerIT {
 
     @Test
     public void updateSipClient() throws Exception {
-        SipClientDto createdSipClient1 = restObjectCreator.createSipClient(companyDto, 1);
+        SipClientDto createdSipClient1 = restObjectCreator.createSipClient(1);
 
-        SipClientDto updatedSipClient = SipClientGenerator.createTestSipClientDto(companyDto, 2);
+        SipClientDto updatedSipClient = sipClientGenerator.createTestSipClientDto(2);
         updatedSipClient.setId(createdSipClient1.getId());
 
         String putResult = mockMvc.perform(
@@ -149,7 +152,7 @@ public class SipClientControllerIT {
 
     @Test
     public void createSipClient() throws Exception {
-        SipClientDto createdSipClient = restObjectCreator.createSipClient(companyDto, 1);
+        SipClientDto createdSipClient = restObjectCreator.createSipClient(1);
 
         String response = mockMvc.perform(
                 MockMvcRequestBuilders.get("/v1/sipclients/{id}", createdSipClient.getId())
@@ -165,8 +168,8 @@ public class SipClientControllerIT {
 
     @Test
     public void getAllSipClients() throws Exception {
-        SipClientDto createdSipClient1 = restObjectCreator.createSipClient(companyDto, 1);
-        SipClientDto createdSipClient2 = restObjectCreator.createSipClient(companyDto, 2);
+        SipClientDto createdSipClient1 = restObjectCreator.createSipClient(1);
+        SipClientDto createdSipClient2 = restObjectCreator.createSipClient(2);
 
         String response = mockMvc.perform(
                 MockMvcRequestBuilders.get("/v1/sipclients")
@@ -186,7 +189,7 @@ public class SipClientControllerIT {
 
     @Test
     public void deleteSipClient() throws Exception {
-        SipClientDto createdSipClient1 = restObjectCreator.createSipClient(companyDto, 1);
+        SipClientDto createdSipClient1 = restObjectCreator.createSipClient(1);
         mockMvc.perform(
                 MockMvcRequestBuilders.delete("/v1/sipclients/{id}", createdSipClient1.getId())
                         .accept(MediaType.APPLICATION_JSON_UTF8)
@@ -203,5 +206,4 @@ public class SipClientControllerIT {
                 status().isNotFound()
         );
     }
-
 }

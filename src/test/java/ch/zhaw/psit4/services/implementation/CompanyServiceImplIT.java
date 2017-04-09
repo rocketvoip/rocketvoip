@@ -31,7 +31,7 @@ import static org.junit.Assert.assertThat;
 @Transactional
 public class CompanyServiceImplIT {
     private static final long NON_EXISTENT_COMPANY_ID = 124;
-    private final CompanyGenerator companyGenerator = new CompanyGenerator();
+
     @Autowired
     private CompanyRepository companyRepository;
 
