@@ -75,8 +75,9 @@ public class ConfigurationControllerIT {
     @Test
     public void getAsteriskConfigurationTestZipAttachment() throws Exception {
         CompanyDto newCompany = restObjectCreator.createNewCompany(1);
+        restObjectCreator.setCompanyDto(newCompany);
         for (int i = 1; i <= 12; i++) {
-            restObjectCreator.createSipClient(newCompany, i);
+            restObjectCreator.createSipClient(i);
         }
 
         MvcResult mvcResult = this.mockMvc.perform(get("/v1/configuration/zip"))

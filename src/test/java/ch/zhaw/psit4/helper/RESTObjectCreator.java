@@ -17,10 +17,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class RESTObjectCreator {
 
+    private SipClientGenerator sipClientGenerator = new SipClientGenerator();
     private MockMvc mockMvc;
 
-    public SipClientDto createSipClient(CompanyDto company, int number) throws Exception {
-        SipClientDto sipClientDto = SipClientGenerator.createTestSipClientDto(company, number);
+    /**
+     * Set the mockMvc and the companyDto before calling this method.
+     *
+     * @param number number of sipClient
+     * @return SipClientDto returned
+     * @throws Exception if Json.toJson failed
+     */
+    public SipClientDto createSipClient(int number) throws Exception {
+        SipClientDto sipClientDto = sipClientGenerator.createTestSipClientDto(number);
         String creationResponse = mockMvc.perform(
                 MockMvcRequestBuilders.post("/v1/sipclients")
                         .content(Json.toJson(sipClientDto))
@@ -41,6 +49,13 @@ public class RESTObjectCreator {
         return Json.toObjectTypeSafe(creationResponse, SipClientDto.class);
     }
 
+    /**
+     * Set mockMvc before calling this method.
+     *
+     * @param number the number appended to the company name
+     * @return CompanyDto
+     * @throws Exception if Json.toJson failed
+     */
     public CompanyDto createNewCompany(int number) throws Exception {
         CompanyDto companyDto = CompanyGenerator.getCompanyDto(number);
 
@@ -62,5 +77,9 @@ public class RESTObjectCreator {
 
     public void setMockMvc(MockMvc mockMvc) {
         this.mockMvc = mockMvc;
+    }
+
+    public void setCompanyDto(CompanyDto companyDto) {
+        sipClientGenerator.setCompanyDto(companyDto);
     }
 }

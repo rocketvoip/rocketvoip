@@ -3,7 +3,6 @@ package ch.zhaw.psit4.web;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import ch.zhaw.psit4.domain.exceptions.ZipFileCreationException;
 import ch.zhaw.psit4.dto.ErrorDto;
-import ch.zhaw.psit4.services.implementation.ConfigServiceImpl;
 import ch.zhaw.psit4.services.interfaces.ConfigServiceInterface;
 import ch.zhaw.psit4.web.utils.Utilities;
 import org.springframework.http.HttpHeaders;
@@ -28,8 +27,8 @@ public class ConfigurationController {
     private static final String ZIP_FILE_NAME = "config.zip";
     private ConfigServiceInterface configServiceInterface;
 
-    public ConfigurationController(ConfigServiceImpl configServiceInterface) {
-        this.configServiceInterface = configServiceInterface;
+    public ConfigurationController(ConfigServiceInterface configService) {
+        this.configServiceInterface = configService;
     }
 
 
