@@ -71,7 +71,7 @@ public class AdminDetails implements UserDetails {
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public Collection<GrantedAuthority> getAuthorities() {
         // TODO: Return a read-only collection
         return grantedAuthorityList;
     }
