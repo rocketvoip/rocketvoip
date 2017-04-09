@@ -8,7 +8,6 @@ import ch.zhaw.psit4.services.exceptions.CompanyDeletionException;
 import ch.zhaw.psit4.services.exceptions.CompanyRetrievalException;
 import ch.zhaw.psit4.services.exceptions.CompanyUpdateException;
 import ch.zhaw.psit4.services.interfaces.CompanyServiceInterface;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,11 +37,6 @@ public class CompanyServiceImplIT {
 
     @Autowired
     private CompanyServiceInterface companyServiceImpl;
-
-    @Before
-    public void setUp() throws Exception {
-        resetDatabase();
-    }
 
     @Test
     public void getAllCompanies() throws Exception {
@@ -119,10 +113,6 @@ public class CompanyServiceImplIT {
     @Test(expected = CompanyUpdateException.class)
     public void updateInvalidCompany() throws Exception {
         companyServiceImpl.updateCompany(CompanyGenerator.getCompanyDto(NON_EXISTENT_COMPANY_ID));
-    }
-
-    private void resetDatabase() {
-        companyRepository.deleteAll();
     }
 
 }

@@ -1,7 +1,7 @@
 package ch.zhaw.psit4.security.jwt;
 
 import ch.zhaw.psit4.data.jpa.entities.Admin;
-import ch.zhaw.psit4.helper.AdminUserFixture;
+import ch.zhaw.psit4.fixtures.database.AdminEntity;
 import ch.zhaw.psit4.helper.mocks.UserDetailsServiceMock;
 import ch.zhaw.psit4.security.auxiliary.AdminDetails;
 import org.junit.Before;
@@ -24,7 +24,7 @@ public class TokenHandlerTest {
 
     @Before
     public void setUp() throws Exception {
-        admin = AdminUserFixture.createAdminEntityFixture();
+        admin = AdminEntity.createAdmin(1);
         userDetailsServiceMock = UserDetailsServiceMock.makeMockForAdmin(admin);
         tokenHandler = new TokenHandler("testsecret", userDetailsServiceMock);
     }

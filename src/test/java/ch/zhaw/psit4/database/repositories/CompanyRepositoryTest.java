@@ -2,14 +2,19 @@ package ch.zhaw.psit4.database.repositories;
 
 import ch.zhaw.psit4.data.jpa.entities.Company;
 import ch.zhaw.psit4.data.jpa.repositories.CompanyRepository;
+import ch.zhaw.psit4.fixtures.database.BeanConfiguration;
+import ch.zhaw.psit4.fixtures.database.CompanyEntity;
+import ch.zhaw.psit4.fixtures.database.DatabaseFixtureBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -17,19 +22,27 @@ import static org.junit.Assert.assertThat;
  */
 @RunWith(SpringRunner.class)
 @DataJpaTest
+@Import(BeanConfiguration.class)
 public class CompanyRepositoryTest {
     @Autowired
-    private CompanyRepository companyRepository;
+    private ApplicationContext applicationContext;
+
+    private DatabaseFixtureBuilder databaseFixtureBuilder;
 
     @Before
     public void setUp() throws Exception {
-        Company company = new Company("Test Company");
-        companyRepository.save(company);
+        databaseFixtureBuilder = applicationContext.getBean(DatabaseFixtureBuilder.class);
     }
 
     @Test
     public void findCompanyByName() throws Exception {
-        Company actual = companyRepository.findByName("Test Company");
-        assertThat(actual.getName(), equalTo("Test Company"));
+        databaseFixtureBuilder.company(1).build();
+
+        CompanyRepository companyRepository = databaseFixtureBuilder.getCompanyRepository();
+        Company actual = companyRepository.findByName(CompanyEntity.getCompanyName(1));
+
+        assertThat(actual, is(not(nullValue())));
+        assertThat(actual.getName(), equalTo(CompanyEntity.getCompanyName(1)));
     }
+
 }

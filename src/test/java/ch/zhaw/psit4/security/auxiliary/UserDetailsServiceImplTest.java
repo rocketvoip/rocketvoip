@@ -2,7 +2,8 @@ package ch.zhaw.psit4.security.auxiliary;
 
 import ch.zhaw.psit4.data.jpa.entities.Admin;
 import ch.zhaw.psit4.data.jpa.repositories.AdminRepository;
-import ch.zhaw.psit4.helper.AdminUserFixture;
+import ch.zhaw.psit4.fixtures.database.AdminEntity;
+import ch.zhaw.psit4.fixtures.security.AdminUserFixture;
 import ch.zhaw.psit4.helper.mocks.AdminRepositoryMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +25,7 @@ public class UserDetailsServiceImplTest {
 
     @Before
     public void setUp() throws Exception {
-        admin = AdminUserFixture.createAdminEntityFixture();
+        admin = AdminEntity.createAdmin(1);
         adminRepositoryMock = AdminRepositoryMock.createAdminRepositoryMock(admin);
         userDetails = new UserDetailsServiceImpl(adminRepositoryMock);
     }

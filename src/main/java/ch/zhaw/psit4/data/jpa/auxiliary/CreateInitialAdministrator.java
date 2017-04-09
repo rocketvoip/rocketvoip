@@ -17,6 +17,9 @@ import java.security.SecureRandom;
  */
 @Component
 public class CreateInitialAdministrator {
+    public static final String INITIAL_FIRSTNAME = "RocketVoip";
+    public static final String INITIAL_LASTNAME = "Administrator";
+    public static final String INITIAL_USERNAME = "masteradmin@rocketvoip.local";
     private static final Logger LOGGER = LoggerFactory.getLogger(CreateInitialAdministrator.class);
     private AdminRepository adminRepository;
 
@@ -43,7 +46,7 @@ public class CreateInitialAdministrator {
     }
 
     private Admin createInitialAdminAccountEntity(String password) {
-        return new Admin(null, "RocketVoip", "Administrator", "masteradmin@rocketvoip.local", password, true);
+        return new Admin(null, INITIAL_FIRSTNAME, INITIAL_LASTNAME, INITIAL_USERNAME, password, true);
     }
 
     private String createRandomPassword() {
