@@ -1,12 +1,9 @@
 package ch.zhaw.psit4.web;
 
-import ch.zhaw.psit4.data.jpa.entities.Company;
-import ch.zhaw.psit4.data.jpa.repositories.CompanyRepository;
 import ch.zhaw.psit4.dto.ErrorDto;
 import ch.zhaw.psit4.dto.SipClientDto;
 import ch.zhaw.psit4.services.exceptions.SipClientDeletionException;
 import ch.zhaw.psit4.services.exceptions.SipClientRetrievalException;
-import ch.zhaw.psit4.services.implementation.SipClientServiceImpl;
 import ch.zhaw.psit4.services.interfaces.SipClientServiceInterface;
 import ch.zhaw.psit4.web.utils.Utilities;
 import org.springframework.http.HttpStatus;
@@ -25,20 +22,9 @@ import java.util.List;
 @RequestMapping(path = "/v1")
 public class SipClientController {
     private final SipClientServiceInterface sipClientServiceInterface;
-    // TODO: Remove this once we have company resolution implemented properly
-    private final Company testCompany;
 
-    public SipClientController(SipClientServiceImpl sipClientService, CompanyRepository companyRepository) {
+    public SipClientController(SipClientServiceInterface sipClientService) {
         this.sipClientServiceInterface = sipClientService;
-        testCompany = getTestCompany(companyRepository);
-    }
-
-    private Company getTestCompany(CompanyRepository companyRepository) {
-        Company company = companyRepository.findByName("Test Company");
-        if (company == null) {
-            company = new Company("Test Company");
-        }
-        return companyRepository.save(company);
     }
 
     @GetMapping(path = "/sipclients", produces = MediaType
@@ -65,7 +51,7 @@ public class SipClientController {
     @PutMapping(path = "/sipclients/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<SipClientDto> updateSipClient(@PathVariable long id, @RequestBody SipClientDto sipClientDto) {
         sipClientDto.setId(id);
-        return new ResponseEntity<>(sipClientServiceInterface.updateSipClient(testCompany, sipClientDto),
+        return new ResponseEntity<>(sipClientServiceInterface.updateSipClient(sipClientDto),
                 HttpStatus.OK);
     }
 
@@ -73,7 +59,7 @@ public class SipClientController {
             .APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<SipClientDto> createSipClient(@RequestBody SipClientDto sipClientDto) {
         return new ResponseEntity<>(
-                sipClientServiceInterface.createSipClient(testCompany, sipClientDto),
+                sipClientServiceInterface.createSipClient(sipClientDto),
                 HttpStatus.CREATED);
     }
 

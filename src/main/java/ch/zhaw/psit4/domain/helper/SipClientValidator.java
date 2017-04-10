@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 /**
- * Checks if a sip client is valide for further processing.
+ * Checks if a sip client is valid for further processing.
  *
  * @author Jona Braun
  */
@@ -32,7 +32,6 @@ public class SipClientValidator {
             LOGGER.error(SIP_CLIENT_LIST_IS_EMPTY);
             throw new InvalidConfigurationException(SIP_CLIENT_LIST_IS_EMPTY);
         }
-
     }
 
     /**

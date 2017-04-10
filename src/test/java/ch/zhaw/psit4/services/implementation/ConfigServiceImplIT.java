@@ -7,7 +7,7 @@ import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import ch.zhaw.psit4.domain.helper.DialPlanTestHelper;
 import ch.zhaw.psit4.domain.helper.SipClientTestHelper;
 import ch.zhaw.psit4.helper.ZipStreamTestHelper;
-import ch.zhaw.psit4.services.interfaces.ConfigControllerServiceInterface;
+import ch.zhaw.psit4.services.interfaces.ConfigServiceInterface;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +25,9 @@ import java.util.zip.ZipInputStream;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public class ConfigControllerServiceImplIT {
+public class ConfigServiceImplIT {
 
-    private static final String COMPANY = "acme";
+    private static final String COMPANY = "acme1";
     private final ZipStreamTestHelper zipStreamTestHelper = new ZipStreamTestHelper();
     private final SipClientTestHelper sipClientTestHelper = new SipClientTestHelper();
     private DialPlanTestHelper dialPlanTestHelper = new DialPlanTestHelper();
@@ -39,23 +39,38 @@ public class ConfigControllerServiceImplIT {
     private SipClientRepository sipClientRepository;
 
     @Autowired
-    private ConfigControllerServiceInterface configControllerServiceInterface;
+    private ConfigServiceInterface configServiceInterface;
 
     @Test(expected = InvalidConfigurationException.class)
     public void getAsteriskConfigurationWithNoSipClients() throws Exception {
-        configControllerServiceInterface.getAsteriskConfiguration();
+        configServiceInterface.getAsteriskConfiguration();
     }
 
     @Test
     public void getAsteriskConfigurationWithOneSipClient() throws Exception {
         setupDatabase(1);
 
-        ByteArrayOutputStream baos = configControllerServiceInterface.getAsteriskConfiguration();
+        ByteArrayOutputStream baos = configServiceInterface.getAsteriskConfiguration();
         ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(baos.toByteArray()));
 
         String[] expectedNames = {"sip.conf", "extensions.conf"};
-        String[] expectedContent = {sipClientTestHelper.generateSipClientConfig(1, COMPANY),
-                dialPlanTestHelper.getSimpleDialPlan(1)};
+        String[] expectedContent = {sipClientTestHelper.generateSipClientConfig(1, 1),
+                dialPlanTestHelper.getSimpleDialPlan(1, 1)};
+
+        zipStreamTestHelper.testZipEntryContent(zipInputStream, expectedNames, expectedContent);
+
+    }
+
+    @Test
+    public void getAsteriskConfigurationWithMultipleSipClients() throws Exception {
+        setupDatabase(2);
+
+        ByteArrayOutputStream baos = configServiceInterface.getAsteriskConfiguration();
+        ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(baos.toByteArray()));
+
+        String[] expectedNames = {"sip.conf", "extensions.conf"};
+        String[] expectedContent = {sipClientTestHelper.generateSipClientConfig(1, 2),
+                dialPlanTestHelper.getSimpleDialPlan(1, 2)};
 
         zipStreamTestHelper.testZipEntryContent(zipInputStream, expectedNames, expectedContent);
 
@@ -63,6 +78,7 @@ public class ConfigControllerServiceImplIT {
 
     private void setupDatabase(int number) {
         Company company = new Company(COMPANY);
+        companyRepository.deleteAll();
         companyRepository.save(company);
         for (int i = 1; i <= number; i++) {
             sipClientRepository.save(sipClientTestHelper.createSipClientEntity(i, company));

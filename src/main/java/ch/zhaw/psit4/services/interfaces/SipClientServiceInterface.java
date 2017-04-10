@@ -1,10 +1,10 @@
 package ch.zhaw.psit4.services.interfaces;
 
-import ch.zhaw.psit4.data.jpa.entities.Company;
 import ch.zhaw.psit4.dto.SipClientDto;
 import ch.zhaw.psit4.services.exceptions.SipClientCreationException;
 import ch.zhaw.psit4.services.exceptions.SipClientDeletionException;
 import ch.zhaw.psit4.services.exceptions.SipClientRetrievalException;
+import ch.zhaw.psit4.services.exceptions.SipClientUpdateException;
 
 import java.util.List;
 
@@ -26,22 +26,20 @@ public interface SipClientServiceInterface {
      * Create a new SipClient. The {$code id} attribute of {$code newSipClient} will be ignored if set. The returned
      * {$code SipClient} has its {$code id} attribute set to unique value.
      *
-     * @param company      Company the new SipClient belongs to
      * @param newSipClient SipClient to be created.
      * @return new SipClient. SipClient#id will contain the id of the newly created SipClient.
      * @throws SipClientCreationException Implementations are expected to throw SipClientCreationException on error.
      */
-    SipClientDto createSipClient(Company company, SipClientDto newSipClient);
+    SipClientDto createSipClient(SipClientDto newSipClient);
 
     /**
      * Updated existing SipClient.
      *
-     * @param company      Company the SipClient belongs to
      * @param sipClientDto SipClient to be updated.
      * @return SipClient instance.
-     * @throws SipClientCreationException Implementations are expected to throw SipClientUpdateException on error.
+     * @throws SipClientUpdateException Implementations are expected to throw SipClientUpdateException on error.
      */
-    SipClientDto updateSipClient(Company company, SipClientDto sipClientDto);
+    SipClientDto updateSipClient(SipClientDto sipClientDto);
 
     /**
      * Retrieve SipClient by ID.

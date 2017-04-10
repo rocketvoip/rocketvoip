@@ -1,10 +1,11 @@
 package ch.zhaw.psit4.web;
 
+import ch.zhaw.psit4.data.jpa.repositories.CompanyRepository;
+import ch.zhaw.psit4.data.jpa.repositories.SipClientRepository;
 import ch.zhaw.psit4.domain.helper.DialPlanTestHelper;
 import ch.zhaw.psit4.domain.helper.SipClientTestHelper;
-import ch.zhaw.psit4.dto.SipClientDto;
-import ch.zhaw.psit4.helper.Json;
-import ch.zhaw.psit4.helper.SipClientGenerator;
+import ch.zhaw.psit4.dto.CompanyDto;
+import ch.zhaw.psit4.helper.RESTObjectCreator;
 import ch.zhaw.psit4.helper.ZipStreamTestHelper;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,8 +24,6 @@ import org.springframework.web.context.WebApplicationContext;
 import java.io.ByteArrayInputStream;
 import java.util.zip.ZipInputStream;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -39,19 +38,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
 public class ConfigurationControllerIT {
-
     private final SipClientTestHelper sipClientTestHelper = new SipClientTestHelper();
     private final DialPlanTestHelper dialPlanTestHelper = new DialPlanTestHelper();
     private final ZipStreamTestHelper zipStreamTestHelper = new ZipStreamTestHelper();
+    private final RESTObjectCreator restObjectCreator = new RESTObjectCreator();
 
     @Autowired
     private WebApplicationContext wac;
+
+    @Autowired
+    private CompanyRepository companyRepository;
+
+    @Autowired
+    private SipClientRepository sipClientRepository;
 
     private MockMvc mockMvc;
 
     @Before
     public void setUp() throws Exception {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
+        restObjectCreator.setMockMvc(mockMvc);
     }
 
     @Test
@@ -68,7 +74,11 @@ public class ConfigurationControllerIT {
 
     @Test
     public void getAsteriskConfigurationTestZipAttachment() throws Exception {
-        createSipClient(1);
+        CompanyDto newCompany = restObjectCreator.createNewCompany(1);
+        restObjectCreator.setCompanyDto(newCompany);
+        for (int i = 1; i <= 12; i++) {
+            restObjectCreator.createSipClient(i);
+        }
 
         MvcResult mvcResult = this.mockMvc.perform(get("/v1/configuration/zip"))
                 .andReturn();
@@ -80,31 +90,9 @@ public class ConfigurationControllerIT {
         ZipInputStream zipInputStream = new ZipInputStream(bais);
 
         String[] expectedNames = {"sip.conf", "extensions.conf"};
-        String[] expectedContent = {sipClientTestHelper.generateSipClientConfig(1, "Test Company"),
-                dialPlanTestHelper.getSimpleDialPlan(1, "Test Company")};
+        String[] expectedContent = {sipClientTestHelper.generateSipClientConfig(12, "testCompany1"),
+                dialPlanTestHelper.getSimpleDialPlanEntrySameCompany(12, "testCompany1")};
 
         zipStreamTestHelper.testZipEntryContent(zipInputStream, expectedNames, expectedContent);
-    }
-
-
-    // TODO clean duplicate code from SipClientControllerIT
-    private void createSipClient(int number) throws Exception {
-        SipClientDto sipClientDto = SipClientGenerator.createTestSipClientDto(number);
-        mockMvc.perform(
-                MockMvcRequestBuilders.post("/v1/sipclients")
-                        .content(Json.toJson(sipClientDto))
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
-        ).andExpect(
-                status().isCreated()
-        ).andExpect(
-                jsonPath("$.id").value(not(equalTo(sipClientDto.getId())))
-        ).andExpect(
-                jsonPath("$.name").value(equalTo(sipClientDto.getName()))
-        ).andExpect(
-                jsonPath("$.phone").value(equalTo(sipClientDto.getPhone()))
-        ).andExpect(
-                jsonPath("$.secret").value(equalTo(sipClientDto.getSecret()))
-        ).andReturn().getResponse().getContentAsString();
     }
 }

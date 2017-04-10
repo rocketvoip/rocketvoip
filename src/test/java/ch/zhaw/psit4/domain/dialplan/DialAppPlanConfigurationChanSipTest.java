@@ -25,6 +25,7 @@ public class DialAppPlanConfigurationChanSipTest {
     private final SipClientTestHelper sipClientTestHelper = new SipClientTestHelper();
     private DialPlanConfigurationInterface dialPlanConfigurationChanSip;
     private List<SipClient> sipClientList;
+    private List<DialPlanContext> dialPlanContextList;
 
     @Before
     public void setup() {
@@ -43,21 +44,34 @@ public class DialAppPlanConfigurationChanSipTest {
 
     @Test
     public void testNullClient() throws Exception {
-        List<SipClient> sipClientList = new ArrayList<>();
-        sipClientList.add(null);
+        List<DialPlanContext> dialPlanContexts = new ArrayList<>();
+        dialPlanContexts.add(null);
 
-        String actual = createSimpleDialPlanString(sipClientList);
-        String expected = "[simple-dial-plan]\n\n";
+        String actual = createSimpleDialPlanString(dialPlanContexts);
+        String expected = "";
+
+        assertThat(actual, equalTo(expected));
+    }
+
+    @Test
+    public void testNullClientInBetween() throws Exception {
+        dialPlanContextList = new ArrayList<>();
+        dialPlanContextList.add(dialPlanTestHelper.getDialPlanContext(2, 1));
+        dialPlanContextList.add(null);
+        dialPlanContextList.add(dialPlanTestHelper.getDialPlanContext(2, 2));
+
+        String actual = createSimpleDialPlanString(dialPlanContextList);
+        String expected = dialPlanTestHelper.getSimpleDialPlan(2, 2);
 
         assertThat(actual, equalTo(expected));
     }
 
     @Test
     public void generateSimpleDialPlanConfigurationOneEntry() throws Exception {
-        sipClientList = sipClientTestHelper.generateSipClientList(1, "acme");
+        dialPlanContextList = dialPlanTestHelper.generateDialPlan(1, 2);
 
-        String extensionConf = createSimpleDialPlanString(sipClientList);
-        String expected = dialPlanTestHelper.getSimpleDialPlan(1);
+        String extensionConf = createSimpleDialPlanString(dialPlanContextList);
+        String expected = dialPlanTestHelper.getSimpleDialPlan(1, 2);
 
         assertEquals(expected, extensionConf);
 
@@ -65,18 +79,19 @@ public class DialAppPlanConfigurationChanSipTest {
 
     @Test
     public void generateSimpleDialPlanConfigurationMultipleEntries() throws Exception {
-        sipClientList = sipClientTestHelper.generateSipClientList(10, "acme");
-        dialPlanConfigurationChanSip = new DialPlanConfigurationChanSip();
+        dialPlanContextList = dialPlanTestHelper.generateDialPlan(10, 2);
 
-        String extensionConf = createSimpleDialPlanString(sipClientList);
-        String expected = dialPlanTestHelper.getSimpleDialPlan(10);
+        String extensionConf = createSimpleDialPlanString(dialPlanContextList);
+        String expected = dialPlanTestHelper.getSimpleDialPlan(10, 2);
 
         assertEquals(expected, extensionConf);
 
     }
 
-    private String createSimpleDialPlanString(List<SipClient> sipClientList) {
-        return dialPlanConfigurationChanSip.generateDialPlanConfiguration(sipClientList, null);
+    private String createSimpleDialPlanString(List<DialPlanContext> dialPlanContexts) {
+        return dialPlanConfigurationChanSip.generateDialPlanConfiguration(dialPlanContexts);
     }
+
+
 
 }

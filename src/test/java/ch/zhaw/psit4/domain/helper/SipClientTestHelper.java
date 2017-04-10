@@ -15,18 +15,33 @@ public class SipClientTestHelper {
     private static final String USERNAME = "Name";
     private static final String PHONE = "Phone";
     private static final String SECRET = "Secret";
-
+    private static final String COMPANY = "acme";
 
     /**
      * Creates a jpa sip client
      *
-     * @param number  the number for the phone and appended to "User" and "Secret"
-     * @param company
+     * @param number  the number for the phone and appended to "Admin" and "Secret"
+     * @param company the company belonging the sip client
      * @return the jpa sip client
      */
     public ch.zhaw.psit4.data.jpa.entities.SipClient createSipClientEntity(int number, Company company) {
         return new ch.zhaw.psit4.data.jpa.entities.SipClient(company, USERNAME + number,
                 PHONE + number, SECRET + number);
+    }
+
+    /**
+     * Generates a sipClientConfig with the company prefix "acme".
+     *
+     * @param numberOfCompanies number of Companies in the sip config
+     * @param numberOfClients   number of clients per company
+     * @return the generated config
+     */
+    public String generateSipClientConfig(int numberOfCompanies, int numberOfClients) {
+        String sipClientConfig = "";
+        for (int i = 1; i <= numberOfCompanies; i++) {
+            sipClientConfig += generateSipClientConfig(numberOfClients, COMPANY + i);
+        }
+        return sipClientConfig;
     }
 
     /**
@@ -67,16 +82,16 @@ public class SipClientTestHelper {
     /**
      * Generates one domain specific sip client.
      *
-     * @param i       the number which is appended to the "User" and the "Secret" of the sip client.
+     * @param number  the number which is appended to the "Admin" and the "Secret" of the sip client.
      * @param company the company for the sip clients
      * @return the generated sip client
      */
-    public SipClient generateSipClient(int i, String company) {
+    public SipClient generateSipClient(int number, String company) {
         SipClient sipClient = new SipClient();
         sipClient.setCompany(company);
-        sipClient.setUsername(USERNAME + i);
-        sipClient.setSecret(SECRET + i);
-        sipClient.setPhoneNumber(PHONE + i);
+        sipClient.setUsername(USERNAME + number);
+        sipClient.setSecret(SECRET + number);
+        sipClient.setPhoneNumber(PHONE + number);
         return sipClient;
     }
 }

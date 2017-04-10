@@ -38,8 +38,8 @@ public class ConfigWriterTest {
 
     @Test
     public void writeDialPlanConfiguration() throws Exception {
-        configWriter.generateDialPlanConfiguration(null, null);
-        verify(dialPlanConfiguration, times(1)).generateDialPlanConfiguration(null, null);
+        configWriter.generateDialPlanConfiguration(null);
+        verify(dialPlanConfiguration, times(1)).generateDialPlanConfiguration(null);
     }
 
 
