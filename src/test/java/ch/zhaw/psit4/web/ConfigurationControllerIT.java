@@ -1,17 +1,17 @@
 package ch.zhaw.psit4.web;
 
-import ch.zhaw.psit4.data.jpa.repositories.CompanyRepository;
-import ch.zhaw.psit4.data.jpa.repositories.SipClientRepository;
 import ch.zhaw.psit4.domain.helper.DialPlanTestHelper;
 import ch.zhaw.psit4.domain.helper.SipClientTestHelper;
-import ch.zhaw.psit4.dto.CompanyDto;
-import ch.zhaw.psit4.helper.RESTObjectCreator;
+import ch.zhaw.psit4.fixtures.database.BeanConfiguration;
+import ch.zhaw.psit4.fixtures.database.DatabaseFixtureBuilder;
+import ch.zhaw.psit4.fixtures.general.CompanyData;
 import ch.zhaw.psit4.helper.ZipStreamTestHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -37,27 +37,23 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
+@Import(BeanConfiguration.class)
 public class ConfigurationControllerIT {
     private final SipClientTestHelper sipClientTestHelper = new SipClientTestHelper();
     private final DialPlanTestHelper dialPlanTestHelper = new DialPlanTestHelper();
     private final ZipStreamTestHelper zipStreamTestHelper = new ZipStreamTestHelper();
-    private final RESTObjectCreator restObjectCreator = new RESTObjectCreator();
 
     @Autowired
     private WebApplicationContext wac;
 
-    @Autowired
-    private CompanyRepository companyRepository;
-
-    @Autowired
-    private SipClientRepository sipClientRepository;
+    private DatabaseFixtureBuilder databaseFixtureBuilder;
 
     private MockMvc mockMvc;
 
     @Before
     public void setUp() throws Exception {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
-        restObjectCreator.setMockMvc(mockMvc);
+        databaseFixtureBuilder = wac.getBean(DatabaseFixtureBuilder.class);
     }
 
     @Test
@@ -74,11 +70,11 @@ public class ConfigurationControllerIT {
 
     @Test
     public void getAsteriskConfigurationTestZipAttachment() throws Exception {
-        CompanyDto newCompany = restObjectCreator.createNewCompany(1);
-        restObjectCreator.setCompanyDto(newCompany);
+        databaseFixtureBuilder.company(1);
         for (int i = 1; i <= 12; i++) {
-            restObjectCreator.createSipClient(i);
+            databaseFixtureBuilder.addSipClient(i);
         }
+        databaseFixtureBuilder.build();
 
         MvcResult mvcResult = this.mockMvc.perform(get("/v1/configuration/zip"))
                 .andReturn();
@@ -90,8 +86,8 @@ public class ConfigurationControllerIT {
         ZipInputStream zipInputStream = new ZipInputStream(bais);
 
         String[] expectedNames = {"sip.conf", "extensions.conf"};
-        String[] expectedContent = {sipClientTestHelper.generateSipClientConfig(12, "testCompany1"),
-                dialPlanTestHelper.getSimpleDialPlanEntrySameCompany(12, "testCompany1")};
+        String[] expectedContent = {sipClientTestHelper.generateSipClientConfig(12, CompanyData.getCompanyName(1)),
+                dialPlanTestHelper.getSimpleDialPlanEntrySameCompany(12, CompanyData.getCompanyName(1))};
 
         zipStreamTestHelper.testZipEntryContent(zipInputStream, expectedNames, expectedContent);
     }

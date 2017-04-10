@@ -3,8 +3,8 @@ package ch.zhaw.psit4.database.repositories;
 import ch.zhaw.psit4.data.jpa.entities.Company;
 import ch.zhaw.psit4.data.jpa.repositories.CompanyRepository;
 import ch.zhaw.psit4.fixtures.database.BeanConfiguration;
-import ch.zhaw.psit4.fixtures.database.CompanyEntity;
 import ch.zhaw.psit4.fixtures.database.DatabaseFixtureBuilder;
+import ch.zhaw.psit4.fixtures.general.CompanyData;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,10 +39,10 @@ public class CompanyRepositoryTest {
         databaseFixtureBuilder.company(1).build();
 
         CompanyRepository companyRepository = databaseFixtureBuilder.getCompanyRepository();
-        Company actual = companyRepository.findByName(CompanyEntity.getCompanyName(1));
+        Company actual = companyRepository.findByName(CompanyData.getCompanyName(1));
 
         assertThat(actual, is(not(nullValue())));
-        assertThat(actual.getName(), equalTo(CompanyEntity.getCompanyName(1)));
+        assertThat(actual.getName(), equalTo(CompanyData.getCompanyName(1)));
     }
 
 }

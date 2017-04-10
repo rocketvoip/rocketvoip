@@ -2,6 +2,8 @@ package ch.zhaw.psit4.domain.helper;
 
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import ch.zhaw.psit4.domain.sipclient.SipClient;
+import ch.zhaw.psit4.fixtures.domain.SipClientDomainGenerator;
+import ch.zhaw.psit4.fixtures.general.CompanyData;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -70,7 +72,7 @@ public class SipClientValidatorTest {
     }
 
     private SipClient generateOneSipClient() {
-        return sipClientTestHelper.generateSipClient(1, "acme");
+        return SipClientDomainGenerator.getSipClientDomain(CompanyData.COMPANY_PREFIX, 1);
     }
 
 }

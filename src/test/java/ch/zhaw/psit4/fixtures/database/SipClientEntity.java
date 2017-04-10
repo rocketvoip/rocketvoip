@@ -1,6 +1,7 @@
 package ch.zhaw.psit4.fixtures.database;
 
 import ch.zhaw.psit4.data.jpa.entities.SipClient;
+import ch.zhaw.psit4.fixtures.general.SipClientData;
 
 /**
  * Create SipClient entity fixtures.
@@ -20,20 +21,9 @@ public final class SipClientEntity {
      */
     public static SipClient createSipClient(int number) {
         return new SipClient(null,
-                getSipClientLabel(number),
-                getSipClientPhoneNumber(number),
-                getSipClientSecret(number));
+                SipClientData.getSipClientLabel(number),
+                SipClientData.getSipClientPhoneNumber(number),
+                SipClientData.getSipClientSecret(number));
     }
 
-    public static String getSipClientSecret(int number) {
-        return "SipClientSecret" + number;
-    }
-
-    public static String getSipClientPhoneNumber(int number) {
-        return String.format("%010d", number);
-    }
-
-    public static String getSipClientLabel(int number) {
-        return "SipClientLabel" + number;
-    }
 }

@@ -1,7 +1,9 @@
 package ch.zhaw.psit4.domain.helper;
 
-import ch.zhaw.psit4.data.jpa.entities.Company;
 import ch.zhaw.psit4.domain.sipclient.SipClient;
+import ch.zhaw.psit4.fixtures.domain.SipClientDomainGenerator;
+import ch.zhaw.psit4.fixtures.general.CompanyData;
+import ch.zhaw.psit4.fixtures.general.SipClientData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,22 +14,6 @@ import java.util.List;
  * @author Jona Braun
  */
 public class SipClientTestHelper {
-    private static final String USERNAME = "Name";
-    private static final String PHONE = "Phone";
-    private static final String SECRET = "Secret";
-    private static final String COMPANY = "acme";
-
-    /**
-     * Creates a jpa sip client
-     *
-     * @param number  the number for the phone and appended to "Admin" and "Secret"
-     * @param company the company belonging the sip client
-     * @return the jpa sip client
-     */
-    public ch.zhaw.psit4.data.jpa.entities.SipClient createSipClientEntity(int number, Company company) {
-        return new ch.zhaw.psit4.data.jpa.entities.SipClient(company, USERNAME + number,
-                PHONE + number, SECRET + number);
-    }
 
     /**
      * Generates a sipClientConfig with the company prefix "acme".
@@ -39,7 +25,7 @@ public class SipClientTestHelper {
     public String generateSipClientConfig(int numberOfCompanies, int numberOfClients) {
         String sipClientConfig = "";
         for (int i = 1; i <= numberOfCompanies; i++) {
-            sipClientConfig += generateSipClientConfig(numberOfClients, COMPANY + i);
+            sipClientConfig += generateSipClientConfig(numberOfClients, CompanyData.COMPANY_PREFIX + i);
         }
         return sipClientConfig;
     }
@@ -54,11 +40,11 @@ public class SipClientTestHelper {
     public String generateSipClientConfig(int number, String company) {
         String config = "";
         for (int i = 1; i <= number; i++) {
-            config += "[" + USERNAME + i + "-" + company.replaceAll(" ", "-") + "]\n" +
+            config += "[" + SipClientData.getSipClientLabel(i) + "-" + company.replaceAll(" ", "-") + "]\n" +
                     "type=friend\n" +
                     "context=" + company.replaceAll(" ", "-") + "\n" +
                     "host=dynamic\n" +
-                    "secret=" + SECRET + i + "\n\n";
+                    "secret=" + SipClientData.getSipClientSecret(i) + "\n\n";
         }
         return config;
     }
@@ -73,25 +59,11 @@ public class SipClientTestHelper {
     public List<SipClient> generateSipClientList(int number, String company) {
         List<SipClient> sipClientList = new ArrayList<>();
         for (int i = 1; i <= number; i++) {
-            SipClient sipClient = generateSipClient(i, company);
+            SipClient sipClient = SipClientDomainGenerator.getSipClientDomain(company, i);
             sipClientList.add(sipClient);
         }
         return sipClientList;
     }
 
-    /**
-     * Generates one domain specific sip client.
-     *
-     * @param number  the number which is appended to the "Admin" and the "Secret" of the sip client.
-     * @param company the company for the sip clients
-     * @return the generated sip client
-     */
-    public SipClient generateSipClient(int number, String company) {
-        SipClient sipClient = new SipClient();
-        sipClient.setCompany(company);
-        sipClient.setUsername(USERNAME + number);
-        sipClient.setSecret(SECRET + number);
-        sipClient.setPhoneNumber(PHONE + number);
-        return sipClient;
-    }
+
 }
