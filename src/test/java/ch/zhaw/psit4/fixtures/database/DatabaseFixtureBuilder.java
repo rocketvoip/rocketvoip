@@ -21,9 +21,10 @@ public class DatabaseFixtureBuilder {
     private final SipClientRepository sipClientRepository;
     private final AdminRepository adminRepository;
     private final CompanyRepository companyRepository;
+    private final Map<Integer, Admin> operatorList;
+    private final Map<Integer, Admin> adminList;
+    private final Map<Integer, SipClient> sipClientList;
     private Collection<Company> company;
-    private Map<Integer, Admin> adminList;
-    private Map<Integer, SipClient> sipClientList;
 
     public DatabaseFixtureBuilder(CompanyRepository companyRepository, AdminRepository adminRepository,
                                   SipClientRepository
@@ -34,6 +35,7 @@ public class DatabaseFixtureBuilder {
 
         this.company = new ArrayList<>();
         this.adminList = new HashMap<>();
+        this.operatorList = new HashMap<>();
         this.sipClientList = new HashMap<>();
     }
 
@@ -65,6 +67,16 @@ public class DatabaseFixtureBuilder {
         return this;
     }
 
+    public DatabaseFixtureBuilder addOperator(int number) {
+        operatorList.put(number, OperatorAdminEntity.createOperatorAdmin(number));
+        return this;
+    }
+
+    public DatabaseFixtureBuilder removeOperator(int number) {
+        operatorList.remove(number);
+        return this;
+    }
+
     public DatabaseFixtureBuilder addSipClient(int number) {
         sipClientList.put(number, SipClientEntity.createSipClient(number));
         return this;
@@ -79,6 +91,11 @@ public class DatabaseFixtureBuilder {
         companyRepository.save(company);
 
         adminList.values().forEach(x -> {
+            x.setCompany(company);
+            adminRepository.save(x);
+        });
+
+        operatorList.values().forEach(x -> {
             x.setCompany(company);
             adminRepository.save(x);
         });
