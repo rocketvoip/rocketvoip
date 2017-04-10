@@ -39,6 +39,10 @@ public class DatabaseFixtureBuilder {
         this.sipClientList = new HashMap<>();
     }
 
+    public Map<Integer, Admin> getOperatorList() {
+        return operatorList;
+    }
+
     public SipClientRepository getSipClientRepository() {
         return sipClientRepository;
     }
