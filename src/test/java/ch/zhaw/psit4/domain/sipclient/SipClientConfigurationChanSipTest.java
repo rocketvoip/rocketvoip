@@ -2,6 +2,8 @@ package ch.zhaw.psit4.domain.sipclient;
 
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import ch.zhaw.psit4.domain.helper.SipClientTestHelper;
+import ch.zhaw.psit4.fixtures.domain.SipClientDomainGenerator;
+import ch.zhaw.psit4.fixtures.general.CompanyData;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,7 +21,6 @@ import static org.junit.Assert.assertThat;
  */
 public class SipClientConfigurationChanSipTest {
 
-    private static final String COMPANY = "acme";
     private final SipClientTestHelper sipClientTestHelper = new SipClientTestHelper();
     private SipClientConfigurationChanSip sipClientConfigurationChanSip;
     private List<SipClient> sipClientList;
@@ -53,12 +54,12 @@ public class SipClientConfigurationChanSipTest {
     @Test
     public void testNullClientInBetween() throws Exception {
         List<SipClient> sipClientList = new ArrayList<>();
-        sipClientList.add(sipClientTestHelper.generateSipClient(1, COMPANY));
+        sipClientList.add(SipClientDomainGenerator.getSipClientDomain(CompanyData.COMPANY_PREFIX, 1));
         sipClientList.add(null);
-        sipClientList.add(sipClientTestHelper.generateSipClient(2, COMPANY));
+        sipClientList.add(SipClientDomainGenerator.getSipClientDomain(CompanyData.COMPANY_PREFIX, 2));
 
         String actual = createConfigString(sipClientList);
-        String expected = sipClientTestHelper.generateSipClientConfig(2, COMPANY);
+        String expected = sipClientTestHelper.generateSipClientConfig(2, CompanyData.COMPANY_PREFIX);
 
         assertThat(actual, equalTo(expected));
     }
@@ -113,32 +114,32 @@ public class SipClientConfigurationChanSipTest {
         generateOneSipClientInList();
 
         String actual = createConfigString(sipClientList);
-        String expected = sipClientTestHelper.generateSipClientConfig(1, COMPANY);
+        String expected = sipClientTestHelper.generateSipClientConfig(1, CompanyData.COMPANY_PREFIX);
 
         assertThat(actual, equalTo(expected));
     }
 
     @Test
     public void testTwoClients() throws Exception {
-        sipClientList = sipClientTestHelper.generateSipClientList(2, COMPANY);
+        sipClientList = sipClientTestHelper.generateSipClientList(2, CompanyData.COMPANY_PREFIX);
 
         String actual = createConfigString(sipClientList);
-        String expected = sipClientTestHelper.generateSipClientConfig(2, COMPANY);
+        String expected = sipClientTestHelper.generateSipClientConfig(2, CompanyData.COMPANY_PREFIX);
 
         assertThat(actual, equalTo(expected));
     }
 
     @Test
     public void testManyClients() throws Exception {
-        sipClientList = sipClientTestHelper.generateSipClientList(100, COMPANY);
+        sipClientList = sipClientTestHelper.generateSipClientList(100, CompanyData.COMPANY_PREFIX);
 
         String actual = createConfigString(sipClientList);
-        String expected = sipClientTestHelper.generateSipClientConfig(100, COMPANY);
+        String expected = sipClientTestHelper.generateSipClientConfig(100, CompanyData.COMPANY_PREFIX);
         assertThat(actual, equalTo(expected));
     }
 
     private void generateOneSipClientInList() {
-        sipClientList = sipClientTestHelper.generateSipClientList(1, COMPANY);
+        sipClientList = sipClientTestHelper.generateSipClientList(1, CompanyData.COMPANY_PREFIX);
     }
 
     private String createConfigString(List<SipClient> sipClientList) {

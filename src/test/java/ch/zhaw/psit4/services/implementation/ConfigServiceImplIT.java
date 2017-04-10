@@ -1,17 +1,19 @@
 package ch.zhaw.psit4.services.implementation;
 
-import ch.zhaw.psit4.data.jpa.entities.Company;
-import ch.zhaw.psit4.data.jpa.repositories.CompanyRepository;
-import ch.zhaw.psit4.data.jpa.repositories.SipClientRepository;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import ch.zhaw.psit4.domain.helper.DialPlanTestHelper;
 import ch.zhaw.psit4.domain.helper.SipClientTestHelper;
+import ch.zhaw.psit4.fixtures.database.BeanConfiguration;
+import ch.zhaw.psit4.fixtures.database.DatabaseFixtureBuilder;
 import ch.zhaw.psit4.helper.ZipStreamTestHelper;
 import ch.zhaw.psit4.services.interfaces.ConfigServiceInterface;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,21 +27,21 @@ import java.util.zip.ZipInputStream;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
+@Import(BeanConfiguration.class)
 public class ConfigServiceImplIT {
-
-    private static final String COMPANY = "acme1";
     private final ZipStreamTestHelper zipStreamTestHelper = new ZipStreamTestHelper();
     private final SipClientTestHelper sipClientTestHelper = new SipClientTestHelper();
+    @Autowired
+    ApplicationContext applicationContext;
     private DialPlanTestHelper dialPlanTestHelper = new DialPlanTestHelper();
-
-    @Autowired
-    private CompanyRepository companyRepository;
-
-    @Autowired
-    private SipClientRepository sipClientRepository;
-
     @Autowired
     private ConfigServiceInterface configServiceInterface;
+    private DatabaseFixtureBuilder databaseFixtureBuilder;
+
+    @Before
+    public void setUp() throws Exception {
+        databaseFixtureBuilder = applicationContext.getBean(DatabaseFixtureBuilder.class);
+    }
 
     @Test(expected = InvalidConfigurationException.class)
     public void getAsteriskConfigurationWithNoSipClients() throws Exception {
@@ -48,7 +50,7 @@ public class ConfigServiceImplIT {
 
     @Test
     public void getAsteriskConfigurationWithOneSipClient() throws Exception {
-        setupDatabase(1);
+        databaseFixtureBuilder.company(1).addSipClient(1).build();
 
         ByteArrayOutputStream baos = configServiceInterface.getAsteriskConfiguration();
         ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(baos.toByteArray()));
@@ -63,7 +65,7 @@ public class ConfigServiceImplIT {
 
     @Test
     public void getAsteriskConfigurationWithMultipleSipClients() throws Exception {
-        setupDatabase(2);
+        databaseFixtureBuilder.company(1).addSipClient(1).addSipClient(2).build();
 
         ByteArrayOutputStream baos = configServiceInterface.getAsteriskConfiguration();
         ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(baos.toByteArray()));
@@ -74,15 +76,6 @@ public class ConfigServiceImplIT {
 
         zipStreamTestHelper.testZipEntryContent(zipInputStream, expectedNames, expectedContent);
 
-    }
-
-    private void setupDatabase(int number) {
-        Company company = new Company(COMPANY);
-        companyRepository.deleteAll();
-        companyRepository.save(company);
-        for (int i = 1; i <= number; i++) {
-            sipClientRepository.save(sipClientTestHelper.createSipClientEntity(i, company));
-        }
     }
 
 }

@@ -1,6 +1,7 @@
 package ch.zhaw.psit4.fixtures.database;
 
 import ch.zhaw.psit4.data.jpa.entities.Company;
+import ch.zhaw.psit4.fixtures.general.CompanyData;
 
 /**
  * Create Company entities.
@@ -13,10 +14,7 @@ public final class CompanyEntity {
     }
 
     public static Company createCompany(int number) {
-        return new Company(getCompanyName(number));
+        return new Company(CompanyData.getCompanyName(number));
     }
 
-    public static String getCompanyName(int number) {
-        return "ACME " + number;
-    }
 }

@@ -94,4 +94,15 @@ public class DatabaseFixtureBuilder {
         });
     }
 
+    public Company getCompany() {
+        return company.stream().findFirst().orElseThrow(() -> new RuntimeException("No company in builder"));
+    }
+
+    public Map<Integer, Admin> getAdminList() {
+        return adminList;
+    }
+
+    public Map<Integer, SipClient> getSipClientList() {
+        return sipClientList;
+    }
 }
