@@ -17,6 +17,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.List;
+import java.util.Map;
+
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
@@ -65,6 +68,25 @@ public class SipClientRepositoryTest {
         sipClient.setPhoneNr(SipClientData.getSipClientPhoneNumber(1));
         sipClientRepository.save(sipClient);
 
+    }
+
+    @Test
+    public void sipClientEqualPhoneNr() throws Exception {
+        databaseFixtureBuilder.company(1).addSipClient(1).build();
+        databaseFixtureBuilder.company(2).addSipClient(2).build();
+
+        SipClientRepository sipClientRepository = databaseFixtureBuilder.getSipClientRepository();
+
+        Map<Integer, SipClient> sipClients = databaseFixtureBuilder.getSipClientList();
+
+        sipClients.get(1).setPhoneNr("007");
+        sipClients.get(2).setPhoneNr("007");
+
+        SipClient sipClient1 = sipClients.get(1);
+        SipClient sipClient2 = sipClients.get(2);
+
+        sipClientRepository.save(sipClient1);
+        sipClientRepository.save(sipClient2);
     }
 
 
