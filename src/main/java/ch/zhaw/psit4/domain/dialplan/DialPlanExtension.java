@@ -1,16 +1,25 @@
 package ch.zhaw.psit4.domain.dialplan;
 
-import ch.zhaw.psit4.domain.dialplan.interfaces.DialPlanApplication;
+import ch.zhaw.psit4.domain.dialplan.interfaces.DialPlanAppInterface;
 
 /**
- * Represents one extension in an asterisk dial plan.
+ * Represents one extension in an asterisk dial plan context.
+ * <p>
+ * An extension has number, a priority, and an Application.
+ * In the asterisk extensions.conf file the extension has following format:<br>
+ * <code><br>
+ * exten => number,priority,application([parameter[,parameter2...]])<br>
+ * </code>
+ * </p>
+ * An application is represented with the interface @{@link DialPlanAppInterface}.
  *
  * @author Jona Braun
  */
 public class DialPlanExtension {
+    public static final String EXTENSION_PREFIX = "exten => ";
     private String phoneNumber;
     private String priority;
-    private DialPlanApplication dialPlanApplication;
+    private DialPlanAppInterface dialPlanApplication;
 
     public String getPhoneNumber() {
         return phoneNumber;
@@ -28,11 +37,11 @@ public class DialPlanExtension {
         this.priority = priority;
     }
 
-    public DialPlanApplication getDialPlanApplication() {
+    public DialPlanAppInterface getDialPlanApplication() {
         return dialPlanApplication;
     }
 
-    public void setDialPlanApplication(DialPlanApplication dialPlanApplication) {
+    public void setDialPlanApplication(DialPlanAppInterface dialPlanApplication) {
         this.dialPlanApplication = dialPlanApplication;
     }
 }

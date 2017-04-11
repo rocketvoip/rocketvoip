@@ -9,6 +9,8 @@ import ch.zhaw.psit4.domain.dialplan.DialPlanConfigurationChanSip;
 import ch.zhaw.psit4.domain.dialplan.DialPlanContext;
 import ch.zhaw.psit4.domain.dialplan.DialPlanExtension;
 import ch.zhaw.psit4.domain.dialplan.applications.DialApp;
+import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
+import ch.zhaw.psit4.domain.exceptions.ZipFileCreationException;
 import ch.zhaw.psit4.domain.helper.SipClientValidator;
 import ch.zhaw.psit4.domain.interfaces.DialPlanConfigurationInterface;
 import ch.zhaw.psit4.domain.interfaces.SipClientConfigurationInterface;
@@ -24,7 +26,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Puts together the asterisk configuration.
+ * Puts together the asterisk configuration.<br>
+ * The asterisk configuration files produced by this service are sip.conf and extensions.conf.
+ * <h1>sip.conf</h1>
+ * See class {@link SipClientConfigurationChanSip} for further information about the structure of the file.
+ * <h1>extension.conf</h1>
+ * In the extension.conf file there are tow different main contexts.<br>
+ * <h2>default context</h2>
+ * <p>First there is a default context for every company. The default context ensures that every SIP-client
+ * can be called.<br>
+ * In the following example sip-phone1/2 is the name of a sip client.:<br><br>
+ * <code>
+ * [company-name]<br>
+ * exten => phone-number1,1,Dial(SIP/sip-phone1,timeout)<br>
+ * exten => phone-number2,1,Dial(SIP/sip-phone2,timeout)<br>
+ * </code>
+ * </p>
+ * <h2>special dial plan context</h2>
+ * <p>
+ * The special dial plan context is generic. It is put together according to the contexts in data storage.
+ * For further information see class @{@link DialPlanContext}.
+ * </p>
  *
  * @author Jona Braun
  */
@@ -49,8 +71,8 @@ public class ConfigServiceImpl implements ConfigServiceInterface {
      * and returns it as zip file in a {@link ByteArrayOutputStream}.
      *
      * @return ByteArrayOutputStream of the zipped asterisk configuration
-     * @throws ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException if config is invalid
-     * @throws ch.zhaw.psit4.domain.exceptions.ZipFileCreationException      if zip file creation fails
+     * @throws InvalidConfigurationException if config is invalid
+     * @throws ZipFileCreationException      if zip file creation fails
      */
     @Override
     public ByteArrayOutputStream getAsteriskConfiguration() {

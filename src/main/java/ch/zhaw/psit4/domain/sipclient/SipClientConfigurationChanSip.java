@@ -7,6 +7,14 @@ import java.util.List;
 
 /**
  * Generates the SIP client configuration according to the asterisk chanel driver chan_sip.
+ * One sip client in the asterisk sip.conf file has following structure:<br><br>
+ * <code>
+ * [sip-phone1]<br>
+ * type=friend<br>
+ * context=company1<br>
+ * host=dynamic<br>
+ * secret=Test-Pass<br>
+ * </code>
  *
  * @author Rafael Ostertag
  */

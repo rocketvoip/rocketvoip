@@ -7,6 +7,7 @@ import java.util.List;
 
 /**
  * Puts together the whole dial plan for the asterisk channel driver chan_sip.
+ * The dial plan contains multiple contexts.<br>
  *
  * @author Jona Braun
  */
@@ -37,7 +38,7 @@ public class DialPlanConfigurationChanSip implements DialPlanConfigurationInterf
         stringBuilder.append("]\n");
         for (DialPlanExtension dialPlanExtension : dialPlanContext.getDialPlanExtensionList()) {
 
-            stringBuilder.append("exten=> ");
+            stringBuilder.append(DialPlanExtension.EXTENSION_PREFIX);
             stringBuilder.append(dialPlanExtension.getPhoneNumber());
             stringBuilder.append(", ");
             stringBuilder.append(dialPlanExtension.getPriority());

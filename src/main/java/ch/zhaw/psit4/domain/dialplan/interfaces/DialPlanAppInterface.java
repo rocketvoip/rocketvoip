@@ -6,7 +6,7 @@ package ch.zhaw.psit4.domain.dialplan.interfaces;
  * @author Jona Braun
  */
 @FunctionalInterface
-public interface DialPlanApplication {
+public interface DialPlanAppInterface {
 
     /**
      * Puts together the asterisk application call.
