@@ -16,7 +16,7 @@ import ch.zhaw.psit4.domain.dialplan.interfaces.DialPlanAppInterface;
  * @author Jona Braun
  */
 public class DialPlanExtension {
-    public static final String EXTENSION_PREFIX = "exten => ";
+    public static final String EXTENSION_PREFIX = "exten=> ";
     private String phoneNumber;
     private String priority;
     private DialPlanAppInterface dialPlanApplication;
