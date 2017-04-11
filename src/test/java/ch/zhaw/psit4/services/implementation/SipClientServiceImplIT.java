@@ -76,7 +76,7 @@ public class SipClientServiceImplIT {
         );
         SipClientDto sipClientDto = SipClientDtoGenerator.createTestSipClientDto(
                 companyDto,
-                2
+                3
         );
 
         SipClientDto actual = sipClientServiceInterface.createSipClient(sipClientDto);
