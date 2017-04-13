@@ -1,4 +1,4 @@
-package ch.zhaw.psit4.testsupport.helper;
+package ch.zhaw.psit4.testsupport.convenience;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

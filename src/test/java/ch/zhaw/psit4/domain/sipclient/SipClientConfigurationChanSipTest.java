@@ -1,10 +1,10 @@
 package ch.zhaw.psit4.domain.sipclient;
 
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
+import ch.zhaw.psit4.testsupport.convenience.InputStreamStringyfier;
 import ch.zhaw.psit4.testsupport.fixtures.domain.SipClientDomainGenerator;
 import ch.zhaw.psit4.testsupport.fixtures.domain.SipClientGenerator;
 import ch.zhaw.psit4.testsupport.fixtures.general.CompanyData;
-import ch.zhaw.psit4.testsupport.helper.InputStreamStringyfier;
 import org.junit.Before;
 import org.junit.Test;
 

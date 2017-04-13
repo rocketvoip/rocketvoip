@@ -1,6 +1,6 @@
 package ch.zhaw.psit4.domain;
 
-import ch.zhaw.psit4.testsupport.helper.ZipStreamReader;
+import ch.zhaw.psit4.testsupport.convenience.ZipStreamReader;
 import org.junit.Before;
 import org.junit.Test;
 

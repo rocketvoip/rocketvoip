@@ -1,4 +1,4 @@
-package ch.zhaw.psit4.testsupport.helper;
+package ch.zhaw.psit4.testsupport.convenience;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

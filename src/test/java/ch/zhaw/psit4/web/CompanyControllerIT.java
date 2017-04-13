@@ -2,10 +2,10 @@ package ch.zhaw.psit4.web;
 
 import ch.zhaw.psit4.dto.CompanyDto;
 import ch.zhaw.psit4.services.implementation.CompanyServiceImpl;
+import ch.zhaw.psit4.testsupport.convenience.Json;
 import ch.zhaw.psit4.testsupport.fixtures.database.BeanConfiguration;
 import ch.zhaw.psit4.testsupport.fixtures.database.DatabaseFixtureBuilder;
 import ch.zhaw.psit4.testsupport.fixtures.dto.CompanyDtoGenerator;
-import ch.zhaw.psit4.testsupport.helper.Json;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
