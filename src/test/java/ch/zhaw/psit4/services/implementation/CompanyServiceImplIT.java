@@ -6,9 +6,9 @@ import ch.zhaw.psit4.services.exceptions.CompanyDeletionException;
 import ch.zhaw.psit4.services.exceptions.CompanyRetrievalException;
 import ch.zhaw.psit4.services.exceptions.CompanyUpdateException;
 import ch.zhaw.psit4.services.interfaces.CompanyServiceInterface;
-import ch.zhaw.psit4.tests.fixtures.database.BeanConfiguration;
-import ch.zhaw.psit4.tests.fixtures.database.DatabaseFixtureBuilder;
-import ch.zhaw.psit4.tests.fixtures.dto.CompanyDtoGenerator;
+import ch.zhaw.psit4.testsupport.fixtures.database.BeanConfiguration;
+import ch.zhaw.psit4.testsupport.fixtures.database.DatabaseFixtureBuilder;
+import ch.zhaw.psit4.testsupport.fixtures.dto.CompanyDtoGenerator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,8 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static ch.zhaw.psit4.tests.matchers.CompanyDtoEqualTo.companyDtoEqualTo;
-import static ch.zhaw.psit4.tests.matchers.CompanyDtoPartialMatcher.companyDtoAlmostEqualTo;
+import static ch.zhaw.psit4.testsupport.matchers.CompanyDtoEqualTo.companyDtoEqualTo;
+import static ch.zhaw.psit4.testsupport.matchers.CompanyDtoPartialMatcher.companyDtoAlmostEqualTo;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;

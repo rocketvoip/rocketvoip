@@ -2,14 +2,14 @@ package ch.zhaw.psit4.security.jwt;
 
 import ch.zhaw.psit4.data.jpa.entities.Admin;
 import ch.zhaw.psit4.security.auxiliary.AdminDetails;
-import ch.zhaw.psit4.tests.fixtures.database.AdminEntity;
-import ch.zhaw.psit4.tests.mocks.UserDetailsServiceMock;
+import ch.zhaw.psit4.testsupport.fixtures.database.AdminEntity;
+import ch.zhaw.psit4.testsupport.mocks.UserDetailsServiceMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-import static ch.zhaw.psit4.tests.matchers.AdminDetailsEqualTo.adminDetailsEqualTo;
+import static ch.zhaw.psit4.testsupport.matchers.AdminDetailsEqualTo.adminDetailsEqualTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;

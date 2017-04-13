@@ -2,10 +2,10 @@ package ch.zhaw.psit4.data.jpa.repositories;
 
 import ch.zhaw.psit4.data.jpa.entities.Company;
 import ch.zhaw.psit4.data.jpa.entities.SipClient;
-import ch.zhaw.psit4.tests.fixtures.database.BeanConfiguration;
-import ch.zhaw.psit4.tests.fixtures.database.DatabaseFixtureBuilder;
-import ch.zhaw.psit4.tests.fixtures.database.SipClientEntity;
-import ch.zhaw.psit4.tests.fixtures.general.SipClientData;
+import ch.zhaw.psit4.testsupport.fixtures.database.BeanConfiguration;
+import ch.zhaw.psit4.testsupport.fixtures.database.DatabaseFixtureBuilder;
+import ch.zhaw.psit4.testsupport.fixtures.database.SipClientEntity;
+import ch.zhaw.psit4.testsupport.fixtures.general.SipClientData;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

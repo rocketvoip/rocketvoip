@@ -2,10 +2,10 @@ package ch.zhaw.psit4.web;
 
 import ch.zhaw.psit4.domain.ConfigZipWriter;
 import ch.zhaw.psit4.domain.dialplan.DialPlanConfigurationChanSip;
-import ch.zhaw.psit4.tests.fixtures.database.BeanConfiguration;
-import ch.zhaw.psit4.tests.fixtures.database.DatabaseFixtureBuilder;
-import ch.zhaw.psit4.tests.helper.InputStreamStringyfier;
-import ch.zhaw.psit4.tests.helper.ZipStreamReader;
+import ch.zhaw.psit4.testsupport.fixtures.database.BeanConfiguration;
+import ch.zhaw.psit4.testsupport.fixtures.database.DatabaseFixtureBuilder;
+import ch.zhaw.psit4.testsupport.helper.InputStreamStringyfier;
+import ch.zhaw.psit4.testsupport.helper.ZipStreamReader;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

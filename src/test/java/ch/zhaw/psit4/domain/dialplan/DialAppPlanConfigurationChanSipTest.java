@@ -2,8 +2,8 @@ package ch.zhaw.psit4.domain.dialplan;
 
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import ch.zhaw.psit4.domain.interfaces.DialPlanConfigurationInterface;
-import ch.zhaw.psit4.tests.fixtures.domain.DialPlanGenerator;
-import ch.zhaw.psit4.tests.helper.InputStreamStringyfier;
+import ch.zhaw.psit4.testsupport.fixtures.domain.DialPlanGenerator;
+import ch.zhaw.psit4.testsupport.helper.InputStreamStringyfier;
 import org.junit.Before;
 import org.junit.Test;
 

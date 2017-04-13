@@ -8,10 +8,10 @@ import ch.zhaw.psit4.services.exceptions.SipClientDeletionException;
 import ch.zhaw.psit4.services.exceptions.SipClientRetrievalException;
 import ch.zhaw.psit4.services.exceptions.SipClientUpdateException;
 import ch.zhaw.psit4.services.interfaces.SipClientServiceInterface;
-import ch.zhaw.psit4.tests.fixtures.database.BeanConfiguration;
-import ch.zhaw.psit4.tests.fixtures.database.CompanyEntity;
-import ch.zhaw.psit4.tests.fixtures.database.DatabaseFixtureBuilder;
-import ch.zhaw.psit4.tests.fixtures.dto.SipClientDtoGenerator;
+import ch.zhaw.psit4.testsupport.fixtures.database.BeanConfiguration;
+import ch.zhaw.psit4.testsupport.fixtures.database.CompanyEntity;
+import ch.zhaw.psit4.testsupport.fixtures.database.DatabaseFixtureBuilder;
+import ch.zhaw.psit4.testsupport.fixtures.dto.SipClientDtoGenerator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,8 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static ch.zhaw.psit4.tests.matchers.SipClientDtoEqualTo.sipClientDtoEqualTo;
-import static ch.zhaw.psit4.tests.matchers.SipClientDtoPartialMatcher.sipClientDtoAlmostEqualTo;
+import static ch.zhaw.psit4.testsupport.matchers.SipClientDtoEqualTo.sipClientDtoEqualTo;
+import static ch.zhaw.psit4.testsupport.matchers.SipClientDtoPartialMatcher.sipClientDtoAlmostEqualTo;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
