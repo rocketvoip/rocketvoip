@@ -65,12 +65,12 @@ public class ConfigServiceImplIT {
                 ConfigServiceImplIT.class.getResourceAsStream("/fixtures/oneCompanyOneClient" +
                         ".txt")
         );
-        assertThat(zipStreamReader.getContent(ConfigZipWriter.SIP_CONFIG_FILE_NAME), equalTo(expected));
+        assertThat(zipStreamReader.getFileContent(ConfigZipWriter.SIP_CONFIG_FILE_NAME), equalTo(expected));
 
         expected = InputStreamStringyfier.slurpStream(
                 ConfigServiceImplIT.class.getResourceAsStream("/fixtures/oneContextOneApp.txt")
         );
-        assertThat(zipStreamReader.getContent(ConfigZipWriter.DIAL_PLAN_CONFIG_FILE_NAME), equalTo(expected));
+        assertThat(zipStreamReader.getFileContent(ConfigZipWriter.DIAL_PLAN_CONFIG_FILE_NAME), equalTo(expected));
 
     }
 
@@ -89,7 +89,7 @@ public class ConfigServiceImplIT {
         String expected = InputStreamStringyfier.slurpStream(
                 ConfigServiceImplIT.class.getResourceAsStream("/fixtures/oneCompanyTwoClients.txt")
         );
-        assertThat(zipStreamReader.getContent(ConfigZipWriter.SIP_CONFIG_FILE_NAME), equalTo(expected));
+        assertThat(zipStreamReader.getFileContent(ConfigZipWriter.SIP_CONFIG_FILE_NAME), equalTo(expected));
 
         expected = InputStreamStringyfier.slurpStream(
                 ConfigServiceImplIT.class.getResourceAsStream("/fixtures/oneContextTwoApps.txt")

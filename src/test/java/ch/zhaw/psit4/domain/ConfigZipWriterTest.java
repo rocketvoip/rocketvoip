@@ -39,9 +39,9 @@ public class ConfigZipWriterTest {
         assertThat(zipStreamReader.hasFile(ConfigZipWriter.DIAL_PLAN_CONFIG_FILE_NAME), equalTo(true));
         assertThat(zipStreamReader.hasFile(ConfigZipWriter.SIP_CONFIG_FILE_NAME), equalTo(true));
 
-        assertThat(zipStreamReader.getContent(ConfigZipWriter.DIAL_PLAN_CONFIG_FILE_NAME), equalTo
+        assertThat(zipStreamReader.getFileContent(ConfigZipWriter.DIAL_PLAN_CONFIG_FILE_NAME), equalTo
                 (DIAL_PLAN_CLIENT_CONF));
-        assertThat(zipStreamReader.getContent(ConfigZipWriter.SIP_CONFIG_FILE_NAME), equalTo
+        assertThat(zipStreamReader.getFileContent(ConfigZipWriter.SIP_CONFIG_FILE_NAME), equalTo
                 (SIP_CLIENT_CONF));
 
     }

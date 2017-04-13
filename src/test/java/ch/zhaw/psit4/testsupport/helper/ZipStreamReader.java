@@ -34,7 +34,7 @@ public class ZipStreamReader {
         return files.containsKey(filename);
     }
 
-    public String getContent(String filename) {
+    public String getFileContent(String filename) {
         return files.getOrDefault(filename, "file not found: " + filename);
     }
 

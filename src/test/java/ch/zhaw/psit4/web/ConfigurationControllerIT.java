@@ -92,13 +92,13 @@ public class ConfigurationControllerIT {
         String expected = expected = InputStreamStringyfier.slurpStream(
                 ConfigurationControllerIT.class.getResourceAsStream("/fixtures/fiveCompaniesThreeClients.txt")
         );
-        assertThat(zipStreamReader.getContent(ConfigZipWriter.SIP_CONFIG_FILE_NAME),
+        assertThat(zipStreamReader.getFileContent(ConfigZipWriter.SIP_CONFIG_FILE_NAME),
                 equalTo(expected)
         );
 
         expected = InputStreamStringyfier.slurpStream(
                 DialPlanConfigurationChanSip.class.getResourceAsStream("/fixtures/fiveContextsThreeApps.txt")
         );
-        assertThat(zipStreamReader.getContent(ConfigZipWriter.DIAL_PLAN_CONFIG_FILE_NAME), equalTo(expected));
+        assertThat(zipStreamReader.getFileContent(ConfigZipWriter.DIAL_PLAN_CONFIG_FILE_NAME), equalTo(expected));
     }
 }
