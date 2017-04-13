@@ -11,7 +11,10 @@ import java.util.List;
  *
  * @author Jona Braun
  */
-public class SipClientGenerator {
+public final class SipClientGenerator {
+    private SipClientGenerator() {
+        // intentionally empty
+    }
 
     /**
      * Create a domain sip client. The id will be 0 and has to be set by the caller.
@@ -20,7 +23,7 @@ public class SipClientGenerator {
      * @param number  number of sip client
      * @return domain SipClient instance.
      */
-    public static SipClient getSipClientDomain(String company, int number) {
+    public static SipClient getSipClient(String company, int number) {
         SipClient sipClient = new SipClient();
         sipClient.setCompany(company);
         sipClient.setPhoneNumber(SipClientData.getSipClientPhoneNumber(number));
@@ -36,10 +39,10 @@ public class SipClientGenerator {
      * @param company the company of the sip clients
      * @return the generated sip client list
      */
-    public List<SipClient> generateSipClientList(int number, String company) {
+    public static List<SipClient> generateSipClientList(int number, String company) {
         List<SipClient> sipClientList = new ArrayList<>();
         for (int i = 1; i <= number; i++) {
-            SipClient sipClient = getSipClientDomain(company, i);
+            SipClient sipClient = getSipClient(company, i);
             sipClientList.add(sipClient);
         }
         return sipClientList;

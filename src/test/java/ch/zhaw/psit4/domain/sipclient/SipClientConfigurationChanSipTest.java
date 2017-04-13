@@ -20,8 +20,6 @@ import static org.junit.Assert.assertThat;
  * @author Jona Braun
  */
 public class SipClientConfigurationChanSipTest {
-
-    private final SipClientGenerator sipClientGenerator = new SipClientGenerator();
     private SipClientConfigurationChanSip sipClientConfigurationChanSip;
     private List<SipClient> sipClientList;
 
@@ -53,9 +51,9 @@ public class SipClientConfigurationChanSipTest {
 
     @Test
     public void testNullClientInBetween() throws Exception {
-        sipClientList.add(SipClientGenerator.getSipClientDomain(CompanyData.getCompanyName(1), 1));
+        sipClientList.add(SipClientGenerator.getSipClient(CompanyData.getCompanyName(1), 1));
         sipClientList.add(null);
-        sipClientList.add(SipClientGenerator.getSipClientDomain(CompanyData.getCompanyName(1), 2));
+        sipClientList.add(SipClientGenerator.getSipClient(CompanyData.getCompanyName(1), 2));
 
         String actual = sipClientConfigurationChanSip.generateSipClientConfiguration(sipClientList);
         String expected = InputStreamStringyfier.slurpStream(
@@ -77,7 +75,7 @@ public class SipClientConfigurationChanSipTest {
 
     @Test
     public void testClientWithNullUsername() throws Exception {
-        sipClientList = sipClientGenerator.generateSipClientList(1, CompanyData.getCompanyName(1));
+        sipClientList = SipClientGenerator.generateSipClientList(1, CompanyData.getCompanyName(1));
         sipClientList.get(0).setUsername(null);
 
         String actual = sipClientConfigurationChanSip.generateSipClientConfiguration(sipClientList);
@@ -88,7 +86,7 @@ public class SipClientConfigurationChanSipTest {
 
     @Test
     public void testClientWithNullSecret() throws Exception {
-        sipClientList = sipClientGenerator.generateSipClientList(1, CompanyData.getCompanyName(1));
+        sipClientList = SipClientGenerator.generateSipClientList(1, CompanyData.getCompanyName(1));
         sipClientList.get(0).setSecret(null);
 
         String actual = sipClientConfigurationChanSip.generateSipClientConfiguration(sipClientList);
@@ -99,7 +97,7 @@ public class SipClientConfigurationChanSipTest {
 
     @Test
     public void testClientWithNullPhoneNumber() throws Exception {
-        sipClientList = sipClientGenerator.generateSipClientList(1, CompanyData.getCompanyName(1));
+        sipClientList = SipClientGenerator.generateSipClientList(1, CompanyData.getCompanyName(1));
         sipClientList.get(0).setPhoneNumber(null);
 
         String actual = sipClientConfigurationChanSip.generateSipClientConfiguration(sipClientList);
@@ -110,7 +108,7 @@ public class SipClientConfigurationChanSipTest {
 
     @Test
     public void testSingleClient() throws Exception {
-        sipClientList = sipClientGenerator.generateSipClientList(1, CompanyData.getCompanyName(1));
+        sipClientList = SipClientGenerator.generateSipClientList(1, CompanyData.getCompanyName(1));
 
         String actual = sipClientConfigurationChanSip.generateSipClientConfiguration(sipClientList);
         String expected = InputStreamStringyfier.slurpStream(
@@ -122,7 +120,7 @@ public class SipClientConfigurationChanSipTest {
 
     @Test
     public void testTwoClients() throws Exception {
-        sipClientList = sipClientGenerator.generateSipClientList(2, CompanyData.getCompanyName(1));
+        sipClientList = SipClientGenerator.generateSipClientList(2, CompanyData.getCompanyName(1));
 
         String actual = sipClientConfigurationChanSip.generateSipClientConfiguration(sipClientList);
         String expected = InputStreamStringyfier.slurpStream(
@@ -134,7 +132,7 @@ public class SipClientConfigurationChanSipTest {
 
     @Test
     public void testManyClients() throws Exception {
-        sipClientList = sipClientGenerator.generateSipClientList(3, CompanyData.getCompanyName(1));
+        sipClientList = SipClientGenerator.generateSipClientList(3, CompanyData.getCompanyName(1));
 
         String actual = sipClientConfigurationChanSip.generateSipClientConfiguration(sipClientList);
         String expected = InputStreamStringyfier.slurpStream(

@@ -23,7 +23,7 @@ public class SipClientValidatorTest {
     public void setup() {
         sipClientValidator = new SipClientValidator();
         sipClient = new SipClient();
-        sipClient = SipClientGenerator.getSipClientDomain(CompanyData.COMPANY_PREFIX, 1);
+        sipClient = SipClientGenerator.getSipClient(CompanyData.COMPANY_PREFIX, 1);
     }
 
     @Test(expected = InvalidConfigurationException.class)

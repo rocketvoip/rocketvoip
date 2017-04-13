@@ -16,13 +16,12 @@ import static org.junit.Assert.assertEquals;
 public class DialAppTest {
 
     private static final String TIMEOUT = "30";
-    private final SipClientGenerator sipClientGenerator = new SipClientGenerator();
     private List<SipClient> sipClientList;
 
     @Test
     public void getApplicationCallOneSIPClient() throws Exception {
 
-        sipClientList = sipClientGenerator.generateSipClientList(1, CompanyData.COMPANY_PREFIX);
+        sipClientList = SipClientGenerator.generateSipClientList(1, CompanyData.COMPANY_PREFIX);
 
         DialApp dialApp = new DialApp(DialApp.Technology.SIP, sipClientList, TIMEOUT);
 
@@ -35,7 +34,7 @@ public class DialAppTest {
     @Test
     public void getApplicationCallMultipleSIPClients() throws Exception {
 
-        sipClientList = sipClientGenerator.generateSipClientList(5, CompanyData.COMPANY_PREFIX);
+        sipClientList = SipClientGenerator.generateSipClientList(5, CompanyData.COMPANY_PREFIX);
 
         DialApp dialApp = new DialApp(DialApp.Technology.SIP, sipClientList, TIMEOUT);
 
@@ -48,7 +47,7 @@ public class DialAppTest {
     @Test
     public void getApplicationCallMultiplePSIPClients() throws Exception {
 
-        sipClientList = sipClientGenerator.generateSipClientList(2, CompanyData.COMPANY_PREFIX);
+        sipClientList = SipClientGenerator.generateSipClientList(2, CompanyData.COMPANY_PREFIX);
 
         DialApp dialApp = new DialApp(DialApp.Technology.PSIP, sipClientList, TIMEOUT);
 

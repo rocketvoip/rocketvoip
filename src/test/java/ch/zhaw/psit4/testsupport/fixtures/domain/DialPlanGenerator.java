@@ -13,7 +13,6 @@ import java.util.List;
  * Helper for a domain specific dial plan.
  */
 public class DialPlanGenerator {
-    private SipClientGenerator sipClientGenerator = new SipClientGenerator();
 
     /**
      * Generates a list of dial plan contexts with company names "acme0", "acme1", ...
@@ -49,7 +48,7 @@ public class DialPlanGenerator {
     }
 
     private List<DialPlanExtension> getDialPlanExtensionList(int numberOfClients, int companyNumber) {
-        List<SipClient> sipClients = sipClientGenerator.generateSipClientList(numberOfClients, CompanyData
+        List<SipClient> sipClients = SipClientGenerator.generateSipClientList(numberOfClients, CompanyData
                 .getCompanyName(companyNumber));
         List<DialPlanExtension> dialPlanExtensionList = new ArrayList<>();
         for (int j = 1; j <= numberOfClients; j++) {
