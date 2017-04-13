@@ -1,7 +1,6 @@
-package ch.zhaw.psit4.domain.helper;
+package ch.zhaw.psit4.tests.fixtures.domain;
 
 import ch.zhaw.psit4.domain.sipclient.SipClient;
-import ch.zhaw.psit4.tests.fixtures.domain.SipClientDomainGenerator;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -3,6 +3,7 @@ package ch.zhaw.psit4.domain.helper;
 import ch.zhaw.psit4.domain.dialplan.DialPlanContext;
 import ch.zhaw.psit4.domain.dialplan.DialPlanExtension;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
+import ch.zhaw.psit4.tests.fixtures.domain.DialPlanTestHelper;
 import org.junit.Before;
 import org.junit.Test;
 

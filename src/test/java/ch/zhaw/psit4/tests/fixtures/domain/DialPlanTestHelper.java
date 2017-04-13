@@ -1,4 +1,4 @@
-package ch.zhaw.psit4.domain.helper;
+package ch.zhaw.psit4.tests.fixtures.domain;
 
 import ch.zhaw.psit4.domain.dialplan.DialPlanContext;
 import ch.zhaw.psit4.domain.dialplan.DialPlanExtension;
