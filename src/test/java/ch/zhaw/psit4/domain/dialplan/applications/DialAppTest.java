@@ -1,7 +1,7 @@
 package ch.zhaw.psit4.domain.dialplan.applications;
 
 import ch.zhaw.psit4.domain.sipclient.SipClient;
-import ch.zhaw.psit4.tests.fixtures.domain.SipClientTestHelper;
+import ch.zhaw.psit4.tests.fixtures.domain.SipClientGenerator;
 import ch.zhaw.psit4.tests.fixtures.general.CompanyData;
 import ch.zhaw.psit4.tests.fixtures.general.SipClientData;
 import org.junit.Test;
@@ -16,13 +16,13 @@ import static org.junit.Assert.assertEquals;
 public class DialAppTest {
 
     private static final String TIMEOUT = "30";
-    private final SipClientTestHelper sipClientTestHelper = new SipClientTestHelper();
+    private final SipClientGenerator sipClientGenerator = new SipClientGenerator();
     private List<SipClient> sipClientList;
 
     @Test
     public void getApplicationCallOneSIPClient() throws Exception {
 
-        sipClientList = sipClientTestHelper.generateSipClientList(1, CompanyData.COMPANY_PREFIX);
+        sipClientList = sipClientGenerator.generateSipClientList(1, CompanyData.COMPANY_PREFIX);
 
         DialApp dialApp = new DialApp(DialApp.Technology.SIP, sipClientList, TIMEOUT);
 
@@ -35,7 +35,7 @@ public class DialAppTest {
     @Test
     public void getApplicationCallMultipleSIPClients() throws Exception {
 
-        sipClientList = sipClientTestHelper.generateSipClientList(5, CompanyData.COMPANY_PREFIX);
+        sipClientList = sipClientGenerator.generateSipClientList(5, CompanyData.COMPANY_PREFIX);
 
         DialApp dialApp = new DialApp(DialApp.Technology.SIP, sipClientList, TIMEOUT);
 
@@ -48,7 +48,7 @@ public class DialAppTest {
     @Test
     public void getApplicationCallMultiplePSIPClients() throws Exception {
 
-        sipClientList = sipClientTestHelper.generateSipClientList(2, CompanyData.COMPANY_PREFIX);
+        sipClientList = sipClientGenerator.generateSipClientList(2, CompanyData.COMPANY_PREFIX);
 
         DialApp dialApp = new DialApp(DialApp.Technology.PSIP, sipClientList, TIMEOUT);
 

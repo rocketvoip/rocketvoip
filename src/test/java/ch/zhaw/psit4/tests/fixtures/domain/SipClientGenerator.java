@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author Jona Braun
  */
-public class SipClientTestHelper {
+public class SipClientGenerator {
 
     /**
      * Generates a list of domain specific sip clients.

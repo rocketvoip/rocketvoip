@@ -12,8 +12,8 @@ import java.util.List;
 /**
  * Helper for a domain specific dial plan.
  */
-public class DialPlanTestHelper {
-    private SipClientTestHelper sipClientTestHelper = new SipClientTestHelper();
+public class DialPlanGenerator {
+    private SipClientGenerator sipClientGenerator = new SipClientGenerator();
 
     /**
      * Generates a list of dial plan contexts with company names "acme0", "acme1", ...
@@ -48,7 +48,7 @@ public class DialPlanTestHelper {
     }
 
     private List<DialPlanExtension> getDialPlanExtensionList(int numberOfClients, int companyNumber) {
-        List<SipClient> sipClients = sipClientTestHelper.generateSipClientList(numberOfClients, CompanyData
+        List<SipClient> sipClients = sipClientGenerator.generateSipClientList(numberOfClients, CompanyData
                 .COMPANY_PREFIX + companyNumber);
         List<DialPlanExtension> dialPlanExtensionList = new ArrayList<>();
         for (int j = 1; j <= numberOfClients; j++) {

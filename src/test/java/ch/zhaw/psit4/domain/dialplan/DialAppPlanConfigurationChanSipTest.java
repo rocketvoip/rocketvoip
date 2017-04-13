@@ -2,7 +2,7 @@ package ch.zhaw.psit4.domain.dialplan;
 
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import ch.zhaw.psit4.domain.interfaces.DialPlanConfigurationInterface;
-import ch.zhaw.psit4.tests.fixtures.domain.DialPlanTestHelper;
+import ch.zhaw.psit4.tests.fixtures.domain.DialPlanGenerator;
 import ch.zhaw.psit4.tests.helper.InputStreamStringyfier;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +20,7 @@ import static org.junit.Assert.assertThat;
  */
 public class DialAppPlanConfigurationChanSipTest {
 
-    private final DialPlanTestHelper dialPlanTestHelper = new DialPlanTestHelper();
+    private final DialPlanGenerator dialPlanGenerator = new DialPlanGenerator();
     private DialPlanConfigurationInterface dialPlanConfigurationChanSip;
     private List<DialPlanContext> dialPlanContextList;
 
@@ -53,9 +53,9 @@ public class DialAppPlanConfigurationChanSipTest {
     @Test
     public void testNullClientInBetween() throws Exception {
         dialPlanContextList = new ArrayList<>();
-        dialPlanContextList.add(dialPlanTestHelper.getDialPlanContext(2, 1));
+        dialPlanContextList.add(dialPlanGenerator.getDialPlanContext(2, 1));
         dialPlanContextList.add(null);
-        dialPlanContextList.add(dialPlanTestHelper.getDialPlanContext(2, 2));
+        dialPlanContextList.add(dialPlanGenerator.getDialPlanContext(2, 2));
 
         String actual = dialPlanConfigurationChanSip.generateDialPlanConfiguration(dialPlanContextList);
 
@@ -68,7 +68,7 @@ public class DialAppPlanConfigurationChanSipTest {
 
     @Test
     public void generateSimpleDialPlanConfigurationOneEntry() throws Exception {
-        dialPlanContextList = dialPlanTestHelper.generateDialPlan(1, 2);
+        dialPlanContextList = dialPlanGenerator.generateDialPlan(1, 2);
 
         String extensionConf = dialPlanConfigurationChanSip.generateDialPlanConfiguration(dialPlanContextList);
         String expected = InputStreamStringyfier.slurpStream(
@@ -81,7 +81,7 @@ public class DialAppPlanConfigurationChanSipTest {
 
     @Test
     public void generateSimpleDialPlanConfigurationMultipleEntries() throws Exception {
-        dialPlanContextList = dialPlanTestHelper.generateDialPlan(5, 3);
+        dialPlanContextList = dialPlanGenerator.generateDialPlan(5, 3);
 
         String extensionConf = dialPlanConfigurationChanSip.generateDialPlanConfiguration(dialPlanContextList);
         String expected = InputStreamStringyfier.slurpStream(
