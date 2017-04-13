@@ -2,8 +2,8 @@ package ch.zhaw.psit4.domain.dialplan.applications;
 
 import ch.zhaw.psit4.domain.helper.SipClientTestHelper;
 import ch.zhaw.psit4.domain.sipclient.SipClient;
-import ch.zhaw.psit4.fixtures.general.CompanyData;
-import ch.zhaw.psit4.fixtures.general.SipClientData;
+import ch.zhaw.psit4.tests.fixtures.general.CompanyData;
+import ch.zhaw.psit4.tests.fixtures.general.SipClientData;
 import org.junit.Test;
 
 import java.util.List;

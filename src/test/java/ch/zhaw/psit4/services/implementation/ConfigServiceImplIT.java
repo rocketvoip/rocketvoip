@@ -2,11 +2,11 @@ package ch.zhaw.psit4.services.implementation;
 
 import ch.zhaw.psit4.domain.ConfigZipWriter;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
-import ch.zhaw.psit4.fixtures.database.BeanConfiguration;
-import ch.zhaw.psit4.fixtures.database.DatabaseFixtureBuilder;
-import ch.zhaw.psit4.helper.InputStreamStringyfier;
-import ch.zhaw.psit4.helper.ZipStreamReader;
 import ch.zhaw.psit4.services.interfaces.ConfigServiceInterface;
+import ch.zhaw.psit4.tests.fixtures.database.BeanConfiguration;
+import ch.zhaw.psit4.tests.fixtures.database.DatabaseFixtureBuilder;
+import ch.zhaw.psit4.tests.helper.InputStreamStringyfier;
+import ch.zhaw.psit4.tests.helper.ZipStreamReader;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

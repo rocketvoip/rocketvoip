@@ -4,8 +4,7 @@ import ch.zhaw.psit4.domain.dialplan.DialPlanContext;
 import ch.zhaw.psit4.domain.dialplan.DialPlanExtension;
 import ch.zhaw.psit4.domain.dialplan.applications.DialApp;
 import ch.zhaw.psit4.domain.sipclient.SipClient;
-import ch.zhaw.psit4.fixtures.general.CompanyData;
-import ch.zhaw.psit4.fixtures.general.SipClientData;
+import ch.zhaw.psit4.tests.fixtures.general.CompanyData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,49 +14,6 @@ import java.util.List;
  */
 public class DialPlanTestHelper {
     private SipClientTestHelper sipClientTestHelper = new SipClientTestHelper();
-
-    /**
-     * Creates a dial plan with the company name prefix CompanyData.COMPANY_PREFIX.
-     *
-     * @param numberOfContext the number of contexts (companies)
-     * @param numberOfClients the number of sip clients per context (company)
-     * @return the dial plan
-     */
-    public String getSimpleDialPlan(int numberOfContext, int numberOfClients) {
-        return getSimpleDialPlanWithCompanyPrefix(numberOfContext, numberOfClients, CompanyData.COMPANY_PREFIX);
-    }
-
-    /**
-     * Generates a simple dial plan with one company.
-     *
-     * @param numberOfEntries number of entries in the dial plan
-     * @param company         the company name for the dial plan entries
-     * @return the dial plan config
-     */
-    public String getSimpleDialPlanEntrySameCompany(int numberOfEntries, String company) {
-        return getSimpleDialPlanContext(numberOfEntries, company);
-    }
-
-
-    private String getSimpleDialPlanWithCompanyPrefix(int numberOfContext, int numberOfClients, String company) {
-        String dialPlan = "";
-        for (int i = 1; i <= numberOfContext; i++) {
-            dialPlan += getSimpleDialPlanContext(numberOfClients, company + i);
-        }
-        return dialPlan;
-    }
-
-    private String getSimpleDialPlanContext(int number, String company) {
-        String simpleDialPlan = "[" + company + "]\n";
-        for (int i = 1; i <= number; i++) {
-
-            simpleDialPlan += "exten=> " +
-                    SipClientData.getSipClientPhoneNumber(i) + ", 1, " +
-                    "Dial(SIP/" + SipClientData.getSipClientLabel(i) + "-" +
-                    company.replaceAll(" ", "-") + ", 30)\n";
-        }
-        return simpleDialPlan + "\n";
-    }
 
     /**
      * Generates a list of dial plan contexts with company names "acme0", "acme1", ...

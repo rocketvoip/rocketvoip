@@ -2,12 +2,12 @@ package ch.zhaw.psit4.web;
 
 import ch.zhaw.psit4.dto.CompanyDto;
 import ch.zhaw.psit4.dto.SipClientDto;
-import ch.zhaw.psit4.fixtures.database.BeanConfiguration;
-import ch.zhaw.psit4.fixtures.database.DatabaseFixtureBuilder;
-import ch.zhaw.psit4.fixtures.dto.SipClientDtoGenerator;
-import ch.zhaw.psit4.helper.Json;
 import ch.zhaw.psit4.services.implementation.CompanyServiceImpl;
 import ch.zhaw.psit4.services.implementation.SipClientServiceImpl;
+import ch.zhaw.psit4.tests.fixtures.database.BeanConfiguration;
+import ch.zhaw.psit4.tests.fixtures.database.DatabaseFixtureBuilder;
+import ch.zhaw.psit4.tests.fixtures.dto.SipClientDtoGenerator;
+import ch.zhaw.psit4.tests.helper.Json;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +24,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import static ch.zhaw.psit4.helper.matchers.SipClientDtoEqualTo.sipClientDtoEqualTo;
+import static ch.zhaw.psit4.tests.matchers.SipClientDtoEqualTo.sipClientDtoEqualTo;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
