@@ -3,7 +3,6 @@ package ch.zhaw.psit4.domain.sipclient;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import ch.zhaw.psit4.testsupport.convenience.InputStreamStringyfier;
 import ch.zhaw.psit4.testsupport.fixtures.domain.SipClientGenerator;
-import ch.zhaw.psit4.testsupport.fixtures.general.CompanyData;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -51,9 +50,9 @@ public class SipClientConfigurationChanSipTest {
 
     @Test
     public void testNullClientInBetween() throws Exception {
-        sipClientList.add(SipClientGenerator.getSipClient(CompanyData.getCompanyName(1), 1));
+        sipClientList.add(SipClientGenerator.getSipClient(1, 1));
         sipClientList.add(null);
-        sipClientList.add(SipClientGenerator.getSipClient(CompanyData.getCompanyName(1), 2));
+        sipClientList.add(SipClientGenerator.getSipClient(1, 2));
 
         String actual = sipClientConfigurationChanSip.generateSipClientConfiguration(sipClientList);
         String expected = InputStreamStringyfier.slurpStream(
@@ -75,7 +74,7 @@ public class SipClientConfigurationChanSipTest {
 
     @Test
     public void testClientWithNullUsername() throws Exception {
-        sipClientList = SipClientGenerator.generateSipClientList(1, CompanyData.getCompanyName(1));
+        sipClientList = SipClientGenerator.generateSipClientList(1, 1);
         sipClientList.get(0).setUsername(null);
 
         String actual = sipClientConfigurationChanSip.generateSipClientConfiguration(sipClientList);
@@ -86,7 +85,7 @@ public class SipClientConfigurationChanSipTest {
 
     @Test
     public void testClientWithNullSecret() throws Exception {
-        sipClientList = SipClientGenerator.generateSipClientList(1, CompanyData.getCompanyName(1));
+        sipClientList = SipClientGenerator.generateSipClientList(1, 1);
         sipClientList.get(0).setSecret(null);
 
         String actual = sipClientConfigurationChanSip.generateSipClientConfiguration(sipClientList);
@@ -97,7 +96,7 @@ public class SipClientConfigurationChanSipTest {
 
     @Test
     public void testClientWithNullPhoneNumber() throws Exception {
-        sipClientList = SipClientGenerator.generateSipClientList(1, CompanyData.getCompanyName(1));
+        sipClientList = SipClientGenerator.generateSipClientList(1, 1);
         sipClientList.get(0).setPhoneNumber(null);
 
         String actual = sipClientConfigurationChanSip.generateSipClientConfiguration(sipClientList);
@@ -108,7 +107,7 @@ public class SipClientConfigurationChanSipTest {
 
     @Test
     public void testSingleClient() throws Exception {
-        sipClientList = SipClientGenerator.generateSipClientList(1, CompanyData.getCompanyName(1));
+        sipClientList = SipClientGenerator.generateSipClientList(1, 1);
 
         String actual = sipClientConfigurationChanSip.generateSipClientConfiguration(sipClientList);
         String expected = InputStreamStringyfier.slurpStream(
@@ -120,7 +119,7 @@ public class SipClientConfigurationChanSipTest {
 
     @Test
     public void testTwoClients() throws Exception {
-        sipClientList = SipClientGenerator.generateSipClientList(2, CompanyData.getCompanyName(1));
+        sipClientList = SipClientGenerator.generateSipClientList(2, 1);
 
         String actual = sipClientConfigurationChanSip.generateSipClientConfiguration(sipClientList);
         String expected = InputStreamStringyfier.slurpStream(
@@ -132,7 +131,7 @@ public class SipClientConfigurationChanSipTest {
 
     @Test
     public void testManyClients() throws Exception {
-        sipClientList = SipClientGenerator.generateSipClientList(3, CompanyData.getCompanyName(1));
+        sipClientList = SipClientGenerator.generateSipClientList(3, 1);
 
         String actual = sipClientConfigurationChanSip.generateSipClientConfiguration(sipClientList);
         String expected = InputStreamStringyfier.slurpStream(

@@ -12,20 +12,23 @@ import java.util.List;
 /**
  * Helper for a domain specific dial plan.
  */
-public class DialPlanGenerator {
+public final class DialPlanGenerator {
+    private DialPlanGenerator() {
+        // intentionally empty
+    }
 
     /**
-     * Generates a list of dial plan contexts with company names "acme0", "acme1", ...
+     * Generates a list of dial plan contexts.
      *
      * @param numberOfContexts number of contexts to create
      * @param numberOfClients  number of clients per context to create
      * @return dial plan context list
      */
-    public List<DialPlanContext> generateDialPlan(int numberOfContexts, int numberOfClients) {
+    public static List<DialPlanContext> generateDialPlan(int numberOfContexts, int numberOfClients) {
         List<DialPlanContext> dialPlanContexts = new ArrayList<>();
 
-        for (int i = 1; i <= numberOfContexts; i++) {
-            DialPlanContext dialPlanContext = getDialPlanContext(numberOfClients, i);
+        for (int companyNumber = 1; companyNumber <= numberOfContexts; companyNumber++) {
+            DialPlanContext dialPlanContext = getDialPlanContext(numberOfClients, companyNumber);
             dialPlanContexts.add(dialPlanContext);
         }
         return dialPlanContexts;
@@ -38,7 +41,7 @@ public class DialPlanGenerator {
      * @param companyNumber   then number appended to CompanyData.COMPANY_PREFIX
      * @return the generated context
      */
-    public DialPlanContext getDialPlanContext(int numberOfClients, int companyNumber) {
+    public static DialPlanContext getDialPlanContext(int numberOfClients, int companyNumber) {
         DialPlanContext dialPlanContext = new DialPlanContext();
         dialPlanContext.setContextName(CompanyData.getCompanyName(companyNumber));
 
@@ -47,9 +50,8 @@ public class DialPlanGenerator {
         return dialPlanContext;
     }
 
-    private List<DialPlanExtension> getDialPlanExtensionList(int numberOfClients, int companyNumber) {
-        List<SipClient> sipClients = SipClientGenerator.generateSipClientList(numberOfClients, CompanyData
-                .getCompanyName(companyNumber));
+    private static List<DialPlanExtension> getDialPlanExtensionList(int numberOfClients, int companyNumber) {
+        List<SipClient> sipClients = SipClientGenerator.generateSipClientList(numberOfClients, companyNumber);
         List<DialPlanExtension> dialPlanExtensionList = new ArrayList<>();
         for (int j = 1; j <= numberOfClients; j++) {
 

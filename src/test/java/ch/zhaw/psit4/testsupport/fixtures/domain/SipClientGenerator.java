@@ -1,6 +1,7 @@
 package ch.zhaw.psit4.testsupport.fixtures.domain;
 
 import ch.zhaw.psit4.domain.sipclient.SipClient;
+import ch.zhaw.psit4.testsupport.fixtures.general.CompanyData;
 import ch.zhaw.psit4.testsupport.fixtures.general.SipClientData;
 
 import java.util.ArrayList;
@@ -23,9 +24,9 @@ public final class SipClientGenerator {
      * @param number  number of sip client
      * @return domain SipClient instance.
      */
-    public static SipClient getSipClient(String company, int number) {
+    public static SipClient getSipClient(int company, int number) {
         SipClient sipClient = new SipClient();
-        sipClient.setCompany(company);
+        sipClient.setCompany(CompanyData.getCompanyName(company));
         sipClient.setPhoneNumber(SipClientData.getSipClientPhoneNumber(number));
         sipClient.setSecret(SipClientData.getSipClientSecret(number));
         sipClient.setUsername(SipClientData.getSipClientLabel(number));
@@ -39,7 +40,7 @@ public final class SipClientGenerator {
      * @param company the company of the sip clients
      * @return the generated sip client list
      */
-    public static List<SipClient> generateSipClientList(int number, String company) {
+    public static List<SipClient> generateSipClientList(int number, int company) {
         List<SipClient> sipClientList = new ArrayList<>();
         for (int i = 1; i <= number; i++) {
             SipClient sipClient = getSipClient(company, i);
