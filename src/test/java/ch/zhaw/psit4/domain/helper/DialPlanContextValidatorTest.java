@@ -16,7 +16,6 @@ import static org.junit.Assert.assertTrue;
  * @author Jona Braun
  */
 public class DialPlanContextValidatorTest {
-    private final DialPlanGenerator dialPlanGenerator = new DialPlanGenerator();
     private DialPlanContext dialPlanContext;
     private DialPlanContextValidator dialPlanValidator;
 
@@ -78,6 +77,6 @@ public class DialPlanContextValidatorTest {
     }
 
     private void generateDialPlanContext() {
-        dialPlanContext = dialPlanGenerator.getDialPlanContext(1, 1);
+        dialPlanContext = DialPlanGenerator.getDialPlanContext(1, 1);
     }
 }
