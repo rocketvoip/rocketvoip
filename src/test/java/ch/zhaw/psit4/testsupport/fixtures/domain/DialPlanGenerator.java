@@ -41,7 +41,8 @@ public class DialPlanGenerator {
      */
     public DialPlanContext getDialPlanContext(int numberOfClients, int companyNumber) {
         DialPlanContext dialPlanContext = new DialPlanContext();
-        dialPlanContext.setContextName(CompanyData.COMPANY_PREFIX + companyNumber);
+        dialPlanContext.setContextName(CompanyData.getCompanyName(companyNumber));
+
         List<DialPlanExtension> dialPlanExtensionList = getDialPlanExtensionList(numberOfClients, companyNumber);
         dialPlanContext.setDialPlanExtensionList(dialPlanExtensionList);
         return dialPlanContext;
@@ -49,7 +50,7 @@ public class DialPlanGenerator {
 
     private List<DialPlanExtension> getDialPlanExtensionList(int numberOfClients, int companyNumber) {
         List<SipClient> sipClients = sipClientGenerator.generateSipClientList(numberOfClients, CompanyData
-                .COMPANY_PREFIX + companyNumber);
+                .getCompanyName(companyNumber));
         List<DialPlanExtension> dialPlanExtensionList = new ArrayList<>();
         for (int j = 1; j <= numberOfClients; j++) {
 

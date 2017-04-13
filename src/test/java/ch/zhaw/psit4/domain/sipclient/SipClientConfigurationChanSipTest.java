@@ -2,7 +2,6 @@ package ch.zhaw.psit4.domain.sipclient;
 
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import ch.zhaw.psit4.testsupport.convenience.InputStreamStringyfier;
-import ch.zhaw.psit4.testsupport.fixtures.domain.SipClientDomainGenerator;
 import ch.zhaw.psit4.testsupport.fixtures.domain.SipClientGenerator;
 import ch.zhaw.psit4.testsupport.fixtures.general.CompanyData;
 import org.junit.Before;
@@ -54,9 +53,9 @@ public class SipClientConfigurationChanSipTest {
 
     @Test
     public void testNullClientInBetween() throws Exception {
-        sipClientList.add(SipClientDomainGenerator.getSipClientDomain(CompanyData.getCompanyName(1), 1));
+        sipClientList.add(SipClientGenerator.getSipClientDomain(CompanyData.getCompanyName(1), 1));
         sipClientList.add(null);
-        sipClientList.add(SipClientDomainGenerator.getSipClientDomain(CompanyData.getCompanyName(1), 2));
+        sipClientList.add(SipClientGenerator.getSipClientDomain(CompanyData.getCompanyName(1), 2));
 
         String actual = sipClientConfigurationChanSip.generateSipClientConfiguration(sipClientList);
         String expected = InputStreamStringyfier.slurpStream(

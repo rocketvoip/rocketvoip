@@ -2,7 +2,7 @@ package ch.zhaw.psit4.domain.helper;
 
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import ch.zhaw.psit4.domain.sipclient.SipClient;
-import ch.zhaw.psit4.testsupport.fixtures.domain.SipClientDomainGenerator;
+import ch.zhaw.psit4.testsupport.fixtures.domain.SipClientGenerator;
 import ch.zhaw.psit4.testsupport.fixtures.general.CompanyData;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +23,7 @@ public class SipClientValidatorTest {
     public void setup() {
         sipClientValidator = new SipClientValidator();
         sipClient = new SipClient();
-        sipClient = SipClientDomainGenerator.getSipClientDomain(CompanyData.COMPANY_PREFIX, 1);
+        sipClient = SipClientGenerator.getSipClientDomain(CompanyData.COMPANY_PREFIX, 1);
     }
 
     @Test(expected = InvalidConfigurationException.class)
