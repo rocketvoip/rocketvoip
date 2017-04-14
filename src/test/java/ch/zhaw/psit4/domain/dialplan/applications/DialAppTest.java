@@ -1,7 +1,8 @@
 package ch.zhaw.psit4.domain.dialplan.applications;
 
-import ch.zhaw.psit4.domain.helper.SipClientTestHelper;
 import ch.zhaw.psit4.domain.sipclient.SipClient;
+import ch.zhaw.psit4.testsupport.fixtures.domain.DialAppCallGenerator;
+import ch.zhaw.psit4.testsupport.fixtures.domain.SipClientGenerator;
 import org.junit.Test;
 
 import java.util.List;
@@ -13,19 +14,17 @@ import static org.junit.Assert.assertEquals;
  */
 public class DialAppTest {
 
-    private static final String TIMEOUT = "30";
-    private final SipClientTestHelper sipClientTestHelper = new SipClientTestHelper();
     private List<SipClient> sipClientList;
 
     @Test
     public void getApplicationCallOneSIPClient() throws Exception {
 
-        sipClientList = sipClientTestHelper.generateSipClientList(1, "acme");
+        sipClientList = SipClientGenerator.generateSipClientList(1, 1);
 
-        DialApp dialApp = new DialApp(DialApp.Technology.SIP, sipClientList, TIMEOUT);
+        DialApp dialApp = new DialApp(DialApp.Technology.SIP, sipClientList, DialAppCallGenerator.TIMEOUT);
 
         String dialAppCall = dialApp.getApplicationCall();
-        String expected = generateDialAppCall(1, "SIP");
+        String expected = DialAppCallGenerator.generateMultipleDialAppCalls(1, 1, "SIP");
 
         assertEquals(expected, dialAppCall);
     }
@@ -33,12 +32,12 @@ public class DialAppTest {
     @Test
     public void getApplicationCallMultipleSIPClients() throws Exception {
 
-        sipClientList = sipClientTestHelper.generateSipClientList(5, "acme");
+        sipClientList = SipClientGenerator.generateSipClientList(5, 1);
 
-        DialApp dialApp = new DialApp(DialApp.Technology.SIP, sipClientList, TIMEOUT);
+        DialApp dialApp = new DialApp(DialApp.Technology.SIP, sipClientList, DialAppCallGenerator.TIMEOUT);
 
         String dialAppCall = dialApp.getApplicationCall();
-        String expected = generateDialAppCall(5, "SIP");
+        String expected = DialAppCallGenerator.generateMultipleDialAppCalls(5, 1, "SIP");
 
         assertEquals(expected, dialAppCall);
     }
@@ -46,28 +45,15 @@ public class DialAppTest {
     @Test
     public void getApplicationCallMultiplePSIPClients() throws Exception {
 
-        sipClientList = sipClientTestHelper.generateSipClientList(2, "acme");
+        sipClientList = SipClientGenerator.generateSipClientList(2, 1);
 
-        DialApp dialApp = new DialApp(DialApp.Technology.PSIP, sipClientList, TIMEOUT);
+        DialApp dialApp = new DialApp(DialApp.Technology.PSIP, sipClientList, DialAppCallGenerator.TIMEOUT);
 
         String dialAppCall = dialApp.getApplicationCall();
-        String expected = generateDialAppCall(2, "PSIP");
+        String expected = DialAppCallGenerator.generateMultipleDialAppCalls(2, 1, "PSIP");
 
         assertEquals(expected, dialAppCall);
     }
 
-
-    private String generateDialAppCall(int number, String technology) {
-        String dialAppCall = "Dial(";
-        for (int i = 1; i <= number; i++) {
-            dialAppCall += technology
-                    + "/Name" + i + "-acme";
-            if (number > i) {
-                dialAppCall += "&";
-            }
-        }
-        dialAppCall += ", " + TIMEOUT + ")";
-        return dialAppCall;
-    }
 
 }

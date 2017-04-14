@@ -38,16 +38,8 @@ public class AdminDetails implements UserDetails {
         return firstname;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
     public String getLastname() {
         return lastname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
     }
 
     private void computeAuthorities() {
@@ -71,7 +63,7 @@ public class AdminDetails implements UserDetails {
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
+    public Collection<GrantedAuthority> getAuthorities() {
         // TODO: Return a read-only collection
         return grantedAuthorityList;
     }

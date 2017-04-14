@@ -1,17 +1,19 @@
 package ch.zhaw.psit4.services.implementation;
 
-import ch.zhaw.psit4.data.jpa.entities.Company;
-import ch.zhaw.psit4.data.jpa.repositories.CompanyRepository;
-import ch.zhaw.psit4.data.jpa.repositories.SipClientRepository;
+import ch.zhaw.psit4.domain.ConfigZipWriter;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
-import ch.zhaw.psit4.domain.helper.DialPlanTestHelper;
-import ch.zhaw.psit4.domain.helper.SipClientTestHelper;
-import ch.zhaw.psit4.helper.ZipStreamTestHelper;
 import ch.zhaw.psit4.services.interfaces.ConfigServiceInterface;
+import ch.zhaw.psit4.testsupport.convenience.InputStreamStringyfier;
+import ch.zhaw.psit4.testsupport.convenience.ZipStreamReader;
+import ch.zhaw.psit4.testsupport.fixtures.database.BeanConfiguration;
+import ch.zhaw.psit4.testsupport.fixtures.database.DatabaseFixtureBuilder;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,27 +21,28 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.zip.ZipInputStream;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 /**
  * @author Jona Braun
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
+@Import(BeanConfiguration.class)
 public class ConfigServiceImplIT {
-
-    private static final String COMPANY = "acme1";
-    private final ZipStreamTestHelper zipStreamTestHelper = new ZipStreamTestHelper();
-    private final SipClientTestHelper sipClientTestHelper = new SipClientTestHelper();
-    private DialPlanTestHelper dialPlanTestHelper = new DialPlanTestHelper();
-
     @Autowired
-    private CompanyRepository companyRepository;
-
-    @Autowired
-    private SipClientRepository sipClientRepository;
+    ApplicationContext applicationContext;
 
     @Autowired
     private ConfigServiceInterface configServiceInterface;
+    private DatabaseFixtureBuilder databaseFixtureBuilder;
+
+    @Before
+    public void setUp() throws Exception {
+        databaseFixtureBuilder = applicationContext.getBean(DatabaseFixtureBuilder.class);
+    }
 
     @Test(expected = InvalidConfigurationException.class)
     public void getAsteriskConfigurationWithNoSipClients() throws Exception {
@@ -48,41 +51,49 @@ public class ConfigServiceImplIT {
 
     @Test
     public void getAsteriskConfigurationWithOneSipClient() throws Exception {
-        setupDatabase(1);
+        databaseFixtureBuilder.company(1).addSipClient(1).build();
 
         ByteArrayOutputStream baos = configServiceInterface.getAsteriskConfiguration();
         ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(baos.toByteArray()));
 
-        String[] expectedNames = {"sip.conf", "extensions.conf"};
-        String[] expectedContent = {sipClientTestHelper.generateSipClientConfig(1, 1),
-                dialPlanTestHelper.getSimpleDialPlan(1, 1)};
+        ZipStreamReader zipStreamReader = new ZipStreamReader(zipInputStream);
 
-        zipStreamTestHelper.testZipEntryContent(zipInputStream, expectedNames, expectedContent);
+        assertThat(zipStreamReader.hasFile(ConfigZipWriter.SIP_CONFIG_FILE_NAME), equalTo(true));
+        assertThat(zipStreamReader.hasFile(ConfigZipWriter.DIAL_PLAN_CONFIG_FILE_NAME), equalTo(true));
+
+        String expected = InputStreamStringyfier.slurpStream(
+                ConfigServiceImplIT.class.getResourceAsStream("/fixtures/oneCompanyOneClient" +
+                        ".txt")
+        );
+        assertThat(zipStreamReader.getFileContent(ConfigZipWriter.SIP_CONFIG_FILE_NAME), equalTo(expected));
+
+        expected = InputStreamStringyfier.slurpStream(
+                ConfigServiceImplIT.class.getResourceAsStream("/fixtures/oneContextOneApp.txt")
+        );
+        assertThat(zipStreamReader.getFileContent(ConfigZipWriter.DIAL_PLAN_CONFIG_FILE_NAME), equalTo(expected));
 
     }
 
     @Test
     public void getAsteriskConfigurationWithMultipleSipClients() throws Exception {
-        setupDatabase(2);
+        databaseFixtureBuilder.company(1).addSipClient(1).addSipClient(2).build();
 
         ByteArrayOutputStream baos = configServiceInterface.getAsteriskConfiguration();
         ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(baos.toByteArray()));
 
-        String[] expectedNames = {"sip.conf", "extensions.conf"};
-        String[] expectedContent = {sipClientTestHelper.generateSipClientConfig(1, 2),
-                dialPlanTestHelper.getSimpleDialPlan(1, 2)};
+        ZipStreamReader zipStreamReader = new ZipStreamReader(zipInputStream);
 
-        zipStreamTestHelper.testZipEntryContent(zipInputStream, expectedNames, expectedContent);
+        assertThat(zipStreamReader.hasFile(ConfigZipWriter.SIP_CONFIG_FILE_NAME), equalTo(true));
+        assertThat(zipStreamReader.hasFile(ConfigZipWriter.DIAL_PLAN_CONFIG_FILE_NAME), equalTo(true));
 
-    }
+        String expected = InputStreamStringyfier.slurpStream(
+                ConfigServiceImplIT.class.getResourceAsStream("/fixtures/oneCompanyTwoClients.txt")
+        );
+        assertThat(zipStreamReader.getFileContent(ConfigZipWriter.SIP_CONFIG_FILE_NAME), equalTo(expected));
 
-    private void setupDatabase(int number) {
-        Company company = new Company(COMPANY);
-        companyRepository.deleteAll();
-        companyRepository.save(company);
-        for (int i = 1; i <= number; i++) {
-            sipClientRepository.save(sipClientTestHelper.createSipClientEntity(i, company));
-        }
+        expected = InputStreamStringyfier.slurpStream(
+                ConfigServiceImplIT.class.getResourceAsStream("/fixtures/oneContextTwoApps.txt")
+        );
     }
 
 }

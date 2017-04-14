@@ -3,6 +3,7 @@ package ch.zhaw.psit4.domain.helper;
 import ch.zhaw.psit4.domain.dialplan.DialPlanContext;
 import ch.zhaw.psit4.domain.dialplan.DialPlanExtension;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
+import ch.zhaw.psit4.testsupport.fixtures.domain.DialPlanGenerator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,7 +16,6 @@ import static org.junit.Assert.assertTrue;
  * @author Jona Braun
  */
 public class DialPlanContextValidatorTest {
-    private final DialPlanTestHelper dialPlanTestHelper = new DialPlanTestHelper();
     private DialPlanContext dialPlanContext;
     private DialPlanContextValidator dialPlanValidator;
 
@@ -77,6 +77,6 @@ public class DialPlanContextValidatorTest {
     }
 
     private void generateDialPlanContext() {
-        dialPlanContext = dialPlanTestHelper.getDialPlanContext(1, 1);
+        dialPlanContext = DialPlanGenerator.getDialPlanContext(1, 1);
     }
 }
