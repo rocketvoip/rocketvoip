@@ -5,6 +5,18 @@ import java.util.List;
 /**
  * Represents one context, containing one ore more extensions
  * in an asterisk dial plan.
+ * <p>
+ * In the asterisk extensions.conf file the context has a context-name inside the square brackets.
+ * Below the context-name one or more extensions are placed.
+ * An extension is one line in the extensions.conf file starting with "exten =>".<br><br>
+ * <code>
+ * [context-name]<br>
+ * exten => number,priority,application([parameter[,parameter2...]])<br>
+ * exten => number,priority,application([parameter[,parameter2...]])<br>
+ * ...<br>
+ * </code>
+ * </p>
+ * An extension is represented by the class @{@link DialPlanExtension}.
  *
  * @author Jona Braun
  */

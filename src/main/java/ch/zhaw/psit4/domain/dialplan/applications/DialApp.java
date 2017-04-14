@@ -1,6 +1,6 @@
 package ch.zhaw.psit4.domain.dialplan.applications;
 
-import ch.zhaw.psit4.domain.dialplan.interfaces.DialPlanApplication;
+import ch.zhaw.psit4.domain.dialplan.interfaces.DialPlanAppInterface;
 import ch.zhaw.psit4.domain.sipclient.SipClient;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author Jona Braun
  */
-public class DialApp implements DialPlanApplication {
+public class DialApp implements DialPlanAppInterface {
 
     private Technology technology;
     private List<SipClient> sipClientList;
