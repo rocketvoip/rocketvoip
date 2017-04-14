@@ -1,5 +1,6 @@
 package ch.zhaw.psit4.domain.dialplan;
 
+import ch.zhaw.psit4.domain.dialplan.helper.ContextGenerator;
 import ch.zhaw.psit4.domain.helper.DialPlanContextValidator;
 import ch.zhaw.psit4.domain.interfaces.DialPlanConfigurationInterface;
 
@@ -8,6 +9,14 @@ import java.util.List;
 /**
  * Puts together the whole dial plan for the asterisk channel driver chan_sip.
  * The dial plan contains multiple contexts.<br>
+ * In the extension.conf file there are tow different main contexts.<br>
+ * <h2>default context</h2>
+ * See {@link ContextGenerator}
+ * <h2>special dial plan context</h2>
+ * <p>
+ * The special dial plan context is generic. It is put together according to the contexts in data storage.
+ * For further information see class @{@link DialPlanContext}.
+ * </p>
  *
  * @author Jona Braun
  */
@@ -37,7 +46,6 @@ public class DialPlanConfigurationChanSip implements DialPlanConfigurationInterf
         stringBuilder.append(dialPlanContext.getContextName());
         stringBuilder.append("]\n");
         for (DialPlanExtension dialPlanExtension : dialPlanContext.getDialPlanExtensionList()) {
-
             stringBuilder.append(DialPlanExtension.EXTENSION_PREFIX);
             stringBuilder.append(dialPlanExtension.getPhoneNumber());
             stringBuilder.append(", ");

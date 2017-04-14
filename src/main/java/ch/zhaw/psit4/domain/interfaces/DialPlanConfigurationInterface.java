@@ -13,7 +13,6 @@ import java.util.List;
 @FunctionalInterface
 public interface DialPlanConfigurationInterface {
 
-
     /**
      * Creates the dial plan configuration according to asterisk driver standard.
      *
