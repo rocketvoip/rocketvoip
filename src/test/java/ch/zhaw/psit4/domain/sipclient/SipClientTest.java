@@ -3,6 +3,8 @@ package ch.zhaw.psit4.domain.sipclient;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -14,6 +16,15 @@ public class SipClientTest {
     @Before
     public void setUp() throws Exception {
         sipClient = new SipClient();
+    }
+
+    // This test is simply done to improve coverage
+    @Test
+    public void setId() throws Exception {
+        assertThat(sipClient.getId(), equalTo(0L));
+
+        sipClient.setId(1);
+        assertThat(sipClient.getId(), equalTo(1L));
     }
 
     @Test
