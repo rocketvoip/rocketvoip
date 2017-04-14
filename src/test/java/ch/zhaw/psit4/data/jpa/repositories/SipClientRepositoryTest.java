@@ -2,11 +2,10 @@ package ch.zhaw.psit4.data.jpa.repositories;
 
 import ch.zhaw.psit4.data.jpa.entities.Company;
 import ch.zhaw.psit4.data.jpa.entities.SipClient;
-import ch.zhaw.psit4.fixtures.database.BeanConfiguration;
-import ch.zhaw.psit4.fixtures.database.CompanyEntity;
-import ch.zhaw.psit4.fixtures.database.DatabaseFixtureBuilder;
-import ch.zhaw.psit4.fixtures.database.SipClientEntity;
-import ch.zhaw.psit4.fixtures.general.SipClientData;
+import ch.zhaw.psit4.testsupport.fixtures.database.BeanConfiguration;
+import ch.zhaw.psit4.testsupport.fixtures.database.DatabaseFixtureBuilder;
+import ch.zhaw.psit4.testsupport.fixtures.database.SipClientEntity;
+import ch.zhaw.psit4.testsupport.fixtures.general.SipClientData;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,11 +16,11 @@ import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.List;
 import java.util.Map;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by beni on 10.04.17.

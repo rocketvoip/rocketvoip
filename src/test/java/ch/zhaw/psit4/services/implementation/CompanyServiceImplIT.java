@@ -1,14 +1,14 @@
 package ch.zhaw.psit4.services.implementation;
 
 import ch.zhaw.psit4.dto.CompanyDto;
-import ch.zhaw.psit4.fixtures.database.BeanConfiguration;
-import ch.zhaw.psit4.fixtures.database.DatabaseFixtureBuilder;
-import ch.zhaw.psit4.fixtures.dto.CompanyDtoGenerator;
 import ch.zhaw.psit4.services.exceptions.CompanyCreationException;
 import ch.zhaw.psit4.services.exceptions.CompanyDeletionException;
 import ch.zhaw.psit4.services.exceptions.CompanyRetrievalException;
 import ch.zhaw.psit4.services.exceptions.CompanyUpdateException;
 import ch.zhaw.psit4.services.interfaces.CompanyServiceInterface;
+import ch.zhaw.psit4.testsupport.fixtures.database.BeanConfiguration;
+import ch.zhaw.psit4.testsupport.fixtures.database.DatabaseFixtureBuilder;
+import ch.zhaw.psit4.testsupport.fixtures.dto.CompanyDtoGenerator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,8 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static ch.zhaw.psit4.helper.matchers.CompanyDtoEqualTo.companyDtoEqualTo;
-import static ch.zhaw.psit4.helper.matchers.CompanyDtoPartialMatcher.companyDtoAlmostEqualTo;
+import static ch.zhaw.psit4.testsupport.matchers.CompanyDtoEqualTo.companyDtoEqualTo;
+import static ch.zhaw.psit4.testsupport.matchers.CompanyDtoPartialMatcher.companyDtoAlmostEqualTo;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
