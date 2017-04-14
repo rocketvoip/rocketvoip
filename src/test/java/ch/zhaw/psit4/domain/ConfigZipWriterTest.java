@@ -1,13 +1,18 @@
 package ch.zhaw.psit4.domain;
 
+import ch.zhaw.psit4.domain.exceptions.ZipFileCreationException;
 import ch.zhaw.psit4.testsupport.convenience.ZipStreamReader;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.zip.ZipInputStream;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.spy;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -44,6 +49,16 @@ public class ConfigZipWriterTest {
         assertThat(zipStreamReader.getFileContent(ConfigZipWriter.SIP_CONFIG_FILE_NAME), equalTo
                 (SIP_CLIENT_CONF));
 
+    }
+
+    @Test(expected = ZipFileCreationException.class)
+    public void testExceptionHandling() throws Exception {
+        ConfigZipWriter configZipWriterSpy = spy(configZipWriter);
+
+        Mockito.doThrow(new IOException("Test io exception")).when(configZipWriterSpy).writeZipEntry(any(), any(),
+                any());
+
+        configZipWriterSpy.writeConfigurationZipFile();
     }
 
 }

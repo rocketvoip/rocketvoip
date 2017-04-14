@@ -51,7 +51,8 @@ public class ConfigZipWriter {
         return baos;
     }
 
-    private void writeZipEntry(ZipOutputStream zos, ZipEntry sipClientConfEntry, byte[] bytes) throws IOException {
+    // This method is package private in order to make it mockable
+    void writeZipEntry(ZipOutputStream zos, ZipEntry sipClientConfEntry, byte[] bytes) throws IOException {
         zos.putNextEntry(sipClientConfEntry);
         zos.write(bytes);
         zos.closeEntry();
