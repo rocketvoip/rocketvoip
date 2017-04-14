@@ -1,19 +1,17 @@
 package ch.zhaw.psit4.web;
 
-import ch.zhaw.psit4.data.jpa.repositories.AdminRepository;
-import ch.zhaw.psit4.data.jpa.repositories.CompanyRepository;
-import ch.zhaw.psit4.data.jpa.repositories.SipClientRepository;
-import ch.zhaw.psit4.helper.Json;
-import ch.zhaw.psit4.helper.jpa.DatabaseFixture;
 import ch.zhaw.psit4.security.auxiliary.LoginData;
+import ch.zhaw.psit4.testsupport.convenience.Json;
+import ch.zhaw.psit4.testsupport.fixtures.database.BeanConfiguration;
+import ch.zhaw.psit4.testsupport.fixtures.database.DatabaseFixtureBuilder;
+import ch.zhaw.psit4.testsupport.fixtures.general.AdminData;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -33,14 +31,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @Transactional
+@Import(BeanConfiguration.class)
 public class LoginIT {
     private MockMvc mockMvc;
 
     @Autowired
     private WebApplicationContext context;
 
-    @Autowired
-    private DatabaseFixture databaseFixture;
+    private DatabaseFixtureBuilder databaseFixtureBuilder;
 
     @Before
     public void setUp() throws Exception {
@@ -48,6 +46,8 @@ public class LoginIT {
                 .webAppContextSetup(context)
                 .apply(springSecurity())
                 .build();
+
+        databaseFixtureBuilder = context.getBean(DatabaseFixtureBuilder.class);
     }
 
     @Test
@@ -62,10 +62,10 @@ public class LoginIT {
 
     @Test
     public void testKnownUser() throws Exception {
-        databaseFixture.setup();
+        databaseFixtureBuilder.addAdministrator(1).build();
 
-        String loginJsonStream = makeAuthenticationJsonStream(DatabaseFixture.makeAdminUsername(1), DatabaseFixture
-                .makeAdminPassword(1)
+        String loginJsonStream = makeAuthenticationJsonStream(AdminData.getAdminUsername(1), AdminData
+                .getAdminPassword(1)
         );
         mockMvc.perform(
                 post("/v1/login").contentType(MediaType.APPLICATION_JSON_UTF8).content(loginJsonStream)
@@ -81,14 +81,4 @@ public class LoginIT {
 
         return Json.toJson(loginData);
     }
-
-    @TestConfiguration
-    public static class SpringConfiguration {
-        @Bean
-        public DatabaseFixture databaseFixture(CompanyRepository companyRepository, AdminRepository adminRepository,
-                                               SipClientRepository sipClientRepository) {
-            return new DatabaseFixture(companyRepository, adminRepository, sipClientRepository);
-        }
-    }
-
 }

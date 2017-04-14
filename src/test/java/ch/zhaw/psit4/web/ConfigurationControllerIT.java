@@ -1,11 +1,11 @@
 package ch.zhaw.psit4.web;
 
-import ch.zhaw.psit4.domain.helper.DialPlanTestHelper;
-import ch.zhaw.psit4.domain.helper.SipClientTestHelper;
-import ch.zhaw.psit4.fixtures.database.BeanConfiguration;
-import ch.zhaw.psit4.fixtures.database.DatabaseFixtureBuilder;
-import ch.zhaw.psit4.fixtures.general.CompanyData;
-import ch.zhaw.psit4.helper.ZipStreamTestHelper;
+import ch.zhaw.psit4.domain.ConfigZipWriter;
+import ch.zhaw.psit4.domain.dialplan.DialPlanConfigurationChanSip;
+import ch.zhaw.psit4.testsupport.convenience.InputStreamStringyfier;
+import ch.zhaw.psit4.testsupport.convenience.ZipStreamReader;
+import ch.zhaw.psit4.testsupport.fixtures.database.BeanConfiguration;
+import ch.zhaw.psit4.testsupport.fixtures.database.DatabaseFixtureBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +24,8 @@ import org.springframework.web.context.WebApplicationContext;
 import java.io.ByteArrayInputStream;
 import java.util.zip.ZipInputStream;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -39,21 +41,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 @Import(BeanConfiguration.class)
 public class ConfigurationControllerIT {
-    private final SipClientTestHelper sipClientTestHelper = new SipClientTestHelper();
-    private final DialPlanTestHelper dialPlanTestHelper = new DialPlanTestHelper();
-    private final ZipStreamTestHelper zipStreamTestHelper = new ZipStreamTestHelper();
+    public static final int NUMBER_OF_TEST_COMPANIES = 5;
+    public static final int NUMBER_CLIENTS_PER_COMPANY = 3;
 
     @Autowired
     private WebApplicationContext wac;
-
-    private DatabaseFixtureBuilder databaseFixtureBuilder;
 
     private MockMvc mockMvc;
 
     @Before
     public void setUp() throws Exception {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
-        databaseFixtureBuilder = wac.getBean(DatabaseFixtureBuilder.class);
     }
 
     @Test
@@ -70,11 +68,14 @@ public class ConfigurationControllerIT {
 
     @Test
     public void getAsteriskConfigurationTestZipAttachment() throws Exception {
-        databaseFixtureBuilder.company(1);
-        for (int i = 1; i <= 12; i++) {
-            databaseFixtureBuilder.addSipClient(i);
+        for (int companyNumber = 1; companyNumber <= NUMBER_OF_TEST_COMPANIES; companyNumber++) {
+            DatabaseFixtureBuilder databaseFixtureBuilder = wac.getBean(DatabaseFixtureBuilder.class);
+            databaseFixtureBuilder.company(companyNumber);
+            for (int i = 1; i <= NUMBER_CLIENTS_PER_COMPANY; i++) {
+                databaseFixtureBuilder.addSipClient(i);
+            }
+            databaseFixtureBuilder.build();
         }
-        databaseFixtureBuilder.build();
 
         MvcResult mvcResult = this.mockMvc.perform(get("/v1/configuration/zip"))
                 .andReturn();
@@ -83,12 +84,21 @@ public class ConfigurationControllerIT {
 
         assertNotNull("the Input stream was null", bais);
 
-        ZipInputStream zipInputStream = new ZipInputStream(bais);
+        ZipStreamReader zipStreamReader = new ZipStreamReader(new ZipInputStream(bais));
 
-        String[] expectedNames = {"sip.conf", "extensions.conf"};
-        String[] expectedContent = {sipClientTestHelper.generateSipClientConfig(12, CompanyData.getCompanyName(1)),
-                dialPlanTestHelper.getSimpleDialPlanEntrySameCompany(12, CompanyData.getCompanyName(1))};
+        assertThat(zipStreamReader.hasFile(ConfigZipWriter.SIP_CONFIG_FILE_NAME), equalTo(true));
+        assertThat(zipStreamReader.hasFile(ConfigZipWriter.DIAL_PLAN_CONFIG_FILE_NAME), equalTo(true));
 
-        zipStreamTestHelper.testZipEntryContent(zipInputStream, expectedNames, expectedContent);
+        String expected = expected = InputStreamStringyfier.slurpStream(
+                ConfigurationControllerIT.class.getResourceAsStream("/fixtures/fiveCompaniesThreeClients.txt")
+        );
+        assertThat(zipStreamReader.getFileContent(ConfigZipWriter.SIP_CONFIG_FILE_NAME),
+                equalTo(expected)
+        );
+
+        expected = InputStreamStringyfier.slurpStream(
+                DialPlanConfigurationChanSip.class.getResourceAsStream("/fixtures/fiveContextsThreeApps.txt")
+        );
+        assertThat(zipStreamReader.getFileContent(ConfigZipWriter.DIAL_PLAN_CONFIG_FILE_NAME), equalTo(expected));
     }
 }
