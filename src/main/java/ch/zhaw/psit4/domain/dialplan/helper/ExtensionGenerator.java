@@ -29,7 +29,7 @@ public class ExtensionGenerator {
      * @param companyDomain the company
      * @return the default extension for the given company
      */
-    public static List<DialPlanExtension> getDefaultExtension(CompanyDomain companyDomain) {
+    public static List<DialPlanExtension> getDefaultExtensions(CompanyDomain companyDomain) {
         List<SipClient> sipClientList = companyDomain.getSipClientList();
         List<DialPlanExtension> dialPlanExtensionList = new ArrayList<>();
 
@@ -37,14 +37,14 @@ public class ExtensionGenerator {
             if (!sipClientValidator.isSipClientValid(sipClient)) {
                 continue;
             }
-            DialPlanExtension dialPlanExtension = getDefaultDialPlanExtension(sipClient);
+            DialPlanExtension dialPlanExtension = getDefaultExtension(sipClient);
             dialPlanExtensionList.add(dialPlanExtension);
         }
 
         return dialPlanExtensionList;
     }
 
-    private static DialPlanExtension getDefaultDialPlanExtension(SipClient sipClient) {
+    private static DialPlanExtension getDefaultExtension(SipClient sipClient) {
         DialPlanExtension dialPlanExtension = new DialPlanExtension();
         dialPlanExtension.setPhoneNumber(sipClient.getPhoneNumber());
         dialPlanExtension.setPriority("1");

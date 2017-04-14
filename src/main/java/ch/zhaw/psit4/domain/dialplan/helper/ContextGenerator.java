@@ -37,7 +37,7 @@ public class ContextGenerator {
     public static List<DialPlanContext> getDefaultContexts(List<CompanyDomain> companyDomainList) {
         List<DialPlanContext> dialPlanContextList = new ArrayList<>();
         for (CompanyDomain companyDomain : companyDomainList) {
-            List<DialPlanExtension> dialPlanExtensions = ExtensionGenerator.getDefaultExtension(companyDomain);
+            List<DialPlanExtension> dialPlanExtensions = ExtensionGenerator.getDefaultExtensions(companyDomain);
             DialPlanContext dialPlanContext = getDefaultContext(companyDomain.getName(), dialPlanExtensions);
             dialPlanContextList.add(dialPlanContext);
         }
