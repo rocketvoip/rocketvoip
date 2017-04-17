@@ -1,4 +1,4 @@
-package ch.zhaw.psit4.services.implementation.helper;
+package ch.zhaw.psit4.services.implementation.adapters;
 
 import ch.zhaw.psit4.data.jpa.repositories.CompanyRepository;
 import ch.zhaw.psit4.data.jpa.repositories.SipClientRepository;
@@ -18,12 +18,12 @@ import java.util.List;
  *
  * @author Jona Braun
  */
-public class DialPlanConfigHelper {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DialPlanConfigHelper.class);
+public class DialPlanConfigAdapter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DialPlanConfigAdapter.class);
     private CompanyRepository companyRepository;
     private SipClientRepository sipClientRepository;
 
-    public DialPlanConfigHelper(SipClientRepository sipClientRepository, CompanyRepository companyRepository) {
+    public DialPlanConfigAdapter(SipClientRepository sipClientRepository, CompanyRepository companyRepository) {
         this.companyRepository = companyRepository;
         this.sipClientRepository = sipClientRepository;
     }
