@@ -1,5 +1,6 @@
 package ch.zhaw.psit4.domain.sipclient;
 
+import ch.zhaw.psit4.domain.beans.SipClient;
 import org.junit.Before;
 import org.junit.Test;
 

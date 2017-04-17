@@ -1,6 +1,4 @@
-package ch.zhaw.psit4.domain.company;
-
-import ch.zhaw.psit4.domain.sipclient.SipClient;
+package ch.zhaw.psit4.domain.beans;
 
 import java.util.List;
 
@@ -9,7 +7,7 @@ import java.util.List;
  *
  * @author Jona Braun
  */
-public class CompanyDomain {
+public class Company {
     private String name;
     private List<SipClient> sipClientList;
 

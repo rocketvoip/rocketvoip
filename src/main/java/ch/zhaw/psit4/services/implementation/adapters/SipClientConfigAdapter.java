@@ -1,7 +1,7 @@
-package ch.zhaw.psit4.services.implementation.helper;
+package ch.zhaw.psit4.services.implementation.adapters;
 
 import ch.zhaw.psit4.data.jpa.repositories.SipClientRepository;
-import ch.zhaw.psit4.domain.sipclient.SipClient;
+import ch.zhaw.psit4.domain.beans.SipClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,10 +13,10 @@ import static ch.zhaw.psit4.services.implementation.ConfigServiceImpl.sipClientE
  *
  * @author Jona Braun
  */
-public class SipClientConfigHelper {
+public class SipClientConfigAdapter {
     private final SipClientRepository sipClientRepository;
 
-    public SipClientConfigHelper(SipClientRepository sipClientRepository) {
+    public SipClientConfigAdapter(SipClientRepository sipClientRepository) {
         this.sipClientRepository = sipClientRepository;
     }
 

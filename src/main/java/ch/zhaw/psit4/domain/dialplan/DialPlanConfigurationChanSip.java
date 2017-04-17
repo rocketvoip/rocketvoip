@@ -1,5 +1,7 @@
 package ch.zhaw.psit4.domain.dialplan;
 
+import ch.zhaw.psit4.domain.beans.DialPlanContext;
+import ch.zhaw.psit4.domain.beans.DialPlanExtension;
 import ch.zhaw.psit4.domain.dialplan.helper.ContextGenerator;
 import ch.zhaw.psit4.domain.helper.DialPlanContextValidator;
 import ch.zhaw.psit4.domain.interfaces.DialPlanConfigurationInterface;

@@ -1,6 +1,6 @@
 package ch.zhaw.psit4.domain.interfaces;
 
-import ch.zhaw.psit4.domain.sipclient.SipClient;
+import ch.zhaw.psit4.domain.beans.SipClient;
 
 import java.util.List;
 

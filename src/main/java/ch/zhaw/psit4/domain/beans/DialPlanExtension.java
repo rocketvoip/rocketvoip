@@ -1,6 +1,6 @@
-package ch.zhaw.psit4.domain.dialplan;
+package ch.zhaw.psit4.domain.beans;
 
-import ch.zhaw.psit4.domain.dialplan.interfaces.DialPlanAppInterface;
+import ch.zhaw.psit4.domain.interfaces.DialPlanAppInterface;
 
 /**
  * Represents one extension in an asterisk dial plan context.

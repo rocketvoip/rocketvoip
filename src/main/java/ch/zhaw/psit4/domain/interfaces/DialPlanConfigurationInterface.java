@@ -1,6 +1,6 @@
 package ch.zhaw.psit4.domain.interfaces;
 
-import ch.zhaw.psit4.domain.dialplan.DialPlanContext;
+import ch.zhaw.psit4.domain.beans.DialPlanContext;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 package ch.zhaw.psit4.domain.helper;
 
+import ch.zhaw.psit4.domain.beans.SipClient;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
-import ch.zhaw.psit4.domain.sipclient.SipClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
