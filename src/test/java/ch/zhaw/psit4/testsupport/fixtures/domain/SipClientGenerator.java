@@ -1,6 +1,6 @@
 package ch.zhaw.psit4.testsupport.fixtures.domain;
 
-import ch.zhaw.psit4.domain.sipclient.SipClient;
+import ch.zhaw.psit4.domain.beans.SipClient;
 import ch.zhaw.psit4.testsupport.fixtures.general.CompanyData;
 import ch.zhaw.psit4.testsupport.fixtures.general.SipClientData;
 

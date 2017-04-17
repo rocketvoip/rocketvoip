@@ -1,4 +1,4 @@
-package ch.zhaw.psit4.domain.dialplan.interfaces;
+package ch.zhaw.psit4.domain.interfaces;
 
 /**
  * Represents a dial plan application in asterisk.

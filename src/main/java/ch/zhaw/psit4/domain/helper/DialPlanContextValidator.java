@@ -1,7 +1,7 @@
 package ch.zhaw.psit4.domain.helper;
 
-import ch.zhaw.psit4.domain.dialplan.DialPlanContext;
-import ch.zhaw.psit4.domain.dialplan.DialPlanExtension;
+import ch.zhaw.psit4.domain.beans.DialPlanContext;
+import ch.zhaw.psit4.domain.beans.DialPlanExtension;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

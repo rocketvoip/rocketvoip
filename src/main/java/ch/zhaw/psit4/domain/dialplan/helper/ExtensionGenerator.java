@@ -1,10 +1,10 @@
 package ch.zhaw.psit4.domain.dialplan.helper;
 
-import ch.zhaw.psit4.domain.company.CompanyDomain;
-import ch.zhaw.psit4.domain.dialplan.DialPlanExtension;
+import ch.zhaw.psit4.domain.beans.Company;
+import ch.zhaw.psit4.domain.beans.DialPlanExtension;
+import ch.zhaw.psit4.domain.beans.SipClient;
 import ch.zhaw.psit4.domain.dialplan.applications.DialApp;
 import ch.zhaw.psit4.domain.helper.SipClientValidator;
-import ch.zhaw.psit4.domain.sipclient.SipClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +26,11 @@ public class ExtensionGenerator {
     /**
      * Puts together the default extensions for a specific company.
      *
-     * @param companyDomain the company
+     * @param company the company
      * @return the default extension for the given company
      */
-    public static List<DialPlanExtension> getDefaultExtensions(CompanyDomain companyDomain) {
-        List<SipClient> sipClientList = companyDomain.getSipClientList();
+    public static List<DialPlanExtension> getDefaultExtensions(Company company) {
+        List<SipClient> sipClientList = company.getSipClientList();
         List<DialPlanExtension> dialPlanExtensionList = new ArrayList<>();
 
         for (SipClient sipClient : sipClientList) {

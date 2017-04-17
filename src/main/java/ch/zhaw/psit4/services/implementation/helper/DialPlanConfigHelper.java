@@ -1,11 +1,10 @@
 package ch.zhaw.psit4.services.implementation.helper;
 
-import ch.zhaw.psit4.data.jpa.entities.Company;
 import ch.zhaw.psit4.data.jpa.repositories.CompanyRepository;
 import ch.zhaw.psit4.data.jpa.repositories.SipClientRepository;
-import ch.zhaw.psit4.domain.company.CompanyDomain;
-import ch.zhaw.psit4.domain.dialplan.DialPlanContext;
-import ch.zhaw.psit4.domain.sipclient.SipClient;
+import ch.zhaw.psit4.domain.beans.Company;
+import ch.zhaw.psit4.domain.beans.DialPlanContext;
+import ch.zhaw.psit4.domain.beans.SipClient;
 import ch.zhaw.psit4.services.implementation.ConfigServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,18 +43,18 @@ public class DialPlanConfigHelper {
      *
      * @return the domain specific companies
      */
-    public List<CompanyDomain> getCompanyDomainList() {
-        List<CompanyDomain> companyDomainList = new ArrayList<>();
-        for (Company company : companyRepository.findAll()) {
-            CompanyDomain companyDomain = new CompanyDomain();
+    public List<Company> getCompanyDomainList() {
+        List<Company> companyList = new ArrayList<>();
+        for (ch.zhaw.psit4.data.jpa.entities.Company company : companyRepository.findAll()) {
+            Company companyDomain = new Company();
             companyDomain.setName((company.getName()));
             companyDomain.setSipClientList(getSipClientsByCompany(company));
-            companyDomainList.add(companyDomain);
+            companyList.add(companyDomain);
         }
-        return companyDomainList;
+        return companyList;
     }
 
-    private List<SipClient> getSipClientsByCompany(Company company) {
+    private List<SipClient> getSipClientsByCompany(ch.zhaw.psit4.data.jpa.entities.Company company) {
         List<SipClient> sipClientList = new ArrayList<>();
         for (ch.zhaw.psit4.data.jpa.entities.SipClient sipClient : sipClientRepository.findByCompany(company)) {
             LOGGER.info("Add sipClient " + sipClient.getLabel());

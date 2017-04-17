@@ -4,15 +4,15 @@ import ch.zhaw.psit4.data.jpa.repositories.CompanyRepository;
 import ch.zhaw.psit4.data.jpa.repositories.SipClientRepository;
 import ch.zhaw.psit4.domain.ConfigWriter;
 import ch.zhaw.psit4.domain.ConfigZipWriter;
-import ch.zhaw.psit4.domain.company.CompanyDomain;
+import ch.zhaw.psit4.domain.beans.Company;
+import ch.zhaw.psit4.domain.beans.DialPlanContext;
+import ch.zhaw.psit4.domain.beans.SipClient;
 import ch.zhaw.psit4.domain.dialplan.DialPlanConfigurationChanSip;
-import ch.zhaw.psit4.domain.dialplan.DialPlanContext;
 import ch.zhaw.psit4.domain.dialplan.helper.ContextGenerator;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import ch.zhaw.psit4.domain.exceptions.ZipFileCreationException;
 import ch.zhaw.psit4.domain.interfaces.DialPlanConfigurationInterface;
 import ch.zhaw.psit4.domain.interfaces.SipClientConfigurationInterface;
-import ch.zhaw.psit4.domain.sipclient.SipClient;
 import ch.zhaw.psit4.domain.sipclient.SipClientConfigurationChanSip;
 import ch.zhaw.psit4.services.implementation.helper.DialPlanConfigHelper;
 import ch.zhaw.psit4.services.implementation.helper.SipClientConfigHelper;
@@ -90,9 +90,9 @@ public class ConfigServiceImpl implements ConfigServiceInterface {
     private List<DialPlanContext> getDialPlanContexts() {
         List<DialPlanContext> dialPlanContextList = dialPlanConfigHelper.getDialPlanContextList();
 
-        List<CompanyDomain> companyDomainList = dialPlanConfigHelper.getCompanyDomainList();
+        List<Company> companyList = dialPlanConfigHelper.getCompanyDomainList();
         //TODO probably it would be better if this call is in the domain, and a list of companies is passed to the domain
-        List<DialPlanContext> defaultContexts = ContextGenerator.getDefaultContexts(companyDomainList);
+        List<DialPlanContext> defaultContexts = ContextGenerator.getDefaultContexts(companyList);
 
         List<DialPlanContext> contexts = new ArrayList<>();
         contexts.addAll(dialPlanContextList);

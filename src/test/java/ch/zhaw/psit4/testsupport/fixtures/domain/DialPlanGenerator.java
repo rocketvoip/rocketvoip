@@ -1,9 +1,9 @@
 package ch.zhaw.psit4.testsupport.fixtures.domain;
 
-import ch.zhaw.psit4.domain.dialplan.DialPlanContext;
-import ch.zhaw.psit4.domain.dialplan.DialPlanExtension;
+import ch.zhaw.psit4.domain.beans.DialPlanContext;
+import ch.zhaw.psit4.domain.beans.DialPlanExtension;
+import ch.zhaw.psit4.domain.beans.SipClient;
 import ch.zhaw.psit4.domain.dialplan.applications.DialApp;
-import ch.zhaw.psit4.domain.sipclient.SipClient;
 import ch.zhaw.psit4.testsupport.fixtures.general.CompanyData;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package ch.zhaw.psit4.domain.sipclient;
+package ch.zhaw.psit4.domain.beans;
 
 /**
  * Holds the data for a SIP-Client.

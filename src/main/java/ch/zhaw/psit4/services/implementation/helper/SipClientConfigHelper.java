@@ -1,7 +1,7 @@
 package ch.zhaw.psit4.services.implementation.helper;
 
 import ch.zhaw.psit4.data.jpa.repositories.SipClientRepository;
-import ch.zhaw.psit4.domain.sipclient.SipClient;
+import ch.zhaw.psit4.domain.beans.SipClient;
 
 import java.util.ArrayList;
 import java.util.List;

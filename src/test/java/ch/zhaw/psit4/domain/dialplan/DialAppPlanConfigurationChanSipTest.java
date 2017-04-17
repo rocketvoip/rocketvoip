@@ -1,5 +1,6 @@
 package ch.zhaw.psit4.domain.dialplan;
 
+import ch.zhaw.psit4.domain.beans.DialPlanContext;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import ch.zhaw.psit4.domain.interfaces.DialPlanConfigurationInterface;
 import ch.zhaw.psit4.testsupport.convenience.InputStreamStringyfier;

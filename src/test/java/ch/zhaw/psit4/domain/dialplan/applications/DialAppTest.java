@@ -1,6 +1,6 @@
 package ch.zhaw.psit4.domain.dialplan.applications;
 
-import ch.zhaw.psit4.domain.sipclient.SipClient;
+import ch.zhaw.psit4.domain.beans.SipClient;
 import ch.zhaw.psit4.testsupport.fixtures.domain.DialAppCallGenerator;
 import ch.zhaw.psit4.testsupport.fixtures.domain.SipClientGenerator;
 import org.junit.Test;
