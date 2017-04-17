@@ -76,7 +76,7 @@ public class ConfigServiceImpl implements ConfigServiceInterface {
     public ByteArrayOutputStream getAsteriskConfiguration() {
         ConfigWriter configWriter = new ConfigWriter(sipClientConfiguration, dialPlanConfiguration);
 
-        List<SipClient> sipClientList = getSipClientList();
+        List<SipClient> sipClientList = sipClientConfigHelper.getSipClientList();
         List<DialPlanContext> contexts = getDialPlanContexts();
 
         String sipClientConf = configWriter.generateSipClientConfiguration(sipClientList);
@@ -99,10 +99,6 @@ public class ConfigServiceImpl implements ConfigServiceInterface {
         contexts.addAll(defaultContexts);
 
         return contexts;
-    }
-
-    private List<SipClient> getSipClientList() {
-        return sipClientConfigHelper.getSipClientList();
     }
 
 }
