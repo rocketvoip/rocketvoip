@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Collection;
 
 /**
- * Action dial has one or more dialplan and sipclient
+ * Action dial has one or more dialPlan and sipclient
  * Created by beni on 18.04.17.
  */
 
@@ -16,37 +16,52 @@ public class Dial {
     private long id;
 
     @Column(nullable = false)
-    private String name;
+    private String priority;
 
-    @ManyToMany
-    private Collection<Dialplan> dialplan;
+    @Column(nullable = false)
+    private String timeout;
+
+    @ManyToOne
+    private DialPlan dialPlan;
 
     @ManyToMany
     private Collection<SipClient> sipClient;
 
     protected Dial(){}
 
-    public Dial(String name, Collection<Dialplan> dialplan, Collection<SipClient> sipClient){
-        this.name = name;
+    public Dial(String priority, String timeout, DialPlan dialPlan, Collection<SipClient> sipClient) {
+        this.priority = priority;
+        this.timeout = timeout;
         this.sipClient = sipClient;
-        this.dialplan = dialplan;
+        this.dialPlan = dialPlan;
     }
 
-
-    public String getName() {
-        return name;
+    public long getId() {
+        return id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getPriority() {
+        return priority;
     }
 
-    public Collection<Dialplan> getDialplan() {
-        return dialplan;
+    public void setPriority(String priority) {
+        this.priority = priority;
     }
 
-    public void setDialplan(Collection<Dialplan> dialplan) {
-        this.dialplan = dialplan;
+    public DialPlan getDialPlan() {
+        return dialPlan;
+    }
+
+    public void setDialPlan(DialPlan dialPlan) {
+        this.dialPlan = dialPlan;
+    }
+
+    public String getTimeout() {
+        return timeout;
+    }
+
+    public void setTimeout(String timeout) {
+        this.timeout = timeout;
     }
 
     public Collection<SipClient> getSipClient() {

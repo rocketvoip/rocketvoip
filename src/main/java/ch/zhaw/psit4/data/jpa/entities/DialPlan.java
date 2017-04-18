@@ -9,14 +9,14 @@ import javax.persistence.*;
  */
 
 @Entity
-public class Dialplan {
+public class DialPlan {
 
     @Id
     @GeneratedValue
     private long id;
 
     @Column(nullable = false)
-    private String titel;
+    private String title;
 
     @Column(nullable = false)
     private String phoneNr;
@@ -25,21 +25,25 @@ public class Dialplan {
     private Company company;
 
 
-    protected Dialplan(){}
+    protected DialPlan() {
+    }
 
-    public Dialplan(String titel, String phoneNr, Company company){
-        this.titel = titel;
+    public DialPlan(String title, String phoneNr, Company company) {
+        this.title = title;
         this.phoneNr = phoneNr;
         this.company = company;
     }
 
-
-    public String getTitel() {
-        return titel;
+    public long getId() {
+        return id;
     }
 
-    public void setTitel(String titel) {
-        this.titel = titel;
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getPhoneNr() {
