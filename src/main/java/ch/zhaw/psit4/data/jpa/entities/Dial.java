@@ -16,6 +16,9 @@ public class Dial {
     private long id;
 
     @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
     private String priority;
 
     @Column(nullable = false)
@@ -70,5 +73,13 @@ public class Dial {
 
     public void setSipClient(Collection<SipClient> sipClient) {
         this.sipClient = sipClient;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

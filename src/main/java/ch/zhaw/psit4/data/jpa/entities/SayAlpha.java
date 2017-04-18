@@ -15,6 +15,9 @@ public class SayAlpha {
     private long id;
 
     @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
     private String text;
 
     @Column(nullable = false)
@@ -58,5 +61,13 @@ public class SayAlpha {
 
     public long getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
