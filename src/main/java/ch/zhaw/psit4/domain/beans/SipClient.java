@@ -18,6 +18,7 @@ public class SipClient {
 
     public void setCompany(String company) {
         if (company != null) {
+            //TODO: Use method
             this.company = company.replaceAll(" ", "-");
         }
     }
@@ -61,6 +62,7 @@ public class SipClient {
      */
     public String getLabel() {
         String label = username + "-" + company;
+        //TODO: use method
         label = label.replaceAll(" ", "-");
         return label;
     }
