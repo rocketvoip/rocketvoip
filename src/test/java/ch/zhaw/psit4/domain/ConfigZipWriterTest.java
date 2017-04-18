@@ -11,10 +11,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.zip.ZipInputStream;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.spy;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.spy;
 
 /**
  * Test for ConfigZipWriter.

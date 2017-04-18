@@ -6,8 +6,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.junit.Assert.fail;
 
 /**
  * Test for ConfigWriter.
@@ -23,12 +22,11 @@ public class ConfigWriterTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        configWriter = new ConfigWriter(sipClientConfiguration);
+        configWriter = new ConfigWriter();
     }
 
     @Test
     public void writeSIPConfiguration() throws Exception {
-        configWriter.generateSipClientConfiguration(null);
-        verify(sipClientConfiguration, times(1)).toSipClientConfiguration(null);
+        fail();
     }
 }

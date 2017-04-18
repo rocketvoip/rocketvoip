@@ -1,14 +1,14 @@
 package ch.zhaw.psit4.domain.beans;
 
 import ch.zhaw.psit4.domain.exceptions.ValidationException;
-import ch.zhaw.psit4.domain.interfaces.Validatable;
+import ch.zhaw.psit4.domain.interfaces.SipClientConfigurationInterface;
 
 /**
  * Holds the data for a SIP-Client.
  *
  * @author braunjon
  */
-public class SipClient implements Validatable {
+public class SipClient implements SipClientConfigurationInterface {
     private String company;
     private String username;
     private String secret;
@@ -85,5 +85,22 @@ public class SipClient implements Validatable {
         if (phoneNumber == null) {
             throw new ValidationException("SipClient phoneNumber is null");
         }
+    }
+
+    @Override
+    public String toSipClientConfiguration() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("[");
+        stringBuilder.append(getLabel());
+        stringBuilder.append("]\n");
+        stringBuilder.append("type=friend\n");
+        stringBuilder.append("context=");
+        stringBuilder.append(company);
+        stringBuilder.append("\n");
+        stringBuilder.append("host=dynamic\n");
+        stringBuilder.append("secret=");
+        stringBuilder.append(secret);
+        stringBuilder.append("\n\n");
+        return stringBuilder.toString();
     }
 }

@@ -12,7 +12,6 @@ import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import ch.zhaw.psit4.domain.exceptions.ZipFileCreationException;
 import ch.zhaw.psit4.domain.interfaces.DialPlanContextConfigurationInterface;
 import ch.zhaw.psit4.domain.interfaces.SipClientConfigurationInterface;
-import ch.zhaw.psit4.domain.sipclient.SipClientConfigurationChanSip;
 import ch.zhaw.psit4.services.implementation.adapters.DialPlanConfigAdapter;
 import ch.zhaw.psit4.services.implementation.adapters.SipClientConfigAdapter;
 import ch.zhaw.psit4.services.interfaces.ConfigServiceInterface;
@@ -36,12 +35,10 @@ import java.util.List;
 public class ConfigServiceImpl implements ConfigServiceInterface {
     private final SipClientConfigAdapter sipClientConfigAdapter;
     private final DialPlanConfigAdapter dialPlanConfigAdapter;
-    private SipClientConfigurationInterface sipClientConfiguration;
 
     public ConfigServiceImpl(SipClientRepository sipClientRepository, CompanyRepository companyRepository) {
         this.dialPlanConfigAdapter = new DialPlanConfigAdapter(sipClientRepository, companyRepository);
         this.sipClientConfigAdapter = new SipClientConfigAdapter(sipClientRepository);
-        sipClientConfiguration = new SipClientConfigurationChanSip();
     }
 
     /**
@@ -71,9 +68,9 @@ public class ConfigServiceImpl implements ConfigServiceInterface {
      */
     @Override
     public ByteArrayOutputStream getAsteriskConfiguration() {
-        ConfigWriter configWriter = new ConfigWriter(sipClientConfiguration);
+        ConfigWriter configWriter = new ConfigWriter();
 
-        List<SipClient> sipClientList = sipClientConfigAdapter.getSipClientList();
+        List<SipClientConfigurationInterface> sipClientList = sipClientConfigAdapter.getSipClientList();
         List<DialPlanContextConfigurationInterface> contexts = getDialPlanContexts();
 
         String sipClientConf = configWriter.generateSipClientConfiguration(sipClientList);

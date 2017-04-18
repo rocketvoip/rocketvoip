@@ -2,6 +2,7 @@ package ch.zhaw.psit4.services.implementation.adapters;
 
 import ch.zhaw.psit4.data.jpa.repositories.SipClientRepository;
 import ch.zhaw.psit4.domain.beans.SipClient;
+import ch.zhaw.psit4.domain.interfaces.SipClientConfigurationInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +27,8 @@ public class SipClientConfigAdapter {
      *
      * @return the domain specific sip clients
      */
-    public List<SipClient> getSipClientList() {
-        List<SipClient> sipClientList = new ArrayList<>();
+    public List<SipClientConfigurationInterface> getSipClientList() {
+        List<SipClientConfigurationInterface> sipClientList = new ArrayList<>();
         for (ch.zhaw.psit4.data.jpa.entities.SipClient sipClient : sipClientRepository.findAll()) {
             SipClient sipClientDomain = sipClientEntityToSipClient(sipClient);
             sipClientList.add(sipClientDomain);

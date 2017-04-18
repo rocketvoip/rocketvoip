@@ -1,6 +1,5 @@
 package ch.zhaw.psit4.domain;
 
-import ch.zhaw.psit4.domain.beans.SipClient;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import ch.zhaw.psit4.domain.interfaces.DialPlanContextConfigurationInterface;
 import ch.zhaw.psit4.domain.interfaces.SipClientConfigurationInterface;
@@ -15,11 +14,7 @@ import java.util.Optional;
  */
 public class ConfigWriter {
 
-    private SipClientConfigurationInterface sipClientConfiguration;
-
-
-    public ConfigWriter(SipClientConfigurationInterface sipClientConfiguration) {
-        this.sipClientConfiguration = sipClientConfiguration;
+    public ConfigWriter() {
     }
 
     /**
@@ -29,8 +24,25 @@ public class ConfigWriter {
      * @return the configuration string for the sip clients
      * @throws InvalidConfigurationException if the sipClientList is null or the list is empty
      */
-    public String generateSipClientConfiguration(List<SipClient> sipClientList) {
-        return sipClientConfiguration.toSipClientConfiguration(sipClientList);
+    public String generateSipClientConfiguration(List<SipClientConfigurationInterface> sipClientList) {
+        if (sipClientList == null) {
+            throw new InvalidConfigurationException("sipClientList is null");
+        }
+
+        if (sipClientList.isEmpty()) {
+            throw new InvalidConfigurationException("sipClientList is empty");
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        sipClientList.forEach(x ->
+                Optional
+                        .ofNullable(x)
+                        .ifPresent(y -> {
+                                    y.validate();
+                                    stringBuilder.append(y.toSipClientConfiguration());
+                                }
+                        )
+        );
+        return stringBuilder.toString();
     }
 
     /**
@@ -42,13 +54,22 @@ public class ConfigWriter {
      */
     public String generateDialPlanConfiguration(List<DialPlanContextConfigurationInterface>
                                                         dialPlanContextList) {
+        if (dialPlanContextList == null) {
+            throw new InvalidConfigurationException("dialPlanContextList is null");
+        }
+
+        if (dialPlanContextList.isEmpty()) {
+            throw new InvalidConfigurationException("dialPlanContextList is empty");
+        }
         StringBuilder stringBuilder = new StringBuilder();
 
         dialPlanContextList.forEach(x ->
                 Optional
                         .ofNullable(x)
-                        .ifPresent(y ->
-                                stringBuilder.append(y.toDialPlanContextConfiguration())
+                        .ifPresent(y -> {
+                                    y.validate();
+                                    stringBuilder.append(y.toDialPlanContextConfiguration());
+                                }
                         )
         );
 
