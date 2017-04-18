@@ -5,7 +5,9 @@ package ch.zhaw.psit4.domain.interfaces;
  */
 public interface Validatable {
     /**
-     * Validate the implementing instance. If validation fails,
+     * Validate the implementing instance.
+     *
+     * @throws ch.zhaw.psit4.domain.exceptions.ValidationException when validation fails.
      */
     void validate();
 }
