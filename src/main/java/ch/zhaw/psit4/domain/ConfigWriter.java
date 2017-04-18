@@ -12,9 +12,10 @@ import java.util.Optional;
  *
  * @author Jona Braun
  */
-public class ConfigWriter {
+public final class ConfigWriter {
 
-    public ConfigWriter() {
+    private ConfigWriter() {
+        // Intentionally empty
     }
 
     /**
@@ -24,7 +25,7 @@ public class ConfigWriter {
      * @return the configuration string for the sip clients
      * @throws InvalidConfigurationException if the sipClientList is null or the list is empty
      */
-    public String generateSipClientConfiguration(List<SipClientConfigurationInterface> sipClientList) {
+    public static String generateSipClientConfiguration(List<SipClientConfigurationInterface> sipClientList) {
         if (sipClientList == null) {
             throw new InvalidConfigurationException("sipClientList is null");
         }
@@ -52,8 +53,8 @@ public class ConfigWriter {
      * @return the configuration string for the sip clients
      * @throws InvalidConfigurationException if the sipClientList is null or the list is empty
      */
-    public String generateDialPlanConfiguration(List<DialPlanContextConfigurationInterface>
-                                                        dialPlanContextList) {
+    public static String generateDialPlanConfiguration(List<DialPlanContextConfigurationInterface>
+                                                               dialPlanContextList) {
         if (dialPlanContextList == null) {
             throw new InvalidConfigurationException("dialPlanContextList is null");
         }

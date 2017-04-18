@@ -68,13 +68,11 @@ public class ConfigServiceImpl implements ConfigServiceInterface {
      */
     @Override
     public ByteArrayOutputStream getAsteriskConfiguration() {
-        ConfigWriter configWriter = new ConfigWriter();
-
         List<SipClientConfigurationInterface> sipClientList = sipClientConfigAdapter.getSipClientList();
         List<DialPlanContextConfigurationInterface> contexts = getDialPlanContexts();
 
-        String sipClientConf = configWriter.generateSipClientConfiguration(sipClientList);
-        String dialPlanConf = configWriter.generateDialPlanConfiguration(contexts);
+        String sipClientConf = ConfigWriter.generateSipClientConfiguration(sipClientList);
+        String dialPlanConf = ConfigWriter.generateDialPlanConfiguration(contexts);
 
         ConfigZipWriter configZipWriter = new ConfigZipWriter(sipClientConf, dialPlanConf);
 
