@@ -2,12 +2,14 @@ package ch.zhaw.psit4.web;
 
 import ch.zhaw.psit4.dto.ActionDto;
 import ch.zhaw.psit4.dto.CompanyDto;
+import ch.zhaw.psit4.dto.DialPlanDto;
 import ch.zhaw.psit4.dto.SipClientDto;
-import ch.zhaw.psit4.dto.actions.TeamAction;
+import ch.zhaw.psit4.dto.actions.DialAction;
 import ch.zhaw.psit4.services.implementation.CompanyServiceImpl;
 import ch.zhaw.psit4.testsupport.convenience.Json;
 import ch.zhaw.psit4.testsupport.fixtures.database.BeanConfiguration;
 import ch.zhaw.psit4.testsupport.fixtures.database.DatabaseFixtureBuilder;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import static ch.zhaw.psit4.services.implementation.SipClientServiceImpl.sipClientEntityToSipClientDto;
@@ -39,9 +42,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
 @Import(BeanConfiguration.class)
-public class ActionControllerIT {
+public class DialPlanControllerIT {
 
-    private static final String V1_ACTIONS_PATH = "/v1/action";
+    private static final String V1_ACTIONS_PATH = "/v1/dialplan";
 
     @Autowired
     private WebApplicationContext wac;
@@ -58,12 +61,7 @@ public class ActionControllerIT {
     }
 
     @Test
-    public void getAction() throws Exception {
-    }
-
-
-    @Test
-    public void updateAction() throws Exception {
+    public void createDialPlan() throws Exception {
         // action
         ActionDto actionDto = new ActionDto();
         actionDto.setName("may fancy action");
@@ -71,51 +69,91 @@ public class ActionControllerIT {
 
         // database setup
         databaseFixtureBuilder1.company(1).addSipClient(1).addSipClient(2).build();
-        CompanyDto companyDto = CompanyServiceImpl.companyEntityToCompanyDto(
-                databaseFixtureBuilder1.getCompany()
-        );
-        actionDto.setCompany(companyDto);
 
         // team
-        TeamAction teamAction = new TeamAction();
-        teamAction.setTime("30");
+        DialAction dialAction = new DialAction();
+        dialAction.setTime("30");
         List<SipClientDto> sipClientDtoList = new ArrayList<>();
         for (int i = 1; i <= 2; i++) {
             sipClientDtoList.add(sipClientEntityToSipClientDto(databaseFixtureBuilder1.getSipClientList().get(i)));
         }
-        teamAction.setTeam(sipClientDtoList);
+        dialAction.setTeam(sipClientDtoList);
 
-        actionDto.setTypeSpecific(teamAction);
+        ObjectMapper objM = new ObjectMapper();
+        LinkedHashMap linkedHashMap = objM.convertValue(dialAction, LinkedHashMap.class);
+
+        actionDto.setTypeSpecific(linkedHashMap);
+
+        // Dial Plan
+        DialPlanDto dialPlanDto = new DialPlanDto();
+        CompanyDto companyDto = CompanyServiceImpl.companyEntityToCompanyDto(
+                databaseFixtureBuilder1.getCompany()
+        );
+        dialPlanDto.setCompany(companyDto);
+        dialPlanDto.setName("my fancy dialplan");
+
+        List<ActionDto> actionDtos = new ArrayList<>();
+        actionDtos.add(actionDto);
+        dialPlanDto.setActions(actionDtos);
 
         // request
-        String actionJson = Json.toJson(actionDto);
+        String dialPlanJson = Json.toJson(dialPlanDto);
 
         String response = mockMvc.perform(
                 MockMvcRequestBuilders.post(V1_ACTIONS_PATH)
-                        .content(actionJson)
+                        .content(dialPlanJson)
                         .accept(MediaType.APPLICATION_JSON_UTF8)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
         ).andExpect(
                 status().isCreated()
         ).andExpect(
-                jsonPath("$.id").value(not(equalTo(actionDto.getId())))
+                jsonPath("$.id").value(not(equalTo(dialPlanDto.getId())))
         ).andExpect(
-                jsonPath("$.name").value(equalTo(actionDto.getName()))
+                jsonPath("$.name").value(equalTo(dialPlanDto.getName()))
         ).andReturn().getResponse().getContentAsString();
 
-        // {"id":0,
-        // "name":"may fancy action",
-        // "company":{"name":"ACME1","id":1},
-        // "type":"TEAM",
-        // "typeSpecific":{
-        // "time":"30",
-        // "team":
-        // [
-        // {"name":"SipClientLabel1","phone":"0000000001","secret":"SipClientSecret1","id":1,"company":{"name":"ACME1","id":1}},
-        // {"name":"SipClientLabel2","phone":"0000000002","secret":"SipClientSecret2","id":2,"company":{"name":"ACME1","id":1}}
-        // ]
-        // }}
-        assertEquals(actionJson, response);
+//        {
+//            "id":0,
+//            "name":"my fancy dialplan",
+//            "company":{
+//                    "name":"ACME1",
+//                    "id":1
+//                    },
+//            "actions":[
+//            {
+//                "id":0,
+//                "name":"may fancy action",
+//                "type":"TEAM",
+//                "typeSpecific":{
+//                        "time":"30",
+//                        "team":[
+//                     {
+//                        "name":"SipClientLabel1",
+//                        "phone":"0000000001",
+//                        "secret":"SipClientSecret1",
+//                        "id":1,
+//                        "company":{
+//                            "name":"ACME1",
+//                            "id":1
+//                        }
+//                     },
+//                     {
+//                        "name":"SipClientLabel2",
+//                        "phone":"0000000002",
+//                        "secret":"SipClientSecret2",
+//                        "id":2,
+//                        "company":{
+//                            "name":"ACME1",
+//                            "id":1
+//                         }
+//                     }
+//                   ]
+//                }
+//            }
+//            ],
+//            "phone":null
+//        }
+        assertEquals(dialPlanJson, response);
 
     }
 }

@@ -1,11 +1,11 @@
 package ch.zhaw.psit4.dto.actions;
 
-import ch.zhaw.psit4.dto.ActionInterface;
-
 /**
+ * Represents a voice message. The voice message will be played after the set delay time.
+ *
  * @author Jona Braun
  */
-public class VoiceAction implements ActionInterface {
+public class SayAlphaAction {
     private String voiceMessage;
     private String delay;
 

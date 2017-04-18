@@ -1,5 +1,7 @@
 package ch.zhaw.psit4.dto;
 
+import java.util.Map;
+
 /**
  * Representation for a Action.<br>
  * An action in JSON looks like following:<br>
@@ -21,9 +23,8 @@ package ch.zhaw.psit4.dto;
 public class ActionDto {
     private long id;
     private String name;
-    private CompanyDto company;
     private ActionType type;
-    private Object typeSpecific;
+    private Map<String, Object> typeSpecific;
 
     public long getId() {
         return id;
@@ -41,19 +42,11 @@ public class ActionDto {
         this.name = name;
     }
 
-    public CompanyDto getCompany() {
-        return company;
-    }
-
-    public void setCompany(CompanyDto company) {
-        this.company = company;
-    }
-
-    public Object getTypeSpecific() {
+    public Map<String, Object> getTypeSpecific() {
         return typeSpecific;
     }
 
-    public void setTypeSpecific(Object typeSpecific) {
+    public void setTypeSpecific(Map<String, Object> typeSpecific) {
         this.typeSpecific = typeSpecific;
     }
 
