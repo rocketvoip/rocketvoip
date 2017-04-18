@@ -3,6 +3,7 @@ package ch.zhaw.psit4.domain.beans;
 import ch.zhaw.psit4.domain.exceptions.ValidationException;
 import ch.zhaw.psit4.domain.interfaces.DialPlanContextConfigurationInterface;
 import ch.zhaw.psit4.domain.interfaces.DialPlanExtensionConfigurationInterface;
+import ch.zhaw.psit4.domain.interfaces.Validatable;
 
 import java.util.List;
 import java.util.Optional;
@@ -84,6 +85,6 @@ public class DialPlanContext implements DialPlanContextConfigurationInterface {
             throw new ValidationException("dialPlanExtensionList is empty");
         }
 
-        dialPlanExtensionList.forEach(x -> x.validate());
+        dialPlanExtensionList.forEach(Validatable::validate);
     }
 }
