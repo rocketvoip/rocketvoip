@@ -18,5 +18,5 @@ public interface SipClientConfigurationInterface {
      * @param sipClientList list of sip clients
      * @return string representing the configuration suitable for asterisk.
      */
-    String generateSipClientConfiguration(List<SipClient> sipClientList);
+    String toSipClientConfiguration(List<SipClient> sipClientList);
 }

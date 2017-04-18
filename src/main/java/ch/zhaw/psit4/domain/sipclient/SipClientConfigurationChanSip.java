@@ -1,7 +1,7 @@
 package ch.zhaw.psit4.domain.sipclient;
 
 import ch.zhaw.psit4.domain.beans.SipClient;
-import ch.zhaw.psit4.domain.helper.SipClientValidator;
+import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import ch.zhaw.psit4.domain.interfaces.SipClientConfigurationInterface;
 
 import java.util.List;
@@ -20,15 +20,17 @@ import java.util.List;
  * @author Rafael Ostertag
  */
 public class SipClientConfigurationChanSip implements SipClientConfigurationInterface {
-    private final SipClientValidator sipClientValidator = new SipClientValidator();
-
     /**
      * @inheritDoc
      */
     @Override
-    public String generateSipClientConfiguration(List<SipClient> sipClientList) {
-        sipClientValidator.validateSipClientList(sipClientList);
-
+    public String toSipClientConfiguration(List<SipClient> sipClientList) {
+        if (sipClientList == null) {
+            throw new InvalidConfigurationException("sipClientList is null");
+        }
+        if (sipClientList.isEmpty()) {
+            throw new InvalidConfigurationException("sipClientList is empty");
+        }
         return sipClientsToString(sipClientList);
     }
 
@@ -37,9 +39,10 @@ public class SipClientConfigurationChanSip implements SipClientConfigurationInte
         StringBuilder stringBuilder = new StringBuilder();
 
         for (SipClient sipClient : sipClientList) {
-            if (!sipClientValidator.isSipClientValid(sipClient)) {
+            if (sipClient == null) {
                 continue;
             }
+            sipClient.validate();
             stringBuilder.append("[");
             stringBuilder.append(sipClient.getLabel());
             stringBuilder.append("]\n");

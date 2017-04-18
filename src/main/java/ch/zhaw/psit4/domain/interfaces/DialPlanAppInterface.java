@@ -5,13 +5,12 @@ package ch.zhaw.psit4.domain.interfaces;
  *
  * @author Jona Braun
  */
-@FunctionalInterface
-public interface DialPlanAppInterface {
+public interface DialPlanAppInterface extends Validatable {
 
     /**
      * Puts together the asterisk application call.
      *
      * @return the string representing the asterisk application calls
      */
-    String getApplicationCall();
+    String toApplicationCall();
 }

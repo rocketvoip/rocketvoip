@@ -4,6 +4,8 @@ import ch.zhaw.psit4.domain.beans.DialPlanContext;
 import ch.zhaw.psit4.domain.beans.DialPlanExtension;
 import ch.zhaw.psit4.domain.beans.SipClient;
 import ch.zhaw.psit4.domain.dialplan.applications.DialApp;
+import ch.zhaw.psit4.domain.interfaces.DialPlanContextConfigurationInterface;
+import ch.zhaw.psit4.domain.interfaces.DialPlanExtensionConfigurationInterface;
 import ch.zhaw.psit4.testsupport.fixtures.general.CompanyData;
 
 import java.util.ArrayList;
@@ -24,8 +26,9 @@ public final class DialPlanGenerator {
      * @param numberOfClients  number of clients per context to create
      * @return dial plan context list
      */
-    public static List<DialPlanContext> generateDialPlan(int numberOfContexts, int numberOfClients) {
-        List<DialPlanContext> dialPlanContexts = new ArrayList<>();
+    public static List<DialPlanContextConfigurationInterface> generateDialPlan(int numberOfContexts, int
+            numberOfClients) {
+        List<DialPlanContextConfigurationInterface> dialPlanContexts = new ArrayList<>();
 
         for (int companyNumber = 1; companyNumber <= numberOfContexts; companyNumber++) {
             DialPlanContext dialPlanContext = getDialPlanContext(numberOfClients, companyNumber);
@@ -45,14 +48,15 @@ public final class DialPlanGenerator {
         DialPlanContext dialPlanContext = new DialPlanContext();
         dialPlanContext.setContextName(CompanyData.getCompanyName(companyNumber));
 
-        List<DialPlanExtension> dialPlanExtensionList = getDialPlanExtensionList(numberOfClients, companyNumber);
+        List<DialPlanExtensionConfigurationInterface> dialPlanExtensionList = getDialPlanExtensionList
+                (numberOfClients, companyNumber);
         dialPlanContext.setDialPlanExtensionList(dialPlanExtensionList);
         return dialPlanContext;
     }
 
-    private static List<DialPlanExtension> getDialPlanExtensionList(int numberOfClients, int companyNumber) {
+    private static List<DialPlanExtensionConfigurationInterface> getDialPlanExtensionList(int numberOfClients, int companyNumber) {
         List<SipClient> sipClients = SipClientGenerator.generateSipClientList(numberOfClients, companyNumber);
-        List<DialPlanExtension> dialPlanExtensionList = new ArrayList<>();
+        List<DialPlanExtensionConfigurationInterface> dialPlanExtensionList = new ArrayList<>();
         for (int j = 1; j <= numberOfClients; j++) {
 
             DialPlanExtension dialPlanExtension = new DialPlanExtension();

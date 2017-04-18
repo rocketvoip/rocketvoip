@@ -2,7 +2,7 @@ package ch.zhaw.psit4.domain.dialplan.helper;
 
 import ch.zhaw.psit4.domain.beans.Company;
 import ch.zhaw.psit4.domain.beans.DialPlanContext;
-import ch.zhaw.psit4.domain.beans.DialPlanExtension;
+import ch.zhaw.psit4.domain.interfaces.DialPlanExtensionConfigurationInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,14 +37,16 @@ public class ContextGenerator {
     public static List<DialPlanContext> getDefaultContexts(List<Company> companyList) {
         List<DialPlanContext> dialPlanContextList = new ArrayList<>();
         for (Company company : companyList) {
-            List<DialPlanExtension> dialPlanExtensions = ExtensionGenerator.getDefaultExtensions(company);
+            List<DialPlanExtensionConfigurationInterface> dialPlanExtensions = ExtensionGenerator
+                    .getDefaultExtensions(company);
             DialPlanContext dialPlanContext = getDefaultContext(company.getName(), dialPlanExtensions);
             dialPlanContextList.add(dialPlanContext);
         }
         return dialPlanContextList;
     }
 
-    private static DialPlanContext getDefaultContext(String contextName, List<DialPlanExtension> dialPlanExtensionList) {
+    private static DialPlanContext getDefaultContext(String contextName,
+                                                     List<DialPlanExtensionConfigurationInterface> dialPlanExtensionList) {
         DialPlanContext dialPlanContext = new DialPlanContext();
         dialPlanContext.setContextName(contextName);
         dialPlanContext.setDialPlanExtensionList(dialPlanExtensionList);

@@ -1,6 +1,7 @@
 package ch.zhaw.psit4.domain.dialplan.applications;
 
 import ch.zhaw.psit4.domain.beans.SipClient;
+import ch.zhaw.psit4.domain.exceptions.ValidationException;
 import ch.zhaw.psit4.domain.interfaces.DialPlanAppInterface;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public class DialApp implements DialPlanAppInterface {
      * @return the asterisk application call
      */
     @Override
-    public String getApplicationCall() {
+    public String toApplicationCall() {
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append("Dial(");
@@ -60,6 +61,25 @@ public class DialApp implements DialPlanAppInterface {
 
         stringBuilder.append(")");
         return stringBuilder.toString();
+    }
+
+    @Override
+    public void validate() {
+        if (technology == null) {
+            throw new ValidationException("technology is null");
+        }
+
+        if (sipClientList == null) {
+            throw new ValidationException("sipClientList is null");
+        }
+
+        if (sipClientList.isEmpty()) {
+            throw new ValidationException("sipClientList is empty");
+        }
+
+        if (timeout == null) {
+            throw new ValidationException("timeout is null");
+        }
     }
 
     public enum Technology {SIP, PSIP}

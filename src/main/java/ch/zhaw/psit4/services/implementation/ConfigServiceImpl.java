@@ -7,11 +7,10 @@ import ch.zhaw.psit4.domain.ConfigZipWriter;
 import ch.zhaw.psit4.domain.beans.Company;
 import ch.zhaw.psit4.domain.beans.DialPlanContext;
 import ch.zhaw.psit4.domain.beans.SipClient;
-import ch.zhaw.psit4.domain.dialplan.DialPlanConfigurationChanSip;
 import ch.zhaw.psit4.domain.dialplan.helper.ContextGenerator;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import ch.zhaw.psit4.domain.exceptions.ZipFileCreationException;
-import ch.zhaw.psit4.domain.interfaces.DialPlanConfigurationInterface;
+import ch.zhaw.psit4.domain.interfaces.DialPlanContextConfigurationInterface;
 import ch.zhaw.psit4.domain.interfaces.SipClientConfigurationInterface;
 import ch.zhaw.psit4.domain.sipclient.SipClientConfigurationChanSip;
 import ch.zhaw.psit4.services.implementation.adapters.DialPlanConfigAdapter;
@@ -38,13 +37,11 @@ public class ConfigServiceImpl implements ConfigServiceInterface {
     private final SipClientConfigAdapter sipClientConfigAdapter;
     private final DialPlanConfigAdapter dialPlanConfigAdapter;
     private SipClientConfigurationInterface sipClientConfiguration;
-    private DialPlanConfigurationInterface dialPlanConfiguration;
 
     public ConfigServiceImpl(SipClientRepository sipClientRepository, CompanyRepository companyRepository) {
         this.dialPlanConfigAdapter = new DialPlanConfigAdapter(sipClientRepository, companyRepository);
         this.sipClientConfigAdapter = new SipClientConfigAdapter(sipClientRepository);
         sipClientConfiguration = new SipClientConfigurationChanSip();
-        dialPlanConfiguration = new DialPlanConfigurationChanSip();
     }
 
     /**
@@ -74,10 +71,10 @@ public class ConfigServiceImpl implements ConfigServiceInterface {
      */
     @Override
     public ByteArrayOutputStream getAsteriskConfiguration() {
-        ConfigWriter configWriter = new ConfigWriter(sipClientConfiguration, dialPlanConfiguration);
+        ConfigWriter configWriter = new ConfigWriter(sipClientConfiguration);
 
         List<SipClient> sipClientList = sipClientConfigAdapter.getSipClientList();
-        List<DialPlanContext> contexts = getDialPlanContexts();
+        List<DialPlanContextConfigurationInterface> contexts = getDialPlanContexts();
 
         String sipClientConf = configWriter.generateSipClientConfiguration(sipClientList);
         String dialPlanConf = configWriter.generateDialPlanConfiguration(contexts);
@@ -87,14 +84,14 @@ public class ConfigServiceImpl implements ConfigServiceInterface {
         return configZipWriter.writeConfigurationZipFile();
     }
 
-    private List<DialPlanContext> getDialPlanContexts() {
+    private List<DialPlanContextConfigurationInterface> getDialPlanContexts() {
         List<DialPlanContext> dialPlanContextList = dialPlanConfigAdapter.getDialPlanContextList();
 
         List<Company> companyList = dialPlanConfigAdapter.getCompanyDomainList();
         //TODO probably it would be better if this call is in the domain, and a list of companies is passed to the domain
         List<DialPlanContext> defaultContexts = ContextGenerator.getDefaultContexts(companyList);
 
-        List<DialPlanContext> contexts = new ArrayList<>();
+        List<DialPlanContextConfigurationInterface> contexts = new ArrayList<>();
         contexts.addAll(dialPlanContextList);
         contexts.addAll(defaultContexts);
 

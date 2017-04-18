@@ -1,6 +1,5 @@
 package ch.zhaw.psit4.domain;
 
-import ch.zhaw.psit4.domain.interfaces.DialPlanConfigurationInterface;
 import ch.zhaw.psit4.domain.interfaces.SipClientConfigurationInterface;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,26 +20,15 @@ public class ConfigWriterTest {
     @Mock
     private SipClientConfigurationInterface sipClientConfiguration;
 
-    @Mock
-    private DialPlanConfigurationInterface dialPlanConfiguration;
-
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        configWriter = new ConfigWriter(sipClientConfiguration, dialPlanConfiguration);
+        configWriter = new ConfigWriter(sipClientConfiguration);
     }
 
     @Test
     public void writeSIPConfiguration() throws Exception {
         configWriter.generateSipClientConfiguration(null);
-        verify(sipClientConfiguration, times(1)).generateSipClientConfiguration(null);
+        verify(sipClientConfiguration, times(1)).toSipClientConfiguration(null);
     }
-
-    @Test
-    public void writeDialPlanConfiguration() throws Exception {
-        configWriter.generateDialPlanConfiguration(null);
-        verify(dialPlanConfiguration, times(1)).generateDialPlanConfiguration(null);
-    }
-
-
 }

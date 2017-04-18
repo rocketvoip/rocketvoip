@@ -23,7 +23,7 @@ public class DialAppTest {
 
         DialApp dialApp = new DialApp(DialApp.Technology.SIP, sipClientList, DialAppCallGenerator.TIMEOUT);
 
-        String dialAppCall = dialApp.getApplicationCall();
+        String dialAppCall = dialApp.toApplicationCall();
         String expected = DialAppCallGenerator.generateMultipleDialAppCalls(1, 1, "SIP");
 
         assertEquals(expected, dialAppCall);
@@ -36,7 +36,7 @@ public class DialAppTest {
 
         DialApp dialApp = new DialApp(DialApp.Technology.SIP, sipClientList, DialAppCallGenerator.TIMEOUT);
 
-        String dialAppCall = dialApp.getApplicationCall();
+        String dialAppCall = dialApp.toApplicationCall();
         String expected = DialAppCallGenerator.generateMultipleDialAppCalls(5, 1, "SIP");
 
         assertEquals(expected, dialAppCall);
@@ -49,7 +49,7 @@ public class DialAppTest {
 
         DialApp dialApp = new DialApp(DialApp.Technology.PSIP, sipClientList, DialAppCallGenerator.TIMEOUT);
 
-        String dialAppCall = dialApp.getApplicationCall();
+        String dialAppCall = dialApp.toApplicationCall();
         String expected = DialAppCallGenerator.generateMultipleDialAppCalls(2, 1, "PSIP");
 
         assertEquals(expected, dialAppCall);

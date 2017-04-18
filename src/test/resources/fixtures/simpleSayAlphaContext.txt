@@ -1,0 +1,3 @@
+[testcontext]
+exten=> 0000, 1, sayalpha
+

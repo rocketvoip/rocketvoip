@@ -7,7 +7,12 @@ import ch.zhaw.psit4.domain.interfaces.DialPlanAppInterface;
  */
 public class SayAlpha implements DialPlanAppInterface {
     @Override
-    public String getApplicationCall() {
+    public String toApplicationCall() {
         return "sayalpha";
+    }
+
+    @Override
+    public void validate() {
+
     }
 }

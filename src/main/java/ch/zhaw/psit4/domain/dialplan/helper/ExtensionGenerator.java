@@ -4,7 +4,7 @@ import ch.zhaw.psit4.domain.beans.Company;
 import ch.zhaw.psit4.domain.beans.DialPlanExtension;
 import ch.zhaw.psit4.domain.beans.SipClient;
 import ch.zhaw.psit4.domain.dialplan.applications.DialApp;
-import ch.zhaw.psit4.domain.helper.SipClientValidator;
+import ch.zhaw.psit4.domain.interfaces.DialPlanExtensionConfigurationInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,6 @@ import java.util.List;
  */
 public class ExtensionGenerator {
 
-    private static final SipClientValidator sipClientValidator = new SipClientValidator();
     private static final String TIMEOUT = "30";
 
     private ExtensionGenerator() {
@@ -29,14 +28,12 @@ public class ExtensionGenerator {
      * @param company the company
      * @return the default extension for the given company
      */
-    public static List<DialPlanExtension> getDefaultExtensions(Company company) {
+    public static List<DialPlanExtensionConfigurationInterface> getDefaultExtensions(Company company) {
         List<SipClient> sipClientList = company.getSipClientList();
-        List<DialPlanExtension> dialPlanExtensionList = new ArrayList<>();
+        List<DialPlanExtensionConfigurationInterface> dialPlanExtensionList = new ArrayList<>();
 
         for (SipClient sipClient : sipClientList) {
-            if (!sipClientValidator.isSipClientValid(sipClient)) {
-                continue;
-            }
+            sipClient.validate();
             DialPlanExtension dialPlanExtension = getDefaultExtension(sipClient);
             dialPlanExtensionList.add(dialPlanExtension);
         }

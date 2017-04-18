@@ -2,6 +2,7 @@ package ch.zhaw.psit4.domain.sipclient;
 
 import ch.zhaw.psit4.domain.beans.SipClient;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
+import ch.zhaw.psit4.domain.exceptions.ValidationException;
 import ch.zhaw.psit4.testsupport.convenience.InputStreamStringyfier;
 import ch.zhaw.psit4.testsupport.fixtures.domain.SipClientGenerator;
 import org.junit.Before;
@@ -31,19 +32,19 @@ public class SipClientConfigurationChanSipTest {
 
     @Test(expected = InvalidConfigurationException.class)
     public void testNullConfiguration() throws Exception {
-        sipClientConfigurationChanSip.generateSipClientConfiguration(null);
+        sipClientConfigurationChanSip.toSipClientConfiguration(null);
     }
 
     @Test(expected = InvalidConfigurationException.class)
     public void testEmptyConfiguration() throws Exception {
-        sipClientConfigurationChanSip.generateSipClientConfiguration(Collections.emptyList());
+        sipClientConfigurationChanSip.toSipClientConfiguration(Collections.emptyList());
     }
 
     @Test
     public void testNullClient() throws Exception {
         sipClientList.add(null);
 
-        String actual = sipClientConfigurationChanSip.generateSipClientConfiguration(sipClientList);
+        String actual = sipClientConfigurationChanSip.toSipClientConfiguration(sipClientList);
         String expected = "";
 
         assertThat(actual, equalTo(expected));
@@ -55,7 +56,7 @@ public class SipClientConfigurationChanSipTest {
         sipClientList.add(null);
         sipClientList.add(SipClientGenerator.getSipClient(1, 2));
 
-        String actual = sipClientConfigurationChanSip.generateSipClientConfiguration(sipClientList);
+        String actual = sipClientConfigurationChanSip.toSipClientConfiguration(sipClientList);
         String expected = InputStreamStringyfier.slurpStream(
                 SipClientConfigurationChanSipTest.class.getResourceAsStream("/fixtures/oneCompanyTwoClients.txt")
         );
@@ -63,44 +64,44 @@ public class SipClientConfigurationChanSipTest {
         assertThat(actual, equalTo(expected));
     }
 
-    @Test
+    @Test(expected = ValidationException.class)
     public void testClientWithNullValues() throws Exception {
         sipClientList.add(new SipClient());
 
-        String actual = sipClientConfigurationChanSip.generateSipClientConfiguration(sipClientList);
+        String actual = sipClientConfigurationChanSip.toSipClientConfiguration(sipClientList);
         String expected = "";
 
         assertThat(actual, equalTo(expected));
     }
 
-    @Test
+    @Test(expected = ValidationException.class)
     public void testClientWithNullUsername() throws Exception {
         sipClientList = SipClientGenerator.generateSipClientList(1, 1);
         sipClientList.get(0).setUsername(null);
 
-        String actual = sipClientConfigurationChanSip.generateSipClientConfiguration(sipClientList);
+        String actual = sipClientConfigurationChanSip.toSipClientConfiguration(sipClientList);
         String expected = "";
 
         assertThat(actual, equalTo(expected));
     }
 
-    @Test
+    @Test(expected = ValidationException.class)
     public void testClientWithNullSecret() throws Exception {
         sipClientList = SipClientGenerator.generateSipClientList(1, 1);
         sipClientList.get(0).setSecret(null);
 
-        String actual = sipClientConfigurationChanSip.generateSipClientConfiguration(sipClientList);
+        String actual = sipClientConfigurationChanSip.toSipClientConfiguration(sipClientList);
         String expected = "";
 
         assertThat(actual, equalTo(expected));
     }
 
-    @Test
+    @Test(expected = ValidationException.class)
     public void testClientWithNullPhoneNumber() throws Exception {
         sipClientList = SipClientGenerator.generateSipClientList(1, 1);
         sipClientList.get(0).setPhoneNumber(null);
 
-        String actual = sipClientConfigurationChanSip.generateSipClientConfiguration(sipClientList);
+        String actual = sipClientConfigurationChanSip.toSipClientConfiguration(sipClientList);
         String expected = "";
 
         assertThat(actual, equalTo(expected));
@@ -110,7 +111,7 @@ public class SipClientConfigurationChanSipTest {
     public void testSingleClient() throws Exception {
         sipClientList = SipClientGenerator.generateSipClientList(1, 1);
 
-        String actual = sipClientConfigurationChanSip.generateSipClientConfiguration(sipClientList);
+        String actual = sipClientConfigurationChanSip.toSipClientConfiguration(sipClientList);
         String expected = InputStreamStringyfier.slurpStream(
                 SipClientConfigurationChanSipTest.class.getResourceAsStream("/fixtures/oneCompanyOneClient.txt")
         );
@@ -122,7 +123,7 @@ public class SipClientConfigurationChanSipTest {
     public void testTwoClients() throws Exception {
         sipClientList = SipClientGenerator.generateSipClientList(2, 1);
 
-        String actual = sipClientConfigurationChanSip.generateSipClientConfiguration(sipClientList);
+        String actual = sipClientConfigurationChanSip.toSipClientConfiguration(sipClientList);
         String expected = InputStreamStringyfier.slurpStream(
                 SipClientConfigurationChanSipTest.class.getResourceAsStream("/fixtures/oneCompanyTwoClients.txt")
         );
@@ -134,7 +135,7 @@ public class SipClientConfigurationChanSipTest {
     public void testManyClients() throws Exception {
         sipClientList = SipClientGenerator.generateSipClientList(3, 1);
 
-        String actual = sipClientConfigurationChanSip.generateSipClientConfiguration(sipClientList);
+        String actual = sipClientConfigurationChanSip.toSipClientConfiguration(sipClientList);
         String expected = InputStreamStringyfier.slurpStream(
                 SipClientConfigurationChanSipTest.class.getResourceAsStream("/fixtures/oneCompanyThreeClients.txt")
         );
