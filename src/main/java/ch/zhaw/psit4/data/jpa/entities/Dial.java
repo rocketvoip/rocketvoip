@@ -22,21 +22,21 @@ public class Dial {
     private String priority;
 
     @Column(nullable = false)
-    private String timeout;
+    private String ringingTime;
 
     @ManyToOne
     private DialPlan dialPlan;
 
     @ManyToMany
-    private Collection<SipClient> sipClient;
+    private Collection<SipClient> sipClients;
 
     protected Dial(){}
 
-    public Dial(String name, String priority, String timeout, DialPlan dialPlan, Collection<SipClient> sipClient) {
+    public Dial(String name, String priority, String ringingTime, DialPlan dialPlan, Collection<SipClient> sipClients) {
         this.name = name;
         this.priority = priority;
-        this.timeout = timeout;
-        this.sipClient = sipClient;
+        this.ringingTime = ringingTime;
+        this.sipClients = sipClients;
         this.dialPlan = dialPlan;
     }
 
@@ -60,20 +60,20 @@ public class Dial {
         this.dialPlan = dialPlan;
     }
 
-    public String getTimeout() {
-        return timeout;
+    public String getRingingTime() {
+        return ringingTime;
     }
 
-    public void setTimeout(String timeout) {
-        this.timeout = timeout;
+    public void setRingingTime(String ringingTime) {
+        this.ringingTime = ringingTime;
     }
 
-    public Collection<SipClient> getSipClient() {
-        return sipClient;
+    public Collection<SipClient> getSipClients() {
+        return sipClients;
     }
 
-    public void setSipClient(Collection<SipClient> sipClient) {
-        this.sipClient = sipClient;
+    public void setSipClients(Collection<SipClient> sipClients) {
+        this.sipClients = sipClients;
     }
 
     public String getName() {
