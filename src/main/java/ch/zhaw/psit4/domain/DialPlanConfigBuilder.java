@@ -21,7 +21,7 @@ public class DialPlanConfigBuilder {
 
 
     public DialPlanConfigBuilder() {
-        contexts = new LinkedList<ch.zhaw.psit4.domain.beans.DialPlanContext>();
+        contexts = new LinkedList<>();
 
         // Will be used during build. Initial state has to be null.
         activeContext = null;
