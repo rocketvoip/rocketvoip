@@ -1,7 +1,7 @@
 package ch.zhaw.psit4.dto.actions;
 
 /**
- * Represents a voice message. The voice message will be played after the set sleepTime time.
+ * Represents a voice message. After the voice message played the it waits for the sleepTime to expire.
  *
  * @author Jona Braun
  */
