@@ -56,12 +56,12 @@ public class DialPlanController {
     }
 
     @ExceptionHandler(DialPlanRetrievalException.class)
-    public ResponseEntity<ErrorDto> handleSipClientRetrievalException(DialPlanRetrievalException ex) {
+    public ResponseEntity<ErrorDto> handleDialPlanRetrievalException(DialPlanRetrievalException ex) {
         return new ResponseEntity<>(Utilities.exceptionToErrorDto(ex), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(DialPlanDeletionException.class)
-    public ResponseEntity<ErrorDto> handleSipClientDeletionException(DialPlanDeletionException ex) {
+    public ResponseEntity<ErrorDto> handleDialPlanDeletionException(DialPlanDeletionException ex) {
         return new ResponseEntity<>(Utilities.exceptionToErrorDto(ex), HttpStatus.NOT_FOUND);
     }
 
