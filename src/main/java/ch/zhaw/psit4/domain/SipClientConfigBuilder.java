@@ -39,6 +39,7 @@ public class SipClientConfigBuilder {
      * Build the configuration.
      *
      * @return list of SipClientConfigurationInstances suitable for ConfigWriter.
+     * @throws InvalidConfigurationException when no sip clients have been added.
      */
     public List<SipClientConfigurationInterface> build() {
         if (sipClients.isEmpty()) {
