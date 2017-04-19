@@ -76,6 +76,10 @@ public class DialPlanExtension implements DialPlanExtensionConfigurationInterfac
             throw new ValidationException("priority is null");
         }
 
+        if (dialPlanApplication == null) {
+            throw new ValidationException("dialPlanApplication is null");
+        }
+
         dialPlanApplication.validate();
     }
 }
