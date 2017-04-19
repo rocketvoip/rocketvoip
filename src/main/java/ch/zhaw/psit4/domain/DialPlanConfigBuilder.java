@@ -6,11 +6,15 @@ import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import ch.zhaw.psit4.domain.exceptions.ValidationException;
 import ch.zhaw.psit4.domain.interfaces.DialPlanAppInterface;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
  * Build a DialPlan suitable for ConfigWriter using a fluent API.
+ *
+ * Please note that the builder modifies the instances passed. Do not modify the instances outside the builder once
+ * they have been passed.
  *
  * @author Rafael Ostertag
  */
@@ -32,6 +36,8 @@ public class DialPlanConfigBuilder {
     /**
      * Add a new Dialplan context.
      *
+     * Please note, that this method has will set an empty dial plan extension list on the provided context.
+     *
      * @param context the new dialplan context.
      * @return the DialPlanConfigBuilder.
      * @throws InvalidConfigurationException when configuration is invalid.
@@ -42,9 +48,12 @@ public class DialPlanConfigBuilder {
             throw new InvalidConfigurationException("context must not be null");
         }
 
-        saveActiveContextIfNotNull();
+        if (activeContext != null) {
+            saveActiveContext();
+        }
 
         activeContext = context;
+        activeContext.setDialPlanExtensionList(new ArrayList<>());
 
         return this;
     }
@@ -56,7 +65,8 @@ public class DialPlanConfigBuilder {
      *
      * @param extension the new extension context
      * @return DialPlanConfigBuilder.
-     * @throws InvalidConfigurationException when configuration is invalid
+     * @throws InvalidConfigurationException when extension is null
+     * @throws IllegalStateException when no active context exists
      * @throws ValidationException           when validation of extension or app fails.
      */
     public DialPlanConfigBuilder addNewExtension(DialPlanExtension extension) {
@@ -64,7 +74,13 @@ public class DialPlanConfigBuilder {
             throw new InvalidConfigurationException("extension must not be null");
         }
 
-        assignActiveExtensionToActiveContextIfNotNull();
+        if (activeContext == null) {
+            throw new IllegalStateException("No active context. Did you call addNewContext()?");
+        }
+
+        if (activeExtension != null) {
+            assignActiveExtensionToActiveContext();
+        }
 
         activeExtension = extension;
 
@@ -80,7 +96,7 @@ public class DialPlanConfigBuilder {
      * @param app Asterisk application to be set.
      * @return DialPlanConfigBuilder
      * @throws InvalidConfigurationException when app is null
-     * @throws IllegalStateException         when no active extension is found.
+     * @throws IllegalStateException         when no active extension exists.
      * @throws ValidationException           when app cannot be validated.
      */
     public DialPlanConfigBuilder setApplication(DialPlanAppInterface app) {
@@ -104,21 +120,17 @@ public class DialPlanConfigBuilder {
      * @throws InvalidConfigurationException when no contexts have been added.
      */
     public List<DialPlanContext> build() {
-        saveActiveContextIfNotNull();
-
-        if (contexts.isEmpty()) {
-            throw new InvalidConfigurationException("No contexts");
-        }
+        saveActiveContext();
 
         return contexts;
     }
 
-    private void saveActiveContextIfNotNull() {
+    private void saveActiveContext() {
         if (activeContext == null) {
-            return;
+            throw new IllegalStateException("No active context");
         }
 
-        assignActiveExtensionToActiveContextIfNotNull();
+        assignActiveExtensionToActiveContext();
 
         activeContext.validate();
 
@@ -128,9 +140,9 @@ public class DialPlanConfigBuilder {
 
     }
 
-    private void assignActiveExtensionToActiveContextIfNotNull() {
+    private void assignActiveExtensionToActiveContext() {
         if (activeExtension == null) {
-            return;
+            throw new IllegalStateException("no active extension");
         }
 
         activeExtension.validate();
