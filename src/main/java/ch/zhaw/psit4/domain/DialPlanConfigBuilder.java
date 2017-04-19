@@ -101,9 +101,14 @@ public class DialPlanConfigBuilder {
      * Build the context list.
      *
      * @return the list with contexts.
+     * @throws InvalidConfigurationException when no contexts have been added.
      */
     public List<DialPlanContext> build() {
         saveActiveContextIfNotNull();
+
+        if (contexts.isEmpty()) {
+            throw new InvalidConfigurationException("No contexts");
+        }
 
         return contexts;
     }
