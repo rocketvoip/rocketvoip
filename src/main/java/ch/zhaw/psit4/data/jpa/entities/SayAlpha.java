@@ -29,7 +29,8 @@ public class SayAlpha {
     protected SayAlpha() {
     }
 
-    public SayAlpha(String text, int sleepTime, DialPlan dialPlan) {
+    public SayAlpha(String name, String text, int sleepTime, DialPlan dialPlan) {
+        this.name = name;
         this.text = text;
         this.sleepTime = sleepTime;
         this.dialPlan = dialPlan;

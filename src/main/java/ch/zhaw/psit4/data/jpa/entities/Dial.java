@@ -32,7 +32,8 @@ public class Dial {
 
     protected Dial(){}
 
-    public Dial(String priority, String timeout, DialPlan dialPlan, Collection<SipClient> sipClient) {
+    public Dial(String name, String priority, String timeout, DialPlan dialPlan, Collection<SipClient> sipClient) {
+        this.name = name;
         this.priority = priority;
         this.timeout = timeout;
         this.sipClient = sipClient;
