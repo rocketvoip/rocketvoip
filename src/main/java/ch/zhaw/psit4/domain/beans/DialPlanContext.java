@@ -58,9 +58,12 @@ public class DialPlanContext implements DialPlanContextConfigurationInterface {
         dialPlanExtensionList.forEach(x ->
                 Optional
                         .ofNullable(x)
-                        .ifPresent(y -> stringBuilder.append(
-                                y.toDialPlanExtensionConfiguration()
-                                )
+                        .ifPresent(y -> {
+                                    stringBuilder.append(
+                                            y.toDialPlanExtensionConfiguration()
+                                    );
+                                    stringBuilder.append("\n");
+                                }
                         )
         );
         stringBuilder.append("\n");
