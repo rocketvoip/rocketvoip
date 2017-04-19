@@ -1,0 +1,6 @@
+[username-ACME]
+type=friend
+context=ACME
+host=dynamic
+secret=secret
+
