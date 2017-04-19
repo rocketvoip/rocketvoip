@@ -76,14 +76,26 @@ public class SipClient implements SipClientConfigurationInterface {
         if (username == null) {
             throw new ValidationException("SipClient username is null");
         }
+        if (username.isEmpty()) {
+            throw new ValidationException("SipClient username is empty");
+        }
         if (company == null) {
             throw new ValidationException("SipClient company is null");
+        }
+        if (company.isEmpty()) {
+            throw new ValidationException("SipClient company is empty");
         }
         if (secret == null) {
             throw new ValidationException("SipClient secret is null");
         }
+        if (secret.isEmpty()) {
+            throw new ValidationException("SipClient secret is empty");
+        }
         if (phoneNumber == null) {
             throw new ValidationException("SipClient phoneNumber is null");
+        }
+        if (phoneNumber.isEmpty()) {
+            throw new ValidationException("SipClient secret is empty");
         }
     }
 
