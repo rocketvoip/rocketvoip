@@ -29,10 +29,10 @@ public class DialPlanController {
     public ResponseEntity<DialPlanDto> createDialPlan(@RequestBody DialPlanDto dialPlanDto) {
         // TODO
         for (ActionDto actionDto : dialPlanDto.getActions()) {
-            if (actionDto.getType() == ActionDto.ActionType.TEAM) {
+            if (actionDto.getType() == ActionDto.ActionType.Dial) {
                 ObjectMapper objMapper = new ObjectMapper();
                 DialAction dialAction = objMapper.convertValue(actionDto.getTypeSpecific(), DialAction.class);
-                String test = dialAction.getTime();
+                String test = dialAction.getRingingTime();
             }
         }
         return new ResponseEntity<>(dialPlanDto, HttpStatus.CREATED);

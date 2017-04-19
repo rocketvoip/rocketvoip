@@ -1,13 +1,13 @@
 package ch.zhaw.psit4.dto.actions;
 
 /**
- * Represents a voice message. The voice message will be played after the set delay time.
+ * Represents a voice message. The voice message will be played after the set sleepTime time.
  *
  * @author Jona Braun
  */
 public class SayAlphaAction {
     private String voiceMessage;
-    private String delay;
+    private String sleepTime;
 
     public String getVoiceMessage() {
         return voiceMessage;
@@ -17,11 +17,11 @@ public class SayAlphaAction {
         this.voiceMessage = voiceMessage;
     }
 
-    public String getDelay() {
-        return delay;
+    public String getSleepTime() {
+        return sleepTime;
     }
 
-    public void setDelay(String delay) {
-        this.delay = delay;
+    public void setSleepTime(String sleepTime) {
+        this.sleepTime = sleepTime;
     }
 }

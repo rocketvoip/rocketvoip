@@ -65,19 +65,19 @@ public class DialPlanControllerIT {
         // action
         ActionDto actionDto = new ActionDto();
         actionDto.setName("may fancy action");
-        actionDto.setType(ActionDto.ActionType.TEAM);
+        actionDto.setType(ActionDto.ActionType.Dial);
 
         // database setup
         databaseFixtureBuilder1.company(1).addSipClient(1).addSipClient(2).build();
 
         // team
         DialAction dialAction = new DialAction();
-        dialAction.setTime("30");
+        dialAction.setRingingTime("30");
         List<SipClientDto> sipClientDtoList = new ArrayList<>();
         for (int i = 1; i <= 2; i++) {
             sipClientDtoList.add(sipClientEntityToSipClientDto(databaseFixtureBuilder1.getSipClientList().get(i)));
         }
-        dialAction.setTeam(sipClientDtoList);
+        dialAction.setSipClients(sipClientDtoList);
 
         ObjectMapper objM = new ObjectMapper();
         LinkedHashMap linkedHashMap = objM.convertValue(dialAction, LinkedHashMap.class);
@@ -123,7 +123,7 @@ public class DialPlanControllerIT {
 //            {
 //                "id":0,
 //                "name":"may fancy action",
-//                "type":"TEAM",
+//                "type":"Dial",
 //                "typeSpecific":{
 //                        "time":"30",
 //                        "team":[

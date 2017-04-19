@@ -5,28 +5,28 @@ import ch.zhaw.psit4.dto.SipClientDto;
 import java.util.List;
 
 /**
- * Represents one or multiple SIP clients which shall be called for the specified time.
+ * Represents one or multiple SIP clients which shall be called for the specified ringingTime.
  *
  * @author Jona Braun
  */
 public class DialAction {
-    private String time;
-    private List<SipClientDto> team;
+    private String ringingTime;
+    private List<SipClientDto> sipClients;
 
-    public String getTime() {
-        return time;
+    public String getRingingTime() {
+        return ringingTime;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setRingingTime(String ringingTime) {
+        this.ringingTime = ringingTime;
     }
 
-    public List<SipClientDto> getTeam() {
-        return team;
+    public List<SipClientDto> getSipClients() {
+        return sipClients;
     }
 
-    public void setTeam(List<SipClientDto> team) {
-        this.team = team;
+    public void setSipClients(List<SipClientDto> sipClients) {
+        this.sipClients = sipClients;
     }
 
 

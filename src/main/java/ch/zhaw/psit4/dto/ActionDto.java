@@ -13,7 +13,7 @@ import java.util.Map;
  * "name": "test",<br>
  * "id": 10<br>
  * },<br>
- * "type": "TEAM",<br>
+ * "type": "Dial",<br>
  * "typeSpecific": {...}<br>
  * }<br>
  * </code>
@@ -58,5 +58,5 @@ public class ActionDto {
         this.type = type;
     }
 
-    public enum ActionType {TEAM, VOICE_MESSAGE}
+    public enum ActionType {Dial, SayAlpha}
 }
