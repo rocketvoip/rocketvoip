@@ -80,6 +80,10 @@ public class DialApp implements DialPlanAppInterface {
         if (timeout == null) {
             throw new ValidationException("timeout is null");
         }
+
+        if (timeout.isEmpty()) {
+            throw new ValidationException("timeout is empty");
+        }
     }
 
     public enum Technology {SIP, PSIP}
