@@ -9,16 +9,16 @@ import org.hamcrest.TypeSafeMatcher;
 /**
  * @author Rafael Ostertag
  */
-public class SipClientMatcher extends TypeSafeMatcher<SipClient> {
+public class SipClientEqualTo extends TypeSafeMatcher<SipClient> {
     private SipClient expected;
 
-    public SipClientMatcher(SipClient expected) {
+    public SipClientEqualTo(SipClient expected) {
         this.expected = expected;
     }
 
     @Factory
-    public static Matcher<SipClient> sipClientMatcher(SipClient other) {
-        return new SipClientMatcher(other);
+    public static Matcher<SipClient> sipClientEqualTo(SipClient other) {
+        return new SipClientEqualTo(other);
     }
 
     @Override
