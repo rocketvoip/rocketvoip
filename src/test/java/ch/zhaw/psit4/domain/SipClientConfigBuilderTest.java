@@ -55,6 +55,7 @@ public class SipClientConfigBuilderTest {
         assertThat(actual, hasItem(SipClientEqualTo.sipClientEqualTo(sipClient3)));
     }
 
+
     @Test
     public void callToSipClientValidate() throws Exception {
         SipClient sipClient = mock(SipClient.class);
@@ -74,7 +75,11 @@ public class SipClientConfigBuilderTest {
         sipClient.setUsername(null);
 
         sipClientConfigBuilder.addSipClient(sipClient);
+    }
 
+    @Test(expected = InvalidConfigurationException.class)
+    public void emptyBuilder() throws Exception {
+        sipClientConfigBuilder.build();
     }
 
 }
