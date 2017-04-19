@@ -18,7 +18,7 @@ public class SayAlpha {
     private String name;
 
     @Column(nullable = false)
-    private String text;
+    private String voiceMessage;
 
     @Column(nullable = false)
     private int sleepTime;
@@ -29,19 +29,19 @@ public class SayAlpha {
     protected SayAlpha() {
     }
 
-    public SayAlpha(String name, String text, int sleepTime, DialPlan dialPlan) {
+    public SayAlpha(String name, String voiceMessage, int sleepTime, DialPlan dialPlan) {
         this.name = name;
-        this.text = text;
+        this.voiceMessage = voiceMessage;
         this.sleepTime = sleepTime;
         this.dialPlan = dialPlan;
     }
 
-    public String getText() {
-        return text;
+    public String getVoiceMessage() {
+        return voiceMessage;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setVoiceMessage(String voiceMessage) {
+        this.voiceMessage = voiceMessage;
     }
 
     public int getSleepTime() {
