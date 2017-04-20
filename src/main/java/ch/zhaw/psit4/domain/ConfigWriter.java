@@ -25,7 +25,7 @@ public final class ConfigWriter {
      * @return the configuration string for the sip clients
      * @throws InvalidConfigurationException if the sipClientList is null or the list is empty
      */
-    public static String generateSipClientConfiguration(List<SipClientConfigurationInterface> sipClientList) {
+    public static String generateSipClientConfiguration(List<? extends SipClientConfigurationInterface> sipClientList) {
         if (sipClientList == null) {
             throw new InvalidConfigurationException("sipClientList is null");
         }
@@ -53,7 +53,7 @@ public final class ConfigWriter {
      * @return the configuration string for the sip clients
      * @throws InvalidConfigurationException if the sipClientList is null or the list is empty
      */
-    public static String generateDialPlanConfiguration(List<DialPlanContextConfigurationInterface>
+    public static String generateDialPlanConfiguration(List<? extends DialPlanContextConfigurationInterface>
                                                                dialPlanContextList) {
         if (dialPlanContextList == null) {
             throw new InvalidConfigurationException("dialPlanContextList is null");
