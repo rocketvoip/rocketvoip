@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class CompanyDialPlanBuilder extends DialPlanConfigBuilder {
 
     public static final String DEFAULT_PRIORITY = "1";
-    public static final DialApp.Technology DEFAULT_TECHNOLOGY = DialApp.Technology.PSIP;
+    public static final DialApp.Technology DEFAULT_TECHNOLOGY = DialApp.Technology.SIP;
     public static final String DEFAULT_TIMEOUT = "30";
 
     public CompanyDialPlanBuilder() {
@@ -58,7 +58,7 @@ public class CompanyDialPlanBuilder extends DialPlanConfigBuilder {
                         dialPlanExtension.setPhoneNumber(y.getPhoneNumber());
                         addNewExtension(dialPlanExtension);
 
-                        DialApp dialApp = DialApp.factory(DEFAULT_TECHNOLOGY, x.getValue(), DEFAULT_TIMEOUT);
+                        DialApp dialApp = DialApp.factory(DEFAULT_TECHNOLOGY, y, DEFAULT_TIMEOUT);
                         setApplication(dialApp);
                     });
                 }

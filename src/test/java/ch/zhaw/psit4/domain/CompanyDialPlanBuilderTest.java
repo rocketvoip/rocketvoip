@@ -3,6 +3,7 @@ package ch.zhaw.psit4.domain;
 import ch.zhaw.psit4.domain.beans.DialPlanContext;
 import ch.zhaw.psit4.domain.beans.SipClient;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
+import ch.zhaw.psit4.testsupport.convenience.InputStreamStringyfier;
 import ch.zhaw.psit4.testsupport.fixtures.domain.SipClientGenerator;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,6 +11,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 
@@ -53,6 +55,20 @@ public class CompanyDialPlanBuilderTest {
                 .build();
 
         assertThat(actual, hasSize(2));
+        assertThat(actual.get(0).getDialPlanExtensionList(), hasSize(2));
+        assertThat(actual.get(1).getDialPlanExtensionList(), hasSize(2));
+
+        String expected = InputStreamStringyfier.slurpStream(
+                DialPlanConfigBuilderTest.class.getResourceAsStream
+                        ("/fixtures/companyDialPlanBuilderTestACME1Fixture.txt")
+        );
+        assertThat(actual.get(0).toDialPlanContextConfiguration(), equalTo(expected));
+
+        expected = InputStreamStringyfier.slurpStream(
+                DialPlanConfigBuilderTest.class.getResourceAsStream
+                        ("/fixtures/companyDialPlanBuilderTestACME2Fixture.txt")
+        );
+        assertThat(actual.get(1).toDialPlanContextConfiguration(), equalTo(expected));
     }
 
 }
