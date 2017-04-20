@@ -61,7 +61,7 @@ public class ConfigurationControllerIT {
         ).andExpect(
                 status().isInternalServerError()
         ).andExpect(
-                jsonPath("$.reason").value("sipClientList is empty")
+                jsonPath("$.reason").value("no sip clients in configuration")
         );
     }
 
