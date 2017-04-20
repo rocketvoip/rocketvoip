@@ -4,6 +4,7 @@ import ch.zhaw.psit4.domain.beans.SipClient;
 import ch.zhaw.psit4.domain.exceptions.ValidationException;
 import ch.zhaw.psit4.domain.interfaces.DialPlanAppInterface;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,6 +30,27 @@ public class DialApp implements DialPlanAppInterface {
         this.timeout = timeout;
     }
 
+    public static DialApp factory(Technology technology, List<SipClient> sipClientList, String timeout) {
+        return new DialApp(technology, sipClientList, timeout);
+    }
+
+    public static DialApp factory(Technology technology, SipClient sipClient, String timeout) {
+        List<SipClient> list = new ArrayList<>();
+        list.add(sipClient);
+        return factory(technology, list, timeout);
+    }
+
+    public Technology getTechnology() {
+        return technology;
+    }
+
+    public List<SipClient> getSipClientList() {
+        return sipClientList;
+    }
+
+    public String getTimeout() {
+        return timeout;
+    }
 
     /**
      * Puts together the asterisk dial application call.
