@@ -34,6 +34,18 @@ public class DialPlanConfigBuilder {
     }
 
     /**
+     * Initialize with an existing builder.
+     *
+     * @param dialPlanConfigBuilder existing DialPlanConfigBuilder
+     */
+    public DialPlanConfigBuilder(DialPlanConfigBuilder dialPlanConfigBuilder) {
+        this();
+
+        contexts = dialPlanConfigBuilder.build();
+    }
+
+
+    /**
      * Add a new Dialplan context.
      *
      * Please note, that this method has will set an empty dial plan extension list on the provided context.
@@ -120,7 +132,13 @@ public class DialPlanConfigBuilder {
      * @throws InvalidConfigurationException when no contexts have been added.
      */
     public List<DialPlanContext> build() {
-        saveActiveContext();
+        if (activeContext != null) {
+            saveActiveContext();
+        }
+
+        if (contexts.isEmpty()) {
+            throw new IllegalStateException("No configuration to build");
+        }
 
         return contexts;
     }
