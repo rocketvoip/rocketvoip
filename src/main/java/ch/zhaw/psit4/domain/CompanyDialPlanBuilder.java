@@ -6,6 +6,7 @@ import ch.zhaw.psit4.domain.beans.SipClient;
 import ch.zhaw.psit4.domain.dialplan.applications.DialApp;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -47,7 +48,7 @@ public class CompanyDialPlanBuilder extends DialPlanConfigBuilder {
                 .collect(Collectors.groupingBy(SipClient::getCompany));
 
         sipClientPerCompany.entrySet().stream()
-                .sorted((a, b) -> a.getKey().compareTo(b.getKey()))
+                .sorted(Comparator.comparing(Map.Entry::getKey))
                 .forEach(
                 x -> {
                     DialPlanContext dialPlanContext = new DialPlanContext();
