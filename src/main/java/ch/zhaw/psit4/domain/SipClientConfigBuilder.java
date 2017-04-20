@@ -26,7 +26,7 @@ public class SipClientConfigBuilder {
      * @throws InvalidConfigurationException                       when sipClient is null.
      * @throws ch.zhaw.psit4.domain.exceptions.ValidationException when sipClient is invalid.
      */
-    SipClientConfigBuilder addSipClient(SipClientConfigurationInterface sipClient) {
+    public SipClientConfigBuilder addSipClient(SipClientConfigurationInterface sipClient) {
         if (sipClient == null) {
             throw new InvalidConfigurationException("sipClientConfigurationInerface must not be null");
         }
