@@ -46,7 +46,9 @@ public class CompanyDialPlanBuilder extends DialPlanConfigBuilder {
                 .stream()
                 .collect(Collectors.groupingBy(SipClient::getCompany));
 
-        sipClientPerCompany.entrySet().forEach(
+        sipClientPerCompany.entrySet().stream()
+                .sorted((a, b) -> a.getKey().compareTo(b.getKey()))
+                .forEach(
                 x -> {
                     DialPlanContext dialPlanContext = new DialPlanContext();
                     dialPlanContext.setContextName(x.getKey());
