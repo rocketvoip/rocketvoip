@@ -27,7 +27,7 @@ import static org.junit.Assert.assertThat;
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @Import(BeanConfiguration.class)
-public class DialRepositoryTest {
+public class DialPlanRepositoryTest {
     @Autowired
     private ApplicationContext applicationContext;
 
