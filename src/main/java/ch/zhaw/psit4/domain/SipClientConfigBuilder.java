@@ -9,6 +9,8 @@ import java.util.List;
 /**
  * SipClient configuration builder with fluent API. Output of this class is suitable for ConfigWriter.
  *
+ * This builder is mostly used to create the content for sip.conf
+ *
  * @author Rafael Ostertag
  */
 public class SipClientConfigBuilder {

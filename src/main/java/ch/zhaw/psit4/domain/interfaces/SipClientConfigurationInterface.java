@@ -1,7 +1,7 @@
 package ch.zhaw.psit4.domain.interfaces;
 
 /**
- * Puts together the asterisk sip client configuration.
+ * Implementations provides a valid Asterisk drive configuration.
  *
  * @author Rafael Ostertag
  */

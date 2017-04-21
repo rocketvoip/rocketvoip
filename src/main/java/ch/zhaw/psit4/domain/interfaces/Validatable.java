@@ -1,6 +1,8 @@
 package ch.zhaw.psit4.domain.interfaces;
 
 /**
+ * Provides validation.
+ *
  * @author Rafael Ostertag
  */
 public interface Validatable {

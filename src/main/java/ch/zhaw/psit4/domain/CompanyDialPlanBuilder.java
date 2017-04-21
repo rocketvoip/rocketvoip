@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 /**
  * This builder creates the necessary contexts with Dial extensions per company.
  *
+ * Use this builder to create the first batch of Asterisk contexts, enabling sip clients to be called by phone number.
+ *
  * @author Rafael Ostertag
  */
 public class CompanyDialPlanBuilder extends DialPlanConfigBuilder {
