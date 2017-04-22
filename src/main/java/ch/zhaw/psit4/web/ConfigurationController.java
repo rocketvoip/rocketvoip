@@ -45,7 +45,7 @@ public class ConfigurationController {
         return new ResponseEntity<byte[]>(returnValue, httpHeaders, HttpStatus.OK);
     }
 
-    @ExceptionHandler({Exception.class, InvalidConfigurationException.class, ZipFileCreationException.class})
+    @ExceptionHandler({InvalidConfigurationException.class, ZipFileCreationException.class})
     public ResponseEntity<ErrorDto> handleException(Exception e, HttpServletResponse response) {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON_UTF8);

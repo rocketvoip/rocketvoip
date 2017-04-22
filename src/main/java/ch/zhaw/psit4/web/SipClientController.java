@@ -1,11 +1,7 @@
 package ch.zhaw.psit4.web;
 
-import ch.zhaw.psit4.dto.ErrorDto;
 import ch.zhaw.psit4.dto.SipClientDto;
-import ch.zhaw.psit4.services.exceptions.SipClientDeletionException;
-import ch.zhaw.psit4.services.exceptions.SipClientRetrievalException;
 import ch.zhaw.psit4.services.interfaces.SipClientServiceInterface;
-import ch.zhaw.psit4.web.utils.Utilities;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -63,18 +59,4 @@ public class SipClientController {
                 HttpStatus.CREATED);
     }
 
-    @ExceptionHandler(SipClientRetrievalException.class)
-    public ResponseEntity<ErrorDto> handleSipClientRetrievalException(SipClientRetrievalException ex) {
-        return new ResponseEntity<>(Utilities.exceptionToErrorDto(ex), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(SipClientDeletionException.class)
-    public ResponseEntity<ErrorDto> handleSipClientDeletionException(SipClientDeletionException ex) {
-        return new ResponseEntity<>(Utilities.exceptionToErrorDto(ex), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorDto> handleException(Exception e) {
-        return new ResponseEntity<>(Utilities.exceptionToErrorDto(e), HttpStatus.BAD_REQUEST);
-    }
 }
