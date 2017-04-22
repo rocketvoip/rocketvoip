@@ -1,8 +1,8 @@
 package ch.zhaw.psit4.services.implementation.adapters;
 
 import ch.zhaw.psit4.data.jpa.repositories.SipClientRepository;
-import ch.zhaw.psit4.domain.SipClientConfigBuilder;
 import ch.zhaw.psit4.domain.beans.SipClient;
+import ch.zhaw.psit4.domain.builders.SipClientConfigBuilder;
 import ch.zhaw.psit4.domain.interfaces.SipClientConfigurationInterface;
 
 import java.util.List;

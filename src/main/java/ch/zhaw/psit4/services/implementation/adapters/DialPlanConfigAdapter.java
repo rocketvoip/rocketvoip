@@ -1,8 +1,8 @@
 package ch.zhaw.psit4.services.implementation.adapters;
 
 import ch.zhaw.psit4.data.jpa.repositories.SipClientRepository;
-import ch.zhaw.psit4.domain.CompanyDialPlanBuilder;
 import ch.zhaw.psit4.domain.beans.SipClient;
+import ch.zhaw.psit4.domain.builders.CompanyDialPlanBuilder;
 import ch.zhaw.psit4.domain.interfaces.DialPlanContextConfigurationInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
