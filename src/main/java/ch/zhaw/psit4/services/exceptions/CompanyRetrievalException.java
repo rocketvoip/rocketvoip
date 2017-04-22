@@ -5,7 +5,7 @@ package ch.zhaw.psit4.services.exceptions;
  *
  * @author Jona Braun
  */
-public class CompanyRetrievalException extends RuntimeException {
+public class CompanyRetrievalException extends AbstractRetrievalException {
 
     public CompanyRetrievalException() {
         super();

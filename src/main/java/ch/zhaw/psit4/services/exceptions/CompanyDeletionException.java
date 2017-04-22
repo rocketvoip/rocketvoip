@@ -5,7 +5,7 @@ package ch.zhaw.psit4.services.exceptions;
  *
  * @author Jona Braun
  */
-public class CompanyDeletionException extends RuntimeException {
+public class CompanyDeletionException extends AbstractDeletionException {
 
     public CompanyDeletionException() {
         super();
