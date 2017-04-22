@@ -11,4 +11,6 @@ import java.util.List;
  */
 public interface SayAlphaRepository extends CrudRepository<SayAlpha, Long> {
     List<SayAlpha> findByDialPlan(DialPlan dialPlan);
+
+    List<SayAlpha> findByDialPlanId(long dialPlanId);
 }
