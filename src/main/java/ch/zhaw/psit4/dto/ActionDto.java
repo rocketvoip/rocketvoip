@@ -23,7 +23,7 @@ import java.util.Map;
 public class ActionDto {
     private long id;
     private String name;
-    private ActionType type;
+    private String type;
     private Map<String, Object> typeSpecific;
 
     public long getId() {
@@ -50,13 +50,11 @@ public class ActionDto {
         this.typeSpecific = typeSpecific;
     }
 
-    public ActionType getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(ActionType type) {
+    public void setType(String type) {
         this.type = type;
     }
-
-    public enum ActionType {Dial, SayAlpha}
 }

@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static ch.zhaw.psit4.services.implementation.CompanyServiceImpl.companyDtoToCompanyEntity;
@@ -65,6 +66,18 @@ public class SipClientServiceImpl implements SipClientServiceInterface {
         company.setId(sipClientDto.getCompany().getId());
         return new SipClient(company, sipClientDto.getName(),
                 sipClientDto.getPhone(), sipClientDto.getSecret());
+    }
+
+    public static List<SipClientDto> sipClientEntitiesToSipClientDtos(Collection<SipClient> sipClientEntities) {
+        List<SipClientDto> sipClientDtos = new ArrayList<>();
+        sipClientEntities.forEach(x -> sipClientDtos.add(sipClientEntityToSipClientDto(x)));
+        return sipClientDtos;
+    }
+
+    public static List<SipClient> sipClientDtosToSipClientEntities(List<SipClientDto> sipClientDtos) {
+        List<SipClient> sipClientEntities = new ArrayList<>();
+        sipClientDtos.forEach(x -> sipClientEntities.add(sipClientDtoToSipClientEntity(x)));
+        return sipClientEntities;
     }
 
     @Override

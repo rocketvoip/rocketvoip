@@ -7,7 +7,7 @@ package ch.zhaw.psit4.dto.actions;
  */
 public class SayAlphaAction {
     private String voiceMessage;
-    private String sleepTime;
+    private int sleepTime;
 
     public String getVoiceMessage() {
         return voiceMessage;
@@ -17,11 +17,11 @@ public class SayAlphaAction {
         this.voiceMessage = voiceMessage;
     }
 
-    public String getSleepTime() {
+    public int getSleepTime() {
         return sleepTime;
     }
 
-    public void setSleepTime(String sleepTime) {
+    public void setSleepTime(int sleepTime) {
         this.sleepTime = sleepTime;
     }
 }

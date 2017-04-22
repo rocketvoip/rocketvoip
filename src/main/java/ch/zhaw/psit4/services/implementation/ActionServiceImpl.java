@@ -1,15 +1,17 @@
 package ch.zhaw.psit4.services.implementation;
 
+import ch.zhaw.psit4.data.jpa.entities.Dial;
+import ch.zhaw.psit4.data.jpa.entities.SayAlpha;
 import ch.zhaw.psit4.data.jpa.repositories.DialRepository;
 import ch.zhaw.psit4.data.jpa.repositories.SayAlphaRepository;
-import ch.zhaw.psit4.data.jpa.repositories.SipClientRepository;
 import ch.zhaw.psit4.dto.ActionDto;
 import ch.zhaw.psit4.dto.DialPlanDto;
+import ch.zhaw.psit4.services.implementation.adapters.DialAdapter;
+import ch.zhaw.psit4.services.implementation.adapters.SayAlphaAdapter;
 import ch.zhaw.psit4.services.interfaces.ActionServiceInterface;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,17 +22,17 @@ import java.util.List;
 @Service
 public class ActionServiceImpl implements ActionServiceInterface {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ActionServiceImpl.class);
-    private final SipClientRepository sipClientRepository;
     private final DialRepository dialRepository;
     private final SayAlphaRepository sayAlphaRepository;
+    private final DialAdapter dialAdapter;
+    private final SayAlphaAdapter sayAlphaAdapter;
 
-    public ActionServiceImpl(SipClientRepository sipClientRepository,
-                             DialRepository dialRepository,
+    public ActionServiceImpl(DialRepository dialRepository,
                              SayAlphaRepository sayAlphaRepository) {
-        this.sipClientRepository = sipClientRepository;
         this.dialRepository = dialRepository;
         this.sayAlphaRepository = sayAlphaRepository;
+        sayAlphaAdapter = new SayAlphaAdapter(sayAlphaRepository);
+        dialAdapter = new DialAdapter(dialRepository);
     }
 
     /**
@@ -38,7 +40,7 @@ public class ActionServiceImpl implements ActionServiceInterface {
      */
     @Override
     public void saveActions(DialPlanDto dialPlanDto) {
-
+        createAllActions(dialPlanDto);
     }
 
     /**
@@ -46,7 +48,8 @@ public class ActionServiceImpl implements ActionServiceInterface {
      */
     @Override
     public void updateActions(DialPlanDto dialPlanDto) {
-
+        deleteAllActions(dialPlanDto.getId());
+        createAllActions(dialPlanDto);
     }
 
     /**
@@ -54,7 +57,29 @@ public class ActionServiceImpl implements ActionServiceInterface {
      */
     @Override
     public List<ActionDto> retrieveActions(long dialPlanId) {
-        return null;
+        List<ActionDto> actionDtoList = new ArrayList<>();
+
+        int priority = 0;
+
+        while (true) {
+            priority++;
+
+            Dial dial = dialRepository.findFirstByDialPlan_IdAndPriority(dialPlanId, Integer.toString(priority));
+            if (dial != null) {
+                ActionDto actionDto = dialAdapter.dialEntityToActionDto(dial);
+                actionDtoList.add(actionDto);
+                continue;
+            }
+
+            SayAlpha sayAlpha = sayAlphaRepository.findFirstByDialPlan_IdAndPriority(dialPlanId, Integer.toString(priority));
+            if (sayAlpha != null) {
+                ActionDto actionDto = sayAlphaAdapter.sayAlphaEntityToActionDto(sayAlpha);
+                actionDtoList.add(actionDto);
+                continue;
+            }
+            break;
+        }
+        return actionDtoList;
     }
 
     /**
@@ -62,8 +87,25 @@ public class ActionServiceImpl implements ActionServiceInterface {
      */
     @Override
     public void deleteActions(long dialPlanId) {
-
+        deleteAllActions(dialPlanId);
     }
 
+    private void createAllActions(DialPlanDto dialPlanDto) {
+        int priority = 1;
+        for (ActionDto actionDto : dialPlanDto.getActions()) {
+            if ("dial".equalsIgnoreCase(actionDto.getType())) {
+                dialAdapter.saveDialAction(dialPlanDto, actionDto, priority);
+            }
+            if ("sayalpha".equalsIgnoreCase((actionDto.getType()))) {
+                sayAlphaAdapter.saveSayAlphaAction(dialPlanDto, actionDto, priority);
+            }
+            priority++;
+        }
+    }
+
+    private void deleteAllActions(long dialPlanId) {
+        dialRepository.deleteAllByDialPlan_Id(dialPlanId);
+        sayAlphaRepository.deleteAllByDialPlan_Id(dialPlanId);
+    }
 
 }
