@@ -5,7 +5,7 @@ package ch.zhaw.psit4.services.exceptions;
  *
  * @author Jona Braun
  */
-public class DialPlanCreationException extends RuntimeException {
+public class DialPlanCreationException extends AbstractCreationException {
     public DialPlanCreationException() {
         super();
     }

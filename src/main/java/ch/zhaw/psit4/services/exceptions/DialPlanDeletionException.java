@@ -5,7 +5,7 @@ package ch.zhaw.psit4.services.exceptions;
  *
  * @author Jona Braun
  */
-public class DialPlanDeletionException extends RuntimeException {
+public class DialPlanDeletionException extends AbstractDeletionException {
 
     public DialPlanDeletionException() {
         super();
