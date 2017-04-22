@@ -3,7 +3,7 @@ package ch.zhaw.psit4.services.exceptions;
 /**
  * @author Rafael Ostertag
  */
-public class SipClientUpdateException extends RuntimeException {
+public class SipClientUpdateException extends AbstractUpdateException {
     public SipClientUpdateException() {
         super();
     }
