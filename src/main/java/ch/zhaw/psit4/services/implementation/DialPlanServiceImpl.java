@@ -4,16 +4,13 @@ import ch.zhaw.psit4.data.jpa.entities.Company;
 import ch.zhaw.psit4.data.jpa.entities.DialPlan;
 import ch.zhaw.psit4.data.jpa.repositories.CompanyRepository;
 import ch.zhaw.psit4.data.jpa.repositories.DialPlanRepository;
-import ch.zhaw.psit4.data.jpa.repositories.SipClientRepository;
-import ch.zhaw.psit4.dto.ActionDto;
 import ch.zhaw.psit4.dto.DialPlanDto;
-import ch.zhaw.psit4.dto.actions.DialAction;
 import ch.zhaw.psit4.services.exceptions.DialPlanCreationException;
 import ch.zhaw.psit4.services.exceptions.DialPlanDeletionException;
 import ch.zhaw.psit4.services.exceptions.DialPlanRetrievalException;
 import ch.zhaw.psit4.services.exceptions.DialPlanUpdateException;
+import ch.zhaw.psit4.services.interfaces.ActionServiceInterface;
 import ch.zhaw.psit4.services.interfaces.DialPlanServiceInterface;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -33,38 +30,14 @@ import static ch.zhaw.psit4.services.implementation.CompanyServiceImpl.companyEn
 public class DialPlanServiceImpl implements DialPlanServiceInterface {
     private static final String COULD_NOT_CREATE_DIAL_PLAN = "Could not create dial plan";
     private static final Logger LOGGER = LoggerFactory.getLogger(DialPlanServiceImpl.class);
-    private SipClientRepository sipClientRepository;
+    private ActionServiceInterface actionServiceInterface;
     private DialPlanRepository dialPlanRepository;
     private CompanyRepository companyRepository;
 
-    public DialPlanServiceImpl(SipClientRepository sipClientRepository, CompanyRepository companyRepository, DialPlanRepository dialPlanRepository) {
-        this.sipClientRepository = sipClientRepository;
+    public DialPlanServiceImpl(ActionServiceInterface actionServiceInterface, CompanyRepository companyRepository, DialPlanRepository dialPlanRepository) {
+        this.actionServiceInterface = actionServiceInterface;
         this.companyRepository = companyRepository;
         this.dialPlanRepository = dialPlanRepository;
-    }
-
-    /**
-     * Convert a DialPlan entity to a DialPlanDto.
-     *
-     * @param dialPlan DialPlan entity.
-     * @return DialPlanDto instance
-     */
-    public static DialPlanDto dialPlanEntityToDialPlanDto(DialPlan dialPlan) {
-        DialPlanDto dialPlanDto = new DialPlanDto();
-        dialPlanDto.setId(dialPlan.getId());
-        dialPlanDto.setName(dialPlan.getPhoneNr());
-        dialPlanDto.setCompany(companyEntityToCompanyDto(dialPlan.getCompany()));
-        dialPlanDto.setPhone(dialPlan.getPhoneNr());
-        // TODO set actions
-        for (ActionDto actionDto : dialPlanDto.getActions()) {
-            if (actionDto.getType() == ActionDto.ActionType.Dial) {
-                ObjectMapper objMapper = new ObjectMapper();
-                DialAction dialAction = objMapper.convertValue(actionDto.getTypeSpecific(), DialAction.class);
-                String test = dialAction.getRingingTime();
-            }
-        }
-
-        return dialPlanDto;
     }
 
     /**
@@ -78,6 +51,22 @@ public class DialPlanServiceImpl implements DialPlanServiceInterface {
         Company company = companyDtoToCompanyEntity(dialPlanDto.getCompany());
         company.setId(dialPlanDto.getCompany().getId());
         return new DialPlan(dialPlanDto.getName(), dialPlanDto.getPhone(), company);
+    }
+
+    /**
+     * Convert a DialPlan entity to a DialPlanDto.
+     *
+     * @param dialPlan DialPlan entity.
+     * @return DialPlanDto instance
+     */
+    public DialPlanDto dialPlanEntityToDialPlanDto(DialPlan dialPlan) {
+        DialPlanDto dialPlanDto = new DialPlanDto();
+        dialPlanDto.setId(dialPlan.getId());
+        dialPlanDto.setName(dialPlan.getPhoneNr());
+        dialPlanDto.setCompany(companyEntityToCompanyDto(dialPlan.getCompany()));
+        dialPlanDto.setPhone(dialPlan.getPhoneNr());
+        dialPlanDto.setActions(actionServiceInterface.retrieveActions(dialPlan.getId()));
+        return dialPlanDto;
     }
 
     @Override
@@ -95,7 +84,7 @@ public class DialPlanServiceImpl implements DialPlanServiceInterface {
         try {
             DialPlan dialPlan = dialPlanDtoToDialPlanEntity(newDialPlan);
             dialPlan = dialPlanRepository.save(dialPlan);
-            // TODO save actions
+            actionServiceInterface.saveActions(newDialPlan);
 
             return dialPlanEntityToDialPlanDto(dialPlan);
         } catch (Exception e) {
@@ -112,8 +101,7 @@ public class DialPlanServiceImpl implements DialPlanServiceInterface {
             existingDialPlan.setCompany(existingCompany);
             existingDialPlan.setPhoneNr(dialPlanDto.getName());
             existingDialPlan = dialPlanRepository.save(existingDialPlan);
-            // TODO update actions if in repo, otherwise create them
-
+            actionServiceInterface.updateActions(dialPlanDto);
             return dialPlanEntityToDialPlanDto(existingDialPlan);
         } catch (Exception e) {
             String message = String.format("Could not update dial plan with id %d", dialPlanDto.getId());
@@ -136,11 +124,10 @@ public class DialPlanServiceImpl implements DialPlanServiceInterface {
     @Override
     public void deleteDialPlan(long id) {
         try {
+            actionServiceInterface.deleteActions(id);
             dialPlanRepository.delete(id);
-            // TODO delete all actions belonging to thid dial plan
-
         } catch (Exception e) {
-            String message = String.format("Could not delete dial plan Client with id %d", id);
+            String message = String.format("Could not delete dial plan with id %d", id);
             LOGGER.error(message, e);
             throw new DialPlanDeletionException(message, e);
         }
