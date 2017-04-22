@@ -54,6 +54,21 @@ public class DialPlanServiceImpl implements DialPlanServiceInterface {
     }
 
     /**
+     * Convert a DialPlanDto to a DialPlan entity. A Company Dto is required for the conversion.
+     * The id of the DialPlanDto will also be converted.
+     *
+     * @param dialPlanDto DialPlanDto instance to be converted
+     * @return DialPlan entity instance.
+     */
+    public static DialPlan dialPlanDtoToDialPlanEntityWithId(DialPlanDto dialPlanDto) {
+        Company company = companyDtoToCompanyEntity(dialPlanDto.getCompany());
+        company.setId(dialPlanDto.getCompany().getId());
+        DialPlan dialPlan = new DialPlan(dialPlanDto.getName(), dialPlanDto.getPhone(), company);
+        dialPlan.setId(dialPlanDto.getId());
+        return dialPlan;
+    }
+
+    /**
      * Convert a DialPlan entity to a DialPlanDto.
      *
      * @param dialPlan DialPlan entity.

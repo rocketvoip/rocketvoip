@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Map;
 
-import static ch.zhaw.psit4.services.implementation.DialPlanServiceImpl.dialPlanDtoToDialPlanEntity;
+import static ch.zhaw.psit4.services.implementation.DialPlanServiceImpl.dialPlanDtoToDialPlanEntityWithId;
 
 /**
  * Helps to handle SayAlpha entities.
@@ -64,7 +64,7 @@ public class SayAlphaAdapter {
                 Integer.toString(priority),
                 sayAlphaAction.getVoiceMessage(),
                 sayAlphaAction.getSleepTime(),
-                dialPlanDtoToDialPlanEntity(dialPlanDto));
+                dialPlanDtoToDialPlanEntityWithId(dialPlanDto));
 
         sayAlphaRepository.save(sayAlpha);
     }

@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Map;
 
-import static ch.zhaw.psit4.services.implementation.DialPlanServiceImpl.dialPlanDtoToDialPlanEntity;
+import static ch.zhaw.psit4.services.implementation.DialPlanServiceImpl.dialPlanDtoToDialPlanEntityWithId;
 
 /**
  * Helps to handel Dial entities.
@@ -64,8 +64,8 @@ public class DialAdapter {
         Dial dial = new Dial(actionDto.getName(),
                 Integer.toString(priority),
                 dialAction.getRingingTime(),
-                dialPlanDtoToDialPlanEntity(dialPlanDto),
-                SipClientServiceImpl.sipClientDtosToSipClientEntities(dialAction.getSipClients()));
+                dialPlanDtoToDialPlanEntityWithId(dialPlanDto),
+                SipClientServiceImpl.sipClientDtosToSipClientEntitiesWithId(dialAction.getSipClients()));
 
         dialRepository.save(dial);
     }

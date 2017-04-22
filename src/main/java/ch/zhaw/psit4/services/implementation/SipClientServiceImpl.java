@@ -68,15 +68,41 @@ public class SipClientServiceImpl implements SipClientServiceInterface {
                 sipClientDto.getPhone(), sipClientDto.getSecret());
     }
 
+    /**
+     * Convert a SipClientDto to a SipClient entity. A Company Dto is required for the conversion.
+     * The id of the Dto will also be converted.
+     *
+     * @param sipClientDto SipClientDto instance to be converted
+     * @return SipClient entity instance.
+     */
+    public static SipClient sipClientDtoToSipClientEntityWithId(SipClientDto sipClientDto) {
+        Company company = companyDtoToCompanyEntity(sipClientDto.getCompany());
+        company.setId(sipClientDto.getCompany().getId());
+        return new SipClient(company, sipClientDto.getName(),
+                sipClientDto.getPhone(), sipClientDto.getSecret());
+    }
+
+    /**
+     * Converts a list of sip client entities to sip client dtos.
+     *
+     * @param sipClientEntities the list of entities
+     * @return the sip client dtos
+     */
     public static List<SipClientDto> sipClientEntitiesToSipClientDtos(Collection<SipClient> sipClientEntities) {
         List<SipClientDto> sipClientDtos = new ArrayList<>();
         sipClientEntities.forEach(x -> sipClientDtos.add(sipClientEntityToSipClientDto(x)));
         return sipClientDtos;
     }
 
-    public static List<SipClient> sipClientDtosToSipClientEntities(List<SipClientDto> sipClientDtos) {
+    /**
+     * Converts a list of sip client dtos to entities. The id is also converted.
+     *
+     * @param sipClientDtos the list to convert
+     * @return the sip client entities
+     */
+    public static List<SipClient> sipClientDtosToSipClientEntitiesWithId(List<SipClientDto> sipClientDtos) {
         List<SipClient> sipClientEntities = new ArrayList<>();
-        sipClientDtos.forEach(x -> sipClientEntities.add(sipClientDtoToSipClientEntity(x)));
+        sipClientDtos.forEach(x -> sipClientEntities.add(sipClientDtoToSipClientEntityWithId(x)));
         return sipClientEntities;
     }
 
