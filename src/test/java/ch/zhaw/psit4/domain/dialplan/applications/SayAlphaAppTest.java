@@ -23,6 +23,12 @@ public class SayAlphaAppTest {
     }
 
     @Test
+    public void testValidApp() throws Exception {
+        SayAlphaApp sayAlphaApp = new SayAlphaApp("a");
+        sayAlphaApp.validate();
+    }
+
+    @Test
     public void testToApplicationCall() throws Exception {
         SayAlphaApp sayAlphaApp = new SayAlphaApp("abcd");
         assertThat(sayAlphaApp.toApplicationCall(), equalTo("SayAlpha(abcd)\n"));
