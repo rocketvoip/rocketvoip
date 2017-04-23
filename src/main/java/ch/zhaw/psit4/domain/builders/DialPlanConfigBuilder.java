@@ -82,6 +82,36 @@ public class DialPlanConfigBuilder {
     }
 
     /**
+     * Activate a previously stored context. It will save the active context only if the context name was found.
+     *
+     * @param contextName name of the previously stored context
+     * @return DialPlanConfigBuilder instance
+     * @throws IllegalArgumentException      when contextName can't be found
+     * @throws InvalidConfigurationException when configuration is invalid.
+     * @throws ValidationException           when validation of context, extension or app fails.
+     */
+    public DialPlanConfigBuilder activateExistingContext(String contextName) {
+        DialPlanContext needle = null;
+        for (DialPlanContext context : contexts) {
+            if (context.getContextName().equals(contextName)) {
+                needle = context;
+            }
+        }
+
+        if (needle == null) {
+            throw new IllegalArgumentException("Cannot find context '" + contextName + "' in contexts");
+        }
+
+        if (activeContext != null) {
+            saveActiveContext();
+        }
+
+        activeContext = needle;
+
+        return this;
+    }
+
+    /**
      * Add a new dialplan extension to the active dialplan context.
      * <p>
      * You may not call this method twice or more in a row.

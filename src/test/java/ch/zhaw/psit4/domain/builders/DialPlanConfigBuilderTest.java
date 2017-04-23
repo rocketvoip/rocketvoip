@@ -3,6 +3,7 @@ package ch.zhaw.psit4.domain.builders;
 import ch.zhaw.psit4.domain.beans.DialPlanContext;
 import ch.zhaw.psit4.domain.beans.DialPlanExtension;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
+import ch.zhaw.psit4.domain.exceptions.ValidationException;
 import ch.zhaw.psit4.domain.interfaces.DialPlanAppInterface;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,6 +72,146 @@ public class DialPlanConfigBuilderTest {
     @Test(expected = InvalidConfigurationException.class)
     public void addNullApp() throws Exception {
         dialPlanConfigBuilder.setApplication(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void activateNonExistingContext() throws Exception {
+        DialPlanContext dialPlanContext = spy(DialPlanContext.class);
+        dialPlanContext.setContextName("name");
+
+        DialPlanExtension dialPlanExtension = spy(DialPlanExtension.class);
+        dialPlanExtension.setPhoneNumber("1234");
+        dialPlanExtension.setPriority("1");
+
+        DialPlanAppInterface dialPlanAppInterface = mock(DialPlanAppInterface.class);
+
+        List<DialPlanContext> configuration = dialPlanConfigBuilder
+                .addNewContext(dialPlanContext)
+                .addNewExtension(dialPlanExtension)
+                .setApplication(dialPlanAppInterface)
+                .activateExistingContext("should raise exception")
+                .build();
+    }
+
+    @Test(expected = ValidationException.class)
+    public void activateExistingContextWhileUnfinishedContextIsActive1() throws Exception {
+        // First context
+        DialPlanContext dialPlanContext1 = spy(DialPlanContext.class);
+        dialPlanContext1.setContextName("name");
+
+        DialPlanExtension dialPlanExtension1 = spy(DialPlanExtension.class);
+        dialPlanExtension1.setPhoneNumber("1234");
+        dialPlanExtension1.setPriority("1");
+
+        DialPlanAppInterface dialPlanAppInterface1 = mock(DialPlanAppInterface.class);
+
+        // Second Context
+        DialPlanContext dialPlanContext2 = spy(DialPlanContext.class);
+        dialPlanContext2.setContextName("name2");
+
+        DialPlanExtension dialPlanExtension2 = spy(DialPlanExtension.class);
+        dialPlanExtension2.setPhoneNumber("5678");
+        dialPlanExtension2.setPriority("1");
+
+        DialPlanAppInterface dialPlanAppInterface2 = mock(DialPlanAppInterface.class);
+
+        dialPlanConfigBuilder
+                .addNewContext(dialPlanContext1)
+                .addNewExtension(dialPlanExtension1)
+                .setApplication(dialPlanAppInterface1)
+                .addNewContext(dialPlanContext2)
+                .addNewExtension(dialPlanExtension2)
+                // This here must fail
+                .activateExistingContext("name");
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void activateExistingContextWhileUnfinishedContextIsActive2() throws Exception {
+        // First context
+        DialPlanContext dialPlanContext1 = spy(DialPlanContext.class);
+        dialPlanContext1.setContextName("name");
+
+        DialPlanExtension dialPlanExtension1 = spy(DialPlanExtension.class);
+        dialPlanExtension1.setPhoneNumber("1234");
+        dialPlanExtension1.setPriority("1");
+
+        DialPlanAppInterface dialPlanAppInterface1 = mock(DialPlanAppInterface.class);
+
+        // Second Context
+        DialPlanContext dialPlanContext2 = spy(DialPlanContext.class);
+        dialPlanContext2.setContextName("name2");
+
+        dialPlanConfigBuilder
+                .addNewContext(dialPlanContext1)
+                .addNewExtension(dialPlanExtension1)
+                .setApplication(dialPlanAppInterface1)
+                .addNewContext(dialPlanContext2)
+                // We don't add a new extension, thus it's an empty context and it must fail
+                // This here must fail
+                .activateExistingContext("name");
+    }
+
+    @Test
+    public void activateExistingContext() throws Exception {
+        // First context
+        DialPlanContext dialPlanContext1 = spy(DialPlanContext.class);
+        dialPlanContext1.setContextName("name");
+
+        DialPlanExtension dialPlanExtension1 = spy(DialPlanExtension.class);
+        dialPlanExtension1.setPhoneNumber("1234");
+        dialPlanExtension1.setPriority("1");
+
+        DialPlanAppInterface dialPlanAppInterface1 = mock(DialPlanAppInterface.class);
+
+        // Second Context
+        DialPlanContext dialPlanContext2 = spy(DialPlanContext.class);
+        dialPlanContext2.setContextName("name2");
+
+        DialPlanExtension dialPlanExtension2 = spy(DialPlanExtension.class);
+        dialPlanExtension2.setPhoneNumber("5678");
+        dialPlanExtension2.setPriority("1");
+
+        DialPlanAppInterface dialPlanAppInterface2 = mock(DialPlanAppInterface.class);
+
+        // Must be added to first context
+        DialPlanExtension dialPlanExtensionLateAdditions = spy(DialPlanExtension.class);
+        dialPlanExtensionLateAdditions.setPhoneNumber("9101");
+        dialPlanExtensionLateAdditions.setPriority("2");
+
+        DialPlanAppInterface dialPlanAppInterfaceLateAddition = mock(DialPlanAppInterface.class);
+
+        List<DialPlanContext> dialPlanContextList = dialPlanConfigBuilder
+                .addNewContext(dialPlanContext1)
+                .addNewExtension(dialPlanExtension1)
+                .setApplication(dialPlanAppInterface1)
+                .addNewContext(dialPlanContext2)
+                .addNewExtension(dialPlanExtension2)
+                .setApplication(dialPlanAppInterface2)
+                // This here will be tested
+                .activateExistingContext("name")
+                .addNewExtension(dialPlanExtensionLateAdditions)
+                .setApplication(dialPlanAppInterfaceLateAddition)
+                .build();
+
+        verify(dialPlanContext1, atLeastOnce()).validate();
+        verify(dialPlanExtension1, atLeastOnce()).validate();
+        verify(dialPlanAppInterface1, atLeastOnce()).validate();
+        verify(dialPlanContext2, atLeastOnce()).validate();
+        verify(dialPlanExtension2, atLeastOnce()).validate();
+        verify(dialPlanAppInterface2, atLeastOnce()).validate();
+        verify(dialPlanExtensionLateAdditions, atLeastOnce()).validate();
+        verify(dialPlanAppInterfaceLateAddition, atLeastOnce()).validate();
+
+        assertThat(dialPlanContext1.getDialPlanExtensionList(), hasSize(2));
+        assertThat(((DialPlanExtension) dialPlanContext1.getDialPlanExtensionList().get(0)).getPhoneNumber(),
+                equalTo("1234"));
+        assertThat(((DialPlanExtension) dialPlanContext1.getDialPlanExtensionList().get(1)).getPhoneNumber(),
+                equalTo("9101"));
+
+        assertThat(dialPlanContext2.getDialPlanExtensionList(), hasSize(1));
+        assertThat(((DialPlanExtension) dialPlanContext2.getDialPlanExtensionList().get(0)).getPhoneNumber(),
+                equalTo("5678"));
+
     }
 
     @Test
