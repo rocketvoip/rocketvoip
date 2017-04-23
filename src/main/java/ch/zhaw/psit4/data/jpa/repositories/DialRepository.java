@@ -14,5 +14,7 @@ public interface DialRepository extends CrudRepository<Dial, Long> {
 
     Dial findFirstByDialPlan_IdAndPriority(long dialPlanId, String priority);
 
+    List<Dial> findAllByDialPlan_Id(long dialPlanId);
+
     void deleteAllByDialPlan_Id(long dialPlanId);
 }
