@@ -1,6 +1,7 @@
 package ch.zhaw.psit4.domain;
 
 import ch.zhaw.psit4.domain.beans.SipClient;
+import ch.zhaw.psit4.domain.builders.SipClientConfigBuilder;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import ch.zhaw.psit4.domain.exceptions.ValidationException;
 import ch.zhaw.psit4.domain.interfaces.SipClientConfigurationInterface;

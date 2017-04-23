@@ -2,6 +2,7 @@ package ch.zhaw.psit4.domain;
 
 import ch.zhaw.psit4.domain.beans.DialPlanContext;
 import ch.zhaw.psit4.domain.beans.DialPlanExtension;
+import ch.zhaw.psit4.domain.builders.DialPlanConfigBuilder;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import ch.zhaw.psit4.domain.interfaces.DialPlanAppInterface;
 import org.junit.Before;

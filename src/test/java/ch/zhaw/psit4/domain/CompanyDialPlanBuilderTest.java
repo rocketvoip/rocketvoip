@@ -2,6 +2,7 @@ package ch.zhaw.psit4.domain;
 
 import ch.zhaw.psit4.domain.beans.DialPlanContext;
 import ch.zhaw.psit4.domain.beans.SipClient;
+import ch.zhaw.psit4.domain.builders.CompanyDialPlanBuilder;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import ch.zhaw.psit4.testsupport.convenience.InputStreamStringyfier;
 import ch.zhaw.psit4.testsupport.fixtures.domain.SipClientGenerator;
