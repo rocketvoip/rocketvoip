@@ -28,7 +28,7 @@ public class DialPlanController {
         return new ResponseEntity<>(dialPlanServiceInterface.getAllDialPlans(), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/dialplans/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(path = "/dialplans", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<DialPlanDto> getDialPlan(@PathVariable long id) {
         return new ResponseEntity<>(dialPlanServiceInterface.getDialPlan(id), HttpStatus.OK);
     }
