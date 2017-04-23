@@ -18,6 +18,9 @@ public class SayAlpha {
     private String name;
 
     @Column(nullable = false)
+    private String priority;
+
+    @Column(nullable = false)
     private String voiceMessage;
 
     @Column(nullable = false)
@@ -27,10 +30,12 @@ public class SayAlpha {
     private DialPlan dialPlan;
 
     protected SayAlpha() {
+        //intentionally empty
     }
 
-    public SayAlpha(String name, String voiceMessage, int sleepTime, DialPlan dialPlan) {
+    public SayAlpha(String name, String priority, String voiceMessage, int sleepTime, DialPlan dialPlan) {
         this.name = name;
+        this.priority = priority;
         this.voiceMessage = voiceMessage;
         this.sleepTime = sleepTime;
         this.dialPlan = dialPlan;
@@ -70,5 +75,13 @@ public class SayAlpha {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPriority() {
+        return priority;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
     }
 }

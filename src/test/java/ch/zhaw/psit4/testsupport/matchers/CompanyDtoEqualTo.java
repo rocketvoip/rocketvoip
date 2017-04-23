@@ -25,7 +25,7 @@ public class CompanyDtoEqualTo extends TypeSafeMatcher<CompanyDto> {
 
     @Override
     protected boolean matchesSafely(CompanyDto companyDto) {
-        Matcher<CompanyDto> partialMatcher = CompanyDtoPartialMatcher.companyDtoAlmostEqualTo(companyDto);
+        Matcher<CompanyDto> partialMatcher = CompanyDtoPartialMatcher.companyDtoAlmostEqualTo(expected);
         return partialMatcher.matches(companyDto) && expected.getId() == companyDto.getId();
     }
 

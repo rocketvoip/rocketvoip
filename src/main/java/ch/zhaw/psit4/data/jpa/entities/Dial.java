@@ -30,7 +30,9 @@ public class Dial {
     @ManyToMany
     private Collection<SipClient> sipClients;
 
-    protected Dial(){}
+    protected Dial() {
+        //intentionally empty
+    }
 
     public Dial(String name, String priority, String ringingTime, DialPlan dialPlan, Collection<SipClient> sipClients) {
         this.name = name;
@@ -42,6 +44,10 @@ public class Dial {
 
     public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getPriority() {

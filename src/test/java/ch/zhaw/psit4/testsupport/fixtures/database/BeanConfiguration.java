@@ -1,9 +1,6 @@
 package ch.zhaw.psit4.testsupport.fixtures.database;
 
-import ch.zhaw.psit4.data.jpa.repositories.AdminRepository;
-import ch.zhaw.psit4.data.jpa.repositories.CompanyRepository;
-import ch.zhaw.psit4.data.jpa.repositories.DialPlanRepository;
-import ch.zhaw.psit4.data.jpa.repositories.SipClientRepository;
+import ch.zhaw.psit4.data.jpa.repositories.*;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -23,9 +20,11 @@ public class BeanConfiguration {
         public static DatabaseFixtureBuilder databaseFixtureBuilder(CompanyRepository companyRepository,
                                                                     AdminRepository adminRepository,
                                                                     SipClientRepository sipClientRepository,
-                                                                    DialPlanRepository dialPlanRepository) {
+                                                                    DialPlanRepository dialPlanRepository,
+                                                                    DialRepository dialRepository,
+                                                                    SayAlphaRepository sayAlphaRepository) {
             return new DatabaseFixtureBuilder(companyRepository, adminRepository, sipClientRepository,
-                    dialPlanRepository);
+                    dialPlanRepository, dialRepository, sayAlphaRepository);
         }
     }
 }
