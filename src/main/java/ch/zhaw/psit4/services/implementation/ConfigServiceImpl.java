@@ -1,6 +1,5 @@
 package ch.zhaw.psit4.services.implementation;
 
-import ch.zhaw.psit4.data.jpa.repositories.SipClientRepository;
 import ch.zhaw.psit4.domain.ConfigWriter;
 import ch.zhaw.psit4.domain.ConfigZipWriter;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
@@ -30,9 +29,10 @@ public class ConfigServiceImpl implements ConfigServiceInterface {
     private final SipClientConfigAdapter sipClientConfigAdapter;
     private final DialPlanConfigAdapter dialPlanConfigAdapter;
 
-    public ConfigServiceImpl(SipClientRepository sipClientRepository) {
-        this.dialPlanConfigAdapter = new DialPlanConfigAdapter(sipClientRepository);
-        this.sipClientConfigAdapter = new SipClientConfigAdapter(sipClientRepository);
+    public ConfigServiceImpl(SipClientConfigAdapter sipClientConfigAdapter, DialPlanConfigAdapter
+            dialPlanConfigAdapter) {
+        this.dialPlanConfigAdapter = dialPlanConfigAdapter;
+        this.sipClientConfigAdapter = sipClientConfigAdapter;
     }
 
     /**

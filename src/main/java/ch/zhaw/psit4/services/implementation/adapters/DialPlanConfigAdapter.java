@@ -1,5 +1,8 @@
 package ch.zhaw.psit4.services.implementation.adapters;
 
+import ch.zhaw.psit4.data.jpa.repositories.DialPlanRepository;
+import ch.zhaw.psit4.data.jpa.repositories.DialRepository;
+import ch.zhaw.psit4.data.jpa.repositories.SayAlphaRepository;
 import ch.zhaw.psit4.data.jpa.repositories.SipClientRepository;
 import ch.zhaw.psit4.domain.beans.SipClient;
 import ch.zhaw.psit4.domain.builders.CompanyDialPlanBuilder;
@@ -18,10 +21,19 @@ import java.util.stream.StreamSupport;
  */
 public class DialPlanConfigAdapter {
     private static final Logger LOGGER = LoggerFactory.getLogger(DialPlanConfigAdapter.class);
-    private SipClientRepository sipClientRepository;
+    private final DialPlanRepository dialPlanRepository;
+    private final SipClientRepository sipClientRepository;
+    private final DialRepository dialRepository;
+    private final SayAlphaRepository sayAlphaRepository;
 
-    public DialPlanConfigAdapter(SipClientRepository sipClientRepository) {
+    public DialPlanConfigAdapter(SipClientRepository sipClientRepository,
+                                 DialPlanRepository dialPlanRepository,
+                                 DialRepository dialRepository,
+                                 SayAlphaRepository sayAlphaRepository) {
         this.sipClientRepository = sipClientRepository;
+        this.dialPlanRepository = dialPlanRepository;
+        this.dialRepository = dialRepository;
+        this.sayAlphaRepository = sayAlphaRepository;
     }
 
 
