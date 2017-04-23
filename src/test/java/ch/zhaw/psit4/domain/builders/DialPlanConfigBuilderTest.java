@@ -200,6 +200,111 @@ public class DialPlanConfigBuilderTest {
     }
 
     @Test
+    public void testPriorityOrdering() throws Exception {
+        /*
+         The configuration would look like this:
+
+        [name1]
+        exten=> 1234, 1, ...
+        exten=> 5678, 2, ...
+        exten=> 9101, 3, ...
+         */
+        DialPlanContext dialPlanContext1 = spy(DialPlanContext.class);
+        dialPlanContext1.setContextName("name1");
+
+        DialPlanExtension dialPlanExtension1 = spy(DialPlanExtension.class);
+        dialPlanExtension1.setPhoneNumber("1234");
+        dialPlanExtension1.setPriority("1");
+
+        DialPlanExtension dialPlanExtension2 = spy(DialPlanExtension.class);
+        dialPlanExtension2.setPhoneNumber("5678");
+        dialPlanExtension2.setPriority("2");
+
+        DialPlanExtension dialPlanExtension3 = spy(DialPlanExtension.class);
+        dialPlanExtension3.setPhoneNumber("9101");
+        dialPlanExtension3.setPriority("3");
+
+        DialPlanAppInterface dialPlanAppInterface1 = mock(DialPlanAppInterface.class);
+        DialPlanAppInterface dialPlanAppInterface2 = mock(DialPlanAppInterface.class);
+        DialPlanAppInterface dialPlanAppInterface3 = mock(DialPlanAppInterface.class);
+
+        List<DialPlanContext> configuration = dialPlanConfigBuilder
+                .addNewContext(dialPlanContext1)
+                .addNewExtension(dialPlanExtension3)
+                .setApplication(dialPlanAppInterface3)
+                .addNewExtension(dialPlanExtension2)
+                .setApplication(dialPlanAppInterface2)
+                .addNewExtension(dialPlanExtension1)
+                .setApplication(dialPlanAppInterface1)
+                .build();
+
+
+        assertThat(dialPlanContext1.getDialPlanExtensionList(), hasSize(3));
+        // Remember, the builder has side effects, so it essentially updates dialPlanContext
+        assertThat(dialPlanContext1.getDialPlanExtensionList().get(0).getPriority(), equalTo("1"));
+        assertThat(dialPlanContext1.getDialPlanExtensionList().get(1).getPriority(), equalTo("2"));
+        assertThat(dialPlanContext1.getDialPlanExtensionList().get(2).getPriority(), equalTo("3"));
+    }
+
+    // This ain't working
+
+//    @Test
+//    public void testPriorityOrderingWithNonNumerPriority() throws Exception {
+//        /*
+//         The configuration would look like this:
+//
+//        [name1]
+//        exten=> 1234, 1, ...
+//        exten=> 1234, n, ...
+//        exten=> 5678, 2, ...
+//        exten=> 9101, 3, ...
+//         */
+//        DialPlanContext dialPlanContext1 = spy(DialPlanContext.class);
+//        dialPlanContext1.setContextName("name1");
+//
+//        DialPlanExtension dialPlanExtension1 = spy(DialPlanExtension.class);
+//        dialPlanExtension1.setPhoneNumber("1234");
+//        dialPlanExtension1.setPriority("1");
+//
+//        DialPlanExtension dialPlanExtension2 = spy(DialPlanExtension.class);
+//        dialPlanExtension2.setPhoneNumber("1234");
+//        dialPlanExtension2.setPriority("n");
+//
+//        DialPlanExtension dialPlanExtension3 = spy(DialPlanExtension.class);
+//        dialPlanExtension3.setPhoneNumber("5678");
+//        dialPlanExtension3.setPriority("3");
+//
+//        DialPlanExtension dialPlanExtension4 = spy(DialPlanExtension.class);
+//        dialPlanExtension4.setPhoneNumber("9101");
+//        dialPlanExtension4.setPriority("4");
+//
+//        DialPlanAppInterface dialPlanAppInterface1 = mock(DialPlanAppInterface.class);
+//        DialPlanAppInterface dialPlanAppInterface2 = mock(DialPlanAppInterface.class);
+//        DialPlanAppInterface dialPlanAppInterface3 = mock(DialPlanAppInterface.class);
+//        DialPlanAppInterface dialPlanAppInterface4 = mock(DialPlanAppInterface.class);
+//
+//        List<DialPlanContext> configuration = dialPlanConfigBuilder
+//                .addNewContext(dialPlanContext1)
+//                .addNewExtension(dialPlanExtension4)
+//                .setApplication(dialPlanAppInterface4)
+//                .addNewExtension(dialPlanExtension2)
+//                .setApplication(dialPlanAppInterface2)
+//                .addNewExtension(dialPlanExtension3)
+//                .setApplication(dialPlanAppInterface3)
+//                .addNewExtension(dialPlanExtension1)
+//                .setApplication(dialPlanAppInterface1)
+//                .build();
+//
+//
+//        assertThat(dialPlanContext1.getDialPlanExtensionList(), hasSize(4));
+//        // Remember, the builder has side effects, so it essentially updates dialPlanContext
+//        assertThat(dialPlanContext1.getDialPlanExtensionList().get(0).getPriority(), equalTo("1"));
+//        assertThat(dialPlanContext1.getDialPlanExtensionList().get(1).getPriority(), equalTo("n"));
+//        assertThat(dialPlanContext1.getDialPlanExtensionList().get(2).getPriority(), equalTo("3"));
+//        assertThat(dialPlanContext1.getDialPlanExtensionList().get(3).getPriority(), equalTo("4"));
+//    }
+
+    @Test
     public void testExhaustiveConfigurationTwoBuildersWithBuild() throws Exception {
         /*
          The configuration would look like this:

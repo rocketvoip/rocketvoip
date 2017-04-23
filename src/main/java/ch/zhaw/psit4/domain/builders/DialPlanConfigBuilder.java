@@ -5,6 +5,7 @@ import ch.zhaw.psit4.domain.beans.DialPlanExtension;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import ch.zhaw.psit4.domain.exceptions.ValidationException;
 import ch.zhaw.psit4.domain.interfaces.DialPlanAppInterface;
+import ch.zhaw.psit4.domain.interfaces.DialPlanExtensionConfigurationInterface;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -161,6 +162,7 @@ public class DialPlanConfigBuilder {
         assignActiveExtensionToActiveContext();
 
         activeContext.validate();
+        sortCurrentExtensionsByPriority();
 
         contexts.add(activeContext);
 
@@ -177,5 +179,44 @@ public class DialPlanConfigBuilder {
         activeContext.getDialPlanExtensionList().add(activeExtension);
 
         activeExtension = null;
+    }
+
+    /**
+     * Sort the extension list of the active context by priority.
+     * <p>
+     * The issue it faces, is the priority being a String. Thus following priorities
+     * <code>
+     * 1,2,10,11
+     * </code>
+     * would be sorted into
+     * <code>
+     * 1,10,11,2
+     * </code>
+     * <p>
+     * Therefore, we first parse the string into a long and compare the long values.
+     * <p>
+     * TODO: The comperator does not work reliably when with 'n' priorities.
+     */
+    protected void sortCurrentExtensionsByPriority() {
+        List<DialPlanExtensionConfigurationInterface> currentExtensionList =
+                getActiveContext().getDialPlanExtensionList();
+
+        currentExtensionList.sort((a, b) -> {
+                    try {
+                        Long aPriority = Long.parseLong(a.getPriority());
+                        Long bPriority = Long.parseLong(b.getPriority());
+
+                        return aPriority.compareTo(bPriority);
+                    } catch (NumberFormatException e) {
+                        if (a.equals("n")) {
+                            return 0;
+                        }
+                        if (b.equals("n")) {
+                            return -1;
+                        }
+                        return -1;
+                    }
+                }
+        );
     }
 }
