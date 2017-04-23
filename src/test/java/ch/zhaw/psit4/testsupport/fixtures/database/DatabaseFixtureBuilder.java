@@ -157,4 +157,20 @@ public class DatabaseFixtureBuilder {
     public Map<Integer, SipClient> getSipClientList() {
         return sipClientList;
     }
+
+    public DialRepository getDialRepository() {
+        return dialRepository;
+    }
+
+    public SayAlphaRepository getSayAlphaRepository() {
+        return sayAlphaRepository;
+    }
+
+    public Map<Integer, Dial> getDialList() {
+        return dialList;
+    }
+
+    public Map<Integer, SayAlpha> getSayAlphaList() {
+        return sayAlphaList;
+    }
 }
