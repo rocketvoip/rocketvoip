@@ -9,8 +9,8 @@ public final class DialActionData {
         // intentionally empty
     }
 
-    public static String getRingingTime(int number) {
-        return "" + number;
+    public static int getRingingTime(int number) {
+        return number;
     }
 
 }

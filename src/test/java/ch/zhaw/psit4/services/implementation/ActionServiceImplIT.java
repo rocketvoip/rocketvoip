@@ -229,7 +229,7 @@ public class ActionServiceImplIT {
         actionDto.setType("Dial");
 
         DialAction dialAction = new DialAction();
-        dialAction.setRingingTime("30");
+        dialAction.setRingingTime(30);
 
         List<SipClientDto> sipClientDtoList = new ArrayList<>();
         databaseFixtureBuilder1.getSipClientList().values()
