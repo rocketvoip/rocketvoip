@@ -5,7 +5,7 @@ package ch.zhaw.psit4.services.exceptions;
  *
  * @author Jona Braun
  */
-public class CompanyCreationException extends RuntimeException {
+public class CompanyCreationException extends AbstractCreationException {
     public CompanyCreationException() {
         super();
     }

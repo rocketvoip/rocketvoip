@@ -5,7 +5,7 @@ package ch.zhaw.psit4.services.exceptions;
  *
  * @author Jona Braun
  */
-public class CompanyUpdateException extends RuntimeException {
+public class CompanyUpdateException extends AbstractUpdateException {
     public CompanyUpdateException() {
         super();
     }
