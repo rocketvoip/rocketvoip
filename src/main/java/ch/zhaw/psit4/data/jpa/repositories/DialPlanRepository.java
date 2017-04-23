@@ -11,4 +11,6 @@ import java.util.List;
  */
 public interface DialPlanRepository extends CrudRepository<DialPlan, Long> {
     List<DialPlan> findByCompany(Company company);
+
+    List<DialPlan> findAllByPhoneNrNotNull();
 }
