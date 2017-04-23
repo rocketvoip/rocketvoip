@@ -18,22 +18,22 @@ import static org.junit.Assert.assertThat;
 /**
  * @author Rafael Ostertag
  */
-public class CompanyDialPlanBuilderTest {
-    private CompanyDialPlanBuilder companyDialPlanBuilder;
+public class TopLevelContextBuilderTest {
+    private TopLevelContextBuilder topLevelContextBuilder;
 
     @Before
     public void setUp() throws Exception {
-        companyDialPlanBuilder = new CompanyDialPlanBuilder();
+        topLevelContextBuilder = new TopLevelContextBuilder();
     }
 
     @Test(expected = InvalidConfigurationException.class)
     public void testNullList() throws Exception {
-        companyDialPlanBuilder.perCompanyDialExtensions(null);
+        topLevelContextBuilder.perCompanyDialExtensions(null);
     }
 
     @Test(expected = InvalidConfigurationException.class)
     public void testEmptyList() throws Exception {
-        companyDialPlanBuilder.perCompanyDialExtensions(new ArrayList<>());
+        topLevelContextBuilder.perCompanyDialExtensions(new ArrayList<>());
     }
 
     @Test
@@ -50,7 +50,7 @@ public class CompanyDialPlanBuilderTest {
         sipClientList.add(sipClient4);
 
 
-        List<DialPlanContext> actual = companyDialPlanBuilder
+        List<DialPlanContext> actual = topLevelContextBuilder
                 .perCompanyDialExtensions(sipClientList)
                 .build();
 
@@ -60,13 +60,13 @@ public class CompanyDialPlanBuilderTest {
 
         String expected = InputStreamStringyfier.slurpStream(
                 DialPlanConfigBuilderTest.class.getResourceAsStream
-                        ("/fixtures/companyDialPlanBuilderTestACME1Fixture.txt")
+                        ("/fixtures/topLevelContextBuilderTestACME1Fixture.txt")
         );
         assertThat(actual.get(0).toDialPlanContextConfiguration(), equalTo(expected));
 
         expected = InputStreamStringyfier.slurpStream(
                 DialPlanConfigBuilderTest.class.getResourceAsStream
-                        ("/fixtures/companyDialPlanBuilderTestACME2Fixture.txt")
+                        ("/fixtures/topLevelContextBuilderTestACME2Fixture.txt")
         );
         assertThat(actual.get(1).toDialPlanContextConfiguration(), equalTo(expected));
     }

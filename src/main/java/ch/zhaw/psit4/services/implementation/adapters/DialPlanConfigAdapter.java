@@ -8,9 +8,9 @@ import ch.zhaw.psit4.data.jpa.repositories.SipClientRepository;
 import ch.zhaw.psit4.domain.beans.DialPlanContext;
 import ch.zhaw.psit4.domain.beans.DialPlanExtension;
 import ch.zhaw.psit4.domain.beans.SipClient;
-import ch.zhaw.psit4.domain.builders.CompanyDialPlanBuilder;
 import ch.zhaw.psit4.domain.builders.DialPlanConfigBuilder;
 import ch.zhaw.psit4.domain.builders.DialPlanDefaultContextPrologBuilder;
+import ch.zhaw.psit4.domain.builders.TopLevelContextBuilder;
 import ch.zhaw.psit4.domain.dialplan.applications.DialApp;
 import ch.zhaw.psit4.domain.dialplan.applications.SayAlphaApp;
 import ch.zhaw.psit4.domain.interfaces.DialPlanContextConfigurationInterface;
@@ -55,17 +55,17 @@ public class DialPlanConfigAdapter {
     }
 
     public List<? extends DialPlanContextConfigurationInterface> getDialPlan() {
-        CompanyDialPlanBuilder companyDialPlanBuilder = new CompanyDialPlanBuilder();
+        TopLevelContextBuilder topLevelContextBuilder = new TopLevelContextBuilder();
 
         List<SipClient> sipClients =
                 StreamSupport.stream(sipClientRepository.findAll().spliterator(), false)
                         .map(SipClientConfigAdapter::sipClientEntityToSipClient)
                         .collect(Collectors.toList());
 
-        companyDialPlanBuilder.perCompanyDialExtensions(sipClients);
+        topLevelContextBuilder.perCompanyDialExtensions(sipClients);
 
         DialPlanDefaultContextPrologBuilder dialPlanDefaultContextPrologBuilder =
-                collectDialPlans(companyDialPlanBuilder);
+                collectDialPlans(topLevelContextBuilder);
         return dialPlanDefaultContextPrologBuilder.build();
     }
 

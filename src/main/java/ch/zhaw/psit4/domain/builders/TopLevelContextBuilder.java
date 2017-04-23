@@ -18,17 +18,17 @@ import java.util.stream.Collectors;
  *
  * @author Rafael Ostertag
  */
-public class CompanyDialPlanBuilder extends DialPlanConfigBuilder {
+public class TopLevelContextBuilder extends DialPlanConfigBuilder {
 
     public static final String DEFAULT_PRIORITY = "1";
     public static final DialApp.Technology DEFAULT_TECHNOLOGY = DialApp.Technology.SIP;
     public static final String DEFAULT_TIMEOUT = "30";
 
-    public CompanyDialPlanBuilder() {
+    public TopLevelContextBuilder() {
         super();
     }
 
-    public CompanyDialPlanBuilder(DialPlanConfigBuilder dialPlanConfigBuilder) {
+    public TopLevelContextBuilder(DialPlanConfigBuilder dialPlanConfigBuilder) {
         super(dialPlanConfigBuilder);
     }
 
@@ -40,7 +40,7 @@ public class CompanyDialPlanBuilder extends DialPlanConfigBuilder {
      * @return CompanyDialPlan instance.
      * @throws InvalidConfigurationException when sipClientList is null or empty
      */
-    public CompanyDialPlanBuilder perCompanyDialExtensions(List<SipClient> sipClientList) {
+    public TopLevelContextBuilder perCompanyDialExtensions(List<SipClient> sipClientList) {
         if (sipClientList == null || sipClientList.isEmpty()) {
             throw new InvalidConfigurationException("sipClientList must not be null or empty");
         }
