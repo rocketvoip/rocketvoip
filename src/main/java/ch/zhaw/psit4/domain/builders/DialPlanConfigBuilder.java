@@ -105,20 +105,10 @@ public class DialPlanConfigBuilder {
             assignActiveExtensionToActiveContext();
         }
 
-        activeExtension = multiplyPriorityBy100(extension);
+        activeExtension = extension;
 
 
         return this;
-    }
-
-    private DialPlanExtension multiplyPriorityBy100(DialPlanExtension extension) {
-        if (extension.getPriority().equals("n") ||
-                extension.getPriority().equals("s")) {
-            return extension;
-        }
-
-        extension.setPriority(extension.getPriority() + "00");
-        return extension;
     }
 
     /**

@@ -241,9 +241,9 @@ public class DialPlanConfigBuilderTest {
 
         assertThat(dialPlanContext1.getDialPlanExtensionList(), hasSize(3));
         // Remember, the builder has side effects, so it essentially updates dialPlanContext
-        assertThat(dialPlanContext1.getDialPlanExtensionList().get(0).getPriority(), equalTo("100"));
-        assertThat(dialPlanContext1.getDialPlanExtensionList().get(1).getPriority(), equalTo("200"));
-        assertThat(dialPlanContext1.getDialPlanExtensionList().get(2).getPriority(), equalTo("300"));
+        assertThat(dialPlanContext1.getDialPlanExtensionList().get(0).getPriority(), equalTo("1"));
+        assertThat(dialPlanContext1.getDialPlanExtensionList().get(1).getPriority(), equalTo("2"));
+        assertThat(dialPlanContext1.getDialPlanExtensionList().get(2).getPriority(), equalTo("3"));
     }
 
     // This ain't working

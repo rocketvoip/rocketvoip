@@ -1,25 +1,25 @@
 [ACME1]
-exten=> 0000000001, 100, Dial(SIP/SipClientLabel1-ACME1, 30)
-exten=> 0000000002, 100, Dial(SIP/SipClientLabel2-ACME1, 30)
-exten=> 0000000003, 100, Dial(SIP/SipClientLabel3-ACME1, 30)
+exten=> 0000000001, 1, Dial(SIP/SipClientLabel1-ACME1, 30)
+exten=> 0000000002, 1, Dial(SIP/SipClientLabel2-ACME1, 30)
+exten=> 0000000003, 1, Dial(SIP/SipClientLabel3-ACME1, 30)
 
 [ACME2]
-exten=> 0000000001, 100, Dial(SIP/SipClientLabel1-ACME2, 30)
-exten=> 0000000002, 100, Dial(SIP/SipClientLabel2-ACME2, 30)
-exten=> 0000000003, 100, Dial(SIP/SipClientLabel3-ACME2, 30)
+exten=> 0000000001, 1, Dial(SIP/SipClientLabel1-ACME2, 30)
+exten=> 0000000002, 1, Dial(SIP/SipClientLabel2-ACME2, 30)
+exten=> 0000000003, 1, Dial(SIP/SipClientLabel3-ACME2, 30)
 
 [ACME3]
-exten=> 0000000001, 100, Dial(SIP/SipClientLabel1-ACME3, 30)
-exten=> 0000000002, 100, Dial(SIP/SipClientLabel2-ACME3, 30)
-exten=> 0000000003, 100, Dial(SIP/SipClientLabel3-ACME3, 30)
+exten=> 0000000001, 1, Dial(SIP/SipClientLabel1-ACME3, 30)
+exten=> 0000000002, 1, Dial(SIP/SipClientLabel2-ACME3, 30)
+exten=> 0000000003, 1, Dial(SIP/SipClientLabel3-ACME3, 30)
 
 [ACME4]
-exten=> 0000000001, 100, Dial(SIP/SipClientLabel1-ACME4, 30)
-exten=> 0000000002, 100, Dial(SIP/SipClientLabel2-ACME4, 30)
-exten=> 0000000003, 100, Dial(SIP/SipClientLabel3-ACME4, 30)
+exten=> 0000000001, 1, Dial(SIP/SipClientLabel1-ACME4, 30)
+exten=> 0000000002, 1, Dial(SIP/SipClientLabel2-ACME4, 30)
+exten=> 0000000003, 1, Dial(SIP/SipClientLabel3-ACME4, 30)
 
 [ACME5]
-exten=> 0000000001, 100, Dial(SIP/SipClientLabel1-ACME5, 30)
-exten=> 0000000002, 100, Dial(SIP/SipClientLabel2-ACME5, 30)
-exten=> 0000000003, 100, Dial(SIP/SipClientLabel3-ACME5, 30)
+exten=> 0000000001, 1, Dial(SIP/SipClientLabel1-ACME5, 30)
+exten=> 0000000002, 1, Dial(SIP/SipClientLabel2-ACME5, 30)
+exten=> 0000000003, 1, Dial(SIP/SipClientLabel3-ACME5, 30)
 
