@@ -11,16 +11,16 @@ import org.hamcrest.TypeSafeMatcher;
  *
  * @author Jona Braun
  */
-public class SayAlphaEqualTo extends TypeSafeMatcher<SayAlphaAction> {
+public class SayAlphaActionEqualTo extends TypeSafeMatcher<SayAlphaAction> {
     private final SayAlphaAction expected;
 
-    private SayAlphaEqualTo(SayAlphaAction expected) {
+    private SayAlphaActionEqualTo(SayAlphaAction expected) {
         this.expected = expected;
     }
 
     @Factory
     public static Matcher<SayAlphaAction> sayAlphaActionEqualTo(SayAlphaAction other) {
-        return new SayAlphaEqualTo(other);
+        return new SayAlphaActionEqualTo(other);
     }
 
     @Override

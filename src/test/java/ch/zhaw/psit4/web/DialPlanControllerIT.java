@@ -3,6 +3,7 @@ package ch.zhaw.psit4.web;
 import ch.zhaw.psit4.testsupport.fixtures.database.BeanConfiguration;
 import ch.zhaw.psit4.testsupport.fixtures.database.DatabaseFixtureBuilder;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,6 +36,11 @@ public class DialPlanControllerIT {
     public void setUp() throws Exception {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
         databaseFixtureBuilder1 = wac.getBean(DatabaseFixtureBuilder.class);
+
+    }
+
+    @Test
+    public void createDialPlan() throws Exception {
 
     }
 

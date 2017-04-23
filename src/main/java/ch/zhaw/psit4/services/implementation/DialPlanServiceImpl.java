@@ -69,17 +69,28 @@ public class DialPlanServiceImpl implements DialPlanServiceInterface {
     }
 
     /**
+     * Converts a DialPlan entity into a DialPlanDto ignoring the actions.
+     *
+     * @param dialPlan
+     * @return
+     */
+    public static DialPlanDto dialPlanEntityToDialPlanDtoIgnoreActions(DialPlan dialPlan) {
+        DialPlanDto dialPlanDto = new DialPlanDto();
+        dialPlanDto.setId(dialPlan.getId());
+        dialPlanDto.setName(dialPlan.getTitle());
+        dialPlanDto.setCompany(companyEntityToCompanyDto(dialPlan.getCompany()));
+        dialPlanDto.setPhone(dialPlan.getPhoneNr());
+        return dialPlanDto;
+    }
+
+    /**
      * Convert a DialPlan entity to a DialPlanDto.
      *
      * @param dialPlan DialPlan entity.
      * @return DialPlanDto instance
      */
     public DialPlanDto dialPlanEntityToDialPlanDto(DialPlan dialPlan) {
-        DialPlanDto dialPlanDto = new DialPlanDto();
-        dialPlanDto.setId(dialPlan.getId());
-        dialPlanDto.setName(dialPlan.getPhoneNr());
-        dialPlanDto.setCompany(companyEntityToCompanyDto(dialPlan.getCompany()));
-        dialPlanDto.setPhone(dialPlan.getPhoneNr());
+        DialPlanDto dialPlanDto = dialPlanEntityToDialPlanDtoIgnoreActions(dialPlan);
         dialPlanDto.setActions(actionServiceInterface.retrieveActions(dialPlan.getId()));
         return dialPlanDto;
     }
@@ -113,8 +124,9 @@ public class DialPlanServiceImpl implements DialPlanServiceInterface {
         Company existingCompany = companyRepository.findOne(dialPlanDto.getCompany().getId());
         try {
             DialPlan existingDialPlan = dialPlanRepository.findOne(dialPlanDto.getId());
+            existingDialPlan.setTitle(dialPlanDto.getName());
             existingDialPlan.setCompany(existingCompany);
-            existingDialPlan.setPhoneNr(dialPlanDto.getName());
+            existingDialPlan.setPhoneNr(dialPlanDto.getPhone());
             existingDialPlan = dialPlanRepository.save(existingDialPlan);
             actionServiceInterface.updateActions(dialPlanDto);
             return dialPlanEntityToDialPlanDto(existingDialPlan);

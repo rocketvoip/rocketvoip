@@ -28,7 +28,7 @@ import java.util.List;
 import static ch.zhaw.psit4.services.implementation.SipClientServiceImpl.sipClientEntityToSipClientDto;
 import static ch.zhaw.psit4.testsupport.matchers.ActionDtoPartialMatcher.actionDtoAlmostEqualTo;
 import static ch.zhaw.psit4.testsupport.matchers.DialActionEqualTo.dialActionEqualTo;
-import static ch.zhaw.psit4.testsupport.matchers.SayAlphaEqualTo.sayAlphaActionEqualTo;
+import static ch.zhaw.psit4.testsupport.matchers.SayAlphaActionEqualTo.sayAlphaActionEqualTo;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;

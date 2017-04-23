@@ -91,6 +91,10 @@ public class ActionServiceImpl implements ActionServiceInterface {
     }
 
     private void createAllActions(DialPlanDto dialPlanDto) {
+        if (dialPlanDto.getActions() == null) {
+            return;
+        }
+
         int priority = 1;
         for (ActionDto actionDto : dialPlanDto.getActions()) {
             if ("dial".equalsIgnoreCase(actionDto.getType())) {
