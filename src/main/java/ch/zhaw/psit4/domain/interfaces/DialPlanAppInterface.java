@@ -11,8 +11,7 @@ public interface DialPlanAppInterface extends Validatable {
      * Convert one Asterisk dialplan application configuration to a string suitable for concatenation with one
      * Asterisk dialplan extension.
      *
-     * The application call configuration string must end with a newline character ('\n'). It must not contain any
-     * other newline characters.
+     * The application call configuration string must not end with a newline character ('\n').
      *
      * @return string representing the asterisk application call fragment.
      */
