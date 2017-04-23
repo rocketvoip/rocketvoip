@@ -230,7 +230,7 @@ public class SipClientServiceImplIT {
         sipClientDto.setPhone("phone");
         sipClientDto.setSecret("secret");
 
-        SipClient sipClient = SipClientServiceImpl.sipClientDtoToSipClientEntity(sipClientDto);
+        SipClient sipClient = SipClientServiceImpl.sipClientDtoToSipClientEntityWithId(sipClientDto);
 
         assertTrue("ACME".equals(sipClient.getCompany().getName()));
         assertTrue(1 == sipClient.getCompany().getId());
