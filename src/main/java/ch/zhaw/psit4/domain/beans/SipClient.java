@@ -1,11 +1,14 @@
 package ch.zhaw.psit4.domain.beans;
 
+import ch.zhaw.psit4.domain.exceptions.ValidationException;
+import ch.zhaw.psit4.domain.interfaces.SipClientConfigurationInterface;
+
 /**
  * Holds the data for a SIP-Client.
  *
  * @author braunjon
  */
-public class SipClient {
+public class SipClient implements SipClientConfigurationInterface {
     private String company;
     private String username;
     private String secret;
@@ -18,6 +21,7 @@ public class SipClient {
 
     public void setCompany(String company) {
         if (company != null) {
+            //TODO: Use method
             this.company = company.replaceAll(" ", "-");
         }
     }
@@ -61,9 +65,54 @@ public class SipClient {
      */
     public String getLabel() {
         String label = username + "-" + company;
+        //TODO: use method
         label = label.replaceAll(" ", "-");
         return label;
     }
 
 
+    @Override
+    public void validate() {
+        if (username == null) {
+            throw new ValidationException("SipClient username is null");
+        }
+        if (username.isEmpty()) {
+            throw new ValidationException("SipClient username is empty");
+        }
+        if (company == null) {
+            throw new ValidationException("SipClient company is null");
+        }
+        if (company.isEmpty()) {
+            throw new ValidationException("SipClient company is empty");
+        }
+        if (secret == null) {
+            throw new ValidationException("SipClient secret is null");
+        }
+        if (secret.isEmpty()) {
+            throw new ValidationException("SipClient secret is empty");
+        }
+        if (phoneNumber == null) {
+            throw new ValidationException("SipClient phoneNumber is null");
+        }
+        if (phoneNumber.isEmpty()) {
+            throw new ValidationException("SipClient secret is empty");
+        }
+    }
+
+    @Override
+    public String toSipClientConfiguration() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("[");
+        stringBuilder.append(getLabel());
+        stringBuilder.append("]\n");
+        stringBuilder.append("type=friend\n");
+        stringBuilder.append("context=");
+        stringBuilder.append(company);
+        stringBuilder.append("\n");
+        stringBuilder.append("host=dynamic\n");
+        stringBuilder.append("secret=");
+        stringBuilder.append(secret);
+        stringBuilder.append("\n\n");
+        return stringBuilder.toString();
+    }
 }

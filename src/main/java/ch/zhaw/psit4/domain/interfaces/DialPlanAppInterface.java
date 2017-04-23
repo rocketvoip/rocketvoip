@@ -1,17 +1,19 @@
 package ch.zhaw.psit4.domain.interfaces;
 
 /**
- * Represents a dial plan application in asterisk.
+ * Implementations provide a valid Asterisk dialplan application call configuration string.
  *
  * @author Jona Braun
  */
-@FunctionalInterface
-public interface DialPlanAppInterface {
+public interface DialPlanAppInterface extends Validatable {
 
     /**
-     * Puts together the asterisk application call.
+     * Convert one Asterisk dialplan application configuration to a string suitable for concatenation with one
+     * Asterisk dialplan extension.
      *
-     * @return the string representing the asterisk application calls
+     * The application call configuration string must not end with a newline character ('\n').
+     *
+     * @return string representing the asterisk application call fragment.
      */
-    String getApplicationCall();
+    String toApplicationCall();
 }

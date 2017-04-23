@@ -3,10 +3,8 @@ package ch.zhaw.psit4.testsupport.fixtures.database;
 import ch.zhaw.psit4.data.jpa.entities.*;
 import ch.zhaw.psit4.data.jpa.repositories.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Database fixture builder
@@ -43,14 +41,6 @@ public class DatabaseFixtureBuilder {
         this.dialPlanList = new HashMap<>();
         this.dialList = new HashMap<>();
         this.sayAlphaList = new HashMap<>();
-    }
-
-    public DialRepository getDialRepository() {
-        return dialRepository;
-    }
-
-    public SayAlphaRepository getSayAlphaRepository() {
-        return sayAlphaRepository;
     }
 
     public DialPlanRepository getDialPlanRepository() {
@@ -104,13 +94,26 @@ public class DatabaseFixtureBuilder {
         return this;
     }
 
-    public DatabaseFixtureBuilder addSayAlpha(int number) {
-        sayAlphaList.put(number, SayAlphaEntity.createSayAlphaEntity(number));
+    public DatabaseFixtureBuilder addDial(int number, String priority, int addToDialPlanNumber, int[] sipClients) {
+        Dial dial = DialEntity.createDialEntity(number, priority, "30");
+        List<SipClient> assignedSipClients = Arrays.stream(sipClients)
+                .mapToObj(x -> sipClientList.get(x))
+                .collect(Collectors.toList());
+
+        dial.setSipClients(assignedSipClients);
+        dial.setDialPlan(dialPlanList.get(addToDialPlanNumber));
+
+        dialList.put(number, dial);
+
         return this;
     }
 
-    public DatabaseFixtureBuilder addDial(int number) {
-        dialList.put(number, DialEntity.createDialEntity(number));
+    public DatabaseFixtureBuilder addSayAlpha(int number, String priority, int addToDialPlanNumber) {
+        SayAlpha sayAlpha = SayAlphaEntity.createSayAlphaEntity(number, priority, 20);
+        sayAlpha.setDialPlan(dialPlanList.get(addToDialPlanNumber));
+
+        sayAlphaList.put(number, sayAlpha);
+
         return this;
     }
 
@@ -132,25 +135,15 @@ public class DatabaseFixtureBuilder {
             sipClientRepository.save(x);
         });
 
-        dialPlanList.values().forEach(dialPlan -> {
-            dialPlan.setCompany(company.stream().findFirst().orElseThrow(
+        dialPlanList.values().forEach(x -> {
+            x.setCompany(company.stream().findFirst().orElseThrow(
                     () -> new RuntimeException("No companies in builder")
             ));
-            dialPlanRepository.save(dialPlan);
-
-            dialList.values().forEach(dial -> {
-                dial.setDialPlan(dialPlan);
-                dial.setSipClients(sipClientList.values());
-                dialRepository.save(dial);
-            });
-
-            sayAlphaList.values().forEach(sayAlpha -> {
-                sayAlpha.setDialPlan(dialPlan);
-                sayAlphaRepository.save(sayAlpha);
-            });
-
+            dialPlanRepository.save(x);
         });
 
+        dialRepository.save(dialList.values());
+        sayAlphaRepository.save(sayAlphaList.values());
     }
 
     public Company getCompany() {
@@ -163,6 +156,14 @@ public class DatabaseFixtureBuilder {
 
     public Map<Integer, SipClient> getSipClientList() {
         return sipClientList;
+    }
+
+    public DialRepository getDialRepository() {
+        return dialRepository;
+    }
+
+    public SayAlphaRepository getSayAlphaRepository() {
+        return sayAlphaRepository;
     }
 
     public Map<Integer, Dial> getDialList() {

@@ -14,5 +14,7 @@ public interface SayAlphaRepository extends CrudRepository<SayAlpha, Long> {
 
     SayAlpha findFirstByDialPlan_IdAndPriority(long dialPlanId, String priority);
 
+    List<SayAlpha> findAllByDialPlan_Id(long dialPlanId);
+
     void deleteAllByDialPlan_Id(long dialPlanId);
 }

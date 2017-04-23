@@ -96,4 +96,36 @@ public class ConfigServiceImplIT {
         );
     }
 
+    @Test
+    public void getSimpleAsteriskConfigWithSayAlphaAndDial() throws Exception {
+        databaseFixtureBuilder
+                .company(1)
+                .addSipClient(1)
+                .addSipClient(2)
+                .addSipClient(3)
+                .addDialPlan(1)
+                .addSayAlpha(1, "1", 1)
+                .addDial(1, "2", 1, new int[]{2, 3})
+                .build();
+
+        ByteArrayOutputStream baos = configServiceInterface.getAsteriskConfiguration();
+        ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(baos.toByteArray()));
+
+        ZipStreamReader zipStreamReader = new ZipStreamReader(zipInputStream);
+
+        assertThat(zipStreamReader.hasFile(ConfigZipWriter.SIP_CONFIG_FILE_NAME), equalTo(true));
+        assertThat(zipStreamReader.hasFile(ConfigZipWriter.DIAL_PLAN_CONFIG_FILE_NAME), equalTo(true));
+
+        String expected = InputStreamStringyfier.slurpStream(
+                ConfigServiceImplIT.class.getResourceAsStream("/fixtures/oneCompanyThreeClients.txt")
+        );
+        assertThat(zipStreamReader.getFileContent(ConfigZipWriter.SIP_CONFIG_FILE_NAME), equalTo(expected));
+
+        expected = InputStreamStringyfier.slurpStream(
+                ConfigServiceImplIT.class.getResourceAsStream("/fixtures/simpleAsteriskConfigWithSayAlphaAndDial.txt")
+        );
+
+        assertThat(zipStreamReader.getFileContent("extensions.conf"), equalTo(expected));
+    }
+
 }

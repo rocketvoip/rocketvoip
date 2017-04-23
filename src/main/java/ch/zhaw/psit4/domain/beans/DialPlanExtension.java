@@ -1,6 +1,8 @@
 package ch.zhaw.psit4.domain.beans;
 
+import ch.zhaw.psit4.domain.exceptions.ValidationException;
 import ch.zhaw.psit4.domain.interfaces.DialPlanAppInterface;
+import ch.zhaw.psit4.domain.interfaces.DialPlanExtensionConfigurationInterface;
 
 /**
  * Represents one extension in an asterisk dial plan context.
@@ -15,7 +17,7 @@ import ch.zhaw.psit4.domain.interfaces.DialPlanAppInterface;
  *
  * @author Jona Braun
  */
-public class DialPlanExtension {
+public class DialPlanExtension implements DialPlanExtensionConfigurationInterface {
     public static final String EXTENSION_PREFIX = "exten=> ";
     private String phoneNumber;
     private String priority;
@@ -29,6 +31,26 @@ public class DialPlanExtension {
         this.phoneNumber = phoneNumber;
     }
 
+    public DialPlanAppInterface getDialPlanApplication() {
+        return dialPlanApplication;
+    }
+
+    public void setDialPlanApplication(DialPlanAppInterface dialPlanApplication) {
+        this.dialPlanApplication = dialPlanApplication;
+    }
+
+    @Override
+    public String toDialPlanExtensionConfiguration() {
+        return DialPlanExtension.EXTENSION_PREFIX +
+                phoneNumber +
+                ", " +
+                priority +
+                ", " +
+                dialPlanApplication.toApplicationCall() +
+                "\n";
+    }
+
+    @Override
     public String getPriority() {
         return priority;
     }
@@ -37,11 +59,28 @@ public class DialPlanExtension {
         this.priority = priority;
     }
 
-    public DialPlanAppInterface getDialPlanApplication() {
-        return dialPlanApplication;
-    }
+    @Override
+    public void validate() {
+        if (phoneNumber == null) {
+            throw new ValidationException("phoneNumber is null");
+        }
 
-    public void setDialPlanApplication(DialPlanAppInterface dialPlanApplication) {
-        this.dialPlanApplication = dialPlanApplication;
+        if (phoneNumber.isEmpty()) {
+            throw new ValidationException("phoneNumber is empty");
+        }
+
+        if (priority == null) {
+            throw new ValidationException("priority is null");
+        }
+
+        if (priority.isEmpty()) {
+            throw new ValidationException("priority is null");
+        }
+
+        if (dialPlanApplication == null) {
+            throw new ValidationException("dialPlanApplication is null");
+        }
+
+        dialPlanApplication.validate();
     }
 }

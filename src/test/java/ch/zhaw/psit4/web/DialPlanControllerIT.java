@@ -45,7 +45,8 @@ import static ch.zhaw.psit4.testsupport.matchers.SayAlphaActionEqualTo.sayAlphaA
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -219,19 +220,27 @@ public class DialPlanControllerIT {
 
     @Test
     public void deleteDialPlanWithActions() throws Exception {
-        int dialPriority = 1;
-        int sayAlphaPriority = 2;
-        databaseFixtureBuilder1.company(1).addSipClient(1).addDialPlan(1).addDial(dialPriority).addSayAlpha(sayAlphaPriority).build();
+        String dialPriority = "1";
+        String sayAlphaPriority = "2";
+        databaseFixtureBuilder1
+                .company(1)
+                .addSipClient(1)
+                .addDialPlan(1)
+                .addDial(1, dialPriority, 1, new int[]{1})
+                .addSayAlpha(1, sayAlphaPriority, 1)
+                .build();
 
         DialPlanDto createdDialPlan = DialPlanServiceImpl.dialPlanEntityToDialPlanDtoIgnoreActions(
                 databaseFixtureBuilder1.getDialPlanList().get(1)
         );
+        Long dialPlanId = databaseFixtureBuilder1.getDialPlanList().get(1).getId();
+        assertThat(dialPlanId, is(not(equalTo(0))));
 
-        Dial dial = databaseFixtureBuilder1.getDialRepository().findFirstByDialPlan_IdAndPriority(createdDialPlan.getId(), Integer.toString(dialPriority));
-        assertNotNull(dial);
+        Long dialId = databaseFixtureBuilder1.getDialList().get(1).getId();
+        assertThat(dialId, is(not(equalTo(0))));
 
-        SayAlpha sayAlpha = databaseFixtureBuilder1.getSayAlphaRepository().findFirstByDialPlan_IdAndPriority(createdDialPlan.getId(), Integer.toString(sayAlphaPriority));
-        assertNotNull(sayAlpha);
+        Long sayAlphaId = databaseFixtureBuilder1.getSayAlphaList().get(1).getId();
+        assertThat(sayAlphaId, is(not(equalTo(0))));
 
         mockMvc.perform(
                 MockMvcRequestBuilders.delete(V1_DIAL_PLANS_PATH + "/{id}", createdDialPlan.getId())
@@ -249,17 +258,22 @@ public class DialPlanControllerIT {
                 status().isNotFound()
         );
 
-        dial = databaseFixtureBuilder1.getDialRepository().findFirstByDialPlan_IdAndPriority(createdDialPlan.getId(), Integer.toString(dialPriority));
+        Dial dial = databaseFixtureBuilder1.getDialRepository().findOne(dialId);
         assertNull(dial);
 
-        sayAlpha = databaseFixtureBuilder1.getSayAlphaRepository().findFirstByDialPlan_IdAndPriority(createdDialPlan.getId(), Integer.toString(sayAlphaPriority));
+        SayAlpha sayAlpha = databaseFixtureBuilder1.getSayAlphaRepository().findOne(sayAlphaId);
         assertNull(sayAlpha);
-
     }
 
     @Test
     public void updateDialPlan() throws Exception {
-        databaseFixtureBuilder1.company(1).addSipClient(1).addDialPlan(1).addDial(1).addSayAlpha(2).build();
+        databaseFixtureBuilder1
+                .company(1)
+                .addSipClient(1)
+                .addDialPlan(1)
+                .addDial(1, "1", 1, new int[]{1})
+                .addSayAlpha(2, "2", 1)
+                .build();
 
         DialPlanDto existingDialPlan = DialPlanServiceImpl.dialPlanEntityToDialPlanDtoIgnoreActions(
                 databaseFixtureBuilder1.getDialPlanList().get(1)
@@ -304,7 +318,8 @@ public class DialPlanControllerIT {
 
     private List<ActionDto> createActions(DatabaseFixtureBuilder dbBuilder) {
         List<SipClient> sipClientList = new ArrayList<>(dbBuilder.getSipClientList().values());
-        DialAction expectedDialAction = DialActionGenerator.createTestDialActionDtoFormSipClientEntities(11, sipClientList);
+        DialAction expectedDialAction = DialActionGenerator.createTestDialActionDtoFormSipClientEntities(11,
+                sipClientList);
 
         SayAlphaAction expectedSayAlphaAction = SayAlphaActionGenerator.createTestDialActionDto(21);
 

@@ -1,8 +1,10 @@
 package ch.zhaw.psit4.domain.dialplan.applications;
 
 import ch.zhaw.psit4.domain.beans.SipClient;
+import ch.zhaw.psit4.domain.exceptions.ValidationException;
 import ch.zhaw.psit4.domain.interfaces.DialPlanAppInterface;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,6 +30,27 @@ public class DialApp implements DialPlanAppInterface {
         this.timeout = timeout;
     }
 
+    public static DialApp factory(Technology technology, List<SipClient> sipClientList, String timeout) {
+        return new DialApp(technology, sipClientList, timeout);
+    }
+
+    public static DialApp factory(Technology technology, SipClient sipClient, String timeout) {
+        List<SipClient> list = new ArrayList<>();
+        list.add(sipClient);
+        return factory(technology, list, timeout);
+    }
+
+    public Technology getTechnology() {
+        return technology;
+    }
+
+    public List<SipClient> getSipClientList() {
+        return sipClientList;
+    }
+
+    public String getTimeout() {
+        return timeout;
+    }
 
     /**
      * Puts together the asterisk dial application call.
@@ -35,7 +58,7 @@ public class DialApp implements DialPlanAppInterface {
      * @return the asterisk application call
      */
     @Override
-    public String getApplicationCall() {
+    public String toApplicationCall() {
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append("Dial(");
@@ -60,6 +83,29 @@ public class DialApp implements DialPlanAppInterface {
 
         stringBuilder.append(")");
         return stringBuilder.toString();
+    }
+
+    @Override
+    public void validate() {
+        if (technology == null) {
+            throw new ValidationException("technology is null");
+        }
+
+        if (sipClientList == null) {
+            throw new ValidationException("sipClientList is null");
+        }
+
+        if (sipClientList.isEmpty()) {
+            throw new ValidationException("sipClientList is empty");
+        }
+
+        if (timeout == null) {
+            throw new ValidationException("timeout is null");
+        }
+
+        if (timeout.isEmpty()) {
+            throw new ValidationException("timeout is empty");
+        }
     }
 
     public enum Technology {SIP, PSIP}

@@ -1,50 +1,85 @@
 package ch.zhaw.psit4.domain;
 
-import ch.zhaw.psit4.domain.beans.DialPlanContext;
-import ch.zhaw.psit4.domain.beans.SipClient;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
-import ch.zhaw.psit4.domain.interfaces.DialPlanConfigurationInterface;
+import ch.zhaw.psit4.domain.interfaces.DialPlanContextConfigurationInterface;
 import ch.zhaw.psit4.domain.interfaces.SipClientConfigurationInterface;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
- * Generates the sip client configuration.
+ * Create the string representation of sip.conf and extension.conf. Method may use the output of the various builder
+ * classes.
+ *
+ * Content for sip.conf is best created by using SipClientConfigBuilder. Stock extension.conf content is created
+ * using the CompanyDialPlanBuilder. For more sophisticated extension configuration, use the builders derived from
+ * DialPlanConfigBuilder.
  *
  * @author Jona Braun
  */
-public class ConfigWriter {
+public final class ConfigWriter {
 
-    private SipClientConfigurationInterface sipClientConfiguration;
-    private DialPlanConfigurationInterface dialPlanConfiguration;
-
-
-    public ConfigWriter(SipClientConfigurationInterface sipClientConfiguration,
-                        DialPlanConfigurationInterface dialPlanConfiguration) {
-        this.sipClientConfiguration = sipClientConfiguration;
-        this.dialPlanConfiguration = dialPlanConfiguration;
+    private ConfigWriter() {
+        // Intentionally empty
     }
 
     /**
-     * Processes a list of sip clients and converts them into a configuration string.
+     * Convert a list of SipClients to content suitable for sip.conf.
      *
-     * @param sipClientList can't be null or empty
-     * @return the configuration string for the sip clients
+     * @param sipClientList list of SipClients
+     * @return string suitable for sip.conf
      * @throws InvalidConfigurationException if the sipClientList is null or the list is empty
      */
-    public String generateSipClientConfiguration(List<SipClient> sipClientList) {
-        return sipClientConfiguration.generateSipClientConfiguration(sipClientList);
+    public static String generateSipClientConfiguration(List<? extends SipClientConfigurationInterface> sipClientList) {
+        if (sipClientList == null) {
+            throw new InvalidConfigurationException("sipClientList is null");
+        }
+
+        if (sipClientList.isEmpty()) {
+            throw new InvalidConfigurationException("sipClientList is empty");
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        sipClientList.forEach(x ->
+                Optional
+                        .ofNullable(x)
+                        .ifPresent(y -> {
+                                    y.validate();
+                                    stringBuilder.append(y.toSipClientConfiguration());
+                                }
+                        )
+        );
+        return stringBuilder.toString();
     }
 
     /**
-     * Processes a list of sip clients and DialPlan and converts them into a configuration string.
+     * Convert a list of DialPlanContexts to content suitable for extension.conf.
      *
-     * @param dialPlanContextList can be null
-     * @return the configuration string for the sip clients
+     * @param dialPlanContextList list of DialPlanContexts.
+     * @return string suitable for extension.conf
      * @throws InvalidConfigurationException if the sipClientList is null or the list is empty
      */
-    public String generateDialPlanConfiguration(List<DialPlanContext> dialPlanContextList) {
-        return dialPlanConfiguration.generateDialPlanConfiguration(dialPlanContextList);
+    public static String generateDialPlanConfiguration(List<? extends DialPlanContextConfigurationInterface>
+                                                               dialPlanContextList) {
+        if (dialPlanContextList == null) {
+            throw new InvalidConfigurationException("dialPlanContextList is null");
+        }
+
+        if (dialPlanContextList.isEmpty()) {
+            throw new InvalidConfigurationException("dialPlanContextList is empty");
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+
+        dialPlanContextList.forEach(x ->
+                Optional
+                        .ofNullable(x)
+                        .ifPresent(y -> {
+                                    y.validate();
+                                    stringBuilder.append(y.toDialPlanContextConfiguration());
+                                }
+                        )
+        );
+
+        return stringBuilder.toString();
     }
 
 }

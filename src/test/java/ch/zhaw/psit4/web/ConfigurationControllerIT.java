@@ -1,7 +1,6 @@
 package ch.zhaw.psit4.web;
 
 import ch.zhaw.psit4.domain.ConfigZipWriter;
-import ch.zhaw.psit4.domain.dialplan.DialPlanConfigurationChanSip;
 import ch.zhaw.psit4.testsupport.convenience.InputStreamStringyfier;
 import ch.zhaw.psit4.testsupport.convenience.ZipStreamReader;
 import ch.zhaw.psit4.testsupport.fixtures.database.BeanConfiguration;
@@ -62,7 +61,7 @@ public class ConfigurationControllerIT {
         ).andExpect(
                 status().isInternalServerError()
         ).andExpect(
-                jsonPath("$.reason").value("sipClientList is empty")
+                jsonPath("$.reason").value("no sip clients in configuration")
         );
     }
 
@@ -97,7 +96,7 @@ public class ConfigurationControllerIT {
         );
 
         expected = InputStreamStringyfier.slurpStream(
-                DialPlanConfigurationChanSip.class.getResourceAsStream("/fixtures/fiveContextsThreeApps.txt")
+                ConfigurationControllerIT.class.getResourceAsStream("/fixtures/fiveContextsThreeApps.txt")
         );
         assertThat(zipStreamReader.getFileContent(ConfigZipWriter.DIAL_PLAN_CONFIG_FILE_NAME), equalTo(expected));
     }
