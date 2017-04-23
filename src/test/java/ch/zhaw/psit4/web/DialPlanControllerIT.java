@@ -1,5 +1,7 @@
 package ch.zhaw.psit4.web;
 
+import ch.zhaw.psit4.data.jpa.entities.Dial;
+import ch.zhaw.psit4.data.jpa.entities.SayAlpha;
 import ch.zhaw.psit4.data.jpa.entities.SipClient;
 import ch.zhaw.psit4.dto.ActionDto;
 import ch.zhaw.psit4.dto.CompanyDto;
@@ -43,6 +45,8 @@ import static ch.zhaw.psit4.testsupport.matchers.SayAlphaActionEqualTo.sayAlphaA
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -147,20 +151,9 @@ public class DialPlanControllerIT {
         DialPlanDto testDialPlanDto = DialPlanDtoGenerator.createTestDialPlanDto(companyDto, 3);
 
         List<SipClient> sipClientList = new ArrayList<>(databaseFixtureBuilder2.getSipClientList().values());
-        DialAction dialAction = DialActionGenerator.createTestDialActionDtoFormSipClientEntities(1, sipClientList);
 
-        SayAlphaAction sayAlphaAction = SayAlphaActionGenerator.createTestDialActionDto(2);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        ActionDto actionDtoDial = ActionDtoGenerator.createTestActionDto(1, "Dial",
-                objectMapper.convertValue(dialAction, Map.class));
-        ActionDto actionDtoSayAlpha = ActionDtoGenerator.createTestActionDto(2, "SayAlpha",
-                objectMapper.convertValue(sayAlphaAction, Map.class));
-
-        List<ActionDto> actionDtos = new ArrayList<>();
-        actionDtos.add(actionDtoDial);
-        actionDtos.add(actionDtoSayAlpha);
+        List<ActionDto> actionDtos = createActions(databaseFixtureBuilder2);
 
         testDialPlanDto.setActions(actionDtos);
 
@@ -191,28 +184,12 @@ public class DialPlanControllerIT {
         ).andReturn().getResponse().getContentAsString();
 
         // assert DialPlan
-        DialPlanDto actual = Json.toObjectTypeSafe(response, DialPlanDto.class);
+        DialPlanDto actualDialPlan = Json.toObjectTypeSafe(response, DialPlanDto.class);
 
-        assertThat(createdDialPlanDto, dialPlanDtoEqualTo(actual));
+        assertThat(createdDialPlanDto, dialPlanDtoEqualTo(actualDialPlan));
 
-        // assert ActionDtos
-        List<ActionDto> actualActionDtoList = actual.getActions();
+        assertActions(actionDtos, actualDialPlan.getActions());
 
-        // check priority, first one should be dial
-        ActionDto actualActionDtoDial = actualActionDtoList.get(0);
-        ActionDto actualActionDtoSayAlpha = actualActionDtoList.get(1);
-
-        assertThat(actionDtoDial, actionDtoAlmostEqualTo(actualActionDtoDial));
-        assertThat(actionDtoSayAlpha, actionDtoAlmostEqualTo(actualActionDtoSayAlpha));
-
-        // assert Actions
-        DialAction actualDialAction = objectMapper.convertValue(
-                actualActionDtoDial.getTypeSpecific(), DialAction.class);
-        SayAlphaAction actualSayAlphaAction = objectMapper.convertValue(
-                actualActionDtoSayAlpha.getTypeSpecific(), SayAlphaAction.class);
-
-        assertThat(dialAction, dialActionEqualTo(actualDialAction));
-        assertThat(sayAlphaAction, sayAlphaActionEqualTo(actualSayAlphaAction));
 
     }
 
@@ -241,7 +218,144 @@ public class DialPlanControllerIT {
     }
 
     @Test
+    public void deleteDialPlanWithActions() throws Exception {
+        int dialPriority = 1;
+        int sayAlphaPriority = 2;
+        databaseFixtureBuilder1.company(1).addSipClient(1).addDialPlan(1).addDial(dialPriority).addSayAlpha(sayAlphaPriority).build();
+
+        DialPlanDto createdDialPlan = DialPlanServiceImpl.dialPlanEntityToDialPlanDtoIgnoreActions(
+                databaseFixtureBuilder1.getDialPlanList().get(1)
+        );
+
+        Dial dial = databaseFixtureBuilder1.getDialRepository().findFirstByDialPlan_IdAndPriority(createdDialPlan.getId(), Integer.toString(dialPriority));
+        assertNotNull(dial);
+
+        SayAlpha sayAlpha = databaseFixtureBuilder1.getSayAlphaRepository().findFirstByDialPlan_IdAndPriority(createdDialPlan.getId(), Integer.toString(sayAlphaPriority));
+        assertNotNull(sayAlpha);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete(V1_DIAL_PLANS_PATH + "/{id}", createdDialPlan.getId())
+                        .accept(MediaType.APPLICATION_JSON_UTF8)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        ).andExpect(
+                status().isNoContent()
+        );
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get(V1_DIAL_PLANS_PATH + "/{id}", createdDialPlan.getId())
+                        .accept(MediaType.APPLICATION_JSON_UTF8)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        ).andExpect(
+                status().isNotFound()
+        );
+
+        dial = databaseFixtureBuilder1.getDialRepository().findFirstByDialPlan_IdAndPriority(createdDialPlan.getId(), Integer.toString(dialPriority));
+        assertNull(dial);
+
+        sayAlpha = databaseFixtureBuilder1.getSayAlphaRepository().findFirstByDialPlan_IdAndPriority(createdDialPlan.getId(), Integer.toString(sayAlphaPriority));
+        assertNull(sayAlpha);
+
+    }
+
+    @Test
     public void updateDialPlan() throws Exception {
+        databaseFixtureBuilder1.company(1).addSipClient(1).addDialPlan(1).addDial(1).addSayAlpha(2).build();
+
+        DialPlanDto existingDialPlan = DialPlanServiceImpl.dialPlanEntityToDialPlanDtoIgnoreActions(
+                databaseFixtureBuilder1.getDialPlanList().get(1)
+        );
+
+        DialPlanDto updatedDialPlan = DialPlanDtoGenerator.createTestDialPlanDto(existingDialPlan.getCompany(), 2);
+        updatedDialPlan.setId(existingDialPlan.getId());
+
+        // create some new actions
+        List<ActionDto> actionDtos = createActions(databaseFixtureBuilder1);
+
+        // add the actions to the updated dial plan
+        updatedDialPlan.setActions(actionDtos);
+
+        String putResult = mockMvc.perform(
+                MockMvcRequestBuilders.put(V1_DIAL_PLANS_PATH + "/{id}", existingDialPlan.getId())
+                        .accept(MediaType.APPLICATION_JSON_UTF8)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(Json.toJson(updatedDialPlan))
+        ).andExpect(
+                status().isOk()
+        ).andReturn().getResponse().getContentAsString();
+
+        DialPlanDto actualDialPlan = Json.toObjectTypeSafe(putResult, DialPlanDto.class);
+        assertThat(actualDialPlan, dialPlanDtoEqualTo(updatedDialPlan));
+
+        String response = mockMvc.perform(
+                MockMvcRequestBuilders.get(V1_DIAL_PLANS_PATH + "/{id}", existingDialPlan.getId())
+                        .accept(MediaType.APPLICATION_JSON_UTF8)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        ).andExpect(
+                status().isOk()
+        ).andReturn().getResponse().getContentAsString();
+
+        actualDialPlan = Json.toObjectTypeSafe(response, DialPlanDto.class);
+
+        assertThat(actualDialPlan, dialPlanDtoEqualTo(updatedDialPlan));
+
+        assertActions(actionDtos, actualDialPlan.getActions());
+
+    }
+
+    private List<ActionDto> createActions(DatabaseFixtureBuilder dbBuilder) {
+        List<SipClient> sipClientList = new ArrayList<>(dbBuilder.getSipClientList().values());
+        DialAction expectedDialAction = DialActionGenerator.createTestDialActionDtoFormSipClientEntities(11, sipClientList);
+
+        SayAlphaAction expectedSayAlphaAction = SayAlphaActionGenerator.createTestDialActionDto(21);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        ActionDto expectedActionDtoDial = ActionDtoGenerator.createTestActionDto(11, "Dial",
+                objectMapper.convertValue(expectedDialAction, Map.class));
+        ActionDto expectedActionDtoSayAlpha = ActionDtoGenerator.createTestActionDto(21, "SayAlpha",
+                objectMapper.convertValue(expectedSayAlphaAction, Map.class));
+
+        List<ActionDto> actionDtos = new ArrayList<>();
+        actionDtos.add(expectedActionDtoDial);
+        actionDtos.add(expectedActionDtoSayAlpha);
+
+        return actionDtos;
+    }
+
+    private void assertActions(List<ActionDto> expectedActionDtos, List<ActionDto> actualActionDtoList) {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        // assert ActionDtos
+        // -----------------
+
+        // expected ActionsDtos
+        ActionDto expectedActionDtoDial = expectedActionDtos.get(0);
+        ActionDto expectedActionDtoSayAlpha = expectedActionDtos.get(1);
+
+        // actual ActionDtos
+        ActionDto actualActionDtoDial = actualActionDtoList.get(0);
+        ActionDto actualActionDtoSayAlpha = actualActionDtoList.get(1);
+
+        assertThat(expectedActionDtoDial, actionDtoAlmostEqualTo(actualActionDtoDial));
+        assertThat(expectedActionDtoSayAlpha, actionDtoAlmostEqualTo(actualActionDtoSayAlpha));
+
+        // assert actions
+        // --------------
+
+        // expected actions
+        DialAction expectedDialAction = objectMapper.convertValue(
+                expectedActionDtoDial.getTypeSpecific(), DialAction.class);
+        SayAlphaAction expectedSayAlphaAction = objectMapper.convertValue(
+                expectedActionDtoSayAlpha.getTypeSpecific(), SayAlphaAction.class);
+
+        // actual actions
+        DialAction actualDialAction = objectMapper.convertValue(
+                actualActionDtoDial.getTypeSpecific(), DialAction.class);
+        SayAlphaAction actualSayAlphaAction = objectMapper.convertValue(
+                actualActionDtoSayAlpha.getTypeSpecific(), SayAlphaAction.class);
+
+        assertThat(expectedDialAction, dialActionEqualTo(actualDialAction));
+        assertThat(expectedSayAlphaAction, sayAlphaActionEqualTo(actualSayAlphaAction));
     }
 
 }

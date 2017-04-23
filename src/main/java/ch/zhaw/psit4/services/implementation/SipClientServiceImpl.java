@@ -76,10 +76,9 @@ public class SipClientServiceImpl implements SipClientServiceInterface {
      * @return SipClient entity instance.
      */
     public static SipClient sipClientDtoToSipClientEntityWithId(SipClientDto sipClientDto) {
-        Company company = companyDtoToCompanyEntity(sipClientDto.getCompany());
-        company.setId(sipClientDto.getCompany().getId());
-        return new SipClient(company, sipClientDto.getName(),
-                sipClientDto.getPhone(), sipClientDto.getSecret());
+        SipClient sipClient = sipClientDtoToSipClientEntity(sipClientDto);
+        sipClient.setId(sipClientDto.getId());
+        return sipClient;
     }
 
     /**
