@@ -112,7 +112,8 @@ public class DialPlanConfigBuilder {
     }
 
     private DialPlanExtension multiplyPriorityBy100(DialPlanExtension extension) {
-        if (extension.getPriority().equals("n")) {
+        if (extension.getPriority().equals("n") ||
+                extension.getPriority().equals("s")) {
             return extension;
         }
 
