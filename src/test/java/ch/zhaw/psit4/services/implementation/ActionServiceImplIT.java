@@ -59,6 +59,17 @@ public class ActionServiceImplIT {
     }
 
     @Test
+    public void saveDialPlanWithNullActions() throws Exception {
+        databaseFixtureBuilder1.company(1).addDialPlan(1).addSipClient(1).addSipClient(2).build();
+        DialPlanDto dialPlanDto = getDialPlan(getDialActionDto(1), 1);
+        dialPlanDto.setActions(null);
+        actionServiceInterface.saveActions(dialPlanDto);
+
+        List<ActionDto> actionDtos = actionServiceInterface.retrieveActions(dialPlanDto.getId());
+        assertThat(actionDtos, is(empty()));
+    }
+
+    @Test
     public void saveOneDialAction() throws Exception {
         databaseFixtureBuilder1.company(1).addDialPlan(1).addSipClient(1).addSipClient(2).build();
         DialPlanDto dialPlanDto = getDialPlan(getDialActionDto(1), 1);

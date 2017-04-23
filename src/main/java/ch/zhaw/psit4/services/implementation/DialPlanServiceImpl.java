@@ -58,7 +58,7 @@ public class DialPlanServiceImpl implements DialPlanServiceInterface {
      * The id of the DialPlanDto will also be converted.
      *
      * @param dialPlanDto DialPlanDto instance to be converted
-     * @return DialPlan entity instance.
+     * @return DialPlan entity instance
      */
     public static DialPlan dialPlanDtoToDialPlanEntityWithId(DialPlanDto dialPlanDto) {
         Company company = companyDtoToCompanyEntity(dialPlanDto.getCompany());
@@ -71,8 +71,8 @@ public class DialPlanServiceImpl implements DialPlanServiceInterface {
     /**
      * Converts a DialPlan entity into a DialPlanDto ignoring the actions.
      *
-     * @param dialPlan
-     * @return
+     * @param dialPlan dial plan entity to convert
+     * @return DialPanDto instance
      */
     public static DialPlanDto dialPlanEntityToDialPlanDtoIgnoreActions(DialPlan dialPlan) {
         DialPlanDto dialPlanDto = new DialPlanDto();
@@ -86,7 +86,7 @@ public class DialPlanServiceImpl implements DialPlanServiceInterface {
     /**
      * Convert a DialPlan entity to a DialPlanDto.
      *
-     * @param dialPlan DialPlan entity.
+     * @param dialPlan DialPlan entity
      * @return DialPlanDto instance
      */
     public DialPlanDto dialPlanEntityToDialPlanDto(DialPlan dialPlan) {
