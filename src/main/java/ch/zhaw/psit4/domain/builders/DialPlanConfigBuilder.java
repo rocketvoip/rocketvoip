@@ -23,6 +23,7 @@ public class DialPlanConfigBuilder {
     private List<DialPlanContext> contexts;
     private DialPlanContext activeContext;
     private DialPlanExtension activeExtension;
+    private boolean contextReactivated;
 
     public DialPlanConfigBuilder() {
         contexts = new LinkedList<>();
@@ -31,6 +32,7 @@ public class DialPlanConfigBuilder {
         activeContext = null;
         // Will be used during build. Initial state has to be null.
         activeExtension = null;
+        contextReactivated = false;
     }
 
     /**
@@ -75,6 +77,8 @@ public class DialPlanConfigBuilder {
             saveActiveContext();
         }
 
+        assert (contextReactivated == false);
+
         activeContext = context;
         activeContext.setDialPlanExtensionList(new ArrayList<>());
 
@@ -107,6 +111,7 @@ public class DialPlanConfigBuilder {
         }
 
         activeContext = needle;
+        contextReactivated = true;
 
         return this;
     }
@@ -195,10 +200,13 @@ public class DialPlanConfigBuilder {
         activeContext.validate();
         sortCurrentExtensionsByPriority();
 
-        contexts.add(activeContext);
+        // If we save an reactivated context, we must no re-add it to the list.
+        if (!contextReactivated) {
+            contexts.add(activeContext);
+        }
 
         activeContext = null;
-
+        contextReactivated = false;
     }
 
     private void assignActiveExtensionToActiveContext() {

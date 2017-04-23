@@ -202,6 +202,8 @@ public class DialPlanConfigBuilderTest {
         verify(dialPlanExtensionLateAdditions, atLeastOnce()).validate();
         verify(dialPlanAppInterfaceLateAddition, atLeastOnce()).validate();
 
+        assertThat(dialPlanContextList, hasSize(2));
+
         assertThat(dialPlanContext1.getDialPlanExtensionList(), hasSize(2));
         assertThat(((DialPlanExtension) dialPlanContext1.getDialPlanExtensionList().get(0)).getPhoneNumber(),
                 equalTo("1234"));
