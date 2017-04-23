@@ -12,6 +12,7 @@ import ch.zhaw.psit4.domain.builders.DialPlanConfigBuilder;
 import ch.zhaw.psit4.domain.builders.DialPlanDefaultContextPrologBuilder;
 import ch.zhaw.psit4.domain.builders.TopLevelContextBuilder;
 import ch.zhaw.psit4.domain.dialplan.applications.DialApp;
+import ch.zhaw.psit4.domain.dialplan.applications.GotoApp;
 import ch.zhaw.psit4.domain.dialplan.applications.SayAlphaApp;
 import ch.zhaw.psit4.domain.interfaces.DialPlanContextConfigurationInterface;
 import org.slf4j.Logger;
@@ -26,6 +27,8 @@ import java.util.stream.StreamSupport;
 
 /**
  * Helps to gather all dial plan data from the data storage and converts it to the domain specific objects.
+ *
+ * TODO: Class is getting its own gravitational field. Some refactoring might be in order.
  *
  * @author Jona Braun
  */
@@ -64,9 +67,41 @@ public class DialPlanConfigAdapter {
 
         topLevelContextBuilder.perCompanyDialExtensions(sipClients);
 
+        DialPlanConfigBuilder topLevelContextReferences = collectTopLevelContextReferences(topLevelContextBuilder);
+
         DialPlanDefaultContextPrologBuilder dialPlanDefaultContextPrologBuilder =
-                collectDialPlans(topLevelContextBuilder);
+                collectDialPlans(topLevelContextReferences);
+
+
         return dialPlanDefaultContextPrologBuilder.build();
+    }
+
+    private DialPlanConfigBuilder collectTopLevelContextReferences(TopLevelContextBuilder topLevelContextBuilder) {
+        DialPlanConfigBuilder dialPlanConfigBuilder = new DialPlanConfigBuilder(topLevelContextBuilder);
+
+        List<DialPlan> dialPlansNotNullPhoneNr = dialPlanRepository.findAllByPhoneNrNotNull();
+        dialPlansNotNullPhoneNr.forEach(dialPlan -> {
+            // TODO: sorry, that's not the responsibility of the adapter knowing how to translate company names into
+            // context names.
+            String companyContextName = dialPlan.getCompany().getName().replaceAll(" ", "-");
+
+            dialPlanConfigBuilder.activateExistingContext(companyContextName);
+            DialPlanExtension dialPlanExtension = new DialPlanExtension();
+            // TODO: again, too much distributed knowledge, aka coupling
+            dialPlanExtension.setPriority(TopLevelContextBuilder.DEFAULT_PRIORITY);
+            dialPlanExtension.setPhoneNumber(dialPlan.getPhoneNr());
+
+            // TODO: SSDL (Same shit, different line). See above.
+            String reference = companyContextName + "-" + dialPlan.getTitle();
+            reference = reference.replaceAll(" ", "-");
+            GotoApp gotoApp = new GotoApp(reference);
+
+            dialPlanConfigBuilder
+                    .addNewExtension(dialPlanExtension)
+                    .setApplication(gotoApp);
+        });
+
+        return dialPlanConfigBuilder;
     }
 
     private DialPlanDefaultContextPrologBuilder collectDialPlans(DialPlanConfigBuilder companyDialPlanBuilder) {
