@@ -31,7 +31,7 @@ public class WaitAppTest {
     @Test
     public void toApplicationCall() throws Exception {
         WaitApp waitApp = new WaitApp(1);
-        assertThat(waitApp.toApplicationCall(), equalTo("Wait(1)\n"));
+        assertThat(waitApp.toApplicationCall(), equalTo("Wait(1)"));
     }
 
 }

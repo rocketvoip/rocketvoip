@@ -15,7 +15,7 @@ public class SayAlphaApp implements DialPlanAppInterface {
 
     @Override
     public String toApplicationCall() {
-        return "SayAlpha(" + text + ")\n";
+        return "SayAlpha(" + text + ")";
     }
 
     @Override

@@ -22,6 +22,6 @@ public class WaitApp implements DialPlanAppInterface {
 
     @Override
     public String toApplicationCall() {
-        return "Wait(" + seconds + ")\n";
+        return "Wait(" + seconds + ")";
     }
 }

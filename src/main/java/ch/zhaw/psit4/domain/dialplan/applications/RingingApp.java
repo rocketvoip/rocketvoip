@@ -13,6 +13,6 @@ public class RingingApp implements DialPlanAppInterface {
 
     @Override
     public String toApplicationCall() {
-        return "Ringing\n";
+        return "Ringing";
     }
 }

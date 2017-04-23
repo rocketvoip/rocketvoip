@@ -24,7 +24,7 @@ public class RingingAppTest {
 
     @Test
     public void toApplicationCall() throws Exception {
-        assertThat(ringingApp.toApplicationCall(), equalTo("Ringing\n"));
+        assertThat(ringingApp.toApplicationCall(), equalTo("Ringing"));
     }
 
 }

@@ -31,7 +31,7 @@ public class SayAlphaAppTest {
     @Test
     public void testToApplicationCall() throws Exception {
         SayAlphaApp sayAlphaApp = new SayAlphaApp("abcd");
-        assertThat(sayAlphaApp.toApplicationCall(), equalTo("SayAlpha(abcd)\n"));
+        assertThat(sayAlphaApp.toApplicationCall(), equalTo("SayAlpha(abcd)"));
     }
 
 }
