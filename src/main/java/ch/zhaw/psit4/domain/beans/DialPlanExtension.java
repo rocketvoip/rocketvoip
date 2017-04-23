@@ -31,14 +31,6 @@ public class DialPlanExtension implements DialPlanExtensionConfigurationInterfac
         this.phoneNumber = phoneNumber;
     }
 
-    public String getPriority() {
-        return priority;
-    }
-
-    public void setPriority(String priority) {
-        this.priority = priority;
-    }
-
     public DialPlanAppInterface getDialPlanApplication() {
         return dialPlanApplication;
     }
@@ -56,6 +48,15 @@ public class DialPlanExtension implements DialPlanExtensionConfigurationInterfac
                 ", " +
                 dialPlanApplication.toApplicationCall() +
                 "\n";
+    }
+
+    @Override
+    public String getPriority() {
+        return priority;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
     }
 
     @Override

@@ -22,4 +22,9 @@ public interface DialPlanExtensionConfigurationInterface extends Validatable {
      * character.
      */
     String toDialPlanExtensionConfiguration();
+
+    /**
+     * Get the priority of the dialplan extension
+     */
+    String getPriority();
 }
