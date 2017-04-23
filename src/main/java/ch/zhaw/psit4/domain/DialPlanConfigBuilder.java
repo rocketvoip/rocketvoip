@@ -23,7 +23,6 @@ public class DialPlanConfigBuilder {
     private DialPlanContext activeContext;
     private DialPlanExtension activeExtension;
 
-
     public DialPlanConfigBuilder() {
         contexts = new LinkedList<>();
 
@@ -44,6 +43,17 @@ public class DialPlanConfigBuilder {
         contexts = dialPlanConfigBuilder.build();
     }
 
+    protected List<DialPlanContext> getContexts() {
+        return contexts;
+    }
+
+    protected DialPlanContext getActiveContext() {
+        return activeContext;
+    }
+
+    protected DialPlanExtension getActiveExtension() {
+        return activeExtension;
+    }
 
     /**
      * Add a new Dialplan context.
