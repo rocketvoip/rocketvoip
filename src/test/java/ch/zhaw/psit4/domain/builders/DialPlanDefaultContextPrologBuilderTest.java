@@ -94,11 +94,11 @@ public class DialPlanDefaultContextPrologBuilderTest {
         DialPlanContext context = DialPlanContextGenerator.dialPlanContext(1);
 
         dialPlanDefaultContextPrologBuilder.addNewContext(context);
-        DialPlanExtension dialPlanExtension = makeMockDialPlan("20");
+        DialPlanExtension dialPlanExtension = makeMockDialPlan("200");
 
         dialPlanDefaultContextPrologBuilder.addNewExtension(dialPlanExtension);
 
-        dialPlanExtension = makeMockDialPlan("10");
+        dialPlanExtension = makeMockDialPlan("100");
         dialPlanDefaultContextPrologBuilder.addNewExtension(dialPlanExtension);
         String expected = InputStreamStringyfier.slurpStream(
                 DialPlanDefaultContextPrologBuilderTest.class.getResourceAsStream
@@ -113,7 +113,7 @@ public class DialPlanDefaultContextPrologBuilderTest {
     }
 
     private DialPlanExtension makeMockDialPlan() {
-        return makeMockDialPlan("10");
+        return makeMockDialPlan("100");
     }
 
     private DialPlanExtension makeMockDialPlan(String priority) {

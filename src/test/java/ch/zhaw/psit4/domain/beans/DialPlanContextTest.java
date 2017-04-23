@@ -45,13 +45,6 @@ public class DialPlanContextTest {
     }
 
     @Test(expected = ValidationException.class)
-    public void nullContextName() throws Exception {
-        dialPlanContext.setContextName(null);
-
-        dialPlanContext.validate();
-    }
-
-    @Test(expected = ValidationException.class)
     public void emptyContextName() throws Exception {
         dialPlanContext.setContextName("");
 

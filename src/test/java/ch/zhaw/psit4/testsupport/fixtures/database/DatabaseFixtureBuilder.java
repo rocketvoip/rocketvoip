@@ -108,8 +108,8 @@ public class DatabaseFixtureBuilder {
         return this;
     }
 
-    public DatabaseFixtureBuilder addSayAlpha(int number, int addToDialPlanNumber) {
-        SayAlpha sayAlpha = SayAlphaEntity.createSayAlphaEntity(number, 20);
+    public DatabaseFixtureBuilder addSayAlpha(int number, String priority, int addToDialPlanNumber) {
+        SayAlpha sayAlpha = SayAlphaEntity.createSayAlphaEntity(number, priority, 20);
         sayAlpha.setDialPlan(dialPlanList.get(addToDialPlanNumber));
 
         sayAlphaList.put(number, sayAlpha);

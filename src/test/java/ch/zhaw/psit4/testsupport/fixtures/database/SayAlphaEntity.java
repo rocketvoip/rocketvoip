@@ -11,8 +11,9 @@ public final class SayAlphaEntity {
         // intentionally empty
     }
 
-    public static SayAlpha createSayAlphaEntity(int number, int timeout) {
+    public static SayAlpha createSayAlphaEntity(int number, String priority, int timeout) {
         SayAlpha sayAlpha = new SayAlpha(SayAlphaData.getName(number),
+                priority,
                 SayAlphaData.getMessage(number),
                 timeout,
                 null);

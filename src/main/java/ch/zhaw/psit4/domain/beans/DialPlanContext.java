@@ -35,7 +35,7 @@ public class DialPlanContext implements DialPlanContextConfigurationInterface {
     }
 
     public void setContextName(String contextName) {
-        this.contextName = contextName;
+        this.contextName = contextName.replaceAll(" ", "-");
     }
 
     public List<DialPlanExtensionConfigurationInterface> getDialPlanExtensionList() {
