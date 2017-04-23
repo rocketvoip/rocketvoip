@@ -7,6 +7,7 @@ import ch.zhaw.psit4.dto.DialPlanDto;
 import ch.zhaw.psit4.dto.actions.DialAction;
 import ch.zhaw.psit4.dto.actions.SayAlphaAction;
 import ch.zhaw.psit4.services.implementation.CompanyServiceImpl;
+import ch.zhaw.psit4.services.implementation.DialPlanServiceImpl;
 import ch.zhaw.psit4.testsupport.convenience.Json;
 import ch.zhaw.psit4.testsupport.fixtures.database.BeanConfiguration;
 import ch.zhaw.psit4.testsupport.fixtures.database.DatabaseFixtureBuilder;
@@ -35,7 +36,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static ch.zhaw.psit4.testsupport.matchers.ActionDtoPartialMatcher.actionDtoAlmostEqualTo;
+import static ch.zhaw.psit4.testsupport.matchers.DialActionEqualTo.dialActionEqualTo;
 import static ch.zhaw.psit4.testsupport.matchers.DialPlanDtoEqualTo.dialPlanDtoEqualTo;
+import static ch.zhaw.psit4.testsupport.matchers.SayAlphaActionEqualTo.sayAlphaActionEqualTo;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -144,11 +148,13 @@ public class DialPlanControllerIT {
 
         List<SipClient> sipClientList = new ArrayList<>(databaseFixtureBuilder2.getSipClientList().values());
         DialAction dialAction = DialActionGenerator.createTestDialActionDtoFormSipClientEntities(1, sipClientList);
-        ObjectMapper objectMapper = new ObjectMapper();
-        ActionDto actionDtoDial = ActionDtoGenerator.createTestActionDto(1, "Dial",
-                objectMapper.convertValue(dialAction, Map.class));
 
         SayAlphaAction sayAlphaAction = SayAlphaActionGenerator.createTestDialActionDto(2);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        ActionDto actionDtoDial = ActionDtoGenerator.createTestActionDto(1, "Dial",
+                objectMapper.convertValue(dialAction, Map.class));
         ActionDto actionDtoSayAlpha = ActionDtoGenerator.createTestActionDto(2, "SayAlpha",
                 objectMapper.convertValue(sayAlphaAction, Map.class));
 
@@ -174,127 +180,68 @@ public class DialPlanControllerIT {
                 MockMvcResultMatchers.jsonPath("$.phone").value(CoreMatchers.equalTo(testDialPlanDto.getPhone()))
         ).andReturn().getResponse().getContentAsString();
 
-        DialPlanDto createdSipClient = Json.toObjectTypeSafe(creationResponse, DialPlanDto.class);
+        DialPlanDto createdDialPlanDto = Json.toObjectTypeSafe(creationResponse, DialPlanDto.class);
 
         String response = mockMvc.perform(
-                MockMvcRequestBuilders.get(V1_DIAL_PLANS_PATH + "/{id}", createdSipClient.getId())
+                MockMvcRequestBuilders.get(V1_DIAL_PLANS_PATH + "/{id}", createdDialPlanDto.getId())
                         .accept(MediaType.APPLICATION_JSON_UTF8)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
         ).andExpect(
                 status().isOk()
         ).andReturn().getResponse().getContentAsString();
+
+        // assert DialPlan
         DialPlanDto actual = Json.toObjectTypeSafe(response, DialPlanDto.class);
 
-        assertThat(createdSipClient, dialPlanDtoEqualTo(actual));
+        assertThat(createdDialPlanDto, dialPlanDtoEqualTo(actual));
+
+        // assert ActionDtos
+        List<ActionDto> actualActionDtoList = actual.getActions();
+
+        // check priority, first one should be dial
+        ActionDto actualActionDtoDial = actualActionDtoList.get(0);
+        ActionDto actualActionDtoSayAlpha = actualActionDtoList.get(1);
+
+        assertThat(actionDtoDial, actionDtoAlmostEqualTo(actualActionDtoDial));
+        assertThat(actionDtoSayAlpha, actionDtoAlmostEqualTo(actualActionDtoSayAlpha));
+
+        // assert Actions
+        DialAction actualDialAction = objectMapper.convertValue(
+                actualActionDtoDial.getTypeSpecific(), DialAction.class);
+        SayAlphaAction actualSayAlphaAction = objectMapper.convertValue(
+                actualActionDtoSayAlpha.getTypeSpecific(), SayAlphaAction.class);
+
+        assertThat(dialAction, dialActionEqualTo(actualDialAction));
+        assertThat(sayAlphaAction, sayAlphaActionEqualTo(actualSayAlphaAction));
 
     }
 
     @Test
-    public void getDialPlan() throws Exception {
-    }
+    public void deleteDialPlanWithNoActions() throws Exception {
+        databaseFixtureBuilder1.company(1).addSipClient(1).addDialPlan(1).build();
+        DialPlanDto createdDialPlan = DialPlanServiceImpl.dialPlanEntityToDialPlanDtoIgnoreActions(
+                databaseFixtureBuilder1.getDialPlanList().get(1)
+        );
 
-    @Test
-    public void deleteDialPlan() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete(V1_DIAL_PLANS_PATH + "/{id}", createdDialPlan.getId())
+                        .accept(MediaType.APPLICATION_JSON_UTF8)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        ).andExpect(
+                status().isNoContent()
+        );
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get(V1_DIAL_PLANS_PATH + "/{id}", createdDialPlan.getId())
+                        .accept(MediaType.APPLICATION_JSON_UTF8)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        ).andExpect(
+                status().isNotFound()
+        );
     }
 
     @Test
     public void updateDialPlan() throws Exception {
     }
 
-//    @Test
-//    public void createDialPlan() throws Exception {
-//        // action
-//        ActionDto actionDto = new ActionDto();
-//        actionDto.setName("may fancy action");
-//        actionDto.setType(ActionDto.ActionType.Dial);
-//
-//        // database setup
-//        databaseFixtureBuilder1.company(1).addSipClient(1).addSipClient(2).build();
-//
-//        // team
-//        DialAction dialAction = new DialAction();
-//        dialAction.setRingingTime("30");
-//        List<SipClientDto> sipClientDtoList = new ArrayList<>();
-//        for (int i = 1; i <= 2; i++) {
-//            sipClientDtoList.add(sipClientEntityToSipClientDto(databaseFixtureBuilder1.getSipClientList().get(i)));
-//        }
-//        dialAction.setSipClients(sipClientDtoList);
-//
-//        ObjectMapper objM = new ObjectMapper();
-//        LinkedHashMap linkedHashMap = objM.convertValue(dialAction, LinkedHashMap.class);
-//
-//        actionDto.setTypeSpecific(linkedHashMap);
-//
-//        // Dial Plan
-//        DialPlanDto dialPlanDto = new DialPlanDto();
-//        CompanyDto companyDto = CompanyServiceImpl.companyEntityToCompanyDto(
-//                databaseFixtureBuilder1.getCompany()
-//        );
-//        dialPlanDto.setCompany(companyDto);
-//        dialPlanDto.setName("my fancy dialplan");
-//
-//        List<ActionDto> actionDtos = new ArrayList<>();
-//        actionDtos.add(actionDto);
-//        dialPlanDto.setActions(actionDtos);
-//
-//        // request
-//        String dialPlanJson = Json.toJson(dialPlanDto);
-//
-//        String response = mockMvc.perform(
-//                MockMvcRequestBuilders.post(V1_ACTIONS_PATH)
-//                        .content(dialPlanJson)
-//                        .accept(MediaType.APPLICATION_JSON_UTF8)
-//                        .contentType(MediaType.APPLICATION_JSON_UTF8)
-//        ).andExpect(
-//                status().isCreated()
-//        ).andExpect(
-//                jsonPath("$.id").value(not(equalTo(dialPlanDto.getId())))
-//        ).andExpect(
-//                jsonPath("$.name").value(equalTo(dialPlanDto.getName()))
-//        ).andReturn().getResponse().getContentAsString();
-//
-////        {
-////            "id":0,
-////            "name":"my fancy dialplan",
-////            "company":{
-////                    "name":"ACME1",
-////                    "id":1
-////                    },
-////            "actions":[
-////            {
-////                "id":0,
-////                "name":"may fancy action",
-////                "type":"Dial",
-////                "typeSpecific":{
-////                        "time":"30",
-////                        "team":[
-////                     {
-////                        "name":"SipClientLabel1",
-////                        "phone":"0000000001",
-////                        "secret":"SipClientSecret1",
-////                        "id":1,
-////                        "company":{
-////                            "name":"ACME1",
-////                            "id":1
-////                        }
-////                     },
-////                     {
-////                        "name":"SipClientLabel2",
-////                        "phone":"0000000002",
-////                        "secret":"SipClientSecret2",
-////                        "id":2,
-////                        "company":{
-////                            "name":"ACME1",
-////                            "id":1
-////                         }
-////                     }
-////                   ]
-////                }
-////            }
-////            ],
-////            "phone":null
-////        }
-//        assertEquals(dialPlanJson, response);
-//
-//    }
 }

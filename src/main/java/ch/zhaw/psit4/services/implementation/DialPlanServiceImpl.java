@@ -110,7 +110,8 @@ public class DialPlanServiceImpl implements DialPlanServiceInterface {
         try {
             DialPlan dialPlan = dialPlanDtoToDialPlanEntity(newDialPlan);
             dialPlan = dialPlanRepository.save(dialPlan);
-            actionServiceInterface.saveActions(dialPlanEntityToDialPlanDtoIgnoreActions(dialPlan));
+            newDialPlan.setId(dialPlan.getId());
+            actionServiceInterface.saveActions(newDialPlan);
 
             return dialPlanEntityToDialPlanDto(dialPlan);
         } catch (Exception e) {
