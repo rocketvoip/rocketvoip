@@ -25,7 +25,7 @@ public class SipClientDtoEqualTo extends TypeSafeMatcher<SipClientDto> {
 
     @Override
     protected boolean matchesSafely(SipClientDto sipClientDto) {
-        Matcher<SipClientDto> partialMatcher = SipClientDtoPartialMatcher.sipClientDtoAlmostEqualTo(sipClientDto);
+        Matcher<SipClientDto> partialMatcher = SipClientDtoPartialMatcher.sipClientDtoAlmostEqualTo(expected);
         return partialMatcher.matches(sipClientDto) && expected.getId() == sipClientDto.getId();
     }
 
