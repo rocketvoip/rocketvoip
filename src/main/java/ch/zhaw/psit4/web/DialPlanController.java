@@ -1,11 +1,7 @@
 package ch.zhaw.psit4.web;
 
 import ch.zhaw.psit4.dto.DialPlanDto;
-import ch.zhaw.psit4.dto.ErrorDto;
-import ch.zhaw.psit4.services.exceptions.DialPlanDeletionException;
-import ch.zhaw.psit4.services.exceptions.DialPlanRetrievalException;
 import ch.zhaw.psit4.services.interfaces.DialPlanServiceInterface;
-import ch.zhaw.psit4.web.utils.Utilities;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -53,21 +49,6 @@ public class DialPlanController {
     public ResponseEntity<DialPlanDto> createDialPlan(@RequestBody DialPlanDto dialPlanDto) {
 
         return new ResponseEntity<>(dialPlanServiceInterface.createDialPlan(dialPlanDto), HttpStatus.CREATED);
-    }
-
-    @ExceptionHandler(DialPlanRetrievalException.class)
-    public ResponseEntity<ErrorDto> handleDialPlanRetrievalException(DialPlanRetrievalException ex) {
-        return new ResponseEntity<>(Utilities.exceptionToErrorDto(ex), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(DialPlanDeletionException.class)
-    public ResponseEntity<ErrorDto> handleDialPlanDeletionException(DialPlanDeletionException ex) {
-        return new ResponseEntity<>(Utilities.exceptionToErrorDto(ex), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorDto> handleException(Exception e) {
-        return new ResponseEntity<>(Utilities.exceptionToErrorDto(e), HttpStatus.BAD_REQUEST);
     }
 
 }
