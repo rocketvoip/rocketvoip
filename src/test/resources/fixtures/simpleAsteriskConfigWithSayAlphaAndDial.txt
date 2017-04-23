@@ -2,10 +2,11 @@
 exten=> 0000000001, 100, Dial(SIP/SipClientLabel1-ACME1, 30)
 exten=> 0000000002, 100, Dial(SIP/SipClientLabel2-ACME1, 30)
 exten=> 0000000003, 100, Dial(SIP/SipClientLabel3-ACME1, 30)
+exten=> 0000000004, 100, ACME1-DialPlan-1
 
 [ACME1-DialPlan-1]
-exten=> 001, 1, Ringing
-exten=> 001, 2, Wait(2)
-exten=> 001, 100, SayAlpha(Say Alpha Message1)
-exten=> 001, 200, Dial(SIP/SipClientLabel2-ACME1&SIP/SipClientLabel3-ACME1, 30)
+exten=> s, 1, Ringing
+exten=> s, 2, Wait(2)
+exten=> s, 100, SayAlpha(Say Alpha Message1)
+exten=> s, 200, Dial(SIP/SipClientLabel2-ACME1&SIP/SipClientLabel3-ACME1, 30)
 

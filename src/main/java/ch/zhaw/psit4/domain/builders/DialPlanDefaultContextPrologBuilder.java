@@ -53,11 +53,11 @@ public class DialPlanDefaultContextPrologBuilder extends DialPlanConfigBuilder {
         DialPlanExtension activeDialPlanExtension = getActiveExtension();
 
         // Now, we know the phone number, so we create the first entry of our prolog
-        DialPlanExtension ringingExtension = makeRingingExtension(activeDialPlanExtension.getPhoneNumber());
+        DialPlanExtension ringingExtension = makeRingingExtension("s");
         // and add it to the front of the active context
         getActiveContext().getDialPlanExtensionList().add(0, ringingExtension);
         // we need to add the wait call, to complete our prolog
-        DialPlanExtension waitExtension = makeWaitExtension(activeDialPlanExtension.getPhoneNumber());
+        DialPlanExtension waitExtension = makeWaitExtension("s");
         getActiveContext().getDialPlanExtensionList().add(1, waitExtension);
 
         // Mark that prolog has been set, in order to avoid setting it for each call of this method.
