@@ -28,7 +28,7 @@ public class DialPlanController {
         return new ResponseEntity<>(dialPlanServiceInterface.getAllDialPlans(), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/dialplans/", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(path = "/dialplans/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<DialPlanDto> getDialPlan(@PathVariable long id) {
         return new ResponseEntity<>(dialPlanServiceInterface.getDialPlan(id), HttpStatus.OK);
     }
@@ -47,7 +47,6 @@ public class DialPlanController {
 
     @PostMapping(path = "/dialplans", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<DialPlanDto> createDialPlan(@RequestBody DialPlanDto dialPlanDto) {
-
         return new ResponseEntity<>(dialPlanServiceInterface.createDialPlan(dialPlanDto), HttpStatus.CREATED);
     }
 
