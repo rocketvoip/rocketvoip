@@ -5,7 +5,7 @@ package ch.zhaw.psit4.dto.actions;
  *
  * @author Jona Braun
  */
-public class Goto {
+public class GotoAction {
     private long nextDialPlanId;
 
     public long getNextDialPlanId() {
