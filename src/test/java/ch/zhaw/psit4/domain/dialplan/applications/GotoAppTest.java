@@ -31,7 +31,7 @@ public class GotoAppTest {
     @Test
     public void toApplicationCall() throws Exception {
         GotoApp gotoApp = new GotoApp("reference");
-        assertThat(gotoApp.toApplicationCall(), equalTo("Goto(reference)"));
+        assertThat(gotoApp.toApplicationCall(), equalTo("Goto(reference,s,1)"));
     }
 
 }
