@@ -19,12 +19,11 @@ import static ch.zhaw.psit4.services.implementation.DialPlanServiceImpl.dialPlan
  */
 public class DialAdapter {
 
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private final DialRepository dialRepository;
-    private final ObjectMapper objectMapper;
 
     public DialAdapter(DialRepository dialRepository) {
         this.dialRepository = dialRepository;
-        objectMapper = new ObjectMapper();
     }
 
     private static DialAction dialEntityToDialAction(Dial dial) {
@@ -46,7 +45,7 @@ public class DialAdapter {
         actionDto.setName(dial.getName());
         actionDto.setType("Dial");
         DialAction dialAction = dialEntityToDialAction(dial);
-        Map<String, Object> map = objectMapper.convertValue(dialAction, Map.class);
+        Map<String, Object> map = OBJECT_MAPPER.convertValue(dialAction, Map.class);
         actionDto.setTypeSpecific(map);
         return actionDto;
     }
@@ -59,7 +58,7 @@ public class DialAdapter {
      * @param priority    the priority of the action
      */
     public void saveDialAction(DialPlanDto dialPlanDto, ActionDto actionDto, int priority) {
-        DialAction dialAction = objectMapper.convertValue(actionDto.getTypeSpecific(), DialAction.class);
+        DialAction dialAction = OBJECT_MAPPER.convertValue(actionDto.getTypeSpecific(), DialAction.class);
 
         Dial dial = new Dial(actionDto.getName(),
                 Integer.toString(priority),

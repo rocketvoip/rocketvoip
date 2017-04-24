@@ -18,12 +18,11 @@ import static ch.zhaw.psit4.services.implementation.DialPlanServiceImpl.dialPlan
  */
 public class SayAlphaAdapter {
 
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private final SayAlphaRepository sayAlphaRepository;
-    private ObjectMapper objectMapper;
 
     public SayAlphaAdapter(SayAlphaRepository sayAlphaRepository) {
         this.sayAlphaRepository = sayAlphaRepository;
-        this.objectMapper = new ObjectMapper();
     }
 
     private static SayAlphaAction sayAlphaEntityToSayAlphaAction(SayAlpha sayAlpha) {
@@ -45,7 +44,7 @@ public class SayAlphaAdapter {
         actionDto.setName(sayAlpha.getName());
         actionDto.setType("SayAlpha");
         SayAlphaAction sayAlphaAction = sayAlphaEntityToSayAlphaAction(sayAlpha);
-        Map<String, Object> map = objectMapper.convertValue(sayAlphaAction, Map.class);
+        Map<String, Object> map = OBJECT_MAPPER.convertValue(sayAlphaAction, Map.class);
         actionDto.setTypeSpecific(map);
         return actionDto;
     }
@@ -58,7 +57,7 @@ public class SayAlphaAdapter {
      * @param priority    the priority of the action
      */
     public void saveSayAlphaAction(DialPlanDto dialPlanDto, ActionDto actionDto, int priority) {
-        SayAlphaAction sayAlphaAction = objectMapper.convertValue(actionDto.getTypeSpecific(), SayAlphaAction.class);
+        SayAlphaAction sayAlphaAction = OBJECT_MAPPER.convertValue(actionDto.getTypeSpecific(), SayAlphaAction.class);
 
         SayAlpha sayAlpha = new SayAlpha(actionDto.getName(),
                 Integer.toString(priority),
