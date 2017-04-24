@@ -10,14 +10,14 @@ import java.util.List;
  * @author Jona Braun
  */
 public class DialAction {
-    private String ringingTime;
+    private int ringingTime;
     private List<SipClientDto> sipClients;
 
-    public String getRingingTime() {
+    public int getRingingTime() {
         return ringingTime;
     }
 
-    public void setRingingTime(String ringingTime) {
+    public void setRingingTime(int ringingTime) {
         this.ringingTime = ringingTime;
     }
 

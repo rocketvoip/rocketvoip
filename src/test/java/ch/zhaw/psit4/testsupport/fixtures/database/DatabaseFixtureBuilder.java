@@ -95,7 +95,7 @@ public class DatabaseFixtureBuilder {
     }
 
     public DatabaseFixtureBuilder addDial(int number, String priority, int addToDialPlanNumber, int[] sipClients) {
-        Dial dial = DialEntity.createDialEntity(number, priority, "30");
+        Dial dial = DialEntity.createDialEntity(number, priority, 30);
         List<SipClient> assignedSipClients = Arrays.stream(sipClients)
                 .mapToObj(x -> sipClientList.get(x))
                 .collect(Collectors.toList());

@@ -37,7 +37,7 @@ public class DialActionEqualTo extends TypeSafeMatcher<DialAction> {
             i++;
         }
 
-        return expected.getRingingTime().equals(dialAction.getRingingTime());
+        return expected.getRingingTime() == dialAction.getRingingTime();
 
     }
 

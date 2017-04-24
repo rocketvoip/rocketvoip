@@ -172,7 +172,7 @@ public class DialPlanConfigAdapter {
                                         DialApp.Technology.SIP,
                                         convertListOfSipClientEntitiesToDomainSipClients(dialEntry
                                                 .getSipClients()),
-                                        dialEntry.getRingingTime());
+                                        Integer.toString(dialEntry.getRingingTime()));
                                 dialPlanBuilder.addNewExtension(dialPlanExtension)
                                         .setApplication(dialApp);
                             }
