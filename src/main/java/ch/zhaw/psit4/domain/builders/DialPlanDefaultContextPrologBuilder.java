@@ -42,7 +42,7 @@ public class DialPlanDefaultContextPrologBuilder extends DialPlanConfigBuilder {
 
     @Override
     public DialPlanDefaultContextPrologBuilder addNewExtension(DialPlanExtension extension) {
-        super.addNewExtension(multiplyPriorityBy100(extension));
+        super.addNewExtension(setPriorityN(extension));
 
         if (prologSet) {
             // prolog has already been set, so nothing to do
@@ -101,13 +101,8 @@ public class DialPlanDefaultContextPrologBuilder extends DialPlanConfigBuilder {
 
     }
 
-    private DialPlanExtension multiplyPriorityBy100(DialPlanExtension extension) {
-        if (extension.getPriority().equals("n") ||
-                extension.getPriority().equals("s")) {
-            return extension;
-        }
-
-        extension.setPriority(extension.getPriority() + "00");
+    private DialPlanExtension setPriorityN(DialPlanExtension extension) {
+        extension.setPriority("n");
         return extension;
     }
 }

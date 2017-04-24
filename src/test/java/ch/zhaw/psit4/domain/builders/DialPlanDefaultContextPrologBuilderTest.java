@@ -71,54 +71,7 @@ public class DialPlanDefaultContextPrologBuilderTest {
     }
 
     @Test
-    public void multiplyByHundredMustNotTouchS() throws Exception {
-        DialPlanContext context = DialPlanContextGenerator.dialPlanContext(1);
-
-        DialPlanExtension dialPlanExtension = new DialPlanExtension();
-        dialPlanExtension.setPhoneNumber(DialPlanData.getPhoneNumber(1));
-        dialPlanExtension.setPriority("s");
-
-        DialPlanAppInterface mockDialApp = mock(DialPlanAppInterface.class);
-        when(mockDialApp.toApplicationCall()).thenReturn("mockApp");
-
-        List<DialPlanContext> contexts = dialPlanDefaultContextPrologBuilder
-                .addNewContext(context)
-                .addNewExtension(dialPlanExtension)
-                .setApplication(mockDialApp)
-                .build();
-
-        assertThat(contexts, hasSize(1));
-
-        // remember, that the builder updates the instances passed, thus we can test the dialPlanExtension
-        assertThat(dialPlanExtension.getPriority(), equalTo("s"));
-
-    }
-
-    @Test
-    public void multiplyByHundredMustNotTouchN() throws Exception {
-        DialPlanContext context = DialPlanContextGenerator.dialPlanContext(1);
-
-        DialPlanExtension dialPlanExtension = new DialPlanExtension();
-        dialPlanExtension.setPhoneNumber(DialPlanData.getPhoneNumber(1));
-        dialPlanExtension.setPriority("n");
-
-        DialPlanAppInterface mockDialApp = mock(DialPlanAppInterface.class);
-        when(mockDialApp.toApplicationCall()).thenReturn("mockApp");
-
-        List<DialPlanContext> contexts = dialPlanDefaultContextPrologBuilder
-                .addNewContext(context)
-                .addNewExtension(dialPlanExtension)
-                .setApplication(mockDialApp)
-                .build();
-
-        assertThat(contexts, hasSize(1));
-
-        // remember, that the builder updates the instances passed, thus we can test the dialPlanExtension
-        assertThat(dialPlanExtension.getPriority(), equalTo("n"));
-    }
-
-    @Test
-    public void multiplyByHundred() throws Exception {
+    public void testPriorityN() throws Exception {
         DialPlanContext context = DialPlanContextGenerator.dialPlanContext(1);
 
         DialPlanExtension dialPlanExtension = new DialPlanExtension();
@@ -137,30 +90,7 @@ public class DialPlanDefaultContextPrologBuilderTest {
         assertThat(contexts, hasSize(1));
 
         // remember, that the builder updates the instances passed, thus we can test the dialPlanExtension
-        assertThat(dialPlanExtension.getPriority(), equalTo("100"));
-    }
-
-    @Test
-    public void multiplyByHundredStupidly() throws Exception {
-        DialPlanContext context = DialPlanContextGenerator.dialPlanContext(1);
-
-        DialPlanExtension dialPlanExtension = new DialPlanExtension();
-        dialPlanExtension.setPhoneNumber(DialPlanData.getPhoneNumber(1));
-        dialPlanExtension.setPriority("bla");
-
-        DialPlanAppInterface mockDialApp = mock(DialPlanAppInterface.class);
-        when(mockDialApp.toApplicationCall()).thenReturn("mockApp");
-
-        List<DialPlanContext> contexts = dialPlanDefaultContextPrologBuilder
-                .addNewContext(context)
-                .addNewExtension(dialPlanExtension)
-                .setApplication(mockDialApp)
-                .build();
-
-        assertThat(contexts, hasSize(1));
-
-        // remember, that the builder updates the instances passed, thus we can test the dialPlanExtension
-        assertThat(dialPlanExtension.getPriority(), equalTo("bla00"));
+        assertThat(dialPlanExtension.getPriority(), equalTo("n"));
     }
 
     @Test
@@ -184,28 +114,6 @@ public class DialPlanDefaultContextPrologBuilderTest {
 
     }
 
-    @Test
-    public void addNewTwoExtensionWithReversePriority() throws Exception {
-        DialPlanContext context = DialPlanContextGenerator.dialPlanContext(1);
-
-        dialPlanDefaultContextPrologBuilder.addNewContext(context);
-        DialPlanExtension dialPlanExtension = makeMockDialPlan("200");
-
-        dialPlanDefaultContextPrologBuilder.addNewExtension(dialPlanExtension);
-
-        dialPlanExtension = makeMockDialPlan("100");
-        dialPlanDefaultContextPrologBuilder.addNewExtension(dialPlanExtension);
-        String expected = InputStreamStringyfier.slurpStream(
-                DialPlanDefaultContextPrologBuilderTest.class.getResourceAsStream
-                        ("/fixtures/dialPlanDefaultContextPrologBuilderTwoExtensionReversePriorityFixture.txt")
-        );
-
-        List<DialPlanContext> contexts = dialPlanDefaultContextPrologBuilder.build();
-        assertThat(contexts, hasSize(1));
-
-        assertThat(contexts.get(0).toDialPlanContextConfiguration(), equalTo(expected));
-
-    }
 
     private DialPlanExtension makeMockDialPlan() {
         return makeMockDialPlan("100");

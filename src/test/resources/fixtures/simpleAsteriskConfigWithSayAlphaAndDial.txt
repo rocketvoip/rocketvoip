@@ -7,6 +7,6 @@ exten=> 001, 1, Goto(ACME1-DialPlan-1,s,1)
 [ACME1-DialPlan-1]
 exten=> s, 1, Ringing
 exten=> s, 2, Wait(2)
-exten=> s, 100, SayAlpha(Say Alpha Message1)
-exten=> s, 200, Dial(SIP/SipClientLabel2-ACME1&SIP/SipClientLabel3-ACME1, 30)
+exten=> s, n, SayAlpha(Say Alpha Message1)
+exten=> s, n, Dial(SIP/SipClientLabel2-ACME1&SIP/SipClientLabel3-ACME1, 30)
 
