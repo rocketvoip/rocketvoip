@@ -28,11 +28,13 @@ public class ActionServiceImpl implements ActionServiceInterface {
     private final SayAlphaAdapter sayAlphaAdapter;
 
     public ActionServiceImpl(DialRepository dialRepository,
-                             SayAlphaRepository sayAlphaRepository) {
+                             SayAlphaRepository sayAlphaRepository,
+                             SayAlphaAdapter sayAlphaAdapter,
+                             DialAdapter dialAdapter) {
         this.dialRepository = dialRepository;
         this.sayAlphaRepository = sayAlphaRepository;
-        sayAlphaAdapter = new SayAlphaAdapter(sayAlphaRepository);
-        dialAdapter = new DialAdapter(dialRepository);
+        this.sayAlphaAdapter = sayAlphaAdapter;
+        this.dialAdapter = dialAdapter;
     }
 
     /**
