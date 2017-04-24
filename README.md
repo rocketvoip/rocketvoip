@@ -28,16 +28,21 @@ Build Pipeline
 * Coverage: [Coveralls.io](https://coveralls.io/github/rocketvoip/rocketvoip)
 * Code Quality: [Sonar Qube](https://sonarqube.com/dashboard/index?id=ch.zhaw.psit4%3Arocketvoip)
 
+Travis deploys to rocketvoip-staging.
+
+
 Heroku
 ---
 
-https://dashboard.heroku.com/apps/rocketvoip
+* Production: https://dashboard.heroku.com/apps/rocketvoip
+* Staging: https://dashboard.heroku.com/apps/rocketvoip-staging
 
 
 Deployment
 ---
 
-https://rocketvoip.herokuapp.com/
+* Production: https://rocketvoip.herokuapp.com/
+* Staging: https://rocketvoip-staging.herokuapp.com/
 
 Build Status
 ---
