@@ -10,6 +10,7 @@ import ch.zhaw.psit4.services.implementation.adapters.DialAdapter;
 import ch.zhaw.psit4.services.implementation.adapters.SayAlphaAdapter;
 import ch.zhaw.psit4.services.interfaces.ActionServiceInterface;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.List;
  * @author Jona Braun
  */
 @Service
+@Transactional
 public class ActionServiceImpl implements ActionServiceInterface {
 
     private final DialRepository dialRepository;
