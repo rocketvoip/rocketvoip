@@ -20,12 +20,12 @@ public class Goto {
     private String priority;
 
     @ManyToOne
-    private DialPlan nextDialPlan;
+    private DialPlan dialPlan;
 
-    public Goto(String name, String priority, DialPlan nextDialPlan) {
+    public Goto(String name, String priority, DialPlan dialPlan) {
         this.name = name;
         this.priority = priority;
-        this.nextDialPlan = nextDialPlan;
+        this.dialPlan = dialPlan;
     }
 
     public long getId() {
@@ -52,11 +52,11 @@ public class Goto {
         this.priority = priority;
     }
 
-    public DialPlan getNextDialPlan() {
-        return nextDialPlan;
+    public DialPlan getDialPlan() {
+        return dialPlan;
     }
 
-    public void setNextDialPlan(DialPlan nextDialPlan) {
-        this.nextDialPlan = nextDialPlan;
+    public void setDialPlan(DialPlan dialPlan) {
+        this.dialPlan = dialPlan;
     }
 }
