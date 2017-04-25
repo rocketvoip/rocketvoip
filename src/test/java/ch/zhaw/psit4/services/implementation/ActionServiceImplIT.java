@@ -90,7 +90,7 @@ public class ActionServiceImplIT {
     }
 
     @Test
-    public void savemultipleDialActions() throws Exception {
+    public void saveMultipleDialActions() throws Exception {
         databaseFixtureBuilder1.company(1).addDialPlan(1).addSipClient(1).addSipClient(2).build();
         DialPlanDto dialPlanDto = getDialPlan(getDialActionDtos(2), 1);
 
