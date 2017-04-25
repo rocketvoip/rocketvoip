@@ -1,9 +1,6 @@
 package ch.zhaw.psit4.data.jpa.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * @author Jona Braun
@@ -22,12 +19,13 @@ public class Goto {
     @Column(nullable = false)
     private String priority;
 
-    private long nextDialPlanId;
+    @ManyToOne
+    private DialPlan dialPlan;
 
-    public Goto(String name, String priority, long nextDialPlanId) {
+    public Goto(String name, String priority, DialPlan dialPlan) {
         this.name = name;
         this.priority = priority;
-        this.nextDialPlanId = nextDialPlanId;
+        this.dialPlan = dialPlan;
     }
 
     public long getId() {
@@ -54,12 +52,11 @@ public class Goto {
         this.priority = priority;
     }
 
-
-    public long getNextDialPlanId() {
-        return nextDialPlanId;
+    public DialPlan getDialPlan() {
+        return dialPlan;
     }
 
-    public void setNextDialPlanId(long nextDialPlanId) {
-        this.nextDialPlanId = nextDialPlanId;
+    public void setDialPlan(DialPlan dialPlan) {
+        this.dialPlan = dialPlan;
     }
 }
