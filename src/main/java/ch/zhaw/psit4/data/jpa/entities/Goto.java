@@ -25,10 +25,11 @@ public class Goto {
     @OneToOne
     private DialPlan nextDialPlan;
 
-    public Goto(String name, String priority, DialPlan dialPlan) {
+    public Goto(String name, String priority, DialPlan dialPlan, DialPlan nextDialPlan) {
         this.name = name;
         this.priority = priority;
         this.dialPlan = dialPlan;
+        this.nextDialPlan = nextDialPlan;
     }
 
     public DialPlan getNextDialPlan() {
