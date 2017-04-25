@@ -22,10 +22,21 @@ public class Goto {
     @ManyToOne
     private DialPlan dialPlan;
 
+    @OneToOne
+    private DialPlan nextDialPlan;
+
     public Goto(String name, String priority, DialPlan dialPlan) {
         this.name = name;
         this.priority = priority;
         this.dialPlan = dialPlan;
+    }
+
+    public DialPlan getNextDialPlan() {
+        return nextDialPlan;
+    }
+
+    public void setNextDialPlan(DialPlan nextDialPlan) {
+        this.nextDialPlan = nextDialPlan;
     }
 
     public long getId() {
