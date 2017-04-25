@@ -1,17 +1,19 @@
 package ch.zhaw.psit4.data.jpa.entities;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Set;
 
 /**
  * @author Jona Braun
  */
 
 @Entity
+@Table(name = "BRANCH")
 public class Branch {
 
     @Id
     @GeneratedValue
+    @Column(name="BRANCH_ID")
     private long id;
 
     @Column(nullable = false)
@@ -20,15 +22,15 @@ public class Branch {
     @Column(nullable = false)
     private String priority;
 
-    @ManyToMany
-    private List<DialPlan> nextDialPlans;
+    @OneToMany(mappedBy = "branch")
+    private Set<BranchDialplan> branchesDialplans;
 
     private int hangupTime;
 
-    public Branch(String name, String priority, List<DialPlan> nextDialPlans, int hangupTime) {
+    public Branch(String name, String priority, Set<BranchDialplan> branchesDialplans, int hangupTime) {
         this.name = name;
         this.priority = priority;
-        this.nextDialPlans = nextDialPlans;
+        this.branchesDialplans = branchesDialplans;
         this.hangupTime = hangupTime;
     }
 
@@ -56,12 +58,12 @@ public class Branch {
         this.priority = priority;
     }
 
-    public List<DialPlan> getNextDialPlans() {
-        return nextDialPlans;
+    public Set<BranchDialplan> getBranchesDialplans() {
+        return branchesDialplans;
     }
 
-    public void setNextDialPlans(List<DialPlan> nextDialPlans) {
-        this.nextDialPlans = nextDialPlans;
+    public void setBranchesDialplans(Set<BranchDialplan> branchesDialplans) {
+        this.branchesDialplans = branchesDialplans;
     }
 
     public int getHangupTime() {
