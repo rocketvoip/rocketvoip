@@ -1,6 +1,7 @@
 package ch.zhaw.psit4.services.implementation.adapters;
 
 import ch.zhaw.psit4.data.jpa.entities.Goto;
+import ch.zhaw.psit4.data.jpa.repositories.DialPlanRepository;
 import ch.zhaw.psit4.data.jpa.repositories.GotoRepository;
 import ch.zhaw.psit4.dto.ActionDto;
 import ch.zhaw.psit4.dto.DialPlanDto;
@@ -8,6 +9,8 @@ import ch.zhaw.psit4.dto.actions.GotoAction;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Map;
+
+import static ch.zhaw.psit4.services.implementation.DialPlanServiceImpl.dialPlanDtoToDialPlanEntity;
 
 /**
  * Helps to handle GoTo entities.
@@ -18,14 +21,16 @@ public class GotoAdapter {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private final GotoRepository gotoRepository;
+    private final DialPlanRepository dialPlanRepository;
 
-    public GotoAdapter(GotoRepository gotoRepository) {
+    public GotoAdapter(GotoRepository gotoRepository, DialPlanRepository dialPlanRepository) {
         this.gotoRepository = gotoRepository;
+        this.dialPlanRepository = dialPlanRepository;
     }
 
     private static GotoAction gotoEntityToGotoAction(Goto gotoEntity) {
         GotoAction gotoAction = new GotoAction();
-        gotoAction.setNextDialPlanId(gotoEntity.getNextDialPlanId());
+        gotoAction.setNextDialPlanId(gotoEntity.getNextDialPlan().getId());
         return gotoAction;
     }
 
@@ -59,7 +64,8 @@ public class GotoAdapter {
         Goto gotoEntity = new Goto(
                 actionDto.getName(),
                 Integer.toString(priority),
-                gotoAction.getNextDialPlanId());
+                dialPlanDtoToDialPlanEntity(dialPlanDto),
+                dialPlanRepository.findFirstById(gotoAction.getNextDialPlanId()));
 
         gotoRepository.save(gotoEntity);
     }

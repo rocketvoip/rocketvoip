@@ -33,7 +33,7 @@ public class ServiceAdapterConfiguration {
     }
 
     @Bean
-    public GotoAdapter gotoAdapter(GotoRepository gotoRepository) {
-        return new GotoAdapter(gotoRepository);
+    public GotoAdapter gotoAdapter(GotoRepository gotoRepository, DialPlanRepository dialPlanRepository) {
+        return new GotoAdapter(gotoRepository, dialPlanRepository);
     }
 }
