@@ -20,7 +20,9 @@ import ch.zhaw.psit4.domain.dialplan.applications.WaitApp;
  */
 public class DialPlanDefaultContextPrologBuilder extends DialPlanConfigBuilder {
     public static final String RINGING_PRIORITY = "1";
+    public static final int RINGING_ORDINAL = 1;
     public static final String WAIT_PRIORITY = "2";
+    public static final int WAIT_ORDINAL = 2;
     private boolean prologSet = false;
     private int waitInSeconds = 2;
 
@@ -81,6 +83,7 @@ public class DialPlanDefaultContextPrologBuilder extends DialPlanConfigBuilder {
     private DialPlanExtension makeWaitExtension(String phoneNumber) {
         DialPlanExtension waitExtension = new DialPlanExtension();
         waitExtension.setPriority(WAIT_PRIORITY);
+        waitExtension.setOrdinal(WAIT_ORDINAL);
         waitExtension.setPhoneNumber(phoneNumber);
 
         waitExtension.setDialPlanApplication(new WaitApp(waitInSeconds));
@@ -92,6 +95,7 @@ public class DialPlanDefaultContextPrologBuilder extends DialPlanConfigBuilder {
     private DialPlanExtension makeRingingExtension(String phoneNumber) {
         DialPlanExtension ringingExtension = new DialPlanExtension();
         ringingExtension.setPriority(RINGING_PRIORITY);
+        ringingExtension.setOrdinal(RINGING_ORDINAL);
         ringingExtension.setPhoneNumber(phoneNumber);
         ringingExtension.setDialPlanApplication(new RingingApp());
 

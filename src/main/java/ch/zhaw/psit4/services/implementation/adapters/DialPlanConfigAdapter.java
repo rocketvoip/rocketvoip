@@ -152,7 +152,7 @@ public class DialPlanConfigAdapter {
                             sayAlphaEntry -> {
                                 DialPlanExtension dialPlanExtension = new DialPlanExtension();
                                 dialPlanExtension.setPhoneNumber("s");
-                                dialPlanExtension.setPriority(sayAlphaEntry.getPriority());
+                                dialPlanExtension.setOrdinal(sayAlphaEntry.getPriority());
 
                                 dialPlanBuilder
                                         .addNewExtension(dialPlanExtension)
@@ -165,7 +165,7 @@ public class DialPlanConfigAdapter {
                             dialEntry -> {
                                 DialPlanExtension dialPlanExtension = new DialPlanExtension();
                                 dialPlanExtension.setPhoneNumber("s");
-                                dialPlanExtension.setPriority(dialEntry.getPriority());
+                                dialPlanExtension.setOrdinal(dialEntry.getPriority());
 
 
                                 DialApp dialApp = new DialApp(

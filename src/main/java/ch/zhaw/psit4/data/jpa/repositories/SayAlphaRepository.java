@@ -12,7 +12,7 @@ import java.util.List;
 public interface SayAlphaRepository extends CrudRepository<SayAlpha, Long> {
     List<SayAlpha> findByDialPlan(DialPlan dialPlan);
 
-    SayAlpha findFirstByDialPlan_IdAndPriority(long dialPlanId, String priority);
+    SayAlpha findFirstByDialPlan_IdAndPriority(long dialPlanId, int priority);
 
     List<SayAlpha> findAllByDialPlan_Id(long dialPlanId);
 

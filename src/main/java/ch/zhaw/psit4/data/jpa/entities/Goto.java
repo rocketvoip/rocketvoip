@@ -17,7 +17,7 @@ public class Goto {
     private String name;
 
     @Column(nullable = false)
-    private String priority;
+    private int priority;
 
     @ManyToOne
     private DialPlan dialPlan;
@@ -25,7 +25,7 @@ public class Goto {
     @OneToOne
     private DialPlan nextDialPlan;
 
-    public Goto(String name, String priority, DialPlan dialPlan, DialPlan nextDialPlan) {
+    public Goto(String name, int priority, DialPlan dialPlan, DialPlan nextDialPlan) {
         this.name = name;
         this.priority = priority;
         this.dialPlan = dialPlan;
@@ -56,11 +56,11 @@ public class Goto {
         this.name = name;
     }
 
-    public String getPriority() {
+    public int getPriority() {
         return priority;
     }
 
-    public void setPriority(String priority) {
+    public void setPriority(int priority) {
         this.priority = priority;
     }
 

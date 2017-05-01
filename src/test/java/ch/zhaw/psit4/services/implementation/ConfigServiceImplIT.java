@@ -104,8 +104,8 @@ public class ConfigServiceImplIT {
                 .addSipClient(2)
                 .addSipClient(3)
                 .addDialPlan(1)
-                .addSayAlpha(1, "1", 1)
-                .addDial(1, "2", 1, new int[]{2, 3})
+                .addSayAlpha(1, 1, 1)
+                .addDial(1, 2, 1, new int[]{2, 3})
                 .build();
 
         ByteArrayOutputStream baos = configServiceInterface.getAsteriskConfiguration();
