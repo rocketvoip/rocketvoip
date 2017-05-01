@@ -14,9 +14,9 @@ import ch.zhaw.psit4.testsupport.convenience.Json;
 import ch.zhaw.psit4.testsupport.fixtures.database.BeanConfiguration;
 import ch.zhaw.psit4.testsupport.fixtures.database.DatabaseFixtureBuilder;
 import ch.zhaw.psit4.testsupport.fixtures.dto.ActionDtoGenerator;
-import ch.zhaw.psit4.testsupport.fixtures.dto.DialActionGenerator;
+import ch.zhaw.psit4.testsupport.fixtures.dto.DialActionDtoGenerator;
 import ch.zhaw.psit4.testsupport.fixtures.dto.DialPlanDtoGenerator;
-import ch.zhaw.psit4.testsupport.fixtures.dto.SayAlphaActionGenerator;
+import ch.zhaw.psit4.testsupport.fixtures.dto.SayAlphaDtoActionGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
@@ -318,10 +318,10 @@ public class DialPlanControllerIT {
 
     private List<ActionDto> createActions(DatabaseFixtureBuilder dbBuilder) {
         List<SipClient> sipClientList = new ArrayList<>(dbBuilder.getSipClientList().values());
-        DialActionDto expectedDialActionDto = DialActionGenerator.createTestDialActionDtoFormSipClientEntities(11,
+        DialActionDto expectedDialActionDto = DialActionDtoGenerator.createTestDialActionDtoFormSipClientEntities(11,
                 sipClientList);
 
-        SayAlphaActionDto expectedSayAlphaActionDto = SayAlphaActionGenerator.createTestDialActionDto(21);
+        SayAlphaActionDto expectedSayAlphaActionDto = SayAlphaDtoActionGenerator.createTestDialActionDto(21);
 
         ObjectMapper objectMapper = new ObjectMapper();
 

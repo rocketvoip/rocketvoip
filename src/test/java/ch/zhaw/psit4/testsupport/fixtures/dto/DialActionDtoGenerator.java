@@ -11,10 +11,10 @@ import java.util.List;
 /**
  * @author Jona Braun
  */
-public class DialActionGenerator {
+public class DialActionDtoGenerator {
     public static final long NON_EXISTING_ID = 100;
 
-    private DialActionGenerator() {
+    private DialActionDtoGenerator() {
         //intentionally empty
     }
 

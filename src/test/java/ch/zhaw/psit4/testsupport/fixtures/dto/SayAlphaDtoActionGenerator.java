@@ -6,10 +6,10 @@ import ch.zhaw.psit4.testsupport.fixtures.general.SayAlphaActionData;
 /**
  * @author Jona Braun
  */
-public class SayAlphaActionGenerator {
+public class SayAlphaDtoActionGenerator {
     public static final long NON_EXISTING_ID = 100;
 
-    private SayAlphaActionGenerator() {
+    private SayAlphaDtoActionGenerator() {
         //intentionally empty
     }
 
