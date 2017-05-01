@@ -5,6 +5,7 @@ import ch.zhaw.psit4.domain.beans.DialPlanExtension;
 import ch.zhaw.psit4.domain.interfaces.DialPlanAppInterface;
 import ch.zhaw.psit4.testsupport.convenience.InputStreamStringyfier;
 import ch.zhaw.psit4.testsupport.fixtures.domain.DialPlanContextGenerator;
+import ch.zhaw.psit4.testsupport.fixtures.general.DialPlanContextData;
 import ch.zhaw.psit4.testsupport.fixtures.general.DialPlanData;
 import org.junit.Before;
 import org.junit.Test;
@@ -117,6 +118,41 @@ public class DialPlanDefaultContextPrologBuilderTest {
 
         assertThat(contexts.get(0).toDialPlanContextConfiguration(), equalTo(expected));
 
+    }
+
+    /**
+     * Test that we don't re-add the prolog upon reactivation of an existing context.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void reactivateContext() throws Exception {
+        DialPlanContext context1 = DialPlanContextGenerator.dialPlanContext(1);
+        DialPlanContext context2 = DialPlanContextGenerator.dialPlanContext(2);
+
+        dialPlanDefaultContextPrologBuilder.addNewContext(context1);
+        DialPlanExtension dialPlanExtension = makeMockDialPlan("n");
+
+        dialPlanDefaultContextPrologBuilder.addNewExtension(dialPlanExtension);
+
+        dialPlanDefaultContextPrologBuilder.addNewContext(context2);
+        dialPlanDefaultContextPrologBuilder.addNewExtension(dialPlanExtension);
+
+        dialPlanDefaultContextPrologBuilder.activateExistingContext(DialPlanContextData.getContextName(1));
+        dialPlanDefaultContextPrologBuilder.addNewExtension(dialPlanExtension);
+        String expected = InputStreamStringyfier.slurpStream(
+                DialPlanDefaultContextPrologBuilderTest.class.getResourceAsStream
+                        ("/fixtures/dialPlanDefaultContextPrologBuilderReactivateContextFixture.txt")
+        );
+
+        List<DialPlanContext> contexts = dialPlanDefaultContextPrologBuilder.build();
+        assertThat(contexts, hasSize(2));
+
+        // Manually compose the configuration.
+        String actual = contexts.get(0).toDialPlanContextConfiguration() +
+                contexts.get(1).toDialPlanContextConfiguration();
+
+        assertThat(actual, equalTo(expected));
     }
 
 
