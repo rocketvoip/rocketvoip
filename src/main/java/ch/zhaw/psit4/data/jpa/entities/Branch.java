@@ -25,7 +25,7 @@ public class Branch {
     @ManyToOne
     private DialPlan dialPlan;
 
-    @OneToMany(mappedBy = "branch")
+    @OneToMany
     private Set<BranchDialPlan> branchesDialPlans;
 
     private int hangupTime;
