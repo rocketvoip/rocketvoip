@@ -1,7 +1,5 @@
 package ch.zhaw.psit4.services.implementation;
 
-import ch.zhaw.psit4.data.jpa.repositories.DialPlanRepository;
-import ch.zhaw.psit4.data.jpa.repositories.SayAlphaRepository;
 import ch.zhaw.psit4.dto.ActionDto;
 import ch.zhaw.psit4.dto.DialPlanDto;
 import ch.zhaw.psit4.dto.SipClientDto;
@@ -47,15 +45,12 @@ import static org.junit.Assert.assertThat;
 @Import(BeanConfiguration.class)
 public class ActionServiceImplIT {
     @Autowired
-    SayAlphaRepository sayAlphaRepository;
-    @Autowired
     private ApplicationContext applicationContext;
     @Autowired
     private ActionServiceInterface actionServiceInterface;
     @Autowired
     private DialPlanServiceImpl dialPlanServiceImpl;
-    @Autowired
-    private DialPlanRepository dialPlanRepository;
+
     private DatabaseFixtureBuilder databaseFixtureBuilder1;
 
     @Before
