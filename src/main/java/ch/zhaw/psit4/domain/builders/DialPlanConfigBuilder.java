@@ -16,7 +16,7 @@ import java.util.List;
  * Build a DialPlan suitable for ConfigWriter using a fluent API.
  * <p>
  * Please note that the builder modifies the instances passed. Do not modify the instances outside the builder once
- * they have been passed.
+ * they have been passed to the builder.
  *
  * @author Rafael Ostertag
  */
@@ -39,6 +39,8 @@ public class DialPlanConfigBuilder {
 
     /**
      * Initialize with an existing builder.
+     *
+     * It will call {@code build()} on {@code dialPlanConfigBuilder}.
      *
      * @param dialPlanConfigBuilder existing DialPlanConfigBuilder
      */
@@ -245,6 +247,7 @@ public class DialPlanConfigBuilder {
 
         activeContext.validate();
         sortActiveExtension();
+        setAsteriskPrioritiesOnActiveExtension();
 
         // If we save an reactivated context, we must no re-add it to the list.
         if (!contextReactivated) {
@@ -253,6 +256,17 @@ public class DialPlanConfigBuilder {
 
         activeContext = null;
         contextReactivated = false;
+    }
+
+    /**
+     * Set the Asterisk priority before the active context is stowed away in the contexts list.
+     */
+    protected void setAsteriskPrioritiesOnActiveExtension() {
+        assert activeContext != null;
+        // Set all priorities to n, the first extension in the list is set to 1 later on.
+        activeContext.getDialPlanExtensionList().forEach(x -> x.setPriority("n"));
+        // Set the priority on the first extension in the list to 1. This is required by Asterisk
+        activeContext.getDialPlanExtensionList().stream().findFirst().ifPresent(x -> x.setPriority("1"));
     }
 
     private void assignActiveExtensionToActiveContext() {

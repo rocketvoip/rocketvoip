@@ -159,6 +159,7 @@ public class DialPlanConfigBuilderTest {
 
         DialPlanExtension dialPlanExtension1 = spy(DialPlanExtension.class);
         dialPlanExtension1.setPhoneNumber("1234");
+        dialPlanExtension1.setOrdinal(1);
         dialPlanExtension1.setPriority("1");
 
         DialPlanAppInterface dialPlanAppInterface1 = mock(DialPlanAppInterface.class);
@@ -169,6 +170,7 @@ public class DialPlanConfigBuilderTest {
 
         DialPlanExtension dialPlanExtension2 = spy(DialPlanExtension.class);
         dialPlanExtension2.setPhoneNumber("5678");
+        dialPlanExtension2.setOrdinal(1);
         dialPlanExtension2.setPriority("1");
 
         DialPlanAppInterface dialPlanAppInterface2 = mock(DialPlanAppInterface.class);
@@ -176,6 +178,7 @@ public class DialPlanConfigBuilderTest {
         // Must be added to first context
         DialPlanExtension dialPlanExtensionLateAdditions = spy(DialPlanExtension.class);
         dialPlanExtensionLateAdditions.setPhoneNumber("9101");
+        dialPlanExtensionLateAdditions.setOrdinal(2);
         dialPlanExtensionLateAdditions.setPriority("2");
 
         DialPlanAppInterface dialPlanAppInterfaceLateAddition = mock(DialPlanAppInterface.class);
@@ -195,11 +198,19 @@ public class DialPlanConfigBuilderTest {
 
         verify(dialPlanContext1, atLeastOnce()).validate();
         verify(dialPlanExtension1, atLeastOnce()).validate();
+        verify(dialPlanExtension1, atLeastOnce()).getOrdinal();
+        verify(dialPlanExtension1, atLeast(2)).setOrdinal(anyInt());
         verify(dialPlanAppInterface1, atLeastOnce()).validate();
+
         verify(dialPlanContext2, atLeastOnce()).validate();
         verify(dialPlanExtension2, atLeastOnce()).validate();
+        verify(dialPlanExtension2, atLeastOnce()).getOrdinal();
+        verify(dialPlanExtension2, atLeast(2)).setOrdinal(anyInt());
         verify(dialPlanAppInterface2, atLeastOnce()).validate();
+
         verify(dialPlanExtensionLateAdditions, atLeastOnce()).validate();
+        verify(dialPlanExtensionLateAdditions, atLeastOnce()).getOrdinal();
+        verify(dialPlanExtensionLateAdditions, atLeast(2)).setOrdinal(anyInt());
         verify(dialPlanAppInterfaceLateAddition, atLeastOnce()).validate();
 
         assertThat(dialPlanContextList, hasSize(2));
@@ -251,6 +262,264 @@ public class DialPlanConfigBuilderTest {
     }
 
     @Test
+    public void testOrdinalOrdering() throws Exception {
+        DialPlanContext dialPlanContext = spy(DialPlanContext.class);
+        dialPlanContext.setContextName("name");
+
+        DialPlanExtension dialPlanExtension1 = spy(DialPlanExtension.class);
+        dialPlanExtension1.setPhoneNumber("1234");
+        dialPlanExtension1.setOrdinal(2);
+        dialPlanExtension1.setPriority("1");
+
+        DialPlanExtension dialPlanExtension2 = spy(DialPlanExtension.class);
+        dialPlanExtension2.setPhoneNumber("5678");
+        dialPlanExtension2.setOrdinal(1);
+        dialPlanExtension2.setPriority("1");
+
+        DialPlanAppInterface dialPlanAppInterface1 = mock(DialPlanAppInterface.class);
+        DialPlanAppInterface dialPlanAppInterface2 = mock(DialPlanAppInterface.class);
+
+        List<DialPlanContext> configuration = dialPlanConfigBuilder
+                .addNewContext(dialPlanContext)
+                // The extensions are added in decreasing order. We expected them to be sorted in increasing order
+                .addNewExtension(dialPlanExtension1)
+                .setApplication(dialPlanAppInterface1)
+
+                .addNewExtension(dialPlanExtension2)
+                .setApplication(dialPlanAppInterface2)
+                .build();
+
+        verify(dialPlanContext, atLeastOnce()).validate();
+
+        verify(dialPlanExtension1, atLeastOnce()).validate();
+        verify(dialPlanExtension1, atLeastOnce()).getOrdinal();
+        verify(dialPlanExtension1, atLeast(2)).setOrdinal(anyInt());
+
+        verify(dialPlanExtension2, atLeastOnce()).validate();
+        verify(dialPlanExtension2, atLeastOnce()).getOrdinal();
+        verify(dialPlanExtension2, atLeast(2)).setOrdinal(anyInt());
+
+        verify(dialPlanAppInterface1, atLeastOnce()).validate();
+        verify(dialPlanAppInterface2, atLeastOnce()).validate();
+
+        assertThat(configuration, is(not(nullValue())));
+        assertThat(configuration, hasSize(1));
+
+        assertThat(configuration.get(0), equalTo(dialPlanContext));
+
+        // Remember, the builder has side effects, so it essentially updates dialPlanContext
+        assertThat(dialPlanContext.getDialPlanExtensionList(), is(not(nullValue())));
+        assertThat(dialPlanContext.getDialPlanExtensionList(), hasSize(2));
+        // Make sure the extensions have been reordered
+        assertThat(dialPlanContext.getDialPlanExtensionList().get(0), equalTo(dialPlanExtension2));
+        assertThat(dialPlanContext.getDialPlanExtensionList().get(1), equalTo(dialPlanExtension1));
+
+        assertThat(dialPlanExtension1.getDialPlanApplication(), equalTo(dialPlanAppInterface1));
+        assertThat(dialPlanExtension2.getDialPlanApplication(), equalTo(dialPlanAppInterface2));
+    }
+
+    @Test
+    public void testOrdinalOrderingWithTwoBuilders() throws Exception {
+        DialPlanContext dialPlanContext1 = spy(DialPlanContext.class);
+        dialPlanContext1.setContextName("name1");
+
+        DialPlanContext dialPlanContext2 = spy(DialPlanContext.class);
+        dialPlanContext2.setContextName("name2");
+
+        DialPlanExtension dialPlanExtension1 = spy(DialPlanExtension.class);
+        dialPlanExtension1.setPhoneNumber("1234");
+        dialPlanExtension1.setOrdinal(3);
+        dialPlanExtension1.setPriority("1");
+
+        DialPlanExtension dialPlanExtension2 = spy(DialPlanExtension.class);
+        dialPlanExtension2.setPhoneNumber("5678");
+        dialPlanExtension2.setOrdinal(2);
+        dialPlanExtension2.setPriority("1");
+
+        DialPlanExtension dialPlanExtension3 = spy(DialPlanExtension.class);
+        dialPlanExtension3.setPhoneNumber("9101");
+        dialPlanExtension3.setOrdinal(2);
+        dialPlanExtension3.setPriority("1");
+
+        DialPlanExtension dialPlanExtension4 = spy(DialPlanExtension.class);
+        dialPlanExtension4.setPhoneNumber("1112");
+        dialPlanExtension4.setOrdinal(1);
+        dialPlanExtension4.setPriority("1");
+
+        DialPlanExtension lateAddition = spy(DialPlanExtension.class);
+        lateAddition.setPhoneNumber("late");
+        lateAddition.setOrdinal(1);
+        lateAddition.setPriority("1");
+
+        DialPlanAppInterface dialPlanAppInterface1 = mock(DialPlanAppInterface.class);
+        DialPlanAppInterface dialPlanAppInterface2 = mock(DialPlanAppInterface.class);
+        DialPlanAppInterface dialPlanAppInterface3 = mock(DialPlanAppInterface.class);
+        DialPlanAppInterface dialPlanAppInterface4 = mock(DialPlanAppInterface.class);
+        DialPlanAppInterface dialPlanAppInterface5 = mock(DialPlanAppInterface.class);
+
+        dialPlanConfigBuilder
+                .addNewContext(dialPlanContext1)
+                // The extensions are added in decreasing order. We expected them to be sorted in increasing order
+                .addNewExtension(dialPlanExtension1)
+                .setApplication(dialPlanAppInterface1)
+
+                .addNewExtension(dialPlanExtension2)
+                .setApplication(dialPlanAppInterface2);
+
+        DialPlanConfigBuilder dialPlanConfigBuilder2 = new DialPlanConfigBuilder(dialPlanConfigBuilder);
+        List<DialPlanContext> configuration = dialPlanConfigBuilder2
+                .addNewContext(dialPlanContext2)
+                .addNewExtension(dialPlanExtension3)
+                .setApplication(dialPlanAppInterface3)
+
+                .addNewExtension(dialPlanExtension4)
+                .setApplication(dialPlanAppInterface4)
+
+                .activateExistingContext("name1")
+                .addNewExtension(lateAddition)
+                .setApplication(dialPlanAppInterface5)
+                .build();
+
+
+        verify(dialPlanContext1, atLeastOnce()).validate();
+
+        verify(dialPlanExtension1, atLeastOnce()).validate();
+        verify(dialPlanExtension1, atLeastOnce()).getOrdinal();
+        verify(dialPlanExtension1, atLeast(2)).setOrdinal(anyInt());
+
+        verify(dialPlanExtension2, atLeastOnce()).validate();
+        verify(dialPlanExtension2, atLeastOnce()).getOrdinal();
+        verify(dialPlanExtension2, atLeast(2)).setOrdinal(anyInt());
+
+        verify(dialPlanExtension3, atLeastOnce()).validate();
+        verify(dialPlanExtension3, atLeastOnce()).getOrdinal();
+        verify(dialPlanExtension3, atLeast(2)).setOrdinal(anyInt());
+
+        verify(dialPlanExtension4, atLeastOnce()).validate();
+        verify(dialPlanExtension4, atLeastOnce()).getOrdinal();
+        verify(dialPlanExtension4, atLeast(2)).setOrdinal(anyInt());
+
+        verify(lateAddition, atLeastOnce()).validate();
+        verify(lateAddition, atLeastOnce()).getOrdinal();
+        verify(lateAddition, atLeast(2)).setOrdinal(anyInt());
+
+        verify(dialPlanAppInterface1, atLeastOnce()).validate();
+        verify(dialPlanAppInterface2, atLeastOnce()).validate();
+        verify(dialPlanAppInterface3, atLeastOnce()).validate();
+        verify(dialPlanAppInterface4, atLeastOnce()).validate();
+        verify(dialPlanAppInterface5, atLeastOnce()).validate();
+
+        assertThat(configuration, is(not(nullValue())));
+        assertThat(configuration, hasSize(2));
+
+        assertThat(configuration.get(0), equalTo(dialPlanContext1));
+        assertThat(configuration.get(1), equalTo(dialPlanContext2));
+
+        // Remember, the builder has side effects, so it essentially updates dialPlanContext
+        assertThat(dialPlanContext1.getDialPlanExtensionList(), is(not(nullValue())));
+        assertThat(dialPlanContext1.getDialPlanExtensionList(), hasSize(3));
+        // Make sure the extensions have been reordered
+        assertThat(dialPlanContext1.getDialPlanExtensionList().get(0), equalTo(lateAddition));
+        assertThat(dialPlanContext1.getDialPlanExtensionList().get(1), equalTo(dialPlanExtension2));
+        assertThat(dialPlanContext1.getDialPlanExtensionList().get(2), equalTo((dialPlanExtension1)));
+
+        assertThat(dialPlanContext2.getDialPlanExtensionList(), is(not(nullValue())));
+        assertThat(dialPlanContext2.getDialPlanExtensionList(), hasSize(2));
+
+        // Make sure the extensions have been reordered
+        assertThat(dialPlanContext2.getDialPlanExtensionList().get(0), equalTo(dialPlanExtension4));
+        assertThat(dialPlanContext2.getDialPlanExtensionList().get(1), equalTo(dialPlanExtension3));
+
+        assertThat(dialPlanExtension1.getDialPlanApplication(), equalTo(dialPlanAppInterface1));
+        assertThat(dialPlanExtension2.getDialPlanApplication(), equalTo(dialPlanAppInterface2));
+        assertThat(dialPlanExtension3.getDialPlanApplication(), equalTo(dialPlanAppInterface3));
+        assertThat(dialPlanExtension4.getDialPlanApplication(), equalTo(dialPlanAppInterface4));
+        assertThat(lateAddition.getDialPlanApplication(), equalTo(dialPlanAppInterface5));
+    }
+
+    @Test
+    public void testAsteriskPriority() throws Exception {
+        DialPlanContext dialPlanContext = spy(DialPlanContext.class);
+        dialPlanContext.setContextName("name");
+
+        DialPlanExtension dialPlanExtension1 = spy(DialPlanExtension.class);
+        dialPlanExtension1.setPriority("1");
+        dialPlanExtension1.setOrdinal(1);
+        dialPlanExtension1.setPhoneNumber("s");
+
+        DialPlanExtension dialPlanExtension2 = spy(DialPlanExtension.class);
+        dialPlanExtension2.setPriority("2");
+        dialPlanExtension2.setOrdinal(2);
+        dialPlanExtension2.setPhoneNumber("s");
+
+        DialPlanAppInterface dialPlanAppInterface1 = mock(DialPlanAppInterface.class);
+        DialPlanAppInterface dialPlanAppInterface2 = mock(DialPlanAppInterface.class);
+
+        List<DialPlanContext> configuration = dialPlanConfigBuilder
+                .addNewContext(dialPlanContext)
+                .addNewExtension(dialPlanExtension1)
+                .setApplication(dialPlanAppInterface1)
+                .addNewExtension(dialPlanExtension2)
+                .setApplication(dialPlanAppInterface2)
+                .build();
+
+        assertThat(configuration, hasSize(1));
+        assertThat(configuration.get(0), equalTo(dialPlanContext));
+
+        assertThat(dialPlanContext.getDialPlanExtensionList(), hasSize(2));
+        assertThat(dialPlanContext.getDialPlanExtensionList().get(0), equalTo(dialPlanExtension1));
+        assertThat(dialPlanContext.getDialPlanExtensionList().get(1), equalTo(dialPlanExtension2));
+
+        assertThat(dialPlanExtension1.getPriority(), equalTo("1"));
+        assertThat(dialPlanExtension1.getOrdinal(), equalTo(100));
+
+        assertThat(dialPlanExtension2.getPriority(), equalTo("n"));
+        assertThat(dialPlanExtension2.getOrdinal(), equalTo(200));
+
+    }
+
+    @Test
+    public void testAsteriskPriorityAdjustedAccordingOrdinal() throws Exception {
+        DialPlanContext dialPlanContext = spy(DialPlanContext.class);
+        dialPlanContext.setContextName("name");
+
+        DialPlanExtension dialPlanExtension1 = spy(DialPlanExtension.class);
+        dialPlanExtension1.setPriority("1");
+        dialPlanExtension1.setOrdinal(3);
+        dialPlanExtension1.setPhoneNumber("s");
+
+        DialPlanExtension dialPlanExtension2 = spy(DialPlanExtension.class);
+        dialPlanExtension2.setPriority("2");
+        dialPlanExtension2.setOrdinal(1);
+        dialPlanExtension2.setPhoneNumber("s");
+
+        DialPlanAppInterface dialPlanAppInterface1 = mock(DialPlanAppInterface.class);
+        DialPlanAppInterface dialPlanAppInterface2 = mock(DialPlanAppInterface.class);
+
+        List<DialPlanContext> configuration = dialPlanConfigBuilder
+                .addNewContext(dialPlanContext)
+                .addNewExtension(dialPlanExtension1)
+                .setApplication(dialPlanAppInterface1)
+                .addNewExtension(dialPlanExtension2)
+                .setApplication(dialPlanAppInterface2)
+                .build();
+
+        assertThat(configuration, hasSize(1));
+        assertThat(configuration.get(0), equalTo(dialPlanContext));
+
+        assertThat(dialPlanContext.getDialPlanExtensionList(), hasSize(2));
+        assertThat(dialPlanContext.getDialPlanExtensionList().get(0), equalTo(dialPlanExtension2));
+        assertThat(dialPlanContext.getDialPlanExtensionList().get(1), equalTo(dialPlanExtension1));
+
+        assertThat(dialPlanExtension1.getPriority(), equalTo("n"));
+        assertThat(dialPlanExtension1.getOrdinal(), equalTo(300));
+
+        assertThat(dialPlanExtension2.getPriority(), equalTo("1"));
+        assertThat(dialPlanExtension2.getOrdinal(), equalTo(100));
+
+    }
+
+    @Test
     public void testExhaustiveConfiguration() throws Exception {
         /*
          The configuration would look like this:
@@ -271,18 +540,22 @@ public class DialPlanConfigBuilderTest {
 
         DialPlanExtension dialPlanExtension1 = spy(DialPlanExtension.class);
         dialPlanExtension1.setPhoneNumber("1234");
+        dialPlanExtension1.setOrdinal(1);
         dialPlanExtension1.setPriority("1");
 
         DialPlanExtension dialPlanExtension2 = spy(DialPlanExtension.class);
         dialPlanExtension2.setPhoneNumber("5678");
+        dialPlanExtension2.setOrdinal(2);
         dialPlanExtension2.setPriority("2");
 
         DialPlanExtension dialPlanExtension3 = spy(DialPlanExtension.class);
         dialPlanExtension3.setPhoneNumber("1111");
+        dialPlanExtension3.setOrdinal(1);
         dialPlanExtension3.setPriority("1");
 
         DialPlanExtension dialPlanExtension4 = spy(DialPlanExtension.class);
         dialPlanExtension4.setPhoneNumber("2222");
+        dialPlanExtension4.setOrdinal(2);
         dialPlanExtension4.setPriority("2");
 
         DialPlanAppInterface dialPlanAppInterface1 = mock(DialPlanAppInterface.class);
@@ -306,10 +579,23 @@ public class DialPlanConfigBuilderTest {
 
         verify(dialPlanContext1, atLeastOnce()).validate();
         verify(dialPlanContext2, atLeastOnce()).validate();
+
         verify(dialPlanExtension1, atLeastOnce()).validate();
+        verify(dialPlanExtension1, atLeastOnce()).getOrdinal();
+        verify(dialPlanExtension1, atLeast(2)).setOrdinal(anyInt());
+
         verify(dialPlanExtension2, atLeastOnce()).validate();
+        verify(dialPlanExtension2, atLeastOnce()).getOrdinal();
+        verify(dialPlanExtension2, atLeast(2)).setOrdinal(anyInt());
+
         verify(dialPlanExtension3, atLeastOnce()).validate();
+        verify(dialPlanExtension3, atLeastOnce()).getOrdinal();
+        verify(dialPlanExtension3, atLeast(2)).setOrdinal(anyInt());
+
         verify(dialPlanExtension4, atLeastOnce()).validate();
+        verify(dialPlanExtension4, atLeastOnce()).getOrdinal();
+        verify(dialPlanExtension4, atLeast(2)).setOrdinal(anyInt());
+
         verify(dialPlanAppInterface1, atLeastOnce()).validate();
         verify(dialPlanAppInterface2, atLeastOnce()).validate();
         verify(dialPlanAppInterface3, atLeastOnce()).validate();
@@ -363,18 +649,22 @@ public class DialPlanConfigBuilderTest {
 
         DialPlanExtension dialPlanExtension1 = spy(DialPlanExtension.class);
         dialPlanExtension1.setPhoneNumber("1234");
+        dialPlanExtension1.setOrdinal(1);
         dialPlanExtension1.setPriority("1");
 
         DialPlanExtension dialPlanExtension2 = spy(DialPlanExtension.class);
         dialPlanExtension2.setPhoneNumber("5678");
+        dialPlanExtension2.setOrdinal(2);
         dialPlanExtension2.setPriority("2");
 
         DialPlanExtension dialPlanExtension3 = spy(DialPlanExtension.class);
         dialPlanExtension3.setPhoneNumber("1111");
+        dialPlanExtension3.setOrdinal(1);
         dialPlanExtension3.setPriority("1");
 
         DialPlanExtension dialPlanExtension4 = spy(DialPlanExtension.class);
         dialPlanExtension4.setPhoneNumber("2222");
+        dialPlanExtension4.setOrdinal(2);
         dialPlanExtension4.setPriority("2");
 
         DialPlanAppInterface dialPlanAppInterface1 = mock(DialPlanAppInterface.class);
@@ -404,10 +694,23 @@ public class DialPlanConfigBuilderTest {
 
         verify(dialPlanContext1, atLeastOnce()).validate();
         verify(dialPlanContext2, atLeastOnce()).validate();
+
         verify(dialPlanExtension1, atLeastOnce()).validate();
+        verify(dialPlanExtension1, atLeastOnce()).getOrdinal();
+        verify(dialPlanExtension1, atLeast(2)).setOrdinal(anyInt());
+
         verify(dialPlanExtension2, atLeastOnce()).validate();
+        verify(dialPlanExtension2, atLeastOnce()).getOrdinal();
+        verify(dialPlanExtension2, atLeast(2)).setOrdinal(anyInt());
+
         verify(dialPlanExtension3, atLeastOnce()).validate();
+        verify(dialPlanExtension3, atLeastOnce()).getOrdinal();
+        verify(dialPlanExtension3, atLeast(2)).setOrdinal(anyInt());
+
         verify(dialPlanExtension4, atLeastOnce()).validate();
+        verify(dialPlanExtension4, atLeastOnce()).getOrdinal();
+        verify(dialPlanExtension4, atLeast(2)).setOrdinal(anyInt());
+
         verify(dialPlanAppInterface1, atLeastOnce()).validate();
         verify(dialPlanAppInterface2, atLeastOnce()).validate();
         verify(dialPlanAppInterface3, atLeastOnce()).validate();
@@ -461,18 +764,22 @@ public class DialPlanConfigBuilderTest {
 
         DialPlanExtension dialPlanExtension1 = spy(DialPlanExtension.class);
         dialPlanExtension1.setPhoneNumber("1234");
+        dialPlanExtension1.setOrdinal(1);
         dialPlanExtension1.setPriority("1");
 
         DialPlanExtension dialPlanExtension2 = spy(DialPlanExtension.class);
         dialPlanExtension2.setPhoneNumber("5678");
+        dialPlanExtension2.setOrdinal(2);
         dialPlanExtension2.setPriority("2");
 
         DialPlanExtension dialPlanExtension3 = spy(DialPlanExtension.class);
         dialPlanExtension3.setPhoneNumber("1111");
+        dialPlanExtension3.setOrdinal(1);
         dialPlanExtension3.setPriority("1");
 
         DialPlanExtension dialPlanExtension4 = spy(DialPlanExtension.class);
         dialPlanExtension4.setPhoneNumber("2222");
+        dialPlanExtension4.setOrdinal(2);
         dialPlanExtension4.setPriority("2");
 
         DialPlanAppInterface dialPlanAppInterface1 = mock(DialPlanAppInterface.class);
@@ -500,10 +807,23 @@ public class DialPlanConfigBuilderTest {
 
         verify(dialPlanContext1, atLeastOnce()).validate();
         verify(dialPlanContext2, atLeastOnce()).validate();
+
         verify(dialPlanExtension1, atLeastOnce()).validate();
+        verify(dialPlanExtension1, atLeastOnce()).getOrdinal();
+        verify(dialPlanExtension1, atLeast(2)).setOrdinal(anyInt());
+
         verify(dialPlanExtension2, atLeastOnce()).validate();
+        verify(dialPlanExtension2, atLeastOnce()).getOrdinal();
+        verify(dialPlanExtension2, atLeast(2)).setOrdinal(anyInt());
+
         verify(dialPlanExtension3, atLeastOnce()).validate();
+        verify(dialPlanExtension3, atLeastOnce()).getOrdinal();
+        verify(dialPlanExtension3, atLeast(2)).setOrdinal(anyInt());
+
         verify(dialPlanExtension4, atLeastOnce()).validate();
+        verify(dialPlanExtension4, atLeastOnce()).getOrdinal();
+        verify(dialPlanExtension4, atLeast(2)).setOrdinal(anyInt());
+
         verify(dialPlanAppInterface1, atLeastOnce()).validate();
         verify(dialPlanAppInterface2, atLeastOnce()).validate();
         verify(dialPlanAppInterface3, atLeastOnce()).validate();

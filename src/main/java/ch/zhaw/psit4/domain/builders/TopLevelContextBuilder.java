@@ -71,4 +71,11 @@ public class TopLevelContextBuilder extends DialPlanConfigBuilder {
 
         return this;
     }
+
+    @Override
+    protected void setAsteriskPrioritiesOnActiveExtension() {
+        // We cannot use the default priorities assigned by DialPlanConfigBuilder. We require all priorities to be "1".
+        DialPlanContext activeContext = getActiveContext();
+        activeContext.getDialPlanExtensionList().forEach(x -> x.setPriority("1"));
+    }
 }
