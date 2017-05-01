@@ -18,11 +18,13 @@ public class ServiceAdapterConfiguration {
     @Bean
     public ActionServiceImpl actionServiceImpl(SayAlphaAdapter sayAlphaAdapter,
                                                DialAdapter dialAdapter,
-                                               GotoAdapter gotoAdapter) {
+                                               GotoAdapter gotoAdapter,
+                                               BranchAdapter branchAdapter) {
         List<ActionAdapterInterface> actionAdapterInterfaceList = new ArrayList<>();
         actionAdapterInterfaceList.add(dialAdapter);
         actionAdapterInterfaceList.add(sayAlphaAdapter);
         actionAdapterInterfaceList.add(gotoAdapter);
+        actionAdapterInterfaceList.add(branchAdapter);
         return new ActionServiceImpl(actionAdapterInterfaceList);
     }
 
@@ -50,5 +52,11 @@ public class ServiceAdapterConfiguration {
     @Bean
     public GotoAdapter gotoAdapter(GotoRepository gotoRepository, DialPlanRepository dialPlanRepository) {
         return new GotoAdapter(gotoRepository, dialPlanRepository);
+    }
+
+    @Bean
+    public BranchAdapter brancAdapter(BranchRepository branchRepository, DialPlanRepository dialPlanRepository,
+                                      BranchDialPlanRepository branchDialPlanRepository) {
+        return new BranchAdapter(branchRepository, dialPlanRepository, branchDialPlanRepository);
     }
 }

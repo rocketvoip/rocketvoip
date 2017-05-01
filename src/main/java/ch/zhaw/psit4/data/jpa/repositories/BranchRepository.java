@@ -17,4 +17,5 @@ public interface BranchRepository extends CrudRepository<Branch, Long> {
     List<Branch> findAllByDialPlan_Id(long dialPlanId);
 
     void deleteAllByDialPlan_Id(long dialPlanId);
+
 }
