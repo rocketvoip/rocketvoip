@@ -15,6 +15,8 @@ import java.util.List;
  * <p>
  * Please note that the builder modifies the instances passed. Do not modify the instances outside the builder once
  * they have been passed.
+ * <p>
+ * You most likely don't want to use this builder. Use specialized builders derived from it.
  *
  * @author Rafael Ostertag
  */
