@@ -3,11 +3,7 @@ package ch.zhaw.psit4.services.implementation;
 import ch.zhaw.psit4.dto.ActionDto;
 import ch.zhaw.psit4.dto.DialPlanDto;
 import ch.zhaw.psit4.dto.actions.ActionInterface;
-import ch.zhaw.psit4.services.implementation.adapters.DialAdapter;
-import ch.zhaw.psit4.services.implementation.adapters.GotoAdapter;
-import ch.zhaw.psit4.services.implementation.adapters.SayAlphaAdapter;
 import ch.zhaw.psit4.services.interfaces.ActionServiceInterface;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -18,19 +14,12 @@ import java.util.List;
  *
  * @author Jona Braun
  */
-@Service
 @Transactional
 public class ActionServiceImpl implements ActionServiceInterface {
     private final List<ActionInterface> actionInterfaceList;
 
-    public ActionServiceImpl(SayAlphaAdapter sayAlphaAdapter,
-                             DialAdapter dialAdapter,
-                             GotoAdapter gotoAdapter) {
-
-        this.actionInterfaceList = new ArrayList<>();
-        actionInterfaceList.add(dialAdapter);
-        actionInterfaceList.add(sayAlphaAdapter);
-        actionInterfaceList.add(gotoAdapter);
+    public ActionServiceImpl(List<ActionInterface> actionInterfaceList) {
+        this.actionInterfaceList = actionInterfaceList;
     }
 
     /**
@@ -104,9 +93,7 @@ public class ActionServiceImpl implements ActionServiceInterface {
     }
 
     private void deleteAllActions(long dialPlanId) {
-        actionInterfaceList.forEach(actionInterface -> {
-            actionInterface.deleteActionDto((dialPlanId));
-        });
+        actionInterfaceList.forEach(actionInterface -> actionInterface.deleteActionDto((dialPlanId)));
     }
 
 }
