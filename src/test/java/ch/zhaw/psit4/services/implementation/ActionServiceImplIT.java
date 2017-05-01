@@ -6,7 +6,6 @@ import ch.zhaw.psit4.dto.ActionDto;
 import ch.zhaw.psit4.dto.DialPlanDto;
 import ch.zhaw.psit4.dto.SipClientDto;
 import ch.zhaw.psit4.dto.actions.DialAction;
-import ch.zhaw.psit4.dto.actions.GotoAction;
 import ch.zhaw.psit4.dto.actions.SayAlphaAction;
 import ch.zhaw.psit4.services.interfaces.ActionServiceInterface;
 import ch.zhaw.psit4.testsupport.fixtures.database.BeanConfiguration;
@@ -29,7 +28,6 @@ import java.util.List;
 import static ch.zhaw.psit4.services.implementation.SipClientServiceImpl.sipClientEntityToSipClientDto;
 import static ch.zhaw.psit4.testsupport.matchers.ActionDtoPartialMatcher.actionDtoAlmostEqualTo;
 import static ch.zhaw.psit4.testsupport.matchers.DialActionEqualTo.dialActionEqualTo;
-import static ch.zhaw.psit4.testsupport.matchers.GotoActionEqualTo.gotoActionEqualTo;
 import static ch.zhaw.psit4.testsupport.matchers.SayAlphaActionEqualTo.sayAlphaActionEqualTo;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.core.Is.is;
@@ -90,7 +88,7 @@ public class ActionServiceImplIT {
     }
 
     @Test
-    public void saveMultipleDialActions() throws Exception {
+    public void saveDialAndSayAlphaActions() throws Exception {
         databaseFixtureBuilder1.company(1).addDialPlan(1).addSipClient(1).addSipClient(2).build();
         DialPlanDto dialPlanDto = getDialPlan(getDialActionDtos(2), 1);
 
@@ -113,26 +111,6 @@ public class ActionServiceImplIT {
         DialAction expectedDialAction1 = objectMapper.convertValue(expected1.getTypeSpecific(), DialAction.class);
         DialAction actualDialAction1 = objectMapper.convertValue(actual1.getTypeSpecific(), DialAction.class);
         assertThat(expectedDialAction1, dialActionEqualTo(actualDialAction1));
-    }
-
-    @Test
-    public void saveGotoActions() throws Exception {
-        databaseFixtureBuilder1.company(1).addDialPlan(1).build();
-
-        DialPlanDto dialPlanDto = getDialPlan(getGotoActionDtos(2), 1);
-
-        actionServiceInterface.saveActions(dialPlanDto);
-
-        List<ActionDto> actionDtos = actionServiceInterface.retrieveActions(dialPlanDto.getId());
-        ActionDto expected = dialPlanDto.getActions().get(0);
-        ActionDto actual = actionDtos.get(0);
-        assertThat(expected, actionDtoAlmostEqualTo(actual));
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        GotoAction expectedDialAction = objectMapper.convertValue(expected.getTypeSpecific(), GotoAction.class);
-        GotoAction actualDialAction = objectMapper.convertValue(actual.getTypeSpecific(), GotoAction.class);
-        assertThat(expectedDialAction, gotoActionEqualTo(actualDialAction));
-
     }
 
     @Test
@@ -177,7 +155,7 @@ public class ActionServiceImplIT {
 
     @Test
     public void deleteActions() throws Exception {
-        databaseFixtureBuilder1.company(1).addDialPlan(1).addDialPlan(2).addSipClient(1).addSipClient(2).build();
+        databaseFixtureBuilder1.company(1).addDialPlan(1).addSipClient(1).addSipClient(2).build();
         DialPlanDto dialPlanDto = getDialPlan(getDialActionDto(1), 1);
         actionServiceInterface.saveActions(dialPlanDto);
 
@@ -192,6 +170,8 @@ public class ActionServiceImplIT {
         List<ActionDto> actualActionDtos = actionServiceInterface.retrieveActions(dialPlanDto.getId());
 
         assertThat(actualActionDtos, is(empty()));
+
+
     }
 
     private DialPlanDto getDialPlan(List<ActionDto> actionDtos, int number) {
@@ -230,30 +210,6 @@ public class ActionServiceImplIT {
 
         ObjectMapper objM = new ObjectMapper();
         LinkedHashMap linkedHashMap = objM.convertValue(sayAlphaAction, LinkedHashMap.class);
-
-        actionDto.setTypeSpecific(linkedHashMap);
-        return actionDto;
-    }
-
-    private List<ActionDto> getGotoActionDtos(int number) {
-        List<ActionDto> actionDtos = new ArrayList<>();
-        for (int i = 1; i <= number; i++) {
-            actionDtos.add(getGotoActionDto(i));
-        }
-        return actionDtos;
-    }
-
-    private ActionDto getGotoActionDto(int number) {
-        ActionDto actionDto = new ActionDto();
-        actionDto.setName("may fancy action " + number);
-        actionDto.setType("Goto");
-
-        GotoAction gotoAction = new GotoAction();
-        databaseFixtureBuilder1.addDialPlan(number * 10).build();
-        gotoAction.setNextDialPlanId(databaseFixtureBuilder1.getDialPlanList().get(number * 10).getId());
-
-        ObjectMapper objM = new ObjectMapper();
-        LinkedHashMap linkedHashMap = objM.convertValue(gotoAction, LinkedHashMap.class);
 
         actionDto.setTypeSpecific(linkedHashMap);
         return actionDto;

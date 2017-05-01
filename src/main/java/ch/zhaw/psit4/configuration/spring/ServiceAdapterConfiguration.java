@@ -1,7 +1,13 @@
 package ch.zhaw.psit4.configuration.spring;
 
-import ch.zhaw.psit4.data.jpa.repositories.*;
-import ch.zhaw.psit4.services.implementation.adapters.*;
+import ch.zhaw.psit4.data.jpa.repositories.DialPlanRepository;
+import ch.zhaw.psit4.data.jpa.repositories.DialRepository;
+import ch.zhaw.psit4.data.jpa.repositories.SayAlphaRepository;
+import ch.zhaw.psit4.data.jpa.repositories.SipClientRepository;
+import ch.zhaw.psit4.services.implementation.adapters.DialAdapter;
+import ch.zhaw.psit4.services.implementation.adapters.DialPlanConfigAdapter;
+import ch.zhaw.psit4.services.implementation.adapters.SayAlphaAdapter;
+import ch.zhaw.psit4.services.implementation.adapters.SipClientConfigAdapter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -30,10 +36,5 @@ public class ServiceAdapterConfiguration {
     @Bean
     public DialAdapter dialAdapter(DialRepository dialRepository) {
         return new DialAdapter(dialRepository);
-    }
-
-    @Bean
-    public GotoAdapter gotoAdapter(GotoRepository gotoRepository, DialPlanRepository dialPlanRepository) {
-        return new GotoAdapter(gotoRepository, dialPlanRepository);
     }
 }

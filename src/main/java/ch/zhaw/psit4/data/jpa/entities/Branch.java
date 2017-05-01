@@ -22,14 +22,18 @@ public class Branch {
     @Column(nullable = false)
     private int priority;
 
+    @ManyToOne
+    private DialPlan dialPlan;
+
     @OneToMany(mappedBy = "branch")
     private Set<BranchDialPlan> branchesDialPlans;
 
     private int hangupTime;
 
-    public Branch(String name, int priority, Set<BranchDialPlan> branchesDialPlans, int hangupTime) {
+    public Branch(String name, int priority, DialPlan dialPlan, Set<BranchDialPlan> branchesDialPlans, int hangupTime) {
         this.name = name;
         this.priority = priority;
+        this.dialPlan = dialPlan;
         this.branchesDialPlans = branchesDialPlans;
         this.hangupTime = hangupTime;
     }
@@ -72,5 +76,13 @@ public class Branch {
 
     public void setHangupTime(int hangupTime) {
         this.hangupTime = hangupTime;
+    }
+
+    public DialPlan getDialPlan() {
+        return dialPlan;
+    }
+
+    public void setDialPlan(DialPlan dialPlan) {
+        this.dialPlan = dialPlan;
     }
 }

@@ -15,6 +15,7 @@ public final class BranchEntity {
         return new Branch(BranchData.getName(number),
                 priority,
                 null,
+                null,
                 BranchData.getHangupTime(number));
     }
 }
