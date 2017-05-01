@@ -42,7 +42,7 @@ public class ConfigurationController {
         httpHeaders.set(HttpHeaders.CONTENT_DISPOSITION,
                 String.format("attachment; filename=\"%s\"", ZIP_FILE_NAME));
         byte[] returnValue = configServiceInterface.getAsteriskConfiguration().toByteArray();
-        return new ResponseEntity<byte[]>(returnValue, httpHeaders, HttpStatus.OK);
+        return new ResponseEntity<>(returnValue, httpHeaders, HttpStatus.OK);
     }
 
     @ExceptionHandler({InvalidConfigurationException.class, ZipFileCreationException.class})

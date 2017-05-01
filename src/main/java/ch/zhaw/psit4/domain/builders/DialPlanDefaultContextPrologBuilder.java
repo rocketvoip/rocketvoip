@@ -51,10 +51,8 @@ public class DialPlanDefaultContextPrologBuilder extends DialPlanConfigBuilder {
             return this;
         }
 
-        // We need an active extension in oder to figure out what the phone number is.
-        DialPlanExtension activeDialPlanExtension = getActiveExtension();
-
-        // Now, we know the phone number, so we create the first entry of our prolog
+        // Create the first entry of our prolog and make it use the same phone number ('s') as the extension
+        // referencing this extension
         DialPlanExtension ringingExtension = makeRingingExtension("s");
         // and add it to the front of the active context
         getActiveContext().getDialPlanExtensionList().add(0, ringingExtension);
