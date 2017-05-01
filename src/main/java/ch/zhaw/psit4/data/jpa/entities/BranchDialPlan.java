@@ -8,7 +8,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "BRANCH_DIALPLAN")
-public class BranchDialplan {
+public class BranchDialPlan {
 
     @Id
     @GeneratedValue
@@ -24,8 +24,13 @@ public class BranchDialplan {
     private DialPlan dialPlan;
 
     @Column
-    private int button;
+    private int buttonNumber;
 
+    public BranchDialPlan(Branch branch, DialPlan dialPlan, int buttonNumber) {
+        this.branch = branch;
+        this.dialPlan = dialPlan;
+        this.buttonNumber = buttonNumber;
+    }
 
     public Branch getBranch() {
         return branch;
@@ -43,11 +48,11 @@ public class BranchDialplan {
         this.dialPlan = dialPlan;
     }
 
-    public int getButton() {
-        return button;
+    public int getButtonNumber() {
+        return buttonNumber;
     }
 
-    public void setButton(int button) {
-        this.button = button;
+    public void setButtonNumber(int buttonNumber) {
+        this.buttonNumber = buttonNumber;
     }
 }

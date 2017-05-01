@@ -23,14 +23,14 @@ public class Branch {
     private int priority;
 
     @OneToMany(mappedBy = "branch")
-    private Set<BranchDialplan> branchesDialplans;
+    private Set<BranchDialPlan> branchesDialPlans;
 
     private int hangupTime;
 
-    public Branch(String name, int priority, Set<BranchDialplan> branchesDialplans, int hangupTime) {
+    public Branch(String name, int priority, Set<BranchDialPlan> branchesDialPlans, int hangupTime) {
         this.name = name;
         this.priority = priority;
-        this.branchesDialplans = branchesDialplans;
+        this.branchesDialPlans = branchesDialPlans;
         this.hangupTime = hangupTime;
     }
 
@@ -58,12 +58,12 @@ public class Branch {
         this.priority = priority;
     }
 
-    public Set<BranchDialplan> getBranchesDialplans() {
-        return branchesDialplans;
+    public Set<BranchDialPlan> getBranchesDialPlans() {
+        return branchesDialPlans;
     }
 
-    public void setBranchesDialplans(Set<BranchDialplan> branchesDialplans) {
-        this.branchesDialplans = branchesDialplans;
+    public void setBranchesDialPlans(Set<BranchDialPlan> branchesDialPlans) {
+        this.branchesDialPlans = branchesDialPlans;
     }
 
     public int getHangupTime() {

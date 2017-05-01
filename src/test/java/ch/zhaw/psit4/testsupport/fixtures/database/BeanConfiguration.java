@@ -24,10 +24,11 @@ public class BeanConfiguration {
                                                                     DialRepository dialRepository,
                                                                     SayAlphaRepository sayAlphaRepository,
                                                                     GotoRepository gotoRepository,
-                                                                    BranchRepository branchRepository) {
+                                                                    BranchRepository branchRepository,
+                                                                    BranchDialPlanRepository branchDialPlanRepository) {
             return new DatabaseFixtureBuilder(companyRepository, adminRepository, sipClientRepository,
                     dialPlanRepository, dialRepository, sayAlphaRepository, gotoRepository,
-                    branchRepository);
+                    branchRepository, branchDialPlanRepository);
         }
     }
 }

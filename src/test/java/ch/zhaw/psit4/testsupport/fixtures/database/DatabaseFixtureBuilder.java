@@ -20,6 +20,8 @@ public class DatabaseFixtureBuilder {
     private final SayAlphaRepository sayAlphaRepository;
     private final GotoRepository gotoRepository;
     private final BranchRepository branchRepository;
+    private final BranchDialPlanRepository branchDialPlanRepository;
+
     private Collection<Company> company;
     private Map<Integer, Admin> adminList;
     private Map<Integer, SipClient> sipClientList;
@@ -28,12 +30,14 @@ public class DatabaseFixtureBuilder {
     private Map<Integer, SayAlpha> sayAlphaList;
     private Map<Integer, Goto> gotoList;
     private Map<Integer, Branch> branchList;
+    private Map<Integer, BranchDialPlan> branchDialPlanList;
 
     public DatabaseFixtureBuilder(CompanyRepository companyRepository, AdminRepository adminRepository,
                                   SipClientRepository sipClientRepository, DialPlanRepository dialPlanRepository,
                                   DialRepository dialRepository, SayAlphaRepository sayAlphaRepository,
                                   GotoRepository gotoRepository,
-                                  BranchRepository branchRepository) {
+                                  BranchRepository branchRepository,
+                                  BranchDialPlanRepository branchDialPlanRepository) {
         this.companyRepository = companyRepository;
         this.adminRepository = adminRepository;
         this.sipClientRepository = sipClientRepository;
@@ -42,6 +46,7 @@ public class DatabaseFixtureBuilder {
         this.sayAlphaRepository = sayAlphaRepository;
         this.gotoRepository = gotoRepository;
         this.branchRepository = branchRepository;
+        this.branchDialPlanRepository = branchDialPlanRepository;
 
         this.company = new ArrayList<>();
         this.adminList = new HashMap<>();
@@ -51,6 +56,7 @@ public class DatabaseFixtureBuilder {
         this.sayAlphaList = new HashMap<>();
         this.gotoList = new HashMap<>();
         this.branchList = new HashMap<>();
+        this.branchDialPlanList = new HashMap<>();
     }
 
     public DialPlanRepository getDialPlanRepository() {
@@ -79,6 +85,10 @@ public class DatabaseFixtureBuilder {
 
     public BranchRepository getBranchRepository() {
         return branchRepository;
+    }
+
+    public BranchDialPlanRepository getBranchDialPlanRepository() {
+        return branchDialPlanRepository;
     }
 
     public DatabaseFixtureBuilder company(int number) {
@@ -143,10 +153,17 @@ public class DatabaseFixtureBuilder {
         return this;
     }
 
-    public DatabaseFixtureBuilder addBranch(int number, int priority, Set<BranchDialplan> branchDialplanList) {
+    public DatabaseFixtureBuilder addBranch(int number, int priority, Set<BranchDialPlan> branchDialPlanList) {
         Branch branch = BranchEntity.createBranchEntity(number, priority);
-        branch.setBranchesDialplans(branchDialplanList);
+        branch.setBranchesDialPlans(branchDialPlanList);
         branchList.put(number, branch);
+        return this;
+    }
+
+    public DatabaseFixtureBuilder addBranchDialPlan(int number, int gotoDialPlanNumber) {
+        BranchDialPlan branchDialPlan = BranchDialPlanEntity.createBranchDialPlanEntity(number);
+        branchDialPlan.setDialPlan(dialPlanList.get(gotoDialPlanNumber));
+        branchDialPlanList.put(number, branchDialPlan);
         return this;
     }
 
@@ -179,6 +196,7 @@ public class DatabaseFixtureBuilder {
         sayAlphaRepository.save(sayAlphaList.values());
         gotoRepository.save(gotoList.values());
         branchRepository.save(branchList.values());
+        branchDialPlanRepository.save(branchDialPlanList.values());
     }
 
     public Company getCompany() {
@@ -215,6 +233,10 @@ public class DatabaseFixtureBuilder {
 
     public Map<Integer, Branch> getBranchList() {
         return branchList;
+    }
+
+    public Map<Integer, BranchDialPlan> getBranchDialPlanList() {
+        return branchDialPlanList;
     }
 
 
