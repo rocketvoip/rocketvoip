@@ -4,6 +4,12 @@ import javax.persistence.*;
 import java.util.Set;
 
 /**
+ * Branching to another dialplan, based on key press.
+ *
+ * It depends on BranchDialPlan, since apart from backing a branch with Asterisk Goto()s, a hangupTime is required
+ * as well (which will be passed to Asterisk WaitExten()). In other words, a Branch is a collection of Goto()s together
+ * with a WaitExten().
+ *
  * @author Jona Braun
  */
 
