@@ -15,29 +15,16 @@ public class BranchDialPlan {
     @Column(name = "BRANCH_DIALPLAN_ID")
     private long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "BRANCH_ID")
-    private Branch branch;
-
-    @ManyToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "DIALPLAN_ID")
     private DialPlan dialPlan;
 
     @Column
     private int buttonNumber;
 
-    public BranchDialPlan(Branch branch, DialPlan dialPlan, int buttonNumber) {
-        this.branch = branch;
+    public BranchDialPlan(DialPlan dialPlan, int buttonNumber) {
         this.dialPlan = dialPlan;
         this.buttonNumber = buttonNumber;
-    }
-
-    public Branch getBranch() {
-        return branch;
-    }
-
-    public void setBranch(Branch branch) {
-        this.branch = branch;
     }
 
     public DialPlan getDialPlan() {
