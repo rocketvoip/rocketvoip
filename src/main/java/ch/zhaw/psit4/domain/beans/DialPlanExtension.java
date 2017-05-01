@@ -71,6 +71,7 @@ public class DialPlanExtension implements DialPlanExtensionConfigurationInterfac
      *
      * @param priority numerals such as "1", "2", etc or "n".
      */
+    @Override
     public void setPriority(String priority) {
         this.priority = priority;
     }
