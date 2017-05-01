@@ -1,13 +1,8 @@
 package ch.zhaw.psit4.services.implementation;
 
-import ch.zhaw.psit4.data.jpa.entities.Dial;
-import ch.zhaw.psit4.data.jpa.entities.Goto;
-import ch.zhaw.psit4.data.jpa.entities.SayAlpha;
-import ch.zhaw.psit4.data.jpa.repositories.DialRepository;
-import ch.zhaw.psit4.data.jpa.repositories.GotoRepository;
-import ch.zhaw.psit4.data.jpa.repositories.SayAlphaRepository;
 import ch.zhaw.psit4.dto.ActionDto;
 import ch.zhaw.psit4.dto.DialPlanDto;
+import ch.zhaw.psit4.dto.actions.ActionInterface;
 import ch.zhaw.psit4.services.implementation.adapters.DialAdapter;
 import ch.zhaw.psit4.services.implementation.adapters.GotoAdapter;
 import ch.zhaw.psit4.services.implementation.adapters.SayAlphaAdapter;
@@ -26,26 +21,16 @@ import java.util.List;
 @Service
 @Transactional
 public class ActionServiceImpl implements ActionServiceInterface {
+    private final List<ActionInterface> actionInterfaceList;
 
-    private final DialRepository dialRepository;
-    private final SayAlphaRepository sayAlphaRepository;
-    private final DialAdapter dialAdapter;
-    private final SayAlphaAdapter sayAlphaAdapter;
-    private final GotoRepository gotoRepository;
-    private final GotoAdapter gotoAdapter;
-
-    public ActionServiceImpl(DialRepository dialRepository,
-                             SayAlphaRepository sayAlphaRepository,
-                             GotoRepository gotoRepository,
-                             SayAlphaAdapter sayAlphaAdapter,
+    public ActionServiceImpl(SayAlphaAdapter sayAlphaAdapter,
                              DialAdapter dialAdapter,
                              GotoAdapter gotoAdapter) {
-        this.dialRepository = dialRepository;
-        this.sayAlphaRepository = sayAlphaRepository;
-        this.gotoRepository = gotoRepository;
-        this.sayAlphaAdapter = sayAlphaAdapter;
-        this.dialAdapter = dialAdapter;
-        this.gotoAdapter = gotoAdapter;
+
+        this.actionInterfaceList = new ArrayList<>();
+        actionInterfaceList.add(dialAdapter);
+        actionInterfaceList.add(sayAlphaAdapter);
+        actionInterfaceList.add(gotoAdapter);
     }
 
     /**
@@ -73,32 +58,24 @@ public class ActionServiceImpl implements ActionServiceInterface {
         List<ActionDto> actionDtoList = new ArrayList<>();
 
         int priority = 0;
+        int oldListSize = 0;
 
         while (true) {
             priority++;
+            oldListSize = actionDtoList.size();
 
-            Dial dial = dialRepository.findFirstByDialPlan_IdAndPriority(dialPlanId, priority);
-            if (dial != null) {
-                ActionDto actionDto = dialAdapter.dialEntityToActionDto(dial);
-                actionDtoList.add(actionDto);
-                continue;
+            for (ActionInterface actionInterface : actionInterfaceList) {
+
+                ActionDto actionDto = actionInterface.retrieveActionDto(dialPlanId, priority);
+                if (actionDto != null) {
+                    actionDtoList.add(actionDto);
+                    break;
+                }
             }
 
-            SayAlpha sayAlpha = sayAlphaRepository.findFirstByDialPlan_IdAndPriority(dialPlanId, priority);
-            if (sayAlpha != null) {
-                ActionDto actionDto = sayAlphaAdapter.sayAlphaEntityToActionDto(sayAlpha);
-                actionDtoList.add(actionDto);
-                continue;
+            if (actionDtoList.size() == oldListSize) {
+                break;
             }
-
-            Goto gotoEntity = gotoRepository.findFirstByDialPlan_IdAndPriority(dialPlanId, priority);
-            if (gotoEntity != null) {
-                ActionDto actionDto = gotoAdapter.gotoEntityToActionDto(gotoEntity);
-                actionDtoList.add(actionDto);
-                continue;
-            }
-
-            break;
         }
         return actionDtoList;
     }
@@ -118,23 +95,18 @@ public class ActionServiceImpl implements ActionServiceInterface {
 
         int priority = 1;
         for (ActionDto actionDto : dialPlanDto.getActions()) {
-            if ("dial".equalsIgnoreCase(actionDto.getType())) {
-                dialAdapter.saveDialAction(dialPlanDto, actionDto, priority);
-            }
-            if ("sayalpha".equalsIgnoreCase((actionDto.getType()))) {
-                sayAlphaAdapter.saveSayAlphaAction(dialPlanDto, actionDto, priority);
-            }
-            if ("goto".equalsIgnoreCase((actionDto.getType()))) {
-                gotoAdapter.saveGotoAction(dialPlanDto, actionDto, priority);
+
+            for (ActionInterface actionInterface : actionInterfaceList) {
+                actionInterface.saveActionDto(dialPlanDto, actionDto, priority);
             }
             priority++;
         }
     }
 
     private void deleteAllActions(long dialPlanId) {
-        dialRepository.deleteAllByDialPlan_Id(dialPlanId);
-        sayAlphaRepository.deleteAllByDialPlan_Id(dialPlanId);
-        gotoRepository.deleteAllByDialPlan_Id(dialPlanId);
+        actionInterfaceList.forEach(actionInterface -> {
+            actionInterface.deleteActionDto((dialPlanId));
+        });
     }
 
 }

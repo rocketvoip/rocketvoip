@@ -4,6 +4,7 @@ import ch.zhaw.psit4.data.jpa.entities.Dial;
 import ch.zhaw.psit4.data.jpa.repositories.DialRepository;
 import ch.zhaw.psit4.dto.ActionDto;
 import ch.zhaw.psit4.dto.DialPlanDto;
+import ch.zhaw.psit4.dto.actions.ActionInterface;
 import ch.zhaw.psit4.dto.actions.DialAction;
 import ch.zhaw.psit4.services.implementation.SipClientServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,7 +18,7 @@ import static ch.zhaw.psit4.services.implementation.DialPlanServiceImpl.dialPlan
  *
  * @author Jona Braun
  */
-public class DialAdapter {
+public class DialAdapter implements ActionInterface {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private final DialRepository dialRepository;
@@ -50,22 +51,32 @@ public class DialAdapter {
         return actionDto;
     }
 
-    /**
-     * Saves the Dial action in the database.
-     *
-     * @param dialPlanDto the dto containing the action
-     * @param actionDto   the actionDto containing the DialAction
-     * @param priority    the priority of the action
-     */
-    public void saveDialAction(DialPlanDto dialPlanDto, ActionDto actionDto, int priority) {
-        DialAction dialAction = OBJECT_MAPPER.convertValue(actionDto.getTypeSpecific(), DialAction.class);
+    @Override
+    public void saveActionDto(DialPlanDto dialPlanDto, ActionDto actionDto, int priority) {
+        if ("dial".equalsIgnoreCase(actionDto.getType())) {
+            DialAction dialAction = OBJECT_MAPPER.convertValue(actionDto.getTypeSpecific(), DialAction.class);
 
-        Dial dial = new Dial(actionDto.getName(),
-                priority,
-                dialAction.getRingingTime(),
-                dialPlanDtoToDialPlanEntityWithId(dialPlanDto),
-                SipClientServiceImpl.sipClientDtosToSipClientEntitiesWithId(dialAction.getSipClients()));
+            Dial dial = new Dial(actionDto.getName(),
+                    priority,
+                    dialAction.getRingingTime(),
+                    dialPlanDtoToDialPlanEntityWithId(dialPlanDto),
+                    SipClientServiceImpl.sipClientDtosToSipClientEntitiesWithId(dialAction.getSipClients()));
 
-        dialRepository.save(dial);
+            dialRepository.save(dial);
+        }
+    }
+
+    @Override
+    public ActionDto retrieveActionDto(long dialPlanId, int priority) {
+        Dial dial = dialRepository.findFirstByDialPlan_IdAndPriority(dialPlanId, priority);
+        if (dial != null) {
+            return dialEntityToActionDto(dial);
+        }
+        return null;
+    }
+
+    @Override
+    public void deleteActionDto(long dialPlanId) {
+        dialRepository.deleteAllByDialPlan_Id(dialPlanId);
     }
 }

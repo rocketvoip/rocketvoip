@@ -6,6 +6,7 @@ import ch.zhaw.psit4.data.jpa.repositories.DialPlanRepository;
 import ch.zhaw.psit4.data.jpa.repositories.GotoRepository;
 import ch.zhaw.psit4.dto.ActionDto;
 import ch.zhaw.psit4.dto.DialPlanDto;
+import ch.zhaw.psit4.dto.actions.ActionInterface;
 import ch.zhaw.psit4.dto.actions.GotoAction;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -18,7 +19,7 @@ import static ch.zhaw.psit4.services.implementation.DialPlanServiceImpl.dialPlan
  *
  * @author Jona Braun
  */
-public class GotoAdapter {
+public class GotoAdapter implements ActionInterface {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private final GotoRepository gotoRepository;
@@ -52,24 +53,34 @@ public class GotoAdapter {
         return actionDto;
     }
 
-    /**
-     * Saves the Goto action in the data storage.
-     *
-     * @param dialPlanDto the dto containing the action
-     * @param actionDto   the actionDto containing the GotoAction
-     * @param priority    the priority of the action
-     */
-    public void saveGotoAction(DialPlanDto dialPlanDto, ActionDto actionDto, int priority) {
-        GotoAction gotoAction = OBJECT_MAPPER.convertValue(actionDto.getTypeSpecific(), GotoAction.class);
+    @Override
+    public void saveActionDto(DialPlanDto dialPlanDto, ActionDto actionDto, int priority) {
+        if ("goto".equalsIgnoreCase((actionDto.getType()))) {
+            GotoAction gotoAction = OBJECT_MAPPER.convertValue(actionDto.getTypeSpecific(), GotoAction.class);
 
-        DialPlan nextDialPlan = dialPlanRepository.findFirstById(gotoAction.getNextDialPlanId());
+            DialPlan nextDialPlan = dialPlanRepository.findFirstById(gotoAction.getNextDialPlanId());
 
-        Goto gotoEntity = new Goto(
-                actionDto.getName(),
-                priority,
-                dialPlanDtoToDialPlanEntity(dialPlanDto),
-                nextDialPlan);
+            Goto gotoEntity = new Goto(
+                    actionDto.getName(),
+                    priority,
+                    dialPlanDtoToDialPlanEntity(dialPlanDto),
+                    nextDialPlan);
 
-        gotoRepository.save(gotoEntity);
+            gotoRepository.save(gotoEntity);
+        }
+    }
+
+    @Override
+    public ActionDto retrieveActionDto(long dialPlanId, int priority) {
+        Goto gotoEntity = gotoRepository.findFirstByDialPlan_IdAndPriority(dialPlanId, priority);
+        if (gotoEntity != null) {
+            return gotoEntityToActionDto(gotoEntity);
+        }
+        return null;
+    }
+
+    @Override
+    public void deleteActionDto(long dialPlanId) {
+        gotoRepository.deleteAllByDialPlan_Id(dialPlanId);
     }
 }

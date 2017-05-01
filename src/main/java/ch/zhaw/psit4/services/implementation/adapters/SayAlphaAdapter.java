@@ -4,6 +4,7 @@ import ch.zhaw.psit4.data.jpa.entities.SayAlpha;
 import ch.zhaw.psit4.data.jpa.repositories.SayAlphaRepository;
 import ch.zhaw.psit4.dto.ActionDto;
 import ch.zhaw.psit4.dto.DialPlanDto;
+import ch.zhaw.psit4.dto.actions.ActionInterface;
 import ch.zhaw.psit4.dto.actions.SayAlphaAction;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -16,7 +17,7 @@ import static ch.zhaw.psit4.services.implementation.DialPlanServiceImpl.dialPlan
  *
  * @author Jona Braun
  */
-public class SayAlphaAdapter {
+public class SayAlphaAdapter implements ActionInterface {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private final SayAlphaRepository sayAlphaRepository;
@@ -49,22 +50,32 @@ public class SayAlphaAdapter {
         return actionDto;
     }
 
-    /**
-     * Saves the SayAlpha action in the data storage.
-     *
-     * @param dialPlanDto the dto containing the action
-     * @param actionDto   the actionDto containing the SayAlphaAction
-     * @param priority    the priority of the action
-     */
-    public void saveSayAlphaAction(DialPlanDto dialPlanDto, ActionDto actionDto, int priority) {
-        SayAlphaAction sayAlphaAction = OBJECT_MAPPER.convertValue(actionDto.getTypeSpecific(), SayAlphaAction.class);
+    @Override
+    public void saveActionDto(DialPlanDto dialPlanDto, ActionDto actionDto, int priority) {
+        if ("sayalpha".equalsIgnoreCase((actionDto.getType()))) {
+            SayAlphaAction sayAlphaAction = OBJECT_MAPPER.convertValue(actionDto.getTypeSpecific(), SayAlphaAction.class);
 
-        SayAlpha sayAlpha = new SayAlpha(actionDto.getName(),
-                priority,
-                sayAlphaAction.getVoiceMessage(),
-                sayAlphaAction.getSleepTime(),
-                dialPlanDtoToDialPlanEntityWithId(dialPlanDto));
+            SayAlpha sayAlpha = new SayAlpha(actionDto.getName(),
+                    priority,
+                    sayAlphaAction.getVoiceMessage(),
+                    sayAlphaAction.getSleepTime(),
+                    dialPlanDtoToDialPlanEntityWithId(dialPlanDto));
 
-        sayAlphaRepository.save(sayAlpha);
+            sayAlphaRepository.save(sayAlpha);
+        }
+    }
+
+    @Override
+    public ActionDto retrieveActionDto(long dialPlanId, int priority) {
+        SayAlpha sayAlpha = sayAlphaRepository.findFirstByDialPlan_IdAndPriority(dialPlanId, priority);
+        if (sayAlpha != null) {
+            return sayAlphaEntityToActionDto(sayAlpha);
+        }
+        return null;
+    }
+
+    @Override
+    public void deleteActionDto(long dialPlanId) {
+        sayAlphaRepository.deleteAllByDialPlan_Id(dialPlanId);
     }
 }
