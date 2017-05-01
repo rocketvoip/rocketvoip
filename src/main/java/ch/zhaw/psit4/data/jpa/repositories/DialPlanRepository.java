@@ -16,5 +16,4 @@ public interface DialPlanRepository extends CrudRepository<DialPlan, Long> {
 
     DialPlan findFirstById(long id);
 
-    List<DialPlan> findAllById(List<Long> dialPlanIds);
 }

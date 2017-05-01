@@ -3,6 +3,7 @@ package ch.zhaw.psit4.services.implementation;
 import ch.zhaw.psit4.dto.ActionDto;
 import ch.zhaw.psit4.dto.DialPlanDto;
 import ch.zhaw.psit4.dto.SipClientDto;
+import ch.zhaw.psit4.dto.actions.BranchActionDto;
 import ch.zhaw.psit4.dto.actions.DialActionDto;
 import ch.zhaw.psit4.dto.actions.GotoActionDto;
 import ch.zhaw.psit4.dto.actions.SayAlphaActionDto;
@@ -24,11 +25,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import static ch.zhaw.psit4.services.implementation.SipClientServiceImpl.sipClientEntityToSipClientDto;
 import static ch.zhaw.psit4.testsupport.matchers.ActionDtoPartialMatcher.actionDtoAlmostEqualTo;
+import static ch.zhaw.psit4.testsupport.matchers.BranchActionEqualTo.branchActionEqualTo;
 import static ch.zhaw.psit4.testsupport.matchers.DialActionEqualTo.dialActionEqualTo;
 import static ch.zhaw.psit4.testsupport.matchers.GotoActionEqualTo.gotoActionEqualTo;
 import static ch.zhaw.psit4.testsupport.matchers.SayAlphaActionEqualTo.sayAlphaActionEqualTo;
@@ -144,6 +147,30 @@ public class ActionServiceImplIT {
         GotoActionDto expectedGotoAction2 = objectMapper.convertValue(expected2.getTypeSpecific(), GotoActionDto.class);
         GotoActionDto actualGotoAction2 = objectMapper.convertValue(actual2.getTypeSpecific(), GotoActionDto.class);
         assertThat(expectedGotoAction2, gotoActionEqualTo(actualGotoAction2));
+    }
+
+    @Test
+    public void saveBranchDto() {
+        databaseFixtureBuilder1.company(1).addDialPlan(1).addDialPlan(2).addDialPlan(3).build();
+
+        ActionDto branchActionDto1 = generateBranchActionDto(1, Arrays.asList(2, 3));
+
+        List<ActionDto> branchActionDtos = new ArrayList<>();
+        branchActionDtos.add(branchActionDto1);
+
+        DialPlanDto dialPlanDto = generateDialPlan(branchActionDtos, 1);
+
+        actionServiceInterface.saveActions(dialPlanDto);
+
+        List<ActionDto> actionDtos = actionServiceInterface.retrieveActions(dialPlanDto.getId());
+        ActionDto expected = dialPlanDto.getActions().get(0);
+        ActionDto actual = actionDtos.get(0);
+        assertThat(expected, actionDtoAlmostEqualTo(actual));
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        BranchActionDto expectedBranch = objectMapper.convertValue(expected.getTypeSpecific(), BranchActionDto.class);
+        BranchActionDto actualBranch = objectMapper.convertValue(actual.getTypeSpecific(), BranchActionDto.class);
+        assertThat(expectedBranch, branchActionEqualTo(actualBranch));
 
     }
 
@@ -214,11 +241,8 @@ public class ActionServiceImplIT {
     }
 
     private DialPlanDto generateDialPlan(List<ActionDto> actionDtos, int number) {
-        List<DialPlanDto> dialPlanDtoList = new ArrayList<>();
-        databaseFixtureBuilder1.getDialPlanList().values()
-                .forEach(x -> dialPlanDtoList.add(dialPlanServiceImpl.dialPlanEntityToDialPlanDto(x)));
-
-        DialPlanDto dialPlanDto = dialPlanDtoList.get(number - 1);
+        DialPlanDto dialPlanDto =
+                dialPlanServiceImpl.dialPlanEntityToDialPlanDto(databaseFixtureBuilder1.getDialPlanList().get(number));
         dialPlanDto.setActions(actionDtos);
         return dialPlanDto;
     }
@@ -248,6 +272,23 @@ public class ActionServiceImplIT {
         LinkedHashMap linkedHashMap = objM.convertValue(gotoActionDto, LinkedHashMap.class);
 
         return ActionDtoGenerator.createTestActionDto(number, "Goto", linkedHashMap);
+    }
+
+    private ActionDto generateBranchActionDto(int number, List<Integer> dialPanNumbers) {
+        BranchActionDto branchActionDto = new BranchActionDto();
+        branchActionDto.setHangupTime(number);
+
+        List<Long> dialPlaIds = new ArrayList<>();
+
+        dialPanNumbers.forEach(x ->
+                dialPlaIds.add(databaseFixtureBuilder1.getDialPlanList().get(x).getId()));
+
+        branchActionDto.setNextDialPlanIds(dialPlaIds);
+
+        ObjectMapper objM = new ObjectMapper();
+        LinkedHashMap linkedHashMap = objM.convertValue(branchActionDto, LinkedHashMap.class);
+
+        return ActionDtoGenerator.createTestActionDto(number, "Branch", linkedHashMap);
     }
 
     private List<ActionDto> generateDialActionDtos(int number) {
