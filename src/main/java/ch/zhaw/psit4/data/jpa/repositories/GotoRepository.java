@@ -12,7 +12,7 @@ import java.util.List;
 public interface GotoRepository extends CrudRepository<Goto, Long> {
     List<Goto> findByDialPlan(DialPlan dialPlan);
 
-    Goto findFirstByDialPlan_IdAndPriority(long dialPlanId, String priority);
+    Goto findFirstByDialPlan_IdAndPriority(long dialPlanId, int priority);
 
     List<Goto> findAllByDialPlan_Id(long dialPlanId);
 

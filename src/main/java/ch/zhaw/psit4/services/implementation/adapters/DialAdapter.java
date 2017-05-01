@@ -61,7 +61,7 @@ public class DialAdapter {
         DialAction dialAction = OBJECT_MAPPER.convertValue(actionDto.getTypeSpecific(), DialAction.class);
 
         Dial dial = new Dial(actionDto.getName(),
-                Integer.toString(priority),
+                priority,
                 dialAction.getRingingTime(),
                 dialPlanDtoToDialPlanEntityWithId(dialPlanDto),
                 SipClientServiceImpl.sipClientDtosToSipClientEntitiesWithId(dialAction.getSipClients()));

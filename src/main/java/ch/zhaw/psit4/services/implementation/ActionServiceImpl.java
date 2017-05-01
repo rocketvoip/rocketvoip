@@ -68,14 +68,14 @@ public class ActionServiceImpl implements ActionServiceInterface {
         while (true) {
             priority++;
 
-            Dial dial = dialRepository.findFirstByDialPlan_IdAndPriority(dialPlanId, Integer.toString(priority));
+            Dial dial = dialRepository.findFirstByDialPlan_IdAndPriority(dialPlanId, priority);
             if (dial != null) {
                 ActionDto actionDto = dialAdapter.dialEntityToActionDto(dial);
                 actionDtoList.add(actionDto);
                 continue;
             }
 
-            SayAlpha sayAlpha = sayAlphaRepository.findFirstByDialPlan_IdAndPriority(dialPlanId, Integer.toString(priority));
+            SayAlpha sayAlpha = sayAlphaRepository.findFirstByDialPlan_IdAndPriority(dialPlanId, priority);
             if (sayAlpha != null) {
                 ActionDto actionDto = sayAlphaAdapter.sayAlphaEntityToActionDto(sayAlpha);
                 actionDtoList.add(actionDto);

@@ -19,7 +19,7 @@ public class Dial {
     private String name;
 
     @Column(nullable = false)
-    private String priority;
+    private int priority;
 
     @Column(nullable = false)
     private int ringingTime;
@@ -34,7 +34,7 @@ public class Dial {
         //intentionally empty
     }
 
-    public Dial(String name, String priority, int ringingTime, DialPlan dialPlan, Collection<SipClient> sipClients) {
+    public Dial(String name, int priority, int ringingTime, DialPlan dialPlan, Collection<SipClient> sipClients) {
         this.name = name;
         this.priority = priority;
         this.ringingTime = ringingTime;
@@ -50,11 +50,11 @@ public class Dial {
         this.id = id;
     }
 
-    public String getPriority() {
+    public int getPriority() {
         return priority;
     }
 
-    public void setPriority(String priority) {
+    public void setPriority(int priority) {
         this.priority = priority;
     }
 

@@ -18,7 +18,7 @@ public class SayAlpha {
     private String name;
 
     @Column(nullable = false)
-    private String priority;
+    private int priority;
 
     @Column(nullable = false)
     private String voiceMessage;
@@ -33,7 +33,7 @@ public class SayAlpha {
         //intentionally empty
     }
 
-    public SayAlpha(String name, String priority, String voiceMessage, int sleepTime, DialPlan dialPlan) {
+    public SayAlpha(String name, int priority, String voiceMessage, int sleepTime, DialPlan dialPlan) {
         this.name = name;
         this.priority = priority;
         this.voiceMessage = voiceMessage;
@@ -77,11 +77,11 @@ public class SayAlpha {
         this.name = name;
     }
 
-    public String getPriority() {
+    public int getPriority() {
         return priority;
     }
 
-    public void setPriority(String priority) {
+    public void setPriority(int priority) {
         this.priority = priority;
     }
 }

@@ -20,14 +20,14 @@ public class Branch {
     private String name;
 
     @Column(nullable = false)
-    private String priority;
+    private int priority;
 
     @OneToMany(mappedBy = "branch")
     private Set<BranchDialplan> branchesDialplans;
 
     private int hangupTime;
 
-    public Branch(String name, String priority, Set<BranchDialplan> branchesDialplans, int hangupTime) {
+    public Branch(String name, int priority, Set<BranchDialplan> branchesDialplans, int hangupTime) {
         this.name = name;
         this.priority = priority;
         this.branchesDialplans = branchesDialplans;
@@ -50,11 +50,11 @@ public class Branch {
         this.name = name;
     }
 
-    public String getPriority() {
+    public int getPriority() {
         return priority;
     }
 
-    public void setPriority(String priority) {
+    public void setPriority(int priority) {
         this.priority = priority;
     }
 
