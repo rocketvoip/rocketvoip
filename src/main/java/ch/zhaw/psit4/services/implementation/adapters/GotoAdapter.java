@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Map;
 
-import static ch.zhaw.psit4.services.implementation.DialPlanServiceImpl.dialPlanDtoToDialPlanEntity;
+import static ch.zhaw.psit4.services.implementation.DialPlanServiceImpl.dialPlanDtoToDialPlanEntityWithId;
 
 /**
  * Helps to handle GoTo entities.
@@ -63,7 +63,7 @@ public class GotoAdapter implements ActionAdapterInterface {
             Goto gotoEntity = new Goto(
                     actionDto.getName(),
                     priority,
-                    dialPlanDtoToDialPlanEntity(dialPlanDto),
+                    dialPlanDtoToDialPlanEntityWithId(dialPlanDto),
                     nextDialPlan);
 
             gotoRepository.save(gotoEntity);

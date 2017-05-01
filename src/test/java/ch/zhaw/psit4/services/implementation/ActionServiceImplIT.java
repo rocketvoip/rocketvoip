@@ -120,9 +120,15 @@ public class ActionServiceImplIT {
 
     @Test
     public void saveGotoActions() throws Exception {
-        databaseFixtureBuilder1.company(1).addDialPlan(1).build();
+        databaseFixtureBuilder1.company(1).addDialPlan(1).addDialPlan(2).build();
 
-        DialPlanDto dialPlanDto = generateDialPlan(generateGotoActionDtos(2), 1);
+        ActionDto gotoActionDto1 = generateGotoActionDto(1, 2);
+        ActionDto gotoActionDto2 = generateGotoActionDto(2, 2);
+        List<ActionDto> gotoActionDtos = new ArrayList<>();
+        gotoActionDtos.add(gotoActionDto1);
+        gotoActionDtos.add(gotoActionDto2);
+
+        DialPlanDto dialPlanDto = generateDialPlan(gotoActionDtos, 1);
 
         actionServiceInterface.saveActions(dialPlanDto);
 
@@ -132,9 +138,17 @@ public class ActionServiceImplIT {
         assertThat(expected, actionDtoAlmostEqualTo(actual));
 
         ObjectMapper objectMapper = new ObjectMapper();
-        GotoActionDto expectedDialAction = objectMapper.convertValue(expected.getTypeSpecific(), GotoActionDto.class);
-        GotoActionDto actualDialAction = objectMapper.convertValue(actual.getTypeSpecific(), GotoActionDto.class);
-        assertThat(expectedDialAction, gotoActionEqualTo(actualDialAction));
+        GotoActionDto expectedGotoAction = objectMapper.convertValue(expected.getTypeSpecific(), GotoActionDto.class);
+        GotoActionDto actualGotoAction = objectMapper.convertValue(actual.getTypeSpecific(), GotoActionDto.class);
+        assertThat(expectedGotoAction, gotoActionEqualTo(actualGotoAction));
+
+        ActionDto expected2 = dialPlanDto.getActions().get(1);
+        ActionDto actual2 = actionDtos.get(1);
+        assertThat(expected2, actionDtoAlmostEqualTo(actual2));
+
+        GotoActionDto expectedGotoAction2 = objectMapper.convertValue(expected2.getTypeSpecific(), GotoActionDto.class);
+        GotoActionDto actualGotoAction2 = objectMapper.convertValue(actual2.getTypeSpecific(), GotoActionDto.class);
+        assertThat(expectedGotoAction2, gotoActionEqualTo(actualGotoAction2));
 
     }
 
@@ -231,19 +245,9 @@ public class ActionServiceImplIT {
         return ActionDtoGenerator.createTestActionDto(number, "SayAlpha", linkedHashMap);
     }
 
-    private List<ActionDto> generateGotoActionDtos(int number) {
-        List<ActionDto> actionDtos = new ArrayList<>();
-        for (int i = 1; i <= number; i++) {
-            actionDtos.add(generateGotoActionDto(i));
-        }
-        return actionDtos;
-    }
-
-    private ActionDto generateGotoActionDto(int number) {
+    private ActionDto generateGotoActionDto(int number, int dialPanNumber) {
         GotoActionDto gotoActionDto = new GotoActionDto();
-
-        databaseFixtureBuilder1.addDialPlan(number * 10).build();
-        gotoActionDto.setNextDialPlanId(databaseFixtureBuilder1.getDialPlanList().get(number * 10).getId());
+        gotoActionDto.setNextDialPlanId(databaseFixtureBuilder1.getDialPlanList().get(dialPanNumber).getId());
 
         ObjectMapper objM = new ObjectMapper();
         LinkedHashMap linkedHashMap = objM.convertValue(gotoActionDto, LinkedHashMap.class);
