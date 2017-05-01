@@ -78,7 +78,7 @@ public class DialPlanConfigBuilder {
             saveActiveContext();
         }
 
-        assert (contextReactivated == false);
+        assert !contextReactivated;
 
         activeContext = context;
         activeContext.setDialPlanExtensionList(new ArrayList<>());
