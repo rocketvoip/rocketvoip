@@ -8,31 +8,23 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "BRANCH_DIALPLAN")
-public class BranchDialplan {
+public class BranchDialPlan {
 
     @Id
     @GeneratedValue
     @Column(name = "BRANCH_DIALPLAN_ID")
     private long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "BRANCH_ID")
-    private Branch branch;
-
-    @ManyToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "DIALPLAN_ID")
     private DialPlan dialPlan;
 
     @Column
-    private int button;
+    private int buttonNumber;
 
-
-    public Branch getBranch() {
-        return branch;
-    }
-
-    public void setBranch(Branch branch) {
-        this.branch = branch;
+    public BranchDialPlan(DialPlan dialPlan, int buttonNumber) {
+        this.dialPlan = dialPlan;
+        this.buttonNumber = buttonNumber;
     }
 
     public DialPlan getDialPlan() {
@@ -43,11 +35,11 @@ public class BranchDialplan {
         this.dialPlan = dialPlan;
     }
 
-    public int getButton() {
-        return button;
+    public int getButtonNumber() {
+        return buttonNumber;
     }
 
-    public void setButton(int button) {
-        this.button = button;
+    public void setButtonNumber(int buttonNumber) {
+        this.buttonNumber = buttonNumber;
     }
 }

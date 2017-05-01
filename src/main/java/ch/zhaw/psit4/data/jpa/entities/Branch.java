@@ -4,6 +4,12 @@ import javax.persistence.*;
 import java.util.Set;
 
 /**
+ * Branching to another dialplan, based on key press.
+ *
+ * It depends on BranchDialPlan, since apart from backing a branch with Asterisk Goto()s, a hangupTime is required
+ * as well (which will be passed to Asterisk WaitExten()). In other words, a Branch is a collection of Goto()s together
+ * with a WaitExten().
+ *
  * @author Jona Braun
  */
 
@@ -22,15 +28,19 @@ public class Branch {
     @Column(nullable = false)
     private int priority;
 
-    @OneToMany(mappedBy = "branch")
-    private Set<BranchDialplan> branchesDialplans;
+    @ManyToOne
+    private DialPlan dialPlan;
+
+    @OneToMany
+    private Set<BranchDialPlan> branchesDialPlans;
 
     private int hangupTime;
 
-    public Branch(String name, int priority, Set<BranchDialplan> branchesDialplans, int hangupTime) {
+    public Branch(String name, int priority, DialPlan dialPlan, Set<BranchDialPlan> branchesDialPlans, int hangupTime) {
         this.name = name;
         this.priority = priority;
-        this.branchesDialplans = branchesDialplans;
+        this.dialPlan = dialPlan;
+        this.branchesDialPlans = branchesDialPlans;
         this.hangupTime = hangupTime;
     }
 
@@ -58,12 +68,12 @@ public class Branch {
         this.priority = priority;
     }
 
-    public Set<BranchDialplan> getBranchesDialplans() {
-        return branchesDialplans;
+    public Set<BranchDialPlan> getBranchesDialPlans() {
+        return branchesDialPlans;
     }
 
-    public void setBranchesDialplans(Set<BranchDialplan> branchesDialplans) {
-        this.branchesDialplans = branchesDialplans;
+    public void setBranchesDialPlans(Set<BranchDialPlan> branchesDialPlans) {
+        this.branchesDialPlans = branchesDialPlans;
     }
 
     public int getHangupTime() {
@@ -72,5 +82,13 @@ public class Branch {
 
     public void setHangupTime(int hangupTime) {
         this.hangupTime = hangupTime;
+    }
+
+    public DialPlan getDialPlan() {
+        return dialPlan;
+    }
+
+    public void setDialPlan(DialPlan dialPlan) {
+        this.dialPlan = dialPlan;
     }
 }
