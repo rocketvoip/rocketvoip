@@ -9,10 +9,12 @@ import javax.persistence.*;
  */
 
 @Entity
+@Table(name = "DIALPLAN")
 public class DialPlan {
 
     @Id
     @GeneratedValue
+    @Column(name = "DIALPLAN_ID")
     private long id;
 
     @Column(nullable = false)
@@ -23,7 +25,6 @@ public class DialPlan {
 
     @ManyToOne
     private Company company;
-
 
     protected DialPlan() {
     }
@@ -65,4 +66,5 @@ public class DialPlan {
     public void setCompany(Company company) {
         this.company = company;
     }
+
 }

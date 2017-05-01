@@ -29,6 +29,7 @@ public class Admin implements Serializable {
 
     @Column(nullable = false)
     private String username;
+
     @Column(nullable = false)
     private String password;
     @Column
