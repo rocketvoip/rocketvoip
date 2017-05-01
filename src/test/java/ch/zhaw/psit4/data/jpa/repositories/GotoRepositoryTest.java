@@ -41,7 +41,8 @@ public class GotoRepositoryTest {
         GotoRepository gotoRepository = databaseFixtureBuilder.getGotoRepository();
 
         Goto expected = databaseFixtureBuilder.getGotoList().get(1);
-        Goto actual = gotoRepository.findAllByDialPlan_Id(new Long(1)).get(0);
+        Long dialPlanId = databaseFixtureBuilder.getDialPlanList().get(1).getId();
+        Goto actual = gotoRepository.findAllByDialPlan_Id(dialPlanId).get(0);
 
         assertEquals(expected.getName(), actual.getName());
         assertEquals(expected.getPriority(), actual.getPriority());
@@ -61,12 +62,15 @@ public class GotoRepositoryTest {
         GotoRepository gotoRepository = databaseFixtureBuilder.getGotoRepository();
 
         Goto expected1 = databaseFixtureBuilder.getGotoList().get(1);
-        Goto actual1 = gotoRepository.findAllByDialPlan_Id(new Long(1)).get(0);
+
+        long dialPlanId = databaseFixtureBuilder.getDialPlanList().get(1).getId();
+        Goto actual1 = gotoRepository.findAllByDialPlan_Id(dialPlanId).get(0);
 
         isGotoEntityEqual(expected1, actual1);
 
         Goto expected2 = databaseFixtureBuilder.getGotoList().get(2);
-        Goto actual2 = gotoRepository.findAllByDialPlan_Id(new Long(2)).get(0);
+        dialPlanId = databaseFixtureBuilder.getDialPlanList().get(2).getId();
+        Goto actual2 = gotoRepository.findAllByDialPlan_Id(dialPlanId).get(0);
 
         isGotoEntityEqual(expected2, actual2);
 
