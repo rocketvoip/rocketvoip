@@ -12,10 +12,9 @@ public final class GotoEntity {
     }
 
     public static Goto createGotoEntity(int number, int priority) {
-        Goto gotoEntity = new Goto(GotoData.getName(number),
+        return new Goto(GotoData.getName(number),
                 priority,
                 null,
                 null);
-        return gotoEntity;
     }
 }

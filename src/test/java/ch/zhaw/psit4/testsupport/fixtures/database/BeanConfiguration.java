@@ -23,9 +23,11 @@ public class BeanConfiguration {
                                                                     DialPlanRepository dialPlanRepository,
                                                                     DialRepository dialRepository,
                                                                     SayAlphaRepository sayAlphaRepository,
-                                                                    GotoRepository gotoRepository) {
+                                                                    GotoRepository gotoRepository,
+                                                                    BranchRepository branchRepository) {
             return new DatabaseFixtureBuilder(companyRepository, adminRepository, sipClientRepository,
-                    dialPlanRepository, dialRepository, sayAlphaRepository, gotoRepository);
+                    dialPlanRepository, dialRepository, sayAlphaRepository, gotoRepository,
+                    branchRepository);
         }
     }
 }
