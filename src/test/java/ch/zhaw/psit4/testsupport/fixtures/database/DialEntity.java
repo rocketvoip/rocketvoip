@@ -11,7 +11,7 @@ public final class DialEntity {
         // intentionally empty
     }
 
-    public static Dial createDialEntity(int number, String priority, int timeout) {
+    public static Dial createDialEntity(int number, int priority, int timeout) {
         return new Dial(DialData.getTitle(number), priority, timeout, null, null);
     }
 }

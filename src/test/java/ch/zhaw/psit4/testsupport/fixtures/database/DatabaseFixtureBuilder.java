@@ -94,7 +94,7 @@ public class DatabaseFixtureBuilder {
         return this;
     }
 
-    public DatabaseFixtureBuilder addDial(int number, String priority, int addToDialPlanNumber, int[] sipClients) {
+    public DatabaseFixtureBuilder addDial(int number, int priority, int addToDialPlanNumber, int[] sipClients) {
         Dial dial = DialEntity.createDialEntity(number, priority, 30);
         List<SipClient> assignedSipClients = Arrays.stream(sipClients)
                 .mapToObj(x -> sipClientList.get(x))
@@ -108,7 +108,7 @@ public class DatabaseFixtureBuilder {
         return this;
     }
 
-    public DatabaseFixtureBuilder addSayAlpha(int number, String priority, int addToDialPlanNumber) {
+    public DatabaseFixtureBuilder addSayAlpha(int number, int priority, int addToDialPlanNumber) {
         SayAlpha sayAlpha = SayAlphaEntity.createSayAlphaEntity(number, priority, 20);
         sayAlpha.setDialPlan(dialPlanList.get(addToDialPlanNumber));
 

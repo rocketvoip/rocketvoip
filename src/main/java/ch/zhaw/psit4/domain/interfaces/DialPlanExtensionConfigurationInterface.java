@@ -24,7 +24,7 @@ public interface DialPlanExtensionConfigurationInterface extends Validatable {
     String toDialPlanExtensionConfiguration();
 
     /**
-     * Get the priority of the dialplan extension
+     * Ordinal of the Extension. This number is used to determine the order of extensions within a context.
      */
-    String getPriority();
+    int getOrdinal();
 }

@@ -12,7 +12,7 @@ import java.util.List;
 public interface DialRepository extends CrudRepository<Dial, Long> {
     List<Dial> findByDialPlan(DialPlan dialPlan);
 
-    Dial findFirstByDialPlan_IdAndPriority(long dialPlanId, String priority);
+    Dial findFirstByDialPlan_IdAndPriority(long dialPlanId, int priority);
 
     List<Dial> findAllByDialPlan_Id(long dialPlanId);
 

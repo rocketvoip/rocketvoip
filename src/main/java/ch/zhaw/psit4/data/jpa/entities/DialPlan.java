@@ -1,7 +1,6 @@
 package ch.zhaw.psit4.data.jpa.entities;
 
 import javax.persistence.*;
-import java.util.Set;
 
 /**
  * Table for dialplans has one or more actions and
@@ -26,9 +25,6 @@ public class DialPlan {
 
     @ManyToOne
     private Company company;
-
-    @OneToMany(mappedBy = "dialPlan")
-    private Set<BranchDialplan> branchesDialplans;
 
     protected DialPlan() {
     }
@@ -71,11 +67,4 @@ public class DialPlan {
         this.company = company;
     }
 
-    public Set<BranchDialplan> getBranchesDialplans() {
-        return branchesDialplans;
-    }
-
-    public void setBranchesDialplans(Set<BranchDialplan> branchesDialplans) {
-        this.branchesDialplans = branchesDialplans;
-    }
 }

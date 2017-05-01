@@ -60,7 +60,7 @@ public class SayAlphaAdapter {
         SayAlphaAction sayAlphaAction = OBJECT_MAPPER.convertValue(actionDto.getTypeSpecific(), SayAlphaAction.class);
 
         SayAlpha sayAlpha = new SayAlpha(actionDto.getName(),
-                Integer.toString(priority),
+                priority,
                 sayAlphaAction.getVoiceMessage(),
                 sayAlphaAction.getSleepTime(),
                 dialPlanDtoToDialPlanEntityWithId(dialPlanDto));

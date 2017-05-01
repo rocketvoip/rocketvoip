@@ -220,8 +220,8 @@ public class DialPlanControllerIT {
 
     @Test
     public void deleteDialPlanWithActions() throws Exception {
-        String dialPriority = "1";
-        String sayAlphaPriority = "2";
+        int dialPriority = 1;
+        int sayAlphaPriority = 2;
         databaseFixtureBuilder1
                 .company(1)
                 .addSipClient(1)
@@ -271,8 +271,8 @@ public class DialPlanControllerIT {
                 .company(1)
                 .addSipClient(1)
                 .addDialPlan(1)
-                .addDial(1, "1", 1, new int[]{1})
-                .addSayAlpha(2, "2", 1)
+                .addDial(1, 1, 1, new int[]{1})
+                .addSayAlpha(2, 2, 1)
                 .build();
 
         DialPlanDto existingDialPlan = DialPlanServiceImpl.dialPlanEntityToDialPlanDtoIgnoreActions(
