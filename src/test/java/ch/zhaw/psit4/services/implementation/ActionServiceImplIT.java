@@ -66,7 +66,7 @@ public class ActionServiceImplIT {
     @Test
     public void saveDialPlanWithNullActions() throws Exception {
         databaseFixtureBuilder1.company(1).addDialPlan(1).addSipClient(1).addSipClient(2).build();
-        DialPlanDto dialPlanDto = getDialPlan(getDialActionDto(1), 1);
+        DialPlanDto dialPlanDto = generateDialPlan(generateDialActionDto(1), 1);
         dialPlanDto.setActions(null);
         actionServiceInterface.saveActions(dialPlanDto);
 
@@ -77,7 +77,7 @@ public class ActionServiceImplIT {
     @Test
     public void saveOneDialAction() throws Exception {
         databaseFixtureBuilder1.company(1).addDialPlan(1).addSipClient(1).addSipClient(2).build();
-        DialPlanDto dialPlanDto = getDialPlan(getDialActionDto(1), 1);
+        DialPlanDto dialPlanDto = generateDialPlan(generateDialActionDto(1), 1);
         actionServiceInterface.saveActions(dialPlanDto);
 
         List<ActionDto> actionDtos = actionServiceInterface.retrieveActions(dialPlanDto.getId());
@@ -95,7 +95,7 @@ public class ActionServiceImplIT {
     @Test
     public void saveMultipleDialActions() throws Exception {
         databaseFixtureBuilder1.company(1).addDialPlan(1).addSipClient(1).addSipClient(2).build();
-        DialPlanDto dialPlanDto = getDialPlan(getDialActionDtos(2), 1);
+        DialPlanDto dialPlanDto = generateDialPlan(generateDialActionDtos(2), 1);
 
         actionServiceInterface.saveActions(dialPlanDto);
 
@@ -122,7 +122,7 @@ public class ActionServiceImplIT {
     public void saveGotoActions() throws Exception {
         databaseFixtureBuilder1.company(1).addDialPlan(1).build();
 
-        DialPlanDto dialPlanDto = getDialPlan(getGotoActionDtos(2), 1);
+        DialPlanDto dialPlanDto = generateDialPlan(generateGotoActionDtos(2), 1);
 
         actionServiceInterface.saveActions(dialPlanDto);
 
@@ -141,7 +141,7 @@ public class ActionServiceImplIT {
     @Test
     public void updateActions() throws Exception {
         databaseFixtureBuilder1.company(1).addDialPlan(1).addSipClient(1).addSipClient(2).build();
-        DialPlanDto dialPlanDto = getDialPlan(getDialActionDto(1), 1);
+        DialPlanDto dialPlanDto = generateDialPlan(generateDialActionDto(1), 1);
         actionServiceInterface.saveActions(dialPlanDto);
 
         List<ActionDto> actionDtos = actionServiceInterface.retrieveActions(dialPlanDto.getId());
@@ -151,7 +151,7 @@ public class ActionServiceImplIT {
         assertThat(expected, actionDtoAlmostEqualTo(actual));
 
         // update
-        List<ActionDto> actionDtoList = getSayAlphaActionDtos(2);
+        List<ActionDto> actionDtoList = generateSayAlphaActionDtos(2);
         dialPlanDto.setActions(actionDtoList);
 
         actionServiceInterface.updateActions(dialPlanDto);
@@ -181,7 +181,7 @@ public class ActionServiceImplIT {
     @Test
     public void deleteActions() throws Exception {
         databaseFixtureBuilder1.company(1).addDialPlan(1).addDialPlan(2).addSipClient(1).addSipClient(2).build();
-        DialPlanDto dialPlanDto = getDialPlan(getDialActionDto(1), 1);
+        DialPlanDto dialPlanDto = generateDialPlan(generateDialActionDto(1), 1);
         actionServiceInterface.saveActions(dialPlanDto);
 
         List<ActionDto> actionDtos = actionServiceInterface.retrieveActions(dialPlanDto.getId());
@@ -197,7 +197,14 @@ public class ActionServiceImplIT {
         assertThat(actualActionDtos, is(empty()));
     }
 
-    private DialPlanDto getDialPlan(List<ActionDto> actionDtos, int number) {
+    private DialPlanDto generateDialPlan(ActionDto actionDto, int number) {
+        List<ActionDto> actionDtos = new ArrayList<>();
+        actionDtos.add(actionDto);
+        return generateDialPlan(actionDtos, number);
+
+    }
+
+    private DialPlanDto generateDialPlan(List<ActionDto> actionDtos, int number) {
         List<DialPlanDto> dialPlanDtoList = new ArrayList<>();
         databaseFixtureBuilder1.getDialPlanList().values()
                 .forEach(x -> dialPlanDtoList.add(dialPlanServiceImpl.dialPlanEntityToDialPlanDto(x)));
@@ -207,22 +214,15 @@ public class ActionServiceImplIT {
         return dialPlanDto;
     }
 
-    private DialPlanDto getDialPlan(ActionDto actionDto, int number) {
-        List<ActionDto> actionDtos = new ArrayList<>();
-        actionDtos.add(actionDto);
-        return getDialPlan(actionDtos, number);
-
-    }
-
-    private List<ActionDto> getSayAlphaActionDtos(int number) {
+    private List<ActionDto> generateSayAlphaActionDtos(int number) {
         List<ActionDto> actionDtos = new ArrayList<>();
         for (int i = 1; i <= number; i++) {
-            actionDtos.add(getSayAlphaActionDto(i));
+            actionDtos.add(generateSayAlphaActionDto(i));
         }
         return actionDtos;
     }
 
-    private ActionDto getSayAlphaActionDto(int number) {
+    private ActionDto generateSayAlphaActionDto(int number) {
         SayAlphaActionDto sayAlphaActionDto = SayAlphaActionDtoGenerator.createTestDialActionDto(number);
 
         ObjectMapper objM = new ObjectMapper();
@@ -231,15 +231,15 @@ public class ActionServiceImplIT {
         return ActionDtoGenerator.createTestActionDto(number, "SayAlpha", linkedHashMap);
     }
 
-    private List<ActionDto> getGotoActionDtos(int number) {
+    private List<ActionDto> generateGotoActionDtos(int number) {
         List<ActionDto> actionDtos = new ArrayList<>();
         for (int i = 1; i <= number; i++) {
-            actionDtos.add(getGotoActionDto(i));
+            actionDtos.add(generateGotoActionDto(i));
         }
         return actionDtos;
     }
 
-    private ActionDto getGotoActionDto(int number) {
+    private ActionDto generateGotoActionDto(int number) {
         GotoActionDto gotoActionDto = new GotoActionDto();
 
         databaseFixtureBuilder1.addDialPlan(number * 10).build();
@@ -251,15 +251,15 @@ public class ActionServiceImplIT {
         return ActionDtoGenerator.createTestActionDto(number, "Goto", linkedHashMap);
     }
 
-    private List<ActionDto> getDialActionDtos(int number) {
+    private List<ActionDto> generateDialActionDtos(int number) {
         List<ActionDto> actionDtos = new ArrayList<>();
         for (int i = 1; i <= number; i++) {
-            actionDtos.add(getDialActionDto(i));
+            actionDtos.add(generateDialActionDto(i));
         }
         return actionDtos;
     }
 
-    private ActionDto getDialActionDto(int number) {
+    private ActionDto generateDialActionDto(int number) {
         List<SipClientDto> sipClientDtoList = new ArrayList<>();
         databaseFixtureBuilder1.getSipClientList().values()
                 .forEach(x -> sipClientDtoList.add(sipClientEntityToSipClientDto(x)));
