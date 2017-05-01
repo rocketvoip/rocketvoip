@@ -28,4 +28,9 @@ public class GotoApp implements DialPlanAppInterface {
     public String toApplicationCall() {
         return "Goto(" + reference + ",s,1)";
     }
+
+    @Override
+    public boolean requireAnswer() {
+        return false;
+    }
 }

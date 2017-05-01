@@ -15,4 +15,9 @@ public class RingingApp implements DialPlanAppInterface {
     public String toApplicationCall() {
         return "Ringing";
     }
+
+    @Override
+    public boolean requireAnswer() {
+        return false;
+    }
 }
