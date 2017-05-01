@@ -2,7 +2,7 @@ package ch.zhaw.psit4.testsupport.fixtures.dto;
 
 import ch.zhaw.psit4.data.jpa.entities.SipClient;
 import ch.zhaw.psit4.dto.SipClientDto;
-import ch.zhaw.psit4.dto.actions.DialAction;
+import ch.zhaw.psit4.dto.actions.DialActionDto;
 import ch.zhaw.psit4.services.implementation.SipClientServiceImpl;
 import ch.zhaw.psit4.testsupport.fixtures.general.DialActionData;
 
@@ -18,14 +18,14 @@ public class DialActionGenerator {
         //intentionally empty
     }
 
-    public static DialAction createTestDialActionDto(long number, List<SipClientDto> sipClientDtoList) {
-        DialAction dialAction = new DialAction();
-        dialAction.setRingingTime(DialActionData.getRingingTime((int) number));
-        dialAction.setSipClients(sipClientDtoList);
-        return dialAction;
+    public static DialActionDto createTestDialActionDto(long number, List<SipClientDto> sipClientDtoList) {
+        DialActionDto dialActionDto = new DialActionDto();
+        dialActionDto.setRingingTime(DialActionData.getRingingTime((int) number));
+        dialActionDto.setSipClients(sipClientDtoList);
+        return dialActionDto;
     }
 
-    public static DialAction createTestDialActionDtoFormSipClientEntities(long number, List<SipClient> sipClient) {
+    public static DialActionDto createTestDialActionDtoFormSipClientEntities(long number, List<SipClient> sipClient) {
         return createTestDialActionDto(number, SipClientServiceImpl.sipClientEntitiesToSipClientDtos(sipClient));
     }
 }

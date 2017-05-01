@@ -5,7 +5,7 @@ package ch.zhaw.psit4.dto.actions;
  *
  * @author Jona Braun
  */
-public class SayAlphaAction {
+public class SayAlphaActionDto {
     private String voiceMessage;
     private int sleepTime;
 

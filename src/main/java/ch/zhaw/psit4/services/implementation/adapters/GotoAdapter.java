@@ -6,8 +6,8 @@ import ch.zhaw.psit4.data.jpa.repositories.DialPlanRepository;
 import ch.zhaw.psit4.data.jpa.repositories.GotoRepository;
 import ch.zhaw.psit4.dto.ActionDto;
 import ch.zhaw.psit4.dto.DialPlanDto;
-import ch.zhaw.psit4.dto.actions.ActionInterface;
-import ch.zhaw.psit4.dto.actions.GotoAction;
+import ch.zhaw.psit4.dto.actions.ActionAdapterInterface;
+import ch.zhaw.psit4.dto.actions.GotoActionDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Map;
@@ -19,7 +19,7 @@ import static ch.zhaw.psit4.services.implementation.DialPlanServiceImpl.dialPlan
  *
  * @author Jona Braun
  */
-public class GotoAdapter implements ActionInterface {
+public class GotoAdapter implements ActionAdapterInterface {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private final GotoRepository gotoRepository;
@@ -30,10 +30,10 @@ public class GotoAdapter implements ActionInterface {
         this.dialPlanRepository = dialPlanRepository;
     }
 
-    private static GotoAction gotoEntityToGotoAction(Goto gotoEntity) {
-        GotoAction gotoAction = new GotoAction();
-        gotoAction.setNextDialPlanId(gotoEntity.getNextDialPlan().getId());
-        return gotoAction;
+    private static GotoActionDto gotoEntityToGotoAction(Goto gotoEntity) {
+        GotoActionDto gotoActionDto = new GotoActionDto();
+        gotoActionDto.setNextDialPlanId(gotoEntity.getNextDialPlan().getId());
+        return gotoActionDto;
     }
 
     /**
@@ -47,8 +47,8 @@ public class GotoAdapter implements ActionInterface {
         actionDto.setId(gotoEntity.getId());
         actionDto.setName(gotoEntity.getName());
         actionDto.setType("Goto");
-        GotoAction gotoAction = gotoEntityToGotoAction(gotoEntity);
-        Map<String, Object> map = OBJECT_MAPPER.convertValue(gotoAction, Map.class);
+        GotoActionDto gotoActionDto = gotoEntityToGotoAction(gotoEntity);
+        Map<String, Object> map = OBJECT_MAPPER.convertValue(gotoActionDto, Map.class);
         actionDto.setTypeSpecific(map);
         return actionDto;
     }
@@ -56,9 +56,9 @@ public class GotoAdapter implements ActionInterface {
     @Override
     public void saveActionDto(DialPlanDto dialPlanDto, ActionDto actionDto, int priority) {
         if ("goto".equalsIgnoreCase((actionDto.getType()))) {
-            GotoAction gotoAction = OBJECT_MAPPER.convertValue(actionDto.getTypeSpecific(), GotoAction.class);
+            GotoActionDto gotoActionDto = OBJECT_MAPPER.convertValue(actionDto.getTypeSpecific(), GotoActionDto.class);
 
-            DialPlan nextDialPlan = dialPlanRepository.findFirstById(gotoAction.getNextDialPlanId());
+            DialPlan nextDialPlan = dialPlanRepository.findFirstById(gotoActionDto.getNextDialPlanId());
 
             Goto gotoEntity = new Goto(
                     actionDto.getName(),

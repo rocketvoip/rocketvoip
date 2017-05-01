@@ -4,8 +4,8 @@ import ch.zhaw.psit4.data.jpa.entities.Dial;
 import ch.zhaw.psit4.data.jpa.repositories.DialRepository;
 import ch.zhaw.psit4.dto.ActionDto;
 import ch.zhaw.psit4.dto.DialPlanDto;
-import ch.zhaw.psit4.dto.actions.ActionInterface;
-import ch.zhaw.psit4.dto.actions.DialAction;
+import ch.zhaw.psit4.dto.actions.ActionAdapterInterface;
+import ch.zhaw.psit4.dto.actions.DialActionDto;
 import ch.zhaw.psit4.services.implementation.SipClientServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -18,7 +18,7 @@ import static ch.zhaw.psit4.services.implementation.DialPlanServiceImpl.dialPlan
  *
  * @author Jona Braun
  */
-public class DialAdapter implements ActionInterface {
+public class DialAdapter implements ActionAdapterInterface {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private final DialRepository dialRepository;
@@ -27,11 +27,11 @@ public class DialAdapter implements ActionInterface {
         this.dialRepository = dialRepository;
     }
 
-    private static DialAction dialEntityToDialAction(Dial dial) {
-        DialAction dialAction = new DialAction();
-        dialAction.setRingingTime(dial.getRingingTime());
-        dialAction.setSipClients(SipClientServiceImpl.sipClientEntitiesToSipClientDtos(dial.getSipClients()));
-        return dialAction;
+    private static DialActionDto dialEntityToDialAction(Dial dial) {
+        DialActionDto dialActionDto = new DialActionDto();
+        dialActionDto.setRingingTime(dial.getRingingTime());
+        dialActionDto.setSipClients(SipClientServiceImpl.sipClientEntitiesToSipClientDtos(dial.getSipClients()));
+        return dialActionDto;
     }
 
     /**
@@ -45,8 +45,8 @@ public class DialAdapter implements ActionInterface {
         actionDto.setId(dial.getId());
         actionDto.setName(dial.getName());
         actionDto.setType("Dial");
-        DialAction dialAction = dialEntityToDialAction(dial);
-        Map<String, Object> map = OBJECT_MAPPER.convertValue(dialAction, Map.class);
+        DialActionDto dialActionDto = dialEntityToDialAction(dial);
+        Map<String, Object> map = OBJECT_MAPPER.convertValue(dialActionDto, Map.class);
         actionDto.setTypeSpecific(map);
         return actionDto;
     }
@@ -54,13 +54,13 @@ public class DialAdapter implements ActionInterface {
     @Override
     public void saveActionDto(DialPlanDto dialPlanDto, ActionDto actionDto, int priority) {
         if ("dial".equalsIgnoreCase(actionDto.getType())) {
-            DialAction dialAction = OBJECT_MAPPER.convertValue(actionDto.getTypeSpecific(), DialAction.class);
+            DialActionDto dialActionDto = OBJECT_MAPPER.convertValue(actionDto.getTypeSpecific(), DialActionDto.class);
 
             Dial dial = new Dial(actionDto.getName(),
                     priority,
-                    dialAction.getRingingTime(),
+                    dialActionDto.getRingingTime(),
                     dialPlanDtoToDialPlanEntityWithId(dialPlanDto),
-                    SipClientServiceImpl.sipClientDtosToSipClientEntitiesWithId(dialAction.getSipClients()));
+                    SipClientServiceImpl.sipClientDtosToSipClientEntitiesWithId(dialActionDto.getSipClients()));
 
             dialRepository.save(dial);
         }

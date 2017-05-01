@@ -6,7 +6,7 @@ import ch.zhaw.psit4.dto.DialPlanDto;
 /**
  * @author Jona Braun
  */
-public interface ActionInterface {
+public interface ActionAdapterInterface {
 
     /**
      * Saves the action in the data storage.

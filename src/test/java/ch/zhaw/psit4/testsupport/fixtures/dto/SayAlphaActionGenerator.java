@@ -1,6 +1,6 @@
 package ch.zhaw.psit4.testsupport.fixtures.dto;
 
-import ch.zhaw.psit4.dto.actions.SayAlphaAction;
+import ch.zhaw.psit4.dto.actions.SayAlphaActionDto;
 import ch.zhaw.psit4.testsupport.fixtures.general.SayAlphaActionData;
 
 /**
@@ -13,10 +13,10 @@ public class SayAlphaActionGenerator {
         //intentionally empty
     }
 
-    public static SayAlphaAction createTestDialActionDto(long number) {
-        SayAlphaAction sayAlphaAction = new SayAlphaAction();
-        sayAlphaAction.setSleepTime(SayAlphaActionData.getSleepTime((int) number));
-        sayAlphaAction.setVoiceMessage(SayAlphaActionData.getVoiceMessage((int) number));
-        return sayAlphaAction;
+    public static SayAlphaActionDto createTestDialActionDto(long number) {
+        SayAlphaActionDto sayAlphaActionDto = new SayAlphaActionDto();
+        sayAlphaActionDto.setSleepTime(SayAlphaActionData.getSleepTime((int) number));
+        sayAlphaActionDto.setVoiceMessage(SayAlphaActionData.getVoiceMessage((int) number));
+        return sayAlphaActionDto;
     }
 }

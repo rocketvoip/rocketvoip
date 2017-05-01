@@ -2,7 +2,7 @@ package ch.zhaw.psit4.services.implementation;
 
 import ch.zhaw.psit4.dto.ActionDto;
 import ch.zhaw.psit4.dto.DialPlanDto;
-import ch.zhaw.psit4.dto.actions.ActionInterface;
+import ch.zhaw.psit4.dto.actions.ActionAdapterInterface;
 import ch.zhaw.psit4.services.interfaces.ActionServiceInterface;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,10 +16,10 @@ import java.util.List;
  */
 @Transactional
 public class ActionServiceImpl implements ActionServiceInterface {
-    private final List<ActionInterface> actionInterfaceList;
+    private final List<ActionAdapterInterface> actionAdapterInterfaceList;
 
-    public ActionServiceImpl(List<ActionInterface> actionInterfaceList) {
-        this.actionInterfaceList = actionInterfaceList;
+    public ActionServiceImpl(List<ActionAdapterInterface> actionAdapterInterfaceList) {
+        this.actionAdapterInterfaceList = actionAdapterInterfaceList;
     }
 
     /**
@@ -53,9 +53,9 @@ public class ActionServiceImpl implements ActionServiceInterface {
             priority++;
             oldListSize = actionDtoList.size();
 
-            for (ActionInterface actionInterface : actionInterfaceList) {
+            for (ActionAdapterInterface actionAdapterInterface : actionAdapterInterfaceList) {
 
-                ActionDto actionDto = actionInterface.retrieveActionDto(dialPlanId, priority);
+                ActionDto actionDto = actionAdapterInterface.retrieveActionDto(dialPlanId, priority);
                 if (actionDto != null) {
                     actionDtoList.add(actionDto);
                     break;
@@ -85,15 +85,15 @@ public class ActionServiceImpl implements ActionServiceInterface {
         int priority = 1;
         for (ActionDto actionDto : dialPlanDto.getActions()) {
 
-            for (ActionInterface actionInterface : actionInterfaceList) {
-                actionInterface.saveActionDto(dialPlanDto, actionDto, priority);
+            for (ActionAdapterInterface actionAdapterInterface : actionAdapterInterfaceList) {
+                actionAdapterInterface.saveActionDto(dialPlanDto, actionDto, priority);
             }
             priority++;
         }
     }
 
     private void deleteAllActions(long dialPlanId) {
-        actionInterfaceList.forEach(actionInterface -> actionInterface.deleteActionDto((dialPlanId)));
+        actionAdapterInterfaceList.forEach(actionInterface -> actionInterface.deleteActionDto((dialPlanId)));
     }
 
 }

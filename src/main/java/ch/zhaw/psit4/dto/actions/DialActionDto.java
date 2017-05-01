@@ -9,7 +9,7 @@ import java.util.List;
  *
  * @author Jona Braun
  */
-public class DialAction {
+public class DialActionDto {
     private int ringingTime;
     private List<SipClientDto> sipClients;
 

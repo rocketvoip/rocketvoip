@@ -6,8 +6,8 @@ import ch.zhaw.psit4.data.jpa.entities.SipClient;
 import ch.zhaw.psit4.dto.ActionDto;
 import ch.zhaw.psit4.dto.CompanyDto;
 import ch.zhaw.psit4.dto.DialPlanDto;
-import ch.zhaw.psit4.dto.actions.DialAction;
-import ch.zhaw.psit4.dto.actions.SayAlphaAction;
+import ch.zhaw.psit4.dto.actions.DialActionDto;
+import ch.zhaw.psit4.dto.actions.SayAlphaActionDto;
 import ch.zhaw.psit4.services.implementation.CompanyServiceImpl;
 import ch.zhaw.psit4.services.implementation.DialPlanServiceImpl;
 import ch.zhaw.psit4.testsupport.convenience.Json;
@@ -318,17 +318,17 @@ public class DialPlanControllerIT {
 
     private List<ActionDto> createActions(DatabaseFixtureBuilder dbBuilder) {
         List<SipClient> sipClientList = new ArrayList<>(dbBuilder.getSipClientList().values());
-        DialAction expectedDialAction = DialActionGenerator.createTestDialActionDtoFormSipClientEntities(11,
+        DialActionDto expectedDialActionDto = DialActionGenerator.createTestDialActionDtoFormSipClientEntities(11,
                 sipClientList);
 
-        SayAlphaAction expectedSayAlphaAction = SayAlphaActionGenerator.createTestDialActionDto(21);
+        SayAlphaActionDto expectedSayAlphaActionDto = SayAlphaActionGenerator.createTestDialActionDto(21);
 
         ObjectMapper objectMapper = new ObjectMapper();
 
         ActionDto expectedActionDtoDial = ActionDtoGenerator.createTestActionDto(11, "Dial",
-                objectMapper.convertValue(expectedDialAction, Map.class));
+                objectMapper.convertValue(expectedDialActionDto, Map.class));
         ActionDto expectedActionDtoSayAlpha = ActionDtoGenerator.createTestActionDto(21, "SayAlpha",
-                objectMapper.convertValue(expectedSayAlphaAction, Map.class));
+                objectMapper.convertValue(expectedSayAlphaActionDto, Map.class));
 
         List<ActionDto> actionDtos = new ArrayList<>();
         actionDtos.add(expectedActionDtoDial);
@@ -358,19 +358,19 @@ public class DialPlanControllerIT {
         // --------------
 
         // expected actions
-        DialAction expectedDialAction = objectMapper.convertValue(
-                expectedActionDtoDial.getTypeSpecific(), DialAction.class);
-        SayAlphaAction expectedSayAlphaAction = objectMapper.convertValue(
-                expectedActionDtoSayAlpha.getTypeSpecific(), SayAlphaAction.class);
+        DialActionDto expectedDialActionDto = objectMapper.convertValue(
+                expectedActionDtoDial.getTypeSpecific(), DialActionDto.class);
+        SayAlphaActionDto expectedSayAlphaActionDto = objectMapper.convertValue(
+                expectedActionDtoSayAlpha.getTypeSpecific(), SayAlphaActionDto.class);
 
         // actual actions
-        DialAction actualDialAction = objectMapper.convertValue(
-                actualActionDtoDial.getTypeSpecific(), DialAction.class);
-        SayAlphaAction actualSayAlphaAction = objectMapper.convertValue(
-                actualActionDtoSayAlpha.getTypeSpecific(), SayAlphaAction.class);
+        DialActionDto actualDialActionDto = objectMapper.convertValue(
+                actualActionDtoDial.getTypeSpecific(), DialActionDto.class);
+        SayAlphaActionDto actualSayAlphaActionDto = objectMapper.convertValue(
+                actualActionDtoSayAlpha.getTypeSpecific(), SayAlphaActionDto.class);
 
-        assertThat(expectedDialAction, dialActionEqualTo(actualDialAction));
-        assertThat(expectedSayAlphaAction, sayAlphaActionEqualTo(actualSayAlphaAction));
+        assertThat(expectedDialActionDto, dialActionEqualTo(actualDialActionDto));
+        assertThat(expectedSayAlphaActionDto, sayAlphaActionEqualTo(actualSayAlphaActionDto));
     }
 
 }

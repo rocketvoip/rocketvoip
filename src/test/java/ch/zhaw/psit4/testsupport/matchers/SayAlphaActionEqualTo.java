@@ -1,6 +1,6 @@
 package ch.zhaw.psit4.testsupport.matchers;
 
-import ch.zhaw.psit4.dto.actions.SayAlphaAction;
+import ch.zhaw.psit4.dto.actions.SayAlphaActionDto;
 import org.hamcrest.Description;
 import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
@@ -11,22 +11,22 @@ import org.hamcrest.TypeSafeMatcher;
  *
  * @author Jona Braun
  */
-public class SayAlphaActionEqualTo extends TypeSafeMatcher<SayAlphaAction> {
-    private final SayAlphaAction expected;
+public class SayAlphaActionEqualTo extends TypeSafeMatcher<SayAlphaActionDto> {
+    private final SayAlphaActionDto expected;
 
-    private SayAlphaActionEqualTo(SayAlphaAction expected) {
+    private SayAlphaActionEqualTo(SayAlphaActionDto expected) {
         this.expected = expected;
     }
 
     @Factory
-    public static Matcher<SayAlphaAction> sayAlphaActionEqualTo(SayAlphaAction other) {
+    public static Matcher<SayAlphaActionDto> sayAlphaActionEqualTo(SayAlphaActionDto other) {
         return new SayAlphaActionEqualTo(other);
     }
 
     @Override
-    protected boolean matchesSafely(SayAlphaAction sayAlphaAction) {
-        return expected.getSleepTime() == (sayAlphaAction.getSleepTime())
-                && expected.getVoiceMessage().equals(sayAlphaAction.getVoiceMessage());
+    protected boolean matchesSafely(SayAlphaActionDto sayAlphaActionDto) {
+        return expected.getSleepTime() == (sayAlphaActionDto.getSleepTime())
+                && expected.getVoiceMessage().equals(sayAlphaActionDto.getVoiceMessage());
 
     }
 

@@ -4,8 +4,8 @@ import ch.zhaw.psit4.data.jpa.entities.SayAlpha;
 import ch.zhaw.psit4.data.jpa.repositories.SayAlphaRepository;
 import ch.zhaw.psit4.dto.ActionDto;
 import ch.zhaw.psit4.dto.DialPlanDto;
-import ch.zhaw.psit4.dto.actions.ActionInterface;
-import ch.zhaw.psit4.dto.actions.SayAlphaAction;
+import ch.zhaw.psit4.dto.actions.ActionAdapterInterface;
+import ch.zhaw.psit4.dto.actions.SayAlphaActionDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Map;
@@ -17,7 +17,7 @@ import static ch.zhaw.psit4.services.implementation.DialPlanServiceImpl.dialPlan
  *
  * @author Jona Braun
  */
-public class SayAlphaAdapter implements ActionInterface {
+public class SayAlphaAdapter implements ActionAdapterInterface {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private final SayAlphaRepository sayAlphaRepository;
@@ -26,11 +26,11 @@ public class SayAlphaAdapter implements ActionInterface {
         this.sayAlphaRepository = sayAlphaRepository;
     }
 
-    private static SayAlphaAction sayAlphaEntityToSayAlphaAction(SayAlpha sayAlpha) {
-        SayAlphaAction sayAlphaAction = new SayAlphaAction();
-        sayAlphaAction.setSleepTime(sayAlpha.getSleepTime());
-        sayAlphaAction.setVoiceMessage(sayAlpha.getVoiceMessage());
-        return sayAlphaAction;
+    private static SayAlphaActionDto sayAlphaEntityToSayAlphaAction(SayAlpha sayAlpha) {
+        SayAlphaActionDto sayAlphaActionDto = new SayAlphaActionDto();
+        sayAlphaActionDto.setSleepTime(sayAlpha.getSleepTime());
+        sayAlphaActionDto.setVoiceMessage(sayAlpha.getVoiceMessage());
+        return sayAlphaActionDto;
     }
 
     /**
@@ -44,8 +44,8 @@ public class SayAlphaAdapter implements ActionInterface {
         actionDto.setId(sayAlpha.getId());
         actionDto.setName(sayAlpha.getName());
         actionDto.setType("SayAlpha");
-        SayAlphaAction sayAlphaAction = sayAlphaEntityToSayAlphaAction(sayAlpha);
-        Map<String, Object> map = OBJECT_MAPPER.convertValue(sayAlphaAction, Map.class);
+        SayAlphaActionDto sayAlphaActionDto = sayAlphaEntityToSayAlphaAction(sayAlpha);
+        Map<String, Object> map = OBJECT_MAPPER.convertValue(sayAlphaActionDto, Map.class);
         actionDto.setTypeSpecific(map);
         return actionDto;
     }
@@ -53,12 +53,12 @@ public class SayAlphaAdapter implements ActionInterface {
     @Override
     public void saveActionDto(DialPlanDto dialPlanDto, ActionDto actionDto, int priority) {
         if ("sayalpha".equalsIgnoreCase((actionDto.getType()))) {
-            SayAlphaAction sayAlphaAction = OBJECT_MAPPER.convertValue(actionDto.getTypeSpecific(), SayAlphaAction.class);
+            SayAlphaActionDto sayAlphaActionDto = OBJECT_MAPPER.convertValue(actionDto.getTypeSpecific(), SayAlphaActionDto.class);
 
             SayAlpha sayAlpha = new SayAlpha(actionDto.getName(),
                     priority,
-                    sayAlphaAction.getVoiceMessage(),
-                    sayAlphaAction.getSleepTime(),
+                    sayAlphaActionDto.getVoiceMessage(),
+                    sayAlphaActionDto.getSleepTime(),
                     dialPlanDtoToDialPlanEntityWithId(dialPlanDto));
 
             sayAlphaRepository.save(sayAlpha);
