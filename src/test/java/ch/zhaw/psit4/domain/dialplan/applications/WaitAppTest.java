@@ -34,4 +34,10 @@ public class WaitAppTest {
         assertThat(waitApp.toApplicationCall(), equalTo("Wait(1)"));
     }
 
+    @Test
+    public void requireAnswer() throws Exception {
+        WaitApp waitApp = new WaitApp(1);
+        assertThat(waitApp.requireAnswer(), equalTo(false));
+    }
+
 }

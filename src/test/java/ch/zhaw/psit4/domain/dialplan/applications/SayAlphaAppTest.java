@@ -34,4 +34,11 @@ public class SayAlphaAppTest {
         assertThat(sayAlphaApp.toApplicationCall(), equalTo("SayAlpha(abcd)"));
     }
 
+    @Test
+    public void requireAnswer() throws Exception {
+        SayAlphaApp sayAlphaApp = new SayAlphaApp("abcd");
+        assertThat(sayAlphaApp.requireAnswer(), equalTo(true));
+    }
+
+
 }
