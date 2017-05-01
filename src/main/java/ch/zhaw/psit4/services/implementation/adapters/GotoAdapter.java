@@ -1,5 +1,6 @@
 package ch.zhaw.psit4.services.implementation.adapters;
 
+import ch.zhaw.psit4.data.jpa.entities.DialPlan;
 import ch.zhaw.psit4.data.jpa.entities.Goto;
 import ch.zhaw.psit4.data.jpa.repositories.DialPlanRepository;
 import ch.zhaw.psit4.data.jpa.repositories.GotoRepository;
@@ -61,11 +62,13 @@ public class GotoAdapter {
     public void saveGotoAction(DialPlanDto dialPlanDto, ActionDto actionDto, int priority) {
         GotoAction gotoAction = OBJECT_MAPPER.convertValue(actionDto.getTypeSpecific(), GotoAction.class);
 
+        DialPlan nextDialPlan = dialPlanRepository.findFirstById(gotoAction.getNextDialPlanId());
+
         Goto gotoEntity = new Goto(
                 actionDto.getName(),
-                Integer.toString(priority),
+                priority,
                 dialPlanDtoToDialPlanEntity(dialPlanDto),
-                dialPlanRepository.findFirstById(gotoAction.getNextDialPlanId()));
+                nextDialPlan);
 
         gotoRepository.save(gotoEntity);
     }

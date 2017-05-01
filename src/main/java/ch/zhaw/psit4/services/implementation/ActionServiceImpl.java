@@ -91,7 +91,7 @@ public class ActionServiceImpl implements ActionServiceInterface {
                 continue;
             }
 
-            Goto gotoEntity = gotoRepository.findFirstByDialPlan_IdAndPriority(dialPlanId, Integer.toString(priority));
+            Goto gotoEntity = gotoRepository.findFirstByDialPlan_IdAndPriority(dialPlanId, priority);
             if (gotoEntity != null) {
                 ActionDto actionDto = gotoAdapter.gotoEntityToActionDto(gotoEntity);
                 actionDtoList.add(actionDto);
