@@ -33,13 +33,7 @@ public class DialAdapter implements ActionAdapterInterface {
         return dialActionDto;
     }
 
-    /**
-     * Converts a Dial entity into an ActionDto.
-     *
-     * @param dial the dial entity
-     * @return the ActionDto
-     */
-    public ActionDto dialEntityToActionDto(Dial dial) {
+    private ActionDto dialEntityToActionDto(Dial dial) {
         ActionDto actionDto = new ActionDto();
         actionDto.setId(dial.getId());
         actionDto.setName(dial.getName());

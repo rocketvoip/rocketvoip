@@ -35,13 +35,7 @@ public class GotoAdapter implements ActionAdapterInterface {
         return gotoActionDto;
     }
 
-    /**
-     * Converts a Goto entity into an ActionDto.
-     *
-     * @param gotoEntity the Goto entity
-     * @return the ActionDto
-     */
-    public ActionDto gotoEntityToActionDto(Goto gotoEntity) {
+    private ActionDto gotoEntityToActionDto(Goto gotoEntity) {
         ActionDto actionDto = new ActionDto();
         actionDto.setId(gotoEntity.getId());
         actionDto.setName(gotoEntity.getName());

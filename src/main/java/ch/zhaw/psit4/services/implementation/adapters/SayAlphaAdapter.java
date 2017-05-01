@@ -32,13 +32,7 @@ public class SayAlphaAdapter implements ActionAdapterInterface {
         return sayAlphaActionDto;
     }
 
-    /**
-     * Converts a SayAlpha entity into an ActionDto.
-     *
-     * @param sayAlpha the SayAlpha entity
-     * @return the ActionDto
-     */
-    public ActionDto sayAlphaEntityToActionDto(SayAlpha sayAlpha) {
+    private ActionDto sayAlphaEntityToActionDto(SayAlpha sayAlpha) {
         ActionDto actionDto = new ActionDto();
         actionDto.setId(sayAlpha.getId());
         actionDto.setName(sayAlpha.getName());
