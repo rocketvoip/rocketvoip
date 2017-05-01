@@ -13,7 +13,6 @@ public final class BranchDialPlanEntity {
 
     public static BranchDialPlan createBranchDialPlanEntity(int number) {
         return new BranchDialPlan(null,
-                null,
                 BranchDialPlanData.getButton(number));
     }
 }
