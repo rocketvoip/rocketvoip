@@ -14,7 +14,16 @@ import java.util.stream.Collectors;
 /**
  * This builder creates the necessary contexts with Dial extensions per company.
  * <p>
- * Use this builder to create the first batch of Asterisk contexts, enabling sip clients to be called by phone number.
+ * Use this builder to create the first batch of Asterisk contexts, enabling sip clients to be called by phone
+ * number, or top level contexts reachable by phone number.
+ *
+ * The priorities of the extensions are all "1", for instance
+ * <code>
+ *     [contextN]
+ *     exten => nr,1,...
+ *     exten => nr,1,...
+ *     ...
+ * </code>
  *
  * @author Rafael Ostertag
  */
@@ -70,5 +79,12 @@ public class TopLevelContextBuilder extends DialPlanConfigBuilder {
                 );
 
         return this;
+    }
+
+    @Override
+    protected void setAsteriskPrioritiesOnActiveExtension() {
+        // We cannot use the default priorities assigned by DialPlanConfigBuilder. We require all priorities to be "1".
+        DialPlanContext activeContext = getActiveContext();
+        activeContext.getDialPlanExtensionList().forEach(x -> x.setPriority("1"));
     }
 }

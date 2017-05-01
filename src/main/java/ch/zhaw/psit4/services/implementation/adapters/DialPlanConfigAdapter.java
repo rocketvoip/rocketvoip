@@ -77,7 +77,7 @@ public class DialPlanConfigAdapter {
     }
 
     private DialPlanConfigBuilder collectTopLevelContextReferences(TopLevelContextBuilder topLevelContextBuilder) {
-        DialPlanConfigBuilder dialPlanConfigBuilder = new DialPlanConfigBuilder(topLevelContextBuilder);
+        DialPlanConfigBuilder dialPlanConfigBuilder = new TopLevelContextBuilder(topLevelContextBuilder);
 
         List<DialPlan> dialPlansNotNullPhoneNr = dialPlanRepository.findAllByPhoneNrNotNull();
         dialPlansNotNullPhoneNr.forEach(dialPlan -> {

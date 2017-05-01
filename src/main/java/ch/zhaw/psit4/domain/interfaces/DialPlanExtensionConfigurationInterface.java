@@ -25,6 +25,15 @@ public interface DialPlanExtensionConfigurationInterface extends Validatable {
 
     /**
      * Ordinal of the Extension. This number is used to determine the order of extensions within a context.
+     *
+     * @return integer greater than 0.
      */
     int getOrdinal();
+
+    /**
+     * Set the Asterisk priority.
+     *
+     * @param priority numerals such as '1', '2', etc. or 'n'
+     */
+    void setPriority(String priority);
 }
