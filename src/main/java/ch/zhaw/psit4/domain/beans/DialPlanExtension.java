@@ -66,6 +66,11 @@ public class DialPlanExtension implements DialPlanExtensionConfigurationInterfac
         return priority;
     }
 
+    /**
+     * Asterisk priority of extension. When using builders to build a dialplan, user provided values may be overwritten.
+     *
+     * @param priority numerals such as "1", "2", etc or "n".
+     */
     public void setPriority(String priority) {
         this.priority = priority;
     }
@@ -102,6 +107,11 @@ public class DialPlanExtension implements DialPlanExtensionConfigurationInterfac
         return ordinal;
     }
 
+    /**
+     * The ordinal determines the sort order of extensions within a context.
+     *
+     * @param ordinal postive integer
+     */
     public void setOrdinal(int ordinal) {
         this.ordinal = ordinal;
     }
