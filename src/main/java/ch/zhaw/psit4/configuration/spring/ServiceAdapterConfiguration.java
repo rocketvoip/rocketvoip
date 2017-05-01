@@ -1,7 +1,6 @@
 package ch.zhaw.psit4.configuration.spring;
 
 import ch.zhaw.psit4.data.jpa.repositories.*;
-import ch.zhaw.psit4.dto.actions.ActionAdapterInterface;
 import ch.zhaw.psit4.services.implementation.ActionServiceImpl;
 import ch.zhaw.psit4.services.implementation.adapters.*;
 import org.springframework.context.annotation.Bean;

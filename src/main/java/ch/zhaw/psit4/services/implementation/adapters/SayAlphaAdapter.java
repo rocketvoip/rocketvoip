@@ -4,7 +4,6 @@ import ch.zhaw.psit4.data.jpa.entities.SayAlpha;
 import ch.zhaw.psit4.data.jpa.repositories.SayAlphaRepository;
 import ch.zhaw.psit4.dto.ActionDto;
 import ch.zhaw.psit4.dto.DialPlanDto;
-import ch.zhaw.psit4.dto.actions.ActionAdapterInterface;
 import ch.zhaw.psit4.dto.actions.SayAlphaActionDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

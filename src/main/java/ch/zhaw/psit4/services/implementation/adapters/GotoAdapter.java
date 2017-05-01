@@ -6,7 +6,6 @@ import ch.zhaw.psit4.data.jpa.repositories.DialPlanRepository;
 import ch.zhaw.psit4.data.jpa.repositories.GotoRepository;
 import ch.zhaw.psit4.dto.ActionDto;
 import ch.zhaw.psit4.dto.DialPlanDto;
-import ch.zhaw.psit4.dto.actions.ActionAdapterInterface;
 import ch.zhaw.psit4.dto.actions.GotoActionDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

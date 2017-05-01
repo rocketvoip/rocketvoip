@@ -2,7 +2,7 @@ package ch.zhaw.psit4.services.implementation;
 
 import ch.zhaw.psit4.dto.ActionDto;
 import ch.zhaw.psit4.dto.DialPlanDto;
-import ch.zhaw.psit4.dto.actions.ActionAdapterInterface;
+import ch.zhaw.psit4.services.implementation.adapters.ActionAdapterInterface;
 import ch.zhaw.psit4.services.interfaces.ActionServiceInterface;
 import org.springframework.transaction.annotation.Transactional;
 

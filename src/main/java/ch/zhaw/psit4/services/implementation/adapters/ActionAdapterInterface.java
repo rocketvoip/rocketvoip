@@ -1,4 +1,4 @@
-package ch.zhaw.psit4.dto.actions;
+package ch.zhaw.psit4.services.implementation.adapters;
 
 import ch.zhaw.psit4.dto.ActionDto;
 import ch.zhaw.psit4.dto.DialPlanDto;
