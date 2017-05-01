@@ -9,12 +9,12 @@ import ch.zhaw.psit4.domain.dialplan.applications.WaitApp;
  * Build context with a default prolog. A default prolog is added
  * <code>
  * exten => x,1, Ringing
- * exten => x,2, Wait(n)
+ * exten => x,n, Wait(sec)
  * </code>
  * <p>
  *
- * The default of {@code n} is 2. It can be changed by calling
- * DialPlanDefaultContextPrologBuilder#setWaitInSeconds
+ * The default of {@code sec} is 2. It can be changed by calling
+ * {@link DialPlanDefaultContextPrologBuilder#setWaitInSeconds}
  *
  * @author Rafael Ostertag
  */

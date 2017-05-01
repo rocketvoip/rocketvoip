@@ -18,6 +18,15 @@ import java.util.List;
  * Please note that the builder modifies the instances passed. Do not modify the instances outside the builder once
  * they have been passed to the builder.
  *
+ * Extensions in a context will have the priorities set to "1", "n", "n", ... using this builder. For instance
+ *
+ * <pre>
+ *     [context1]
+ *     exten => nr,1,...
+ *     exten => nr,n,...
+ *     exten => nr,n,...
+ * </pre>
+ *
  * @author Rafael Ostertag
  */
 public class DialPlanConfigBuilder {
