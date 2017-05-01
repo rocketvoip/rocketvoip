@@ -11,6 +11,9 @@ import ch.zhaw.psit4.dto.actions.SayAlphaActionDto;
 import ch.zhaw.psit4.services.interfaces.ActionServiceInterface;
 import ch.zhaw.psit4.testsupport.fixtures.database.BeanConfiguration;
 import ch.zhaw.psit4.testsupport.fixtures.database.DatabaseFixtureBuilder;
+import ch.zhaw.psit4.testsupport.fixtures.dto.ActionDtoGenerator;
+import ch.zhaw.psit4.testsupport.fixtures.dto.DialActionDtoGenerator;
+import ch.zhaw.psit4.testsupport.fixtures.dto.SayAlphaActionDtoGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -220,19 +223,12 @@ public class ActionServiceImplIT {
     }
 
     private ActionDto getSayAlphaActionDto(int number) {
-        ActionDto actionDto = new ActionDto();
-        actionDto.setName("may fancy action " + number);
-        actionDto.setType("SayAlpha");
-
-        SayAlphaActionDto sayAlphaActionDto = new SayAlphaActionDto();
-        sayAlphaActionDto.setVoiceMessage("Hello, World!");
-        sayAlphaActionDto.setSleepTime(5);
+        SayAlphaActionDto sayAlphaActionDto = SayAlphaActionDtoGenerator.createTestDialActionDto(number);
 
         ObjectMapper objM = new ObjectMapper();
         LinkedHashMap linkedHashMap = objM.convertValue(sayAlphaActionDto, LinkedHashMap.class);
 
-        actionDto.setTypeSpecific(linkedHashMap);
-        return actionDto;
+        return ActionDtoGenerator.createTestActionDto(number, "SayAlpha", linkedHashMap);
     }
 
     private List<ActionDto> getGotoActionDtos(int number) {
@@ -244,19 +240,15 @@ public class ActionServiceImplIT {
     }
 
     private ActionDto getGotoActionDto(int number) {
-        ActionDto actionDto = new ActionDto();
-        actionDto.setName("may fancy action " + number);
-        actionDto.setType("Goto");
-
         GotoActionDto gotoActionDto = new GotoActionDto();
+
         databaseFixtureBuilder1.addDialPlan(number * 10).build();
         gotoActionDto.setNextDialPlanId(databaseFixtureBuilder1.getDialPlanList().get(number * 10).getId());
 
         ObjectMapper objM = new ObjectMapper();
         LinkedHashMap linkedHashMap = objM.convertValue(gotoActionDto, LinkedHashMap.class);
 
-        actionDto.setTypeSpecific(linkedHashMap);
-        return actionDto;
+        return ActionDtoGenerator.createTestActionDto(number, "Goto", linkedHashMap);
     }
 
     private List<ActionDto> getDialActionDtos(int number) {
@@ -268,24 +260,16 @@ public class ActionServiceImplIT {
     }
 
     private ActionDto getDialActionDto(int number) {
-        ActionDto actionDto = new ActionDto();
-        actionDto.setName("may fancy action " + number);
-        actionDto.setType("Dial");
-
-        DialActionDto dialActionDto = new DialActionDto();
-        dialActionDto.setRingingTime(30);
-
         List<SipClientDto> sipClientDtoList = new ArrayList<>();
         databaseFixtureBuilder1.getSipClientList().values()
                 .forEach(x -> sipClientDtoList.add(sipClientEntityToSipClientDto(x)));
 
-        dialActionDto.setSipClients(sipClientDtoList);
+        DialActionDto dialActionDto = DialActionDtoGenerator.createTestDialActionDto(number, sipClientDtoList);
 
         ObjectMapper objM = new ObjectMapper();
         LinkedHashMap linkedHashMap = objM.convertValue(dialActionDto, LinkedHashMap.class);
 
-        actionDto.setTypeSpecific(linkedHashMap);
-        return actionDto;
+        return ActionDtoGenerator.createTestActionDto(number, "Dial", linkedHashMap);
     }
 
 }

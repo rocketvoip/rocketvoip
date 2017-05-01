@@ -16,7 +16,7 @@ import ch.zhaw.psit4.testsupport.fixtures.database.DatabaseFixtureBuilder;
 import ch.zhaw.psit4.testsupport.fixtures.dto.ActionDtoGenerator;
 import ch.zhaw.psit4.testsupport.fixtures.dto.DialActionDtoGenerator;
 import ch.zhaw.psit4.testsupport.fixtures.dto.DialPlanDtoGenerator;
-import ch.zhaw.psit4.testsupport.fixtures.dto.SayAlphaDtoActionGenerator;
+import ch.zhaw.psit4.testsupport.fixtures.dto.SayAlphaActionDtoGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
@@ -321,7 +321,7 @@ public class DialPlanControllerIT {
         DialActionDto expectedDialActionDto = DialActionDtoGenerator.createTestDialActionDtoFormSipClientEntities(11,
                 sipClientList);
 
-        SayAlphaActionDto expectedSayAlphaActionDto = SayAlphaDtoActionGenerator.createTestDialActionDto(21);
+        SayAlphaActionDto expectedSayAlphaActionDto = SayAlphaActionDtoGenerator.createTestDialActionDto(21);
 
         ObjectMapper objectMapper = new ObjectMapper();
 
