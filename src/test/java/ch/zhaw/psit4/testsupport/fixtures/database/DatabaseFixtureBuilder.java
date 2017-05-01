@@ -18,22 +18,26 @@ public class DatabaseFixtureBuilder {
     private final DialPlanRepository dialPlanRepository;
     private final DialRepository dialRepository;
     private final SayAlphaRepository sayAlphaRepository;
+    private final GotoRepository gotoRepository;
     private Collection<Company> company;
     private Map<Integer, Admin> adminList;
     private Map<Integer, SipClient> sipClientList;
     private Map<Integer, DialPlan> dialPlanList;
     private Map<Integer, Dial> dialList;
     private Map<Integer, SayAlpha> sayAlphaList;
+    private Map<Integer, Goto> gotoList;
 
     public DatabaseFixtureBuilder(CompanyRepository companyRepository, AdminRepository adminRepository,
                                   SipClientRepository sipClientRepository, DialPlanRepository dialPlanRepository,
-                                  DialRepository dialRepository, SayAlphaRepository sayAlphaRepository) {
+                                  DialRepository dialRepository, SayAlphaRepository sayAlphaRepository,
+                                  GotoRepository gotoRepository) {
         this.companyRepository = companyRepository;
         this.adminRepository = adminRepository;
         this.sipClientRepository = sipClientRepository;
         this.dialPlanRepository = dialPlanRepository;
         this.dialRepository = dialRepository;
         this.sayAlphaRepository = sayAlphaRepository;
+        this.gotoRepository = gotoRepository;
 
         this.company = new ArrayList<>();
         this.adminList = new HashMap<>();
@@ -41,6 +45,7 @@ public class DatabaseFixtureBuilder {
         this.dialPlanList = new HashMap<>();
         this.dialList = new HashMap<>();
         this.sayAlphaList = new HashMap<>();
+        this.gotoList = new HashMap<>();
     }
 
     public DialPlanRepository getDialPlanRepository() {
@@ -61,6 +66,10 @@ public class DatabaseFixtureBuilder {
 
     public CompanyRepository getCompanyRepository() {
         return companyRepository;
+    }
+
+    public GotoRepository getGotoRepository() {
+        return gotoRepository;
     }
 
     public DatabaseFixtureBuilder company(int number) {
@@ -117,6 +126,14 @@ public class DatabaseFixtureBuilder {
         return this;
     }
 
+    public DatabaseFixtureBuilder addGoto(int number, int priority, int addToDialPlanNumber, int nextDialPlanNumber) {
+        Goto gotoEntity = GotoEntity.createGotoEntity(number, priority);
+        gotoEntity.setDialPlan(dialPlanList.get(addToDialPlanNumber));
+        gotoEntity.setNextDialPlan(dialPlanList.get(nextDialPlanNumber));
+        gotoList.put(number, gotoEntity);
+        return this;
+    }
+
     public void build() {
         companyRepository.save(company);
 
@@ -144,6 +161,7 @@ public class DatabaseFixtureBuilder {
 
         dialRepository.save(dialList.values());
         sayAlphaRepository.save(sayAlphaList.values());
+        gotoRepository.save(gotoList.values());
     }
 
     public Company getCompany() {
@@ -173,4 +191,10 @@ public class DatabaseFixtureBuilder {
     public Map<Integer, SayAlpha> getSayAlphaList() {
         return sayAlphaList;
     }
+
+    public Map<Integer, Goto> getGotoList() {
+        return gotoList;
+    }
+
+
 }
