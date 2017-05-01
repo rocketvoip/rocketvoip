@@ -18,22 +18,35 @@ public class DatabaseFixtureBuilder {
     private final DialPlanRepository dialPlanRepository;
     private final DialRepository dialRepository;
     private final SayAlphaRepository sayAlphaRepository;
+    private final GotoRepository gotoRepository;
+    private final BranchRepository branchRepository;
+    private final BranchDialPlanRepository branchDialPlanRepository;
+
     private Collection<Company> company;
     private Map<Integer, Admin> adminList;
     private Map<Integer, SipClient> sipClientList;
     private Map<Integer, DialPlan> dialPlanList;
     private Map<Integer, Dial> dialList;
     private Map<Integer, SayAlpha> sayAlphaList;
+    private Map<Integer, Goto> gotoList;
+    private Map<Integer, Branch> branchList;
+    private Map<Integer, BranchDialPlan> branchDialPlanList;
 
     public DatabaseFixtureBuilder(CompanyRepository companyRepository, AdminRepository adminRepository,
                                   SipClientRepository sipClientRepository, DialPlanRepository dialPlanRepository,
-                                  DialRepository dialRepository, SayAlphaRepository sayAlphaRepository) {
+                                  DialRepository dialRepository, SayAlphaRepository sayAlphaRepository,
+                                  GotoRepository gotoRepository,
+                                  BranchRepository branchRepository,
+                                  BranchDialPlanRepository branchDialPlanRepository) {
         this.companyRepository = companyRepository;
         this.adminRepository = adminRepository;
         this.sipClientRepository = sipClientRepository;
         this.dialPlanRepository = dialPlanRepository;
         this.dialRepository = dialRepository;
         this.sayAlphaRepository = sayAlphaRepository;
+        this.gotoRepository = gotoRepository;
+        this.branchRepository = branchRepository;
+        this.branchDialPlanRepository = branchDialPlanRepository;
 
         this.company = new ArrayList<>();
         this.adminList = new HashMap<>();
@@ -41,6 +54,9 @@ public class DatabaseFixtureBuilder {
         this.dialPlanList = new HashMap<>();
         this.dialList = new HashMap<>();
         this.sayAlphaList = new HashMap<>();
+        this.gotoList = new HashMap<>();
+        this.branchList = new HashMap<>();
+        this.branchDialPlanList = new HashMap<>();
     }
 
     public DialPlanRepository getDialPlanRepository() {
@@ -61,6 +77,18 @@ public class DatabaseFixtureBuilder {
 
     public CompanyRepository getCompanyRepository() {
         return companyRepository;
+    }
+
+    public GotoRepository getGotoRepository() {
+        return gotoRepository;
+    }
+
+    public BranchRepository getBranchRepository() {
+        return branchRepository;
+    }
+
+    public BranchDialPlanRepository getBranchDialPlanRepository() {
+        return branchDialPlanRepository;
     }
 
     public DatabaseFixtureBuilder company(int number) {
@@ -117,6 +145,29 @@ public class DatabaseFixtureBuilder {
         return this;
     }
 
+    public DatabaseFixtureBuilder addGoto(int number, int priority, int addToDialPlanNumber, int nextDialPlanNumber) {
+        Goto gotoEntity = GotoEntity.createGotoEntity(number, priority);
+        gotoEntity.setDialPlan(dialPlanList.get(addToDialPlanNumber));
+        gotoEntity.setNextDialPlan(dialPlanList.get(nextDialPlanNumber));
+        gotoList.put(number, gotoEntity);
+        return this;
+    }
+
+    public DatabaseFixtureBuilder addBranch(int number, int priority, int addToDialPlanNumber, Set<BranchDialPlan> branchDialPlanList) {
+        Branch branch = BranchEntity.createBranchEntity(number, priority);
+        branch.setDialPlan(dialPlanList.get(addToDialPlanNumber));
+        branch.setBranchesDialPlans(branchDialPlanList);
+        branchList.put(number, branch);
+        return this;
+    }
+
+    public DatabaseFixtureBuilder addBranchDialPlan(int number, int gotoDialPlanNumber) {
+        BranchDialPlan branchDialPlan = BranchDialPlanEntity.createBranchDialPlanEntity(number);
+        branchDialPlan.setDialPlan(dialPlanList.get(gotoDialPlanNumber));
+        branchDialPlanList.put(number, branchDialPlan);
+        return this;
+    }
+
     public void build() {
         companyRepository.save(company);
 
@@ -144,6 +195,9 @@ public class DatabaseFixtureBuilder {
 
         dialRepository.save(dialList.values());
         sayAlphaRepository.save(sayAlphaList.values());
+        gotoRepository.save(gotoList.values());
+        branchRepository.save(branchList.values());
+        branchDialPlanRepository.save(branchDialPlanList.values());
     }
 
     public Company getCompany() {
@@ -173,4 +227,18 @@ public class DatabaseFixtureBuilder {
     public Map<Integer, SayAlpha> getSayAlphaList() {
         return sayAlphaList;
     }
+
+    public Map<Integer, Goto> getGotoList() {
+        return gotoList;
+    }
+
+    public Map<Integer, Branch> getBranchList() {
+        return branchList;
+    }
+
+    public Map<Integer, BranchDialPlan> getBranchDialPlanList() {
+        return branchDialPlanList;
+    }
+
+
 }

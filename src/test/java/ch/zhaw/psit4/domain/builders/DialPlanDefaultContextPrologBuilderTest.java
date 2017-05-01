@@ -14,8 +14,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Rafael Ostertag
@@ -36,7 +35,7 @@ public class DialPlanDefaultContextPrologBuilderTest {
                 .setWaitInSeconds(4)
                 .addNewContext(context);
 
-        DialPlanExtension dialPlanExtension = makeMockDialPlan();
+        DialPlanExtension dialPlanExtension = makeMockDialPlan("n");
 
         dialPlanDefaultContextPrologBuilder.addNewExtension(dialPlanExtension);
         String expected = InputStreamStringyfier.slurpStream(
@@ -45,6 +44,9 @@ public class DialPlanDefaultContextPrologBuilderTest {
         );
 
         List<DialPlanContext> contexts = dialPlanDefaultContextPrologBuilder.build();
+
+        verify(dialPlanExtension, atLeastOnce()).getOrdinal();
+        verify(dialPlanExtension, atLeastOnce()).setOrdinal(anyInt());
         assertThat(contexts, hasSize(1));
 
         assertThat(contexts.get(0).toDialPlanContextConfiguration(), equalTo(expected));
@@ -55,7 +57,7 @@ public class DialPlanDefaultContextPrologBuilderTest {
         DialPlanContext context = DialPlanContextGenerator.dialPlanContext(1);
 
         dialPlanDefaultContextPrologBuilder.addNewContext(context);
-        DialPlanExtension dialPlanExtension = makeMockDialPlan();
+        DialPlanExtension dialPlanExtension = makeMockDialPlan("n");
 
         dialPlanDefaultContextPrologBuilder.addNewExtension(dialPlanExtension);
         String expected = InputStreamStringyfier.slurpStream(
@@ -64,6 +66,9 @@ public class DialPlanDefaultContextPrologBuilderTest {
         );
 
         List<DialPlanContext> contexts = dialPlanDefaultContextPrologBuilder.build();
+        verify(dialPlanExtension, atLeastOnce()).getOrdinal();
+        verify(dialPlanExtension, atLeastOnce()).setOrdinal(anyInt());
+
         assertThat(contexts, hasSize(1));
 
         assertThat(contexts.get(0).toDialPlanContextConfiguration(), equalTo(expected));
@@ -98,7 +103,7 @@ public class DialPlanDefaultContextPrologBuilderTest {
         DialPlanContext context = DialPlanContextGenerator.dialPlanContext(1);
 
         dialPlanDefaultContextPrologBuilder.addNewContext(context);
-        DialPlanExtension dialPlanExtension = makeMockDialPlan();
+        DialPlanExtension dialPlanExtension = makeMockDialPlan("n");
 
         dialPlanDefaultContextPrologBuilder.addNewExtension(dialPlanExtension);
         dialPlanDefaultContextPrologBuilder.addNewExtension(dialPlanExtension);
@@ -123,6 +128,7 @@ public class DialPlanDefaultContextPrologBuilderTest {
         DialPlanExtension dialPlanExtension = mock(DialPlanExtension.class);
         when(dialPlanExtension.getPhoneNumber()).thenReturn("0001");
         when(dialPlanExtension.getPriority()).thenReturn(priority);
+        when(dialPlanExtension.getOrdinal()).thenReturn(100);
         when(dialPlanExtension.toDialPlanExtensionConfiguration()).thenReturn("exten=> 0001, " + priority + ", " +
                 "mockExtension\n");
         return dialPlanExtension;
