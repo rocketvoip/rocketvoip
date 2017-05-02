@@ -1,7 +1,7 @@
 package ch.zhaw.psit4.data.jpa.entities;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Branching to another dialplan, based on key press.
@@ -32,7 +32,7 @@ public class Branch {
     private DialPlan dialPlan;
 
     @OneToMany
-    private Set<BranchDialPlan> branchesDialPlans;
+    private List<BranchDialPlan> branchesDialPlans;
 
     private int hangupTime;
 
@@ -40,7 +40,7 @@ public class Branch {
         //intentionally empty
     }
 
-    public Branch(String name, int priority, DialPlan dialPlan, Set<BranchDialPlan> branchesDialPlans, int hangupTime) {
+    public Branch(String name, int priority, DialPlan dialPlan, List<BranchDialPlan> branchesDialPlans, int hangupTime) {
         this.name = name;
         this.priority = priority;
         this.dialPlan = dialPlan;
@@ -72,11 +72,11 @@ public class Branch {
         this.priority = priority;
     }
 
-    public Set<BranchDialPlan> getBranchesDialPlans() {
+    public List<BranchDialPlan> getBranchesDialPlans() {
         return branchesDialPlans;
     }
 
-    public void setBranchesDialPlans(Set<BranchDialPlan> branchesDialPlans) {
+    public void setBranchesDialPlans(List<BranchDialPlan> branchesDialPlans) {
         this.branchesDialPlans = branchesDialPlans;
     }
 
