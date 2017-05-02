@@ -9,7 +9,7 @@ import java.util.List;
  *
  * @author Jona Braun
  */
-public class BranchAction {
+public class BranchActionDto {
     private int hangupTime;
     private List<Long> nextDialPlanIds;
 

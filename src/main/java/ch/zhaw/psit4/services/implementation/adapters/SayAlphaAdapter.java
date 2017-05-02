@@ -4,7 +4,7 @@ import ch.zhaw.psit4.data.jpa.entities.SayAlpha;
 import ch.zhaw.psit4.data.jpa.repositories.SayAlphaRepository;
 import ch.zhaw.psit4.dto.ActionDto;
 import ch.zhaw.psit4.dto.DialPlanDto;
-import ch.zhaw.psit4.dto.actions.SayAlphaAction;
+import ch.zhaw.psit4.dto.actions.SayAlphaActionDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Map;
@@ -16,7 +16,7 @@ import static ch.zhaw.psit4.services.implementation.DialPlanServiceImpl.dialPlan
  *
  * @author Jona Braun
  */
-public class SayAlphaAdapter {
+public class SayAlphaAdapter implements ActionAdapterInterface {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private final SayAlphaRepository sayAlphaRepository;
@@ -25,46 +25,50 @@ public class SayAlphaAdapter {
         this.sayAlphaRepository = sayAlphaRepository;
     }
 
-    private static SayAlphaAction sayAlphaEntityToSayAlphaAction(SayAlpha sayAlpha) {
-        SayAlphaAction sayAlphaAction = new SayAlphaAction();
-        sayAlphaAction.setSleepTime(sayAlpha.getSleepTime());
-        sayAlphaAction.setVoiceMessage(sayAlpha.getVoiceMessage());
-        return sayAlphaAction;
+    private static SayAlphaActionDto sayAlphaEntityToSayAlphaAction(SayAlpha sayAlpha) {
+        SayAlphaActionDto sayAlphaActionDto = new SayAlphaActionDto();
+        sayAlphaActionDto.setSleepTime(sayAlpha.getSleepTime());
+        sayAlphaActionDto.setVoiceMessage(sayAlpha.getVoiceMessage());
+        return sayAlphaActionDto;
     }
 
-    /**
-     * Converts a SayAlpha entity into an ActionDto.
-     *
-     * @param sayAlpha the SayAlpha entity
-     * @return the ActionDto
-     */
-    public ActionDto sayAlphaEntityToActionDto(SayAlpha sayAlpha) {
+    private ActionDto sayAlphaEntityToActionDto(SayAlpha sayAlpha) {
         ActionDto actionDto = new ActionDto();
         actionDto.setId(sayAlpha.getId());
         actionDto.setName(sayAlpha.getName());
         actionDto.setType("SayAlpha");
-        SayAlphaAction sayAlphaAction = sayAlphaEntityToSayAlphaAction(sayAlpha);
-        Map<String, Object> map = OBJECT_MAPPER.convertValue(sayAlphaAction, Map.class);
+        SayAlphaActionDto sayAlphaActionDto = sayAlphaEntityToSayAlphaAction(sayAlpha);
+        Map<String, Object> map = OBJECT_MAPPER.convertValue(sayAlphaActionDto, Map.class);
         actionDto.setTypeSpecific(map);
         return actionDto;
     }
 
-    /**
-     * Saves the SayAlpha action in the data storage.
-     *
-     * @param dialPlanDto the dto containing the action
-     * @param actionDto   the actionDto containing the SayAlphaAction
-     * @param priority    the priority of the action
-     */
-    public void saveSayAlphaAction(DialPlanDto dialPlanDto, ActionDto actionDto, int priority) {
-        SayAlphaAction sayAlphaAction = OBJECT_MAPPER.convertValue(actionDto.getTypeSpecific(), SayAlphaAction.class);
+    @Override
+    public void saveActionDto(DialPlanDto dialPlanDto, ActionDto actionDto, int priority) {
+        if ("sayalpha".equalsIgnoreCase((actionDto.getType()))) {
+            SayAlphaActionDto sayAlphaActionDto = OBJECT_MAPPER.convertValue(actionDto.getTypeSpecific(), SayAlphaActionDto.class);
 
-        SayAlpha sayAlpha = new SayAlpha(actionDto.getName(),
-                priority,
-                sayAlphaAction.getVoiceMessage(),
-                sayAlphaAction.getSleepTime(),
-                dialPlanDtoToDialPlanEntityWithId(dialPlanDto));
+            SayAlpha sayAlpha = new SayAlpha(actionDto.getName(),
+                    priority,
+                    sayAlphaActionDto.getVoiceMessage(),
+                    sayAlphaActionDto.getSleepTime(),
+                    dialPlanDtoToDialPlanEntityWithId(dialPlanDto));
 
-        sayAlphaRepository.save(sayAlpha);
+            sayAlphaRepository.save(sayAlpha);
+        }
+    }
+
+    @Override
+    public ActionDto retrieveActionDto(long dialPlanId, int priority) {
+        SayAlpha sayAlpha = sayAlphaRepository.findFirstByDialPlan_IdAndPriority(dialPlanId, priority);
+        if (sayAlpha != null) {
+            return sayAlphaEntityToActionDto(sayAlpha);
+        }
+        return null;
+    }
+
+    @Override
+    public void deleteActionDto(long dialPlanId) {
+        sayAlphaRepository.deleteAllByDialPlan_Id(dialPlanId);
     }
 }
