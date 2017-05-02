@@ -48,7 +48,7 @@ public class GotoAdapter implements ActionAdapterInterface {
 
     @Override
     public void saveActionDto(DialPlanDto dialPlanDto, ActionDto actionDto, int priority) {
-        if ("goto".equalsIgnoreCase((actionDto.getType()))) {
+        if ("goto".equalsIgnoreCase(actionDto.getType())) {
             GotoActionDto gotoActionDto = OBJECT_MAPPER.convertValue(actionDto.getTypeSpecific(), GotoActionDto.class);
 
             DialPlan nextDialPlan = dialPlanRepository.findFirstById(gotoActionDto.getNextDialPlanId());

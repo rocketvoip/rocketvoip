@@ -66,7 +66,7 @@ public class BranchAdapter implements ActionAdapterInterface {
 
     @Override
     public void saveActionDto(DialPlanDto dialPlanDto, ActionDto actionDto, int priority) {
-        if (TYPE.equalsIgnoreCase((actionDto.getType()))) {
+        if (TYPE.equalsIgnoreCase(actionDto.getType())) {
             BranchActionDto branchActionDto = OBJECT_MAPPER.convertValue(actionDto.getTypeSpecific(), BranchActionDto.class);
 
             List<DialPlan> nextDialPlans = new ArrayList<>();

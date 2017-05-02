@@ -45,7 +45,7 @@ public class SayAlphaAdapter implements ActionAdapterInterface {
 
     @Override
     public void saveActionDto(DialPlanDto dialPlanDto, ActionDto actionDto, int priority) {
-        if ("sayalpha".equalsIgnoreCase((actionDto.getType()))) {
+        if ("sayalpha".equalsIgnoreCase(actionDto.getType())) {
             SayAlphaActionDto sayAlphaActionDto = OBJECT_MAPPER.convertValue(actionDto.getTypeSpecific(), SayAlphaActionDto.class);
 
             SayAlpha sayAlpha = new SayAlpha(actionDto.getName(),
