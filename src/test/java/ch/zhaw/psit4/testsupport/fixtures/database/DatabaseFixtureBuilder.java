@@ -153,7 +153,7 @@ public class DatabaseFixtureBuilder {
         return this;
     }
 
-    public DatabaseFixtureBuilder addBranch(int number, int priority, int addToDialPlanNumber, Set<BranchDialPlan> branchDialPlanList) {
+    public DatabaseFixtureBuilder addBranch(int number, int priority, int addToDialPlanNumber, List<BranchDialPlan> branchDialPlanList) {
         Branch branch = BranchEntity.createBranchEntity(number, priority);
         branch.setDialPlan(dialPlanList.get(addToDialPlanNumber));
         branch.setBranchesDialPlans(branchDialPlanList);
