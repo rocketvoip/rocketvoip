@@ -7,10 +7,8 @@ import ch.zhaw.psit4.domain.exceptions.ValidationException;
 import ch.zhaw.psit4.domain.interfaces.DialPlanAppInterface;
 import ch.zhaw.psit4.domain.interfaces.DialPlanExtensionConfigurationInterface;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Build a DialPlan suitable for ConfigWriter using a fluent API.
@@ -33,8 +31,8 @@ import java.util.List;
  */
 public class DialPlanConfigBuilder {
     public static final int USER_EXTENSION_ORDINAL_FACTOR = 100;
-    private List<DialPlanContext> contexts;
-    private DialPlanContext activeContext;
+    private List<ContextWrapper> contexts;
+    private ContextWrapper activeContext;
     private DialPlanExtension activeExtension;
     private boolean contextReactivated;
 
@@ -58,14 +56,15 @@ public class DialPlanConfigBuilder {
     public DialPlanConfigBuilder(DialPlanConfigBuilder dialPlanConfigBuilder) {
         this();
 
-        contexts = dialPlanConfigBuilder.build();
+        dialPlanConfigBuilder.build();
+        contexts = dialPlanConfigBuilder.getContexts();
     }
 
-    protected List<DialPlanContext> getContexts() {
+    protected List<ContextWrapper> getContexts() {
         return contexts;
     }
 
-    protected DialPlanContext getActiveContext() {
+    protected ContextWrapper getActiveContext() {
         return activeContext;
     }
 
@@ -94,8 +93,8 @@ public class DialPlanConfigBuilder {
 
         assert !contextReactivated;
 
-        activeContext = context;
-        activeContext.setDialPlanExtensionList(new ArrayList<>());
+        activeContext = new ContextWrapper(context);
+        activeContext.getDialPlanContext().setDialPlanExtensionList(new ArrayList<>());
 
         return this;
     }
@@ -110,9 +109,9 @@ public class DialPlanConfigBuilder {
      * @throws ValidationException           when validation of context, extension or app fails.
      */
     public DialPlanConfigBuilder activateExistingContext(String contextName) {
-        DialPlanContext needle = null;
-        for (DialPlanContext context : contexts) {
-            if (context.getContextName().equals(contextName)) {
+        ContextWrapper needle = null;
+        for (ContextWrapper context : contexts) {
+            if (context.getDialPlanContext().getContextName().equals(contextName)) {
                 needle = context;
             }
         }
@@ -246,7 +245,12 @@ public class DialPlanConfigBuilder {
             throw new IllegalStateException("No configuration to build");
         }
 
-        return contexts;
+        // Extract the DialPlanContexts from the Wrappers
+        List<DialPlanContext> returnValue = contexts.stream()
+                .map(x -> x.getDialPlanContext())
+                .collect(Collectors.toList());
+
+        return returnValue;
     }
 
     private void saveActiveContext() {
@@ -256,7 +260,7 @@ public class DialPlanConfigBuilder {
 
         assignActiveExtensionToActiveContext();
 
-        activeContext.validate();
+        activeContext.getDialPlanContext().validate();
         sortActiveExtension();
         setAsteriskPrioritiesOnActiveExtension();
 
@@ -275,9 +279,11 @@ public class DialPlanConfigBuilder {
     protected void setAsteriskPrioritiesOnActiveExtension() {
         assert activeContext != null;
         // Set all priorities to n, the first extension in the list is set to 1 later on.
-        activeContext.getDialPlanExtensionList().forEach(x -> x.setPriority("n"));
+        activeContext.getDialPlanContext().getDialPlanExtensionList().forEach(x -> x.setPriority("n"));
         // Set the priority on the first extension in the list to 1. This is required by Asterisk
-        activeContext.getDialPlanExtensionList().stream().findFirst().ifPresent(x -> x.setPriority("1"));
+        activeContext.getDialPlanContext().getDialPlanExtensionList().stream()
+                .findFirst()
+                .ifPresent(x -> x.setPriority("1"));
     }
 
     private void assignActiveExtensionToActiveContext() {
@@ -286,14 +292,55 @@ public class DialPlanConfigBuilder {
         }
 
         activeExtension.validate();
-        activeContext.getDialPlanExtensionList().add(activeExtension);
+        activeContext.getDialPlanContext().getDialPlanExtensionList().add(activeExtension);
 
         activeExtension = null;
     }
 
     private void sortActiveExtension() {
         assert activeContext != null;
-        activeContext.getDialPlanExtensionList().sort(Comparator.comparingInt(DialPlanExtensionConfigurationInterface
-                ::getOrdinal));
+        activeContext.getDialPlanContext().getDialPlanExtensionList()
+                .sort(
+                        Comparator.comparingInt(DialPlanExtensionConfigurationInterface::getOrdinal)
+                );
+    }
+
+    /**
+     * Wrap a DialPlanContext. It allows to provide meta information to contexts.
+     */
+    protected class ContextWrapper {
+        private DialPlanContext dialPlanContext;
+        private Map<String, Boolean> metaInformation;
+
+        public ContextWrapper() {
+            metaInformation = new HashMap<>();
+        }
+
+        public ContextWrapper(DialPlanContext dialPlanContext) {
+            this();
+            this.dialPlanContext = dialPlanContext;
+        }
+
+        public void setMetaInformation(String key, boolean value) {
+            metaInformation.put(key, value);
+        }
+
+        /**
+         * Get meta information by key. If key is not found, {@code false} is returned.
+         *
+         * @param key name of the key
+         * @return value of key, or {@code false} if key is not found.
+         */
+        public boolean getMetInformation(String key) {
+            return metaInformation.getOrDefault(key, false);
+        }
+
+        public DialPlanContext getDialPlanContext() {
+            return dialPlanContext;
+        }
+
+        public void setDialPlanContext(DialPlanContext dialPlanContext) {
+            this.dialPlanContext = dialPlanContext;
+        }
     }
 }

@@ -228,9 +228,9 @@ public class DialPlanDefaultContextPrologBuilderTest {
         List<DialPlanContext> configuration = dialPlanDefaultContextPrologBuilder
                 .addNewContext(context1)
                 .addNewExtension(dialPlanExtension1)
-                .setApplication(dialPlanApp2)
-                .addNewExtension(dialPlanExtension2)
                 .setApplication(dialPlanApp1)
+                .addNewExtension(dialPlanExtension2)
+                .setApplication(dialPlanApp2)
                 .build();
 
         verify(dialPlanApp1, atLeastOnce()).requireAnswer();
@@ -261,15 +261,89 @@ public class DialPlanDefaultContextPrologBuilderTest {
 
         DialPlanExtension dialPlanExtension2 = makeDialPlanExtension1();
 
-        DialPlanAppInterface dialPlanApp1 = makeDialAppMockRequireAnswer();
+        DialPlanAppInterface dialPlanApp1 = makeDialAppMockNotRequiringAnswer();
 
-        DialPlanAppInterface dialPlanApp2 = makeDialAppMockNotRequiringAnswer();
+        DialPlanAppInterface dialPlanApp2 = makeDialAppMockRequireAnswer();
 
 
         List<DialPlanContext> configuration = dialPlanDefaultContextPrologBuilder
                 .addNewContext(context1)
                 .addNewExtension(dialPlanExtension1)
                 .setApplication(dialPlanApp1)
+                .addNewExtension(dialPlanExtension2)
+                .setApplication(dialPlanApp2)
+                .build();
+
+        verify(dialPlanApp1, atLeastOnce()).requireAnswer();
+        verify(dialPlanApp2, atLeastOnce()).requireAnswer();
+
+        assertThat(configuration, hasSize(1));
+        assertThat(context1.getDialPlanExtensionList(), hasSize(5));
+
+        checkPrologWithAnswer(context1, configuration);
+    }
+
+    @Test
+    public void testAnswerApplicationInPrologTwoBuildersFirstRequireAnswer() throws Exception {
+        DialPlanContext context1 = DialPlanContextGenerator.dialPlanContext(1);
+
+        DialPlanExtension dialPlanExtension1 = makeDialPlanExtension1();
+
+        DialPlanExtension dialPlanExtension2 = makeDialPlanExtension1();
+
+        DialPlanAppInterface dialPlanApp1 = makeDialAppMockRequireAnswer();
+
+        DialPlanAppInterface dialPlanApp2 = makeDialAppMockNotRequiringAnswer();
+
+
+        dialPlanDefaultContextPrologBuilder
+                .addNewContext(context1)
+                .addNewExtension(dialPlanExtension1)
+                .setApplication(dialPlanApp1);
+
+
+        DialPlanDefaultContextPrologBuilder dialPlanDefaultContextPrologBuilder2 = new
+                DialPlanDefaultContextPrologBuilder(dialPlanDefaultContextPrologBuilder);
+
+        List<DialPlanContext> configuration = dialPlanDefaultContextPrologBuilder2
+                .activateExistingContext(DialPlanContextData.getContextName(1))
+                .addNewExtension(dialPlanExtension2)
+                .setApplication(dialPlanApp2)
+                .build();
+
+        verify(dialPlanApp1, atLeastOnce()).requireAnswer();
+        verify(dialPlanApp2, atLeastOnce()).requireAnswer();
+
+        assertThat(configuration, hasSize(1));
+        assertThat(context1.getDialPlanExtensionList(), hasSize(5));
+
+        checkPrologWithAnswer(context1, configuration);
+    }
+
+    @Test
+    public void testAnswerApplicationInPrologTwoBuildersSecondRequireAnswer() throws Exception {
+        DialPlanContext context1 = DialPlanContextGenerator.dialPlanContext(1);
+
+        DialPlanExtension dialPlanExtension1 = makeDialPlanExtension1();
+
+        DialPlanExtension dialPlanExtension2 = makeDialPlanExtension1();
+
+        DialPlanAppInterface dialPlanApp1 = makeDialAppMockNotRequiringAnswer();
+
+        DialPlanAppInterface dialPlanApp2 = makeDialAppMockRequireAnswer();
+
+
+        dialPlanDefaultContextPrologBuilder
+                .addNewContext(context1)
+                .addNewExtension(dialPlanExtension1)
+                .setApplication(dialPlanApp1);
+
+
+        DialPlanDefaultContextPrologBuilder dialPlanDefaultContextPrologBuilder2 = new
+                DialPlanDefaultContextPrologBuilder(dialPlanDefaultContextPrologBuilder);
+
+        List<DialPlanContext> configuration = dialPlanDefaultContextPrologBuilder2
+                .activateExistingContext(DialPlanContextData.getContextName(1))
                 .addNewExtension(dialPlanExtension2)
                 .setApplication(dialPlanApp2)
                 .build();
