@@ -5,6 +5,7 @@ import ch.zhaw.psit4.data.jpa.repositories.DialPlanRepository;
 import ch.zhaw.psit4.data.jpa.repositories.DialRepository;
 import ch.zhaw.psit4.data.jpa.repositories.SayAlphaRepository;
 import ch.zhaw.psit4.data.jpa.repositories.SipClientRepository;
+import ch.zhaw.psit4.domain.AsteriskUtlities;
 import ch.zhaw.psit4.domain.beans.DialPlanContext;
 import ch.zhaw.psit4.domain.beans.DialPlanExtension;
 import ch.zhaw.psit4.domain.beans.SipClient;
@@ -15,8 +16,6 @@ import ch.zhaw.psit4.domain.dialplan.applications.DialApp;
 import ch.zhaw.psit4.domain.dialplan.applications.GotoApp;
 import ch.zhaw.psit4.domain.dialplan.applications.SayAlphaApp;
 import ch.zhaw.psit4.domain.interfaces.DialPlanContextConfigurationInterface;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -33,7 +32,6 @@ import java.util.stream.StreamSupport;
  * @author Jona Braun
  */
 public class DialPlanConfigAdapter {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DialPlanConfigAdapter.class);
     private final DialPlanRepository dialPlanRepository;
     private final SipClientRepository sipClientRepository;
     private final DialRepository dialRepository;
@@ -81,18 +79,15 @@ public class DialPlanConfigAdapter {
 
         List<DialPlan> dialPlansNotNullPhoneNr = dialPlanRepository.findAllByPhoneNrNotNull();
         dialPlansNotNullPhoneNr.forEach(dialPlan -> {
-            // TODO: sorry, that's not the responsibility of the adapter knowing how to translate company names into
-            // context names.
-            String companyContextName = dialPlan.getCompany().getName().replaceAll(" ", "-");
+            String companyContextName = AsteriskUtlities.toContextIdentifier(dialPlan.getCompany().getName());
 
             dialPlanConfigBuilder.activateExistingContext(companyContextName);
             DialPlanExtension dialPlanExtension = new DialPlanExtension();
-            // TODO: again, too much distributed knowledge, aka coupling
             dialPlanExtension.setPriority(TopLevelContextBuilder.DEFAULT_PRIORITY);
             dialPlanExtension.setPhoneNumber(dialPlan.getPhoneNr());
 
-            // TODO: SSDL (Same shit, different line). See above.
-            String reference = companyContextName + "-" + dialPlan.getTitle();
+            String reference = AsteriskUtlities.makeContextIdentifierFromCompanyAndContextName(companyContextName,
+                    dialPlan.getTitle());
             reference = reference.replaceAll(" ", "-");
             GotoApp gotoApp = new GotoApp(reference);
 
@@ -113,7 +108,8 @@ public class DialPlanConfigAdapter {
             }
 
             private String getUniqueContextName() {
-                return dialPlan.getCompany().getName() + "-" + dialPlan.getTitle();
+                return AsteriskUtlities.makeContextIdentifierFromCompanyAndContextName(dialPlan.getCompany().getName
+                        (), dialPlan.getTitle());
             }
         }
         DialPlanDefaultContextPrologBuilder dialPlanBuilder = new DialPlanDefaultContextPrologBuilder

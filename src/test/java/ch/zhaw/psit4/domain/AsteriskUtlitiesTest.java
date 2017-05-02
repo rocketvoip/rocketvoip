@@ -10,6 +10,30 @@ import static org.junit.Assert.assertThat;
  */
 public class AsteriskUtlitiesTest {
     @Test
+    public void makeContextIdentifierFromCompanyAndContextName() throws Exception {
+        assertThat(
+                AsteriskUtlities.makeContextIdentifierFromCompanyAndContextName("company", "context"),
+                equalTo("company-context")
+        );
+    }
+
+    @Test
+    public void makeContextIdentifierFromCompanyAndContextNameWithSpaces() throws Exception {
+        assertThat(
+                AsteriskUtlities.makeContextIdentifierFromCompanyAndContextName("com pany", "con text"),
+                equalTo("com-pany-con-text")
+        );
+    }
+
+    @Test
+    public void makeContextIdentifierFromCompanyAndContextNameWithOtherCharacters() throws Exception {
+        assertThat(
+                AsteriskUtlities.makeContextIdentifierFromCompanyAndContextName("com[pany]", "con#text"),
+                equalTo("com-pany--con-text")
+        );
+    }
+
+    @Test
     public void toContextIdentifier() throws Exception {
         assertThat(AsteriskUtlities.toContextIdentifier("ABCabc123-._"), equalTo("ABCabc123-._"));
     }
