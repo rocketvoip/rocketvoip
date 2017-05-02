@@ -22,6 +22,10 @@ public class BranchDialPlan {
     @Column
     private int buttonNumber;
 
+    protected BranchDialPlan() {
+        //intentionally empty
+    }
+
     public BranchDialPlan(DialPlan dialPlan, int buttonNumber) {
         this.dialPlan = dialPlan;
         this.buttonNumber = buttonNumber;

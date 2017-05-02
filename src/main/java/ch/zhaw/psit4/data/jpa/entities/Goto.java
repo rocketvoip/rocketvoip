@@ -25,6 +25,10 @@ public class Goto {
     @OneToOne
     private DialPlan nextDialPlan;
 
+    protected Goto() {
+        //intentionally empty
+    }
+
     public Goto(String name, int priority, DialPlan dialPlan, DialPlan nextDialPlan) {
         this.name = name;
         this.priority = priority;

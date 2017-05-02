@@ -36,6 +36,10 @@ public class Branch {
 
     private int hangupTime;
 
+    protected Branch() {
+        //intentionally empty
+    }
+
     public Branch(String name, int priority, DialPlan dialPlan, Set<BranchDialPlan> branchesDialPlans, int hangupTime) {
         this.name = name;
         this.priority = priority;
