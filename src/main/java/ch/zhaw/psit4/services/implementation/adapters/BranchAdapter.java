@@ -116,8 +116,8 @@ public class BranchAdapter implements ActionAdapterInterface {
 
     @Override
     public void deleteActionDto(long dialPlanId) {
+        branchRepository.deleteAllByDialPlan_Id(dialPlanId);
         List<Branch> branchEntity = branchRepository.findAllByDialPlan_Id(dialPlanId);
         branchEntity.forEach(x -> branchDialPlanRepository.delete(x.getBranchesDialPlans()));
-        branchRepository.deleteAllByDialPlan_Id(dialPlanId);
     }
 }

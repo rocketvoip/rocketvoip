@@ -153,10 +153,15 @@ public class DatabaseFixtureBuilder {
         return this;
     }
 
-    public DatabaseFixtureBuilder addBranch(int number, int priority, int addToDialPlanNumber, List<BranchDialPlan> branchDialPlanList) {
+    public DatabaseFixtureBuilder addBranch(int number, int priority, int addToDialPlanNumber, List<Integer> branchDialPlanNumbers) {
         Branch branch = BranchEntity.createBranchEntity(number, priority);
         branch.setDialPlan(dialPlanList.get(addToDialPlanNumber));
-        branch.setBranchesDialPlans(branchDialPlanList);
+
+        List<BranchDialPlan> branchDialPlans = new ArrayList<>();
+        branchDialPlanNumbers.forEach(x -> branchDialPlans.add(branchDialPlanList.get(x)));
+
+        branch.setBranchesDialPlans(branchDialPlans);
+
         branchList.put(number, branch);
         return this;
     }
@@ -196,8 +201,8 @@ public class DatabaseFixtureBuilder {
         dialRepository.save(dialList.values());
         sayAlphaRepository.save(sayAlphaList.values());
         gotoRepository.save(gotoList.values());
-        branchRepository.save(branchList.values());
         branchDialPlanRepository.save(branchDialPlanList.values());
+        branchRepository.save(branchList.values());
     }
 
     public Company getCompany() {
