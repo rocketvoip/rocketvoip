@@ -148,7 +148,7 @@ public class DialPlanConfigAdapter {
                     dialPlanContext.setContextName(dialPlanWrapper.getUniqueContextName());
                     dialPlanBuilder.addNewContext(dialPlanContext);
 
-                    sayAlphaRepository.findAllByDialPlan_Id(dialPlanId).forEach(
+                    sayAlphaRepository.findAllByDialPlanId(dialPlanId).forEach(
                             sayAlphaEntry -> {
                                 DialPlanExtension dialPlanExtension = new DialPlanExtension();
                                 dialPlanExtension.setPhoneNumber("s");
@@ -161,7 +161,7 @@ public class DialPlanConfigAdapter {
                             }
                     );
 
-                    dialRepository.findAllByDialPlan_Id(dialPlanId).forEach(
+                    dialRepository.findAllByDialPlanId(dialPlanId).forEach(
                             dialEntry -> {
                                 DialPlanExtension dialPlanExtension = new DialPlanExtension();
                                 dialPlanExtension.setPhoneNumber("s");

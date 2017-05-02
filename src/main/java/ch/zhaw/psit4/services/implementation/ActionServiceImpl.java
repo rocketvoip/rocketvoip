@@ -93,7 +93,7 @@ public class ActionServiceImpl implements ActionServiceInterface {
     }
 
     private void deleteAllActions(long dialPlanId) {
-        actionAdapterInterfaceList.forEach(actionInterface -> actionInterface.deleteActionDto((dialPlanId)));
+        actionAdapterInterfaceList.forEach(actionInterface -> actionInterface.deleteActionDto(dialPlanId));
     }
 
 }
