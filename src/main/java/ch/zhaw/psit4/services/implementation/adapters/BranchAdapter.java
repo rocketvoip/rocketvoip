@@ -102,7 +102,7 @@ public class BranchAdapter implements ActionAdapterInterface {
 
     @Override
     public ActionDto retrieveActionDto(long dialPlanId, int priority) {
-        Branch branchEntity = branchRepository.findFirstByDialPlan_IdAndPriority(dialPlanId, priority);
+        Branch branchEntity = branchRepository.findFirstByDialPlanIdAndPriority(dialPlanId, priority);
         if (branchEntity != null) {
             return branchEntityToActionDto(branchEntity);
         }
@@ -111,8 +111,8 @@ public class BranchAdapter implements ActionAdapterInterface {
 
     @Override
     public void deleteActionDto(long dialPlanId) {
-        List<Branch> branchEntity = branchRepository.findAllByDialPlan_Id(dialPlanId);
+        List<Branch> branchEntity = branchRepository.findAllByDialPlanId(dialPlanId);
         branchEntity.forEach(x -> branchDialPlanRepository.delete(x.getBranchesDialPlans()));
-        branchRepository.deleteAllByDialPlan_Id(dialPlanId);
+        branchRepository.deleteAllByDialPlanId(dialPlanId);
     }
 }
