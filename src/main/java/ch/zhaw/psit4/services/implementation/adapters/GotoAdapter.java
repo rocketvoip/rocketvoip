@@ -65,7 +65,7 @@ public class GotoAdapter implements ActionAdapterInterface {
 
     @Override
     public ActionDto retrieveActionDto(long dialPlanId, int priority) {
-        Goto gotoEntity = gotoRepository.findFirstByDialPlan_IdAndPriority(dialPlanId, priority);
+        Goto gotoEntity = gotoRepository.findFirstByDialPlanIdAndPriority(dialPlanId, priority);
         if (gotoEntity != null) {
             return gotoEntityToActionDto(gotoEntity);
         }
@@ -74,6 +74,6 @@ public class GotoAdapter implements ActionAdapterInterface {
 
     @Override
     public void deleteActionDto(long dialPlanId) {
-        gotoRepository.deleteAllByDialPlan_Id(dialPlanId);
+        gotoRepository.deleteAllByDialPlanId(dialPlanId);
     }
 }
