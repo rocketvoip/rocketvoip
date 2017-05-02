@@ -16,4 +16,11 @@ public interface DialPlanAppInterface extends Validatable {
      * @return string representing the asterisk application call fragment.
      */
     String toApplicationCall();
+
+    /**
+     * Indicate whether or not the application requires an Asterisk Answer() action.
+     *
+     * @return {@code true} the context requires an Answer() action. {@code false} otherwise.
+     */
+    boolean requireAnswer();
 }

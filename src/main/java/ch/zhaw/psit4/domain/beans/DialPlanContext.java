@@ -1,5 +1,6 @@
 package ch.zhaw.psit4.domain.beans;
 
+import ch.zhaw.psit4.domain.AsteriskUtlities;
 import ch.zhaw.psit4.domain.exceptions.ValidationException;
 import ch.zhaw.psit4.domain.interfaces.DialPlanContextConfigurationInterface;
 import ch.zhaw.psit4.domain.interfaces.DialPlanExtensionConfigurationInterface;
@@ -35,7 +36,7 @@ public class DialPlanContext implements DialPlanContextConfigurationInterface {
     }
 
     public void setContextName(String contextName) {
-        this.contextName = contextName.replaceAll(" ", "-");
+        this.contextName = AsteriskUtlities.toContextIdentifier(contextName);
     }
 
     public List<DialPlanExtensionConfigurationInterface> getDialPlanExtensionList() {

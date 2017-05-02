@@ -9,27 +9,27 @@ import static org.junit.Assert.assertThat;
 /**
  * @author Rafael Ostertag
  */
-public class RingingAppTest {
-    private RingingApp ringingApp;
+public class AnswerAppTest {
+    private AnswerApp answerApp;
 
     @Before
     public void setUp() throws Exception {
-        ringingApp = new RingingApp();
+        answerApp = new AnswerApp();
     }
 
     @Test
     public void validate() throws Exception {
-        ringingApp.validate();
+        answerApp.validate();
     }
 
     @Test
     public void toApplicationCall() throws Exception {
-        assertThat(ringingApp.toApplicationCall(), equalTo("Ringing"));
+        assertThat(answerApp.toApplicationCall(), equalTo("Answer"));
     }
 
     @Test
     public void requireAnswer() throws Exception {
-        assertThat(ringingApp.requireAnswer(), equalTo(false));
+        assertThat(answerApp.requireAnswer(), equalTo(false));
     }
 
 }

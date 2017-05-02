@@ -71,7 +71,7 @@ public class BranchAdapter implements ActionAdapterInterface {
 
     @Override
     public void saveActionDto(DialPlanDto dialPlanDto, ActionDto actionDto, int priority) {
-        if (TYPE.equalsIgnoreCase((actionDto.getType()))) {
+        if (TYPE.equalsIgnoreCase(actionDto.getType())) {
             BranchActionDto branchActionDto = OBJECT_MAPPER.convertValue(actionDto.getTypeSpecific(), BranchActionDto.class);
 
             List<DialPlan> nextDialPlans = new ArrayList<>();
@@ -107,7 +107,7 @@ public class BranchAdapter implements ActionAdapterInterface {
 
     @Override
     public ActionDto retrieveActionDto(long dialPlanId, int priority) {
-        Branch branchEntity = branchRepository.findFirstByDialPlan_IdAndPriority(dialPlanId, priority);
+        Branch branchEntity = branchRepository.findFirstByDialPlanIdAndPriority(dialPlanId, priority);
         if (branchEntity != null) {
             return branchEntityToActionDto(branchEntity);
         }
@@ -116,8 +116,8 @@ public class BranchAdapter implements ActionAdapterInterface {
 
     @Override
     public void deleteActionDto(long dialPlanId) {
-        branchRepository.deleteAllByDialPlan_Id(dialPlanId);
         List<Branch> branchEntity = branchRepository.findAllByDialPlan_Id(dialPlanId);
         branchEntity.forEach(x -> branchDialPlanRepository.delete(x.getBranchesDialPlans()));
+        branchRepository.deleteAllByDialPlan_Id(dialPlanId);
     }
 }

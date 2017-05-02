@@ -5,15 +5,15 @@ import ch.zhaw.psit4.domain.interfaces.DialPlanAppInterface;
 /**
  * @author Rafael Ostertag
  */
-public class RingingApp implements DialPlanAppInterface {
+public class AnswerApp implements DialPlanAppInterface {
     @Override
     public void validate() {
-        // This application is always valid. No need to check because no user input.
+        // intentionally empty
     }
 
     @Override
     public String toApplicationCall() {
-        return "Ringing";
+        return "Answer";
     }
 
     @Override

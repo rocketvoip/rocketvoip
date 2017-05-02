@@ -36,4 +36,9 @@ public interface DialPlanExtensionConfigurationInterface extends Validatable {
      * @param priority numerals such as '1', '2', etc. or 'n'
      */
     void setPriority(String priority);
+
+    /**
+     * Get the DialPlanApp.
+     */
+    DialPlanAppInterface getDialPlanApplication();
 }

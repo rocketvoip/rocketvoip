@@ -45,7 +45,7 @@ public class SayAlphaAdapter implements ActionAdapterInterface {
 
     @Override
     public void saveActionDto(DialPlanDto dialPlanDto, ActionDto actionDto, int priority) {
-        if ("sayalpha".equalsIgnoreCase((actionDto.getType()))) {
+        if ("sayalpha".equalsIgnoreCase(actionDto.getType())) {
             SayAlphaActionDto sayAlphaActionDto = OBJECT_MAPPER.convertValue(actionDto.getTypeSpecific(), SayAlphaActionDto.class);
 
             SayAlpha sayAlpha = new SayAlpha(actionDto.getName(),
@@ -60,7 +60,7 @@ public class SayAlphaAdapter implements ActionAdapterInterface {
 
     @Override
     public ActionDto retrieveActionDto(long dialPlanId, int priority) {
-        SayAlpha sayAlpha = sayAlphaRepository.findFirstByDialPlan_IdAndPriority(dialPlanId, priority);
+        SayAlpha sayAlpha = sayAlphaRepository.findFirstByDialPlanIdAndPriority(dialPlanId, priority);
         if (sayAlpha != null) {
             return sayAlphaEntityToActionDto(sayAlpha);
         }
@@ -69,6 +69,6 @@ public class SayAlphaAdapter implements ActionAdapterInterface {
 
     @Override
     public void deleteActionDto(long dialPlanId) {
-        sayAlphaRepository.deleteAllByDialPlan_Id(dialPlanId);
+        sayAlphaRepository.deleteAllByDialPlanId(dialPlanId);
     }
 }

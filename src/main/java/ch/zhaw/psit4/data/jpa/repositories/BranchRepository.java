@@ -12,10 +12,10 @@ import java.util.List;
 public interface BranchRepository extends CrudRepository<Branch, Long> {
     List<Branch> findByDialPlan(DialPlan dialPlan);
 
-    Branch findFirstByDialPlan_IdAndPriority(long dialPlanId, int priority);
+    Branch findFirstByDialPlanIdAndPriority(long dialPlanId, int priority);
 
-    List<Branch> findAllByDialPlan_Id(long dialPlanId);
+    List<Branch> findAllByDialPlanId(long dialPlanId);
 
-    void deleteAllByDialPlan_Id(long dialPlanId);
+    void deleteAllByDialPlanId(long dialPlanId);
 
 }
