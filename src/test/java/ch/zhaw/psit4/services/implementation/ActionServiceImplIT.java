@@ -151,27 +151,44 @@ public class ActionServiceImplIT {
 
     @Test
     public void saveBranchDto() {
-        databaseFixtureBuilder1.company(1).addDialPlan(1).addDialPlan(2).addDialPlan(3).build();
+        int dialPlanNumberButton1 = 2;
+        int dialPlanNumberButton2 = 3;
 
-        ActionDto branchActionDto1 = generateBranchActionDto(1, Arrays.asList(2, 3));
+        databaseFixtureBuilder1.company(1).addDialPlan(1).addDialPlan(dialPlanNumberButton1).addDialPlan(dialPlanNumberButton2).build();
+
+        // normal order: dialPlanNumberButton1, dialPlanNumberButton2
+        ActionDto branchActionDto1 = generateBranchActionDto(1, Arrays.asList(dialPlanNumberButton1, dialPlanNumberButton2));
+        // reverse order: dialPlanNumberButton2, dialPlanNumberButton1
+        ActionDto branchActionDto2 = generateBranchActionDto(1, Arrays.asList(dialPlanNumberButton2, dialPlanNumberButton1));
 
         List<ActionDto> branchActionDtos = new ArrayList<>();
         branchActionDtos.add(branchActionDto1);
+        branchActionDtos.add(branchActionDto2);
 
         DialPlanDto dialPlanDto = generateDialPlan(branchActionDtos, 1);
 
         actionServiceInterface.saveActions(dialPlanDto);
 
+        checkGetBranchDto(dialPlanDto, 1);
+        checkGetBranchDto(dialPlanDto, 2);
+
+    }
+
+    /*
+     * Asserts that the given actions in the dialPlanDto are equal to the retrieved actions.
+     * Indirectly with branchActionEqualTo it also checks the order of the dialPlanIds. This is necessary
+     * since the order represents the button which has to be pressed in a call.
+     */
+    private void checkGetBranchDto(DialPlanDto dialPlanDto, int actionNumber) {
         List<ActionDto> actionDtos = actionServiceInterface.retrieveActions(dialPlanDto.getId());
-        ActionDto expected = dialPlanDto.getActions().get(0);
-        ActionDto actual = actionDtos.get(0);
+        ActionDto expected = dialPlanDto.getActions().get(actionNumber - 1);
+        ActionDto actual = actionDtos.get(actionNumber - 1);
         assertThat(expected, actionDtoAlmostEqualTo(actual));
 
         ObjectMapper objectMapper = new ObjectMapper();
         BranchActionDto expectedBranch = objectMapper.convertValue(expected.getTypeSpecific(), BranchActionDto.class);
         BranchActionDto actualBranch = objectMapper.convertValue(actual.getTypeSpecific(), BranchActionDto.class);
         assertThat(expectedBranch, branchActionEqualTo(actualBranch));
-
     }
 
     @Test
