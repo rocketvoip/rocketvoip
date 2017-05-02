@@ -13,6 +13,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
+
 /**
  * @author Rafael Ostertag
  */
@@ -25,8 +28,9 @@ public class SpringBeans {
 
     @Bean
     public TokenAuthenticationService tokenAuthenticationService(UserDetailsService userDetailsService) {
-        // TODO: Figure out what this "secretkey" is doing.
-        return new TokenAuthenticationService("secretkey", userDetailsService);
+        SecureRandom secureRandom = new SecureRandom();
+        String secret = new BigInteger(130, secureRandom).toString(32);
+        return new TokenAuthenticationService(secret, userDetailsService);
     }
 
     @Bean

@@ -11,7 +11,10 @@ import ch.zhaw.psit4.dto.DialPlanDto;
 import ch.zhaw.psit4.dto.actions.BranchActionDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static ch.zhaw.psit4.services.implementation.DialPlanServiceImpl.dialPlanDtoToDialPlanEntityWithId;
 
@@ -37,18 +40,20 @@ public class BranchAdapter implements ActionAdapterInterface {
     private static BranchActionDto branchEntityToBranchActionDto(Branch branch) {
         BranchActionDto branchActionDto = new BranchActionDto();
         branchActionDto.setHangupTime(branch.getHangupTime());
-        List<Long> dialPlanIds = convertDialPlanIds(branch.getBranchesDialPlans());
+        List<Long> dialPlanIds = branchDialPlansToDialPlanIds(branch.getBranchesDialPlans());
         branchActionDto.setNextDialPlanIds(dialPlanIds);
         return branchActionDto;
     }
 
-    private static List<Long> convertDialPlanIds(Set<BranchDialPlan> branchDialPlanSet) {
-        Map<Integer, Long> branchDialPlanMap = new HashMap<>();
-        branchDialPlanSet.forEach(x ->
-                branchDialPlanMap.put(x.getButtonNumber(), x.getDialPlan().getId()));
+    private static List<Long> branchDialPlansToDialPlanIds(List<BranchDialPlan> branchDialPlanList) {
+        // create a map sorted by the buttonNumber
+        TreeMap<Integer, Long> branchDialPlanTreeMap = new TreeMap<>();
+        branchDialPlanList.forEach(x ->
+                branchDialPlanTreeMap.put(x.getButtonNumber(), x.getDialPlan().getId()));
+
         List<Long> dialPlanIds = new ArrayList<>();
-        dialPlanIds.addAll(branchDialPlanMap.values());
-        Collections.sort(dialPlanIds);
+        dialPlanIds.addAll(branchDialPlanTreeMap.values());
+
         return dialPlanIds;
     }
 
@@ -66,7 +71,7 @@ public class BranchAdapter implements ActionAdapterInterface {
 
     @Override
     public void saveActionDto(DialPlanDto dialPlanDto, ActionDto actionDto, int priority) {
-        if (TYPE.equalsIgnoreCase((actionDto.getType()))) {
+        if (TYPE.equalsIgnoreCase(actionDto.getType())) {
             BranchActionDto branchActionDto = OBJECT_MAPPER.convertValue(actionDto.getTypeSpecific(), BranchActionDto.class);
 
             List<DialPlan> nextDialPlans = new ArrayList<>();
@@ -74,7 +79,7 @@ public class BranchAdapter implements ActionAdapterInterface {
             branchActionDto.getNextDialPlanIds().forEach(x ->
                     nextDialPlans.add(dialPlanRepository.findFirstById(x)));
 
-            Set<BranchDialPlan> branchDialPlans = saveBranchDialPlans(nextDialPlans);
+            List<BranchDialPlan> branchDialPlans = saveBranchDialPlans(nextDialPlans);
 
             Branch branchEntity = new Branch(
                     actionDto.getName(),
@@ -89,8 +94,8 @@ public class BranchAdapter implements ActionAdapterInterface {
 
     }
 
-    private Set<BranchDialPlan> saveBranchDialPlans(List<DialPlan> nextDialPlans) {
-        Set<BranchDialPlan> branchDialPlans = new HashSet<>();
+    private List<BranchDialPlan> saveBranchDialPlans(List<DialPlan> nextDialPlans) {
+        List<BranchDialPlan> branchDialPlans = new ArrayList<>();
         int buttonNumber = 0;
         for (DialPlan dialPlan : nextDialPlans) {
             buttonNumber++;
@@ -102,7 +107,7 @@ public class BranchAdapter implements ActionAdapterInterface {
 
     @Override
     public ActionDto retrieveActionDto(long dialPlanId, int priority) {
-        Branch branchEntity = branchRepository.findFirstByDialPlan_IdAndPriority(dialPlanId, priority);
+        Branch branchEntity = branchRepository.findFirstByDialPlanIdAndPriority(dialPlanId, priority);
         if (branchEntity != null) {
             return branchEntityToActionDto(branchEntity);
         }
@@ -111,8 +116,8 @@ public class BranchAdapter implements ActionAdapterInterface {
 
     @Override
     public void deleteActionDto(long dialPlanId) {
-        List<Branch> branchEntity = branchRepository.findAllByDialPlan_Id(dialPlanId);
+        List<Branch> branchEntity = branchRepository.findAllByDialPlanId(dialPlanId);
         branchEntity.forEach(x -> branchDialPlanRepository.delete(x.getBranchesDialPlans()));
-        branchRepository.deleteAllByDialPlan_Id(dialPlanId);
+        branchRepository.deleteAllByDialPlanId(dialPlanId);
     }
 }

@@ -61,7 +61,7 @@ public class DialAdapter implements ActionAdapterInterface {
 
     @Override
     public ActionDto retrieveActionDto(long dialPlanId, int priority) {
-        Dial dial = dialRepository.findFirstByDialPlan_IdAndPriority(dialPlanId, priority);
+        Dial dial = dialRepository.findFirstByDialPlanIdAndPriority(dialPlanId, priority);
         if (dial != null) {
             return dialEntityToActionDto(dial);
         }
@@ -70,6 +70,6 @@ public class DialAdapter implements ActionAdapterInterface {
 
     @Override
     public void deleteActionDto(long dialPlanId) {
-        dialRepository.deleteAllByDialPlan_Id(dialPlanId);
+        dialRepository.deleteAllByDialPlanId(dialPlanId);
     }
 }

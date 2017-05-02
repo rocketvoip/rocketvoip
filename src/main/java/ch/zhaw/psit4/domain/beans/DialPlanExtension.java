@@ -76,20 +76,21 @@ public class DialPlanExtension implements DialPlanExtensionConfigurationInterfac
         this.priority = priority;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
+    @Override
     public DialPlanAppInterface getDialPlanApplication() {
         return dialPlanApplication;
     }
 
     public void setDialPlanApplication(DialPlanAppInterface dialPlanApplication) {
         this.dialPlanApplication = dialPlanApplication;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     @Override

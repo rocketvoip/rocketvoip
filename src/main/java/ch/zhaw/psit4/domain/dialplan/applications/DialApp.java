@@ -86,6 +86,11 @@ public class DialApp implements DialPlanAppInterface {
     }
 
     @Override
+    public boolean requireAnswer() {
+        return false;
+    }
+
+    @Override
     public void validate() {
         if (technology == null) {
             throw new ValidationException("technology is null");
