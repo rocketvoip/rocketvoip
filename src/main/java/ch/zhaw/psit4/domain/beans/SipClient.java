@@ -1,5 +1,6 @@
 package ch.zhaw.psit4.domain.beans;
 
+import ch.zhaw.psit4.domain.AsteriskUtlities;
 import ch.zhaw.psit4.domain.exceptions.ValidationException;
 import ch.zhaw.psit4.domain.interfaces.SipClientConfigurationInterface;
 
@@ -21,8 +22,7 @@ public class SipClient implements SipClientConfigurationInterface {
 
     public void setCompany(String company) {
         if (company != null) {
-            //TODO: Use method
-            this.company = company.replaceAll(" ", "-");
+            this.company = AsteriskUtlities.toContextIdentifier(company);
         }
     }
 
@@ -64,10 +64,7 @@ public class SipClient implements SipClientConfigurationInterface {
      * @return the label of a sip client
      */
     public String getLabel() {
-        String label = username + "-" + company;
-        //TODO: use method
-        label = label.replaceAll(" ", "-");
-        return label;
+        return AsteriskUtlities.toContextIdentifier(username + "-" + company);
     }
 
 
