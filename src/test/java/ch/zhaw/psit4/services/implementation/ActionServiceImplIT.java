@@ -174,6 +174,36 @@ public class ActionServiceImplIT {
 
     }
 
+    @Test
+    public void updateBranchDto() {
+        int normalDialPlanNumber = 1;
+        int dialPlanNumberButton1 = 2;
+        int dialPlanNumberButton2 = 3;
+
+        int branchDialPlanNumber1 = 1;
+        int branchDialPlanNumber2 = 2;
+
+        databaseFixtureBuilder1.company(1).addDialPlan(normalDialPlanNumber)
+                .addDialPlan(dialPlanNumberButton1)
+                .addDialPlan(dialPlanNumberButton2)
+                .addBranchDialPlan(branchDialPlanNumber1, dialPlanNumberButton1)
+                .addBranchDialPlan(branchDialPlanNumber2, dialPlanNumberButton2)
+                .addBranch(1, 1, normalDialPlanNumber, Arrays.asList(branchDialPlanNumber1, branchDialPlanNumber2))
+                .build();
+
+        // change order: dialPlanNumberButton2, dialPlanNumberButton1
+        ActionDto branchActionDto1 = generateBranchActionDto(1, Arrays.asList(dialPlanNumberButton2, dialPlanNumberButton1));
+
+        List<ActionDto> branchActionDtos = new ArrayList<>();
+        branchActionDtos.add(branchActionDto1);
+
+        DialPlanDto dialPlanDto = generateDialPlan(branchActionDtos, normalDialPlanNumber);
+
+        actionServiceInterface.updateActions(dialPlanDto);
+
+        checkGetBranchDto(dialPlanDto, 1);
+    }
+
     /*
      * Asserts that the given actions in the dialPlanDto are equal to the retrieved actions.
      * Indirectly with branchActionEqualTo it also checks the order of the dialPlanIds. This is necessary
