@@ -1,5 +1,8 @@
 package ch.zhaw.psit4.data.jpa.entities;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,9 +18,13 @@ public class Company implements Serializable {
 
     @Id
     @GeneratedValue
+    @Getter
+    @Setter
     private Long id;
 
     @Column(nullable = false, unique = true)
+    @Getter
+    @Setter
     private String name;
 
     protected Company() {
@@ -26,21 +33,5 @@ public class Company implements Serializable {
 
     public Company(String name) {
         this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 }

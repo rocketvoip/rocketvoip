@@ -1,5 +1,8 @@
 package ch.zhaw.psit4.data.jpa.entities;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.Collection;
 
@@ -13,21 +16,33 @@ public class Dial {
 
     @Id
     @GeneratedValue
+    @Getter
+    @Setter
     private long id;
 
     @Column(nullable = false)
+    @Getter
+    @Setter
     private String name;
 
     @Column(nullable = false)
+    @Getter
+    @Setter
     private int priority;
 
     @Column(nullable = false)
+    @Getter
+    @Setter
     private int ringingTime;
 
     @ManyToOne
+    @Getter
+    @Setter
     private DialPlan dialPlan;
 
     @ManyToMany
+    @Getter
+    @Setter
     private Collection<SipClient> sipClients;
 
     protected Dial() {
@@ -40,53 +55,5 @@ public class Dial {
         this.ringingTime = ringingTime;
         this.sipClients = sipClients;
         this.dialPlan = dialPlan;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public int getPriority() {
-        return priority;
-    }
-
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }
-
-    public DialPlan getDialPlan() {
-        return dialPlan;
-    }
-
-    public void setDialPlan(DialPlan dialPlan) {
-        this.dialPlan = dialPlan;
-    }
-
-    public int getRingingTime() {
-        return ringingTime;
-    }
-
-    public void setRingingTime(int ringingTime) {
-        this.ringingTime = ringingTime;
-    }
-
-    public Collection<SipClient> getSipClients() {
-        return sipClients;
-    }
-
-    public void setSipClients(Collection<SipClient> sipClients) {
-        this.sipClients = sipClients;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }

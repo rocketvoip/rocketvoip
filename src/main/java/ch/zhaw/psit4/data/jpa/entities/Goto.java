@@ -1,5 +1,8 @@
 package ch.zhaw.psit4.data.jpa.entities;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 
 /**
@@ -11,18 +14,28 @@ public class Goto {
 
     @Id
     @GeneratedValue
+    @Getter
+    @Setter
     private long id;
 
     @Column(nullable = false)
+    @Getter
+    @Setter
     private String name;
 
     @Column(nullable = false)
+    @Getter
+    @Setter
     private int priority;
 
     @ManyToOne
+    @Getter
+    @Setter
     private DialPlan dialPlan;
 
     @OneToOne
+    @Getter
+    @Setter
     private DialPlan nextDialPlan;
 
     protected Goto() {
@@ -34,45 +47,5 @@ public class Goto {
         this.priority = priority;
         this.dialPlan = dialPlan;
         this.nextDialPlan = nextDialPlan;
-    }
-
-    public DialPlan getNextDialPlan() {
-        return nextDialPlan;
-    }
-
-    public void setNextDialPlan(DialPlan nextDialPlan) {
-        this.nextDialPlan = nextDialPlan;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getPriority() {
-        return priority;
-    }
-
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }
-
-    public DialPlan getDialPlan() {
-        return dialPlan;
-    }
-
-    public void setDialPlan(DialPlan dialPlan) {
-        this.dialPlan = dialPlan;
     }
 }
