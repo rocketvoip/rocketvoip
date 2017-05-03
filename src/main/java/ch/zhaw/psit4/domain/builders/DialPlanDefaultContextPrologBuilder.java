@@ -8,7 +8,7 @@ import ch.zhaw.psit4.domain.dialplan.applications.WaitApp;
 import ch.zhaw.psit4.domain.interfaces.DialPlanAppInterface;
 
 /**
- * Build context with a default prolog. A default prolog is added
+ * Build context with a default prolog:
  * <code>
  * exten => x,1, Ringing
  * exten => x,n, Wait(sec)
