@@ -192,6 +192,31 @@ public class DialPlanDefaultContextPrologBuilderTest {
     }
 
     /**
+     * Test that no additional applications will be set when none are required
+     */
+    @Test
+    public void testNoAdditionalApplicationInPrologSingleApplication() throws Exception {
+        DialPlanContext context1 = DialPlanContextGenerator.dialPlanContext(1);
+
+        DialPlanExtension dialPlanExtension = DialPlanExtensionGenerator.dialPlanExtension(1);
+
+        DialPlanAppInterface dialPlanApp1 = makeDialAppMockNotRequiringAnything();
+
+        List<DialPlanContext> configuration = dialPlanDefaultContextPrologBuilder
+                .addNewContext(context1)
+                .addNewExtension(dialPlanExtension)
+                .setApplication(dialPlanApp1)
+                .build();
+
+        verify(dialPlanApp1, atLeastOnce()).requireAnswer();
+
+        assertThat(configuration, hasSize(1));
+        assertThat(context1.getDialPlanExtensionList(), hasSize(3));
+
+        checkPrologExpectDefaultProlog(context1);
+    }
+
+    /**
      * Test whether asterisk Answer() application will be set when a single application requires it
      *
      * @throws Exception
@@ -246,7 +271,7 @@ public class DialPlanDefaultContextPrologBuilderTest {
     }
 
     /**
-     * Ensure that Wait() and WaitExten() is added if we have a single asterisk application requiring BOTH.
+     * Ensure that Anser() and WaitExten() is added if we have a single asterisk application requiring BOTH.
      *
      * @throws Exception
      */
@@ -271,6 +296,53 @@ public class DialPlanDefaultContextPrologBuilderTest {
         assertThat(context1.getDialPlanExtensionList(), hasSize(5));
 
         checkPrologExpectAnswerAndWaitExten(context1);
+    }
+
+    /**
+     * Ensure that Answer() and WaitExten() are not re-added when re-activating contexts.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testReactivatingContextWithAnswerAndWaitExten() throws Exception {
+        DialPlanContext context1 = DialPlanContextGenerator.dialPlanContext(1);
+        DialPlanContext context2 = DialPlanContextGenerator.dialPlanContext(2);
+
+        DialPlanExtension dialPlanExtension1 = DialPlanExtensionGenerator.dialPlanExtension(1);
+        DialPlanExtension dialPlanExtension2 = DialPlanExtensionGenerator.dialPlanExtension(2);
+        DialPlanExtension dialPlanExtension3 = DialPlanExtensionGenerator.dialPlanExtension(3);
+
+        DialPlanAppInterface dialPlanApp1 = makeDialAppMockRequireAnswerAndWaitExten();
+        DialPlanAppInterface dialPlanApp2 = makeDialAppMockNotRequiringAnything();
+
+        List<DialPlanContext> configuration = dialPlanDefaultContextPrologBuilder
+                .addNewContext(context1)
+                .addNewExtension(dialPlanExtension1)
+                // Add application requiring Answer() and WaitExten() asterisk applications
+                .setApplication(dialPlanApp1)
+                // Add a new context which does not require anything special
+                .addNewContext(context2)
+                .addNewExtension(dialPlanExtension2)
+                .setApplication(dialPlanApp2)
+                // Reactivate context1
+                .activateExistingContext(DialPlanContextData.getContextName(1))
+                .addNewExtension(dialPlanExtension3)
+                // Add again an application requiring Answer() and WaitExten() asterisk applications
+                .setApplication(dialPlanApp1)
+                .build();
+
+        verify(dialPlanApp1, atLeastOnce()).requireAnswer();
+        verify(dialPlanApp1, atLeastOnce()).requireWaitExten();
+        verify(dialPlanApp2, atLeastOnce()).requireAnswer();
+        verify(dialPlanApp2, atLeastOnce()).requireWaitExten();
+
+        assertThat(configuration, hasSize(2));
+
+        assertThat(context1.getDialPlanExtensionList(), hasSize(6));
+        assertThat(context2.getDialPlanExtensionList(), hasSize(3));
+
+        checkPrologExpectAnswerAndWaitExten(context1);
+        checkPrologExpectDefaultProlog(context2);
     }
 
     /**
@@ -977,5 +1049,14 @@ public class DialPlanDefaultContextPrologBuilderTest {
 
         assertThat(context.getDialPlanExtensionList().get(3).getDialPlanApplication(),
                 is(instanceOf(WaitExtenApp.class)));
+    }
+
+    private void checkPrologExpectDefaultProlog(DialPlanContext context) {
+        assertThat(context.getDialPlanExtensionList(), hasSize(greaterThanOrEqualTo(2)));
+        assertThat(context.getDialPlanExtensionList().get(0).getDialPlanApplication(),
+                is(instanceOf(RingingApp.class)));
+
+        assertThat(context.getDialPlanExtensionList().get(1).getDialPlanApplication(),
+                is(instanceOf(WaitApp.class)));
     }
 }

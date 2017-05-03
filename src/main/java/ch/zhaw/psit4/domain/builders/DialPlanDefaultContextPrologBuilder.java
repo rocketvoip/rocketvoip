@@ -1,6 +1,5 @@
 package ch.zhaw.psit4.domain.builders;
 
-import ch.zhaw.psit4.domain.beans.DialPlanContext;
 import ch.zhaw.psit4.domain.beans.DialPlanExtension;
 import ch.zhaw.psit4.domain.dialplan.applications.AnswerApp;
 import ch.zhaw.psit4.domain.dialplan.applications.RingingApp;
@@ -87,7 +86,6 @@ public class DialPlanDefaultContextPrologBuilder extends DialPlanConfigBuilder {
         super.addNewExtension(setPriorityN(extension));
 
         addDefaultPrologIfRequired();
-        addAnswerApplicationIfRequired();
 
         return this;
     }
@@ -144,10 +142,8 @@ public class DialPlanDefaultContextPrologBuilder extends DialPlanConfigBuilder {
             return;
         }
 
-        if (activeContextRequireAnswerApplication()) {
-            activeContext.getDialPlanContext().getDialPlanExtensionList().add(makeAnswerExtension("s"));
-            activeContext.setMetaInformation(HAS_ANSWER_APPLICATION_KEY, true);
-        }
+        activeContext.getDialPlanContext().getDialPlanExtensionList().add(makeAnswerExtension("s"));
+        activeContext.setMetaInformation(HAS_ANSWER_APPLICATION_KEY, true);
     }
 
     /**
@@ -163,10 +159,8 @@ public class DialPlanDefaultContextPrologBuilder extends DialPlanConfigBuilder {
             return;
         }
 
-        if (activeContextRequireWaitExtenApplication()) {
-            activeContext.getDialPlanContext().getDialPlanExtensionList().add(makeWaitExtenExtension("s"));
-            activeContext.setMetaInformation(HAS_WAITEXTEN_APPLICATION_KEY, true);
-        }
+        activeContext.getDialPlanContext().getDialPlanExtensionList().add(makeWaitExtenExtension("s"));
+        activeContext.setMetaInformation(HAS_WAITEXTEN_APPLICATION_KEY, true);
     }
 
     private DialPlanExtension makeWaitExtension(String phoneNumber) {
@@ -217,37 +211,4 @@ public class DialPlanDefaultContextPrologBuilder extends DialPlanConfigBuilder {
         return extension;
     }
 
-    private boolean activeContextRequireAnswerApplication() {
-        DialPlanContext activeContext = getActiveContext().getDialPlanContext();
-        assert activeContext != null;
-
-        if (activeExtensionRequireAnswerApplication()) {
-            return true;
-        }
-
-        return activeContext.getDialPlanExtensionList().stream().anyMatch(x -> x instanceof AnswerApp);
-    }
-
-    private boolean activeContextRequireWaitExtenApplication() {
-        DialPlanContext activeContext = getActiveContext().getDialPlanContext();
-        assert activeContext != null;
-
-        if (activeExtensionRequireWaitExtenApplication()) {
-            return true;
-        }
-
-        return activeContext.getDialPlanExtensionList().stream().anyMatch(x -> x instanceof WaitExtenApp);
-    }
-
-    private boolean activeExtensionRequireAnswerApplication() {
-        return getActiveExtension() != null &&
-                getActiveExtension().getDialPlanApplication() != null &&
-                getActiveExtension().getDialPlanApplication().requireAnswer();
-    }
-
-    private boolean activeExtensionRequireWaitExtenApplication() {
-        return getActiveExtension() != null &&
-                getActiveExtension().getDialPlanApplication() != null &&
-                getActiveExtension().getDialPlanApplication().requireWaitExten();
-    }
 }
