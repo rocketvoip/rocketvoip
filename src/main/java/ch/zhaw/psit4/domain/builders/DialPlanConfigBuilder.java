@@ -339,8 +339,5 @@ public class DialPlanConfigBuilder {
             return dialPlanContext;
         }
 
-        public void setDialPlanContext(DialPlanContext dialPlanContext) {
-            this.dialPlanContext = dialPlanContext;
-        }
     }
 }
