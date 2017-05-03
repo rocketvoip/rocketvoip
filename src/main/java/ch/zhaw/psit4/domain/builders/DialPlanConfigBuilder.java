@@ -249,9 +249,7 @@ public class DialPlanConfigBuilder {
     }
 
     private void saveActiveContext() {
-        if (activeContext == null) {
-            throw new IllegalStateException("No active context");
-        }
+        assert activeContext != null;
 
         assignActiveExtensionToActiveContext();
 
