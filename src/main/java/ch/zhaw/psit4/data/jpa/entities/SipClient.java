@@ -1,5 +1,8 @@
 package ch.zhaw.psit4.data.jpa.entities;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -21,19 +24,29 @@ public class SipClient implements Serializable {
 
     @Id
     @GeneratedValue
+    @Getter
+    @Setter
     private long id;
 
     @ManyToOne
     @JoinColumn(name="company")
+    @Getter
+    @Setter
     private Company company;
 
     @Column(nullable = false)
+    @Getter
+    @Setter
     private String label;
 
     @Column(nullable = false, name = "phoneNr")
+    @Getter
+    @Setter
     private String phoneNr;
 
     @Column(nullable = false)
+    @Getter
+    @Setter
     private String secret;
 
     protected SipClient() {
@@ -44,46 +57,6 @@ public class SipClient implements Serializable {
         this.company = company;
         this.label = label;
         this.phoneNr = phoneNr;
-        this.secret = secret;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public Company getCompany() {
-        return company;
-    }
-
-    public void setCompany(Company company) {
-        this.company = company;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public String getPhoneNr() {
-        return phoneNr;
-    }
-
-    public void setPhoneNr(String phoneNr) {
-        this.phoneNr = phoneNr;
-    }
-
-    public String getSecret() {
-        return secret;
-    }
-
-    public void setSecret(String secret) {
         this.secret = secret;
     }
 }

@@ -1,5 +1,8 @@
 package ch.zhaw.psit4.data.jpa.entities;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -20,20 +23,32 @@ public class Branch {
     @Id
     @GeneratedValue
     @Column(name="BRANCH_ID")
+    @Getter
+    @Setter
     private long id;
 
     @Column(nullable = false)
+    @Getter
+    @Setter
     private String name;
 
     @Column(nullable = false)
+    @Getter
+    @Setter
     private int priority;
 
     @ManyToOne
+    @Getter
+    @Setter
     private DialPlan dialPlan;
 
     @OneToMany
+    @Getter
+    @Setter
     private List<BranchDialPlan> branchesDialPlans;
 
+    @Getter
+    @Setter
     private int hangupTime;
 
     protected Branch() {
@@ -46,53 +61,5 @@ public class Branch {
         this.dialPlan = dialPlan;
         this.branchesDialPlans = branchesDialPlans;
         this.hangupTime = hangupTime;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getPriority() {
-        return priority;
-    }
-
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }
-
-    public List<BranchDialPlan> getBranchesDialPlans() {
-        return branchesDialPlans;
-    }
-
-    public void setBranchesDialPlans(List<BranchDialPlan> branchesDialPlans) {
-        this.branchesDialPlans = branchesDialPlans;
-    }
-
-    public int getHangupTime() {
-        return hangupTime;
-    }
-
-    public void setHangupTime(int hangupTime) {
-        this.hangupTime = hangupTime;
-    }
-
-    public DialPlan getDialPlan() {
-        return dialPlan;
-    }
-
-    public void setDialPlan(DialPlan dialPlan) {
-        this.dialPlan = dialPlan;
     }
 }

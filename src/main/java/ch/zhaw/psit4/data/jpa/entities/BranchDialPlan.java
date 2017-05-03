@@ -1,5 +1,8 @@
 package ch.zhaw.psit4.data.jpa.entities;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 
 /**
@@ -13,13 +16,19 @@ public class BranchDialPlan {
     @Id
     @GeneratedValue
     @Column(name = "BRANCH_DIALPLAN_ID")
+    @Getter
+    @Setter
     private long id;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "DIALPLAN_ID")
+    @Getter
+    @Setter
     private DialPlan dialPlan;
 
     @Column
+    @Getter
+    @Setter
     private int buttonNumber;
 
     protected BranchDialPlan() {
@@ -28,22 +37,6 @@ public class BranchDialPlan {
 
     public BranchDialPlan(DialPlan dialPlan, int buttonNumber) {
         this.dialPlan = dialPlan;
-        this.buttonNumber = buttonNumber;
-    }
-
-    public DialPlan getDialPlan() {
-        return dialPlan;
-    }
-
-    public void setDialPlan(DialPlan dialPlan) {
-        this.dialPlan = dialPlan;
-    }
-
-    public int getButtonNumber() {
-        return buttonNumber;
-    }
-
-    public void setButtonNumber(int buttonNumber) {
         this.buttonNumber = buttonNumber;
     }
 }

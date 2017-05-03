@@ -1,5 +1,8 @@
 package ch.zhaw.psit4.data.jpa.entities;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 
 /**
@@ -12,21 +15,33 @@ public class SayAlpha {
 
     @Id
     @GeneratedValue
+    @Getter
+    @Setter
     private long id;
 
     @Column(nullable = false)
+    @Getter
+    @Setter
     private String name;
 
     @Column(nullable = false)
+    @Getter
+    @Setter
     private int priority;
 
     @Column(nullable = false)
+    @Getter
+    @Setter
     private String voiceMessage;
 
     @Column(nullable = false)
+    @Getter
+    @Setter
     private int sleepTime;
 
     @ManyToOne
+    @Getter
+    @Setter
     private DialPlan dialPlan;
 
     protected SayAlpha() {
@@ -39,49 +54,5 @@ public class SayAlpha {
         this.voiceMessage = voiceMessage;
         this.sleepTime = sleepTime;
         this.dialPlan = dialPlan;
-    }
-
-    public String getVoiceMessage() {
-        return voiceMessage;
-    }
-
-    public void setVoiceMessage(String voiceMessage) {
-        this.voiceMessage = voiceMessage;
-    }
-
-    public int getSleepTime() {
-        return sleepTime;
-    }
-
-    public void setSleepTime(int sleepTime) {
-        this.sleepTime = sleepTime;
-    }
-
-    public DialPlan getDialPlan() {
-        return dialPlan;
-    }
-
-    public void setDialPlan(DialPlan dialPlan) {
-        this.dialPlan = dialPlan;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getPriority() {
-        return priority;
-    }
-
-    public void setPriority(int priority) {
-        this.priority = priority;
     }
 }
