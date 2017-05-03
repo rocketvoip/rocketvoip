@@ -40,4 +40,10 @@ public class WaitAppTest {
         assertThat(waitApp.requireAnswer(), equalTo(false));
     }
 
+    @Test
+    public void requireWaitExten() throws Exception {
+        WaitApp waitApp = new WaitApp(1);
+        assertThat(waitApp.requireWaitExten(), equalTo(false));
+    }
+
 }

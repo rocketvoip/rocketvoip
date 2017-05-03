@@ -20,4 +20,9 @@ public class RingingApp implements DialPlanAppInterface {
     public boolean requireAnswer() {
         return false;
     }
+
+    @Override
+    public boolean requireWaitExten() {
+        return false;
+    }
 }

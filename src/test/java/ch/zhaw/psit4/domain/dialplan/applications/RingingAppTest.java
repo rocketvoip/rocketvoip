@@ -32,4 +32,10 @@ public class RingingAppTest {
         assertThat(ringingApp.requireAnswer(), equalTo(false));
     }
 
+    @Test
+    public void requireWaitExten() throws Exception {
+        assertThat(ringingApp.requireWaitExten(), equalTo(false));
+    }
+
+
 }

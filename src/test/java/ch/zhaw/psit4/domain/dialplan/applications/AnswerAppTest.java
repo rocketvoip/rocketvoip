@@ -32,4 +32,9 @@ public class AnswerAppTest {
         assertThat(answerApp.requireAnswer(), equalTo(false));
     }
 
+    @Test
+    public void requireWaitExten() throws Exception {
+        assertThat(answerApp.requireWaitExten(), equalTo(false));
+    }
+
 }

@@ -23,4 +23,11 @@ public interface DialPlanAppInterface extends Validatable {
      * @return {@code true} the context requires an Answer() action. {@code false} otherwise.
      */
     boolean requireAnswer();
+
+    /**
+     * Indicate whether or not the application requires an Asterisk WaitExten() action.
+     *
+     * @return {@code true} the context requires an WaitExten() action. {@code false} otherwise.
+     */
+    boolean requireWaitExten();
 }
