@@ -68,10 +68,6 @@ public class DialPlanConfigBuilder {
         return activeContext;
     }
 
-    protected DialPlanExtension getActiveExtension() {
-        return activeExtension;
-    }
-
     /**
      * Add a new Dialplan context.
      * <p>
