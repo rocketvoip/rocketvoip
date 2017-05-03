@@ -5,21 +5,26 @@ import ch.zhaw.psit4.domain.beans.DialPlanExtension;
 import ch.zhaw.psit4.domain.dialplan.applications.AnswerApp;
 import ch.zhaw.psit4.domain.dialplan.applications.RingingApp;
 import ch.zhaw.psit4.domain.dialplan.applications.WaitApp;
+import ch.zhaw.psit4.domain.dialplan.applications.WaitExtenApp;
 import ch.zhaw.psit4.domain.interfaces.DialPlanAppInterface;
 
 /**
  * Build context with a default prolog:
- * <code>
+ * <pre>
  * exten => x,1, Ringing
  * exten => x,n, Wait(sec)
- * </code>
+ * </pre>
  * <p>
  *
  * The default of {@code sec} is 2. It can be changed by calling
- * {@link DialPlanDefaultContextPrologBuilder#setWaitInSeconds}
+ * {@link DialPlanDefaultContextPrologBuilder#setWaitExtenInSeconds(int)}
  * <p>
- * It may also add an Answer() application, if one of the extensions added requires it.
- *
+ *     Further,
+ *     <ul>
+ * <li>It may also add an Answer() Asterisk extension, if one of the extensions added requires it.</li>
+ * <li>It may also add a WaitExten() Asterisk extension, if one of the extensions added requires it. The value for
+ * WaitExten() can be set using {@link DialPlanDefaultContextPrologBuilder#setWaitExtenInSeconds(int)}</li>
+ * </ul>
  * @author Rafael Ostertag
  */
 public class DialPlanDefaultContextPrologBuilder extends DialPlanConfigBuilder {
@@ -29,9 +34,23 @@ public class DialPlanDefaultContextPrologBuilder extends DialPlanConfigBuilder {
     public static final int WAIT_ORDINAL = 2;
     public static final String ANSWER_PRIORITY = "3";
     public static final int ANSWER_ORDINAL = 3;
+    public static final String WAITEXTEN_PRIORITY = "4";
+    public static final int WAITEXTEN_ORDINAL = 4;
     public static final String PROLOG_SET_KEY = "PROLOG_SET";
     public static final String HAS_ANSWER_APPLICATION_KEY = "HAS_ANSWER_APPLICATION";
+    public static final String HAS_WAITEXTEN_APPLICATION_KEY = "HAS_WAITEXTEN_APPLICATION";
+    /**
+     * Value passed to Wait() application call if an Asterisk Application requires a Wait() application.
+     *
+     * @see DialPlanAppInterface#requireAnswer()
+     */
     private int waitInSeconds = 2;
+    /**
+     * Value passed to WaitExten() application if an Asterisk Application requires a WaitExten() application.
+     *
+     * @see DialPlanAppInterface#requireWaitExten()
+     */
+    private int waitExtenInSeconds = 30;
 
     public DialPlanDefaultContextPrologBuilder() {
         super();
@@ -39,6 +58,28 @@ public class DialPlanDefaultContextPrologBuilder extends DialPlanConfigBuilder {
 
     public DialPlanDefaultContextPrologBuilder(DialPlanConfigBuilder dialPlanConfigBuilder) {
         super(dialPlanConfigBuilder);
+    }
+
+    /**
+     * Set the wait before answering in seconds. When setting the value, only newly added contexts are affected.
+     * Existing contexts won't have its wait seconds changed.
+     *
+     * @param waitInSeconds new wait value in seconds
+     */
+    public DialPlanDefaultContextPrologBuilder setWaitInSeconds(int waitInSeconds) {
+        this.waitInSeconds = waitInSeconds;
+        return this;
+    }
+
+    /**
+     * Set the number of seconds to wait for user input. When setting the value, only newly added contexts are affected.
+     * Existing contexts won't have its wait seconds changed.
+     *
+     * @param waitExtenInSeconds new wait value in seconds
+     */
+    public DialPlanDefaultContextPrologBuilder setWaitExtenInSeconds(int waitExtenInSeconds) {
+        this.waitExtenInSeconds = waitExtenInSeconds;
+        return this;
     }
 
     @Override
@@ -59,6 +100,10 @@ public class DialPlanDefaultContextPrologBuilder extends DialPlanConfigBuilder {
             addAnswerApplicationIfRequired();
         }
 
+        if (app.requireWaitExten()) {
+            addWaitExtenApplicationIfRequired();
+        }
+
         return this;
     }
 
@@ -66,7 +111,7 @@ public class DialPlanDefaultContextPrologBuilder extends DialPlanConfigBuilder {
         ContextWrapper activeContext = getActiveContext();
         assert getActiveContext() != null;
 
-        if (activeContext.getMetInformation(PROLOG_SET_KEY)) {
+        if (activeContext.getMetaInformation(PROLOG_SET_KEY)) {
             // prolog has already been set, so nothing to do
             return;
         }
@@ -86,12 +131,16 @@ public class DialPlanDefaultContextPrologBuilder extends DialPlanConfigBuilder {
         activeContext.setMetaInformation(PROLOG_SET_KEY, true);
     }
 
+    /**
+     * Add an Answer() Asterisk application, if any of application of the active context requires one. It only adds
+     * the application, if it has not been added already.
+     */
     private void addAnswerApplicationIfRequired() {
         ContextWrapper activeContext = getActiveContext();
 
         assert activeContext != null;
         // If there is already an Answer application, we don't have to do anything
-        if (activeContext.getMetInformation(HAS_ANSWER_APPLICATION_KEY)) {
+        if (activeContext.getMetaInformation(HAS_ANSWER_APPLICATION_KEY)) {
             return;
         }
 
@@ -102,14 +151,22 @@ public class DialPlanDefaultContextPrologBuilder extends DialPlanConfigBuilder {
     }
 
     /**
-     * Set the wait before answering in seconds. This value is valid only for newly added contexts. Existing contexts
-     * won't have its wait seconds changed.
-     *
-     * @param waitInSeconds new wait value
+     * Add an WaitExten() Asterisk application, if any of application of the active context requires one. It only adds
+     * the application, if it has not been added already.
      */
-    public DialPlanDefaultContextPrologBuilder setWaitInSeconds(int waitInSeconds) {
-        this.waitInSeconds = waitInSeconds;
-        return this;
+    private void addWaitExtenApplicationIfRequired() {
+        ContextWrapper activeContext = getActiveContext();
+
+        assert activeContext != null;
+        // If there is already an WaitExten application, we don't have to do anything
+        if (activeContext.getMetaInformation(HAS_WAITEXTEN_APPLICATION_KEY)) {
+            return;
+        }
+
+        if (activeContextRequireWaitExtenApplication()) {
+            activeContext.getDialPlanContext().getDialPlanExtensionList().add(makeWaitExtenExtension("s"));
+            activeContext.setMetaInformation(HAS_WAITEXTEN_APPLICATION_KEY, true);
+        }
     }
 
     private DialPlanExtension makeWaitExtension(String phoneNumber) {
@@ -145,6 +202,16 @@ public class DialPlanDefaultContextPrologBuilder extends DialPlanConfigBuilder {
         return answerExtension;
     }
 
+    private DialPlanExtension makeWaitExtenExtension(String phoneNumber) {
+        DialPlanExtension waitExtenExtension = new DialPlanExtension();
+        waitExtenExtension.setPriority(WAITEXTEN_PRIORITY);
+        waitExtenExtension.setOrdinal(WAITEXTEN_ORDINAL);
+        waitExtenExtension.setPhoneNumber(phoneNumber);
+        waitExtenExtension.setDialPlanApplication(new WaitExtenApp(waitExtenInSeconds));
+
+        return waitExtenExtension;
+    }
+
     private DialPlanExtension setPriorityN(DialPlanExtension extension) {
         extension.setPriority("n");
         return extension;
@@ -161,9 +228,26 @@ public class DialPlanDefaultContextPrologBuilder extends DialPlanConfigBuilder {
         return activeContext.getDialPlanExtensionList().stream().anyMatch(x -> x instanceof AnswerApp);
     }
 
+    private boolean activeContextRequireWaitExtenApplication() {
+        DialPlanContext activeContext = getActiveContext().getDialPlanContext();
+        assert activeContext != null;
+
+        if (activeExtensionRequireWaitExtenApplication()) {
+            return true;
+        }
+
+        return activeContext.getDialPlanExtensionList().stream().anyMatch(x -> x instanceof WaitExtenApp);
+    }
+
     private boolean activeExtensionRequireAnswerApplication() {
         return getActiveExtension() != null &&
                 getActiveExtension().getDialPlanApplication() != null &&
                 getActiveExtension().getDialPlanApplication().requireAnswer();
+    }
+
+    private boolean activeExtensionRequireWaitExtenApplication() {
+        return getActiveExtension() != null &&
+                getActiveExtension().getDialPlanApplication() != null &&
+                getActiveExtension().getDialPlanApplication().requireWaitExten();
     }
 }

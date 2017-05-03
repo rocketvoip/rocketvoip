@@ -330,7 +330,7 @@ public class DialPlanConfigBuilder {
          * @param key name of the key
          * @return value of key, or {@code false} if key is not found.
          */
-        public boolean getMetInformation(String key) {
+        public boolean getMetaInformation(String key) {
             return metaInformation.getOrDefault(key, false);
         }
 
