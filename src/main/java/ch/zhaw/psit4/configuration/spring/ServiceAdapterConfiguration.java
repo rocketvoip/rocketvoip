@@ -29,9 +29,17 @@ public class ServiceAdapterConfiguration {
     }
 
     @Bean
-    public DialPlanConfigAdapter dialPlanConfigAdapter(SipClientRepository sipClientRepository, DialPlanRepository
-            dialPlanRepository, DialRepository dialRepository, SayAlphaRepository sayAlphaRepository) {
-        return new DialPlanConfigAdapter(sipClientRepository, dialPlanRepository, dialRepository, sayAlphaRepository);
+    public DialPlanConfigAdapter dialPlanConfigAdapter(SipClientRepository sipClientRepository,
+                                                       DialPlanRepository dialPlanRepository,
+                                                       DialRepository dialRepository,
+                                                       SayAlphaRepository sayAlphaRepository,
+                                                       GotoRepository gotoRepository) {
+        return new DialPlanConfigAdapter(
+                sipClientRepository,
+                dialPlanRepository,
+                dialRepository,
+                sayAlphaRepository,
+                gotoRepository);
     }
 
     @Bean

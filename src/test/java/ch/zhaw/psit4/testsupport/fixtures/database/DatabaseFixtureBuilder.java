@@ -122,6 +122,20 @@ public class DatabaseFixtureBuilder {
         return this;
     }
 
+    /**
+     * Create a dialplan not reachable by phone number.
+     *
+     * @param number number of the dialplan
+     * @return DatabaseFixtureBuilder
+     */
+    public DatabaseFixtureBuilder addDialPlanNoPhoneNr(int number) {
+        ch.zhaw.psit4.data.jpa.entities.DialPlan dialPlanEntity = DialPlanEntity.createDialPlanEntity(number);
+        dialPlanEntity.setPhoneNr(null);
+
+        dialPlanList.put(number, dialPlanEntity);
+        return this;
+    }
+
     public DatabaseFixtureBuilder addDial(int number, int priority, int addToDialPlanNumber, int[] sipClients) {
         Dial dial = DialEntity.createDialEntity(number, priority, 30);
         List<SipClient> assignedSipClients = Arrays.stream(sipClients)

@@ -24,6 +24,11 @@ public class SayAlphaApp implements DialPlanAppInterface {
     }
 
     @Override
+    public boolean requireWaitExten() {
+        return false;
+    }
+
+    @Override
     public void validate() {
         if (text == null) {
             throw new ValidationException("text is null");

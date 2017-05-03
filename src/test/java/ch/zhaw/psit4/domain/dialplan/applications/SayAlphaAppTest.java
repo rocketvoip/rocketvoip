@@ -40,5 +40,10 @@ public class SayAlphaAppTest {
         assertThat(sayAlphaApp.requireAnswer(), equalTo(true));
     }
 
+    @Test
+    public void requireWaitExten() throws Exception {
+        SayAlphaApp sayAlphaApp = new SayAlphaApp("abcd");
+        assertThat(sayAlphaApp.requireWaitExten(), equalTo(false));
+    }
 
 }

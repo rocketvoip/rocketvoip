@@ -1,10 +1,7 @@
 package ch.zhaw.psit4.services.implementation.adapters;
 
 import ch.zhaw.psit4.data.jpa.entities.DialPlan;
-import ch.zhaw.psit4.data.jpa.repositories.DialPlanRepository;
-import ch.zhaw.psit4.data.jpa.repositories.DialRepository;
-import ch.zhaw.psit4.data.jpa.repositories.SayAlphaRepository;
-import ch.zhaw.psit4.data.jpa.repositories.SipClientRepository;
+import ch.zhaw.psit4.data.jpa.repositories.*;
 import ch.zhaw.psit4.domain.AsteriskUtlities;
 import ch.zhaw.psit4.domain.beans.DialPlanContext;
 import ch.zhaw.psit4.domain.beans.DialPlanExtension;
@@ -36,15 +33,18 @@ public class DialPlanConfigAdapter {
     private final SipClientRepository sipClientRepository;
     private final DialRepository dialRepository;
     private final SayAlphaRepository sayAlphaRepository;
+    private final GotoRepository gotoRepository;
 
     public DialPlanConfigAdapter(SipClientRepository sipClientRepository,
                                  DialPlanRepository dialPlanRepository,
                                  DialRepository dialRepository,
-                                 SayAlphaRepository sayAlphaRepository) {
+                                 SayAlphaRepository sayAlphaRepository,
+                                 GotoRepository gotoRepository) {
         this.sipClientRepository = sipClientRepository;
         this.dialPlanRepository = dialPlanRepository;
         this.dialRepository = dialRepository;
         this.sayAlphaRepository = sayAlphaRepository;
+        this.gotoRepository = gotoRepository;
     }
 
     private static List<SipClient> convertListOfSipClientEntitiesToDomainSipClients(Collection<ch.zhaw.psit4.data.jpa
@@ -100,22 +100,11 @@ public class DialPlanConfigAdapter {
     }
 
     private DialPlanDefaultContextPrologBuilder collectDialPlans(DialPlanConfigBuilder companyDialPlanBuilder) {
-        final class DialPlanWrapper {
-            private final DialPlan dialPlan;
 
-            private DialPlanWrapper(DialPlan dialPlan) {
-                this.dialPlan = dialPlan;
-            }
-
-            private String getUniqueContextName() {
-                return AsteriskUtlities.makeContextIdentifierFromCompanyAndContextName(dialPlan.getCompany().getName
-                        (), dialPlan.getTitle());
-            }
-        }
         DialPlanDefaultContextPrologBuilder dialPlanBuilder = new DialPlanDefaultContextPrologBuilder
                 (companyDialPlanBuilder);
 
-        // Collect all referenced dialplans
+        // Collect all dialplans referenced by individual actions.
         Map<Long, DialPlanWrapper> dialPlanMap = new HashMap<>();
 
         StreamSupport.stream(sayAlphaRepository.findAll().spliterator(), false)
@@ -134,6 +123,12 @@ public class DialPlanConfigAdapter {
                                 x -> new DialPlanWrapper(entry.getDialPlan()
                                 )
                         )
+                );
+
+        StreamSupport.stream(gotoRepository.findAll().spliterator(), false)
+                .forEach(entry ->
+                        dialPlanMap.computeIfAbsent(entry.getDialPlan().getId(),
+                                x -> new DialPlanWrapper(entry.getDialPlan()))
                 );
 
 
@@ -173,10 +168,41 @@ public class DialPlanConfigAdapter {
                                         .setApplication(dialApp);
                             }
                     );
+
+                    gotoRepository.findAllByDialPlanId(dialPlanId).forEach(
+                            gotoEntry -> {
+                                DialPlanExtension dialPlanExtension = new DialPlanExtension();
+                                dialPlanExtension.setPhoneNumber("s");
+                                dialPlanExtension.setOrdinal(gotoEntry.getPriority());
+
+                                GotoApp gotoApp = new GotoApp(
+                                        AsteriskUtlities.makeContextIdentifierFromCompanyAndContextName(
+                                                gotoEntry.getNextDialPlan().getCompany().getName(),
+                                                gotoEntry.getNextDialPlan().getTitle()
+                                        )
+                                );
+
+                                dialPlanBuilder.addNewExtension(dialPlanExtension)
+                                        .setApplication(gotoApp);
+                            }
+                    );
                 }
         );
 
         return dialPlanBuilder;
+    }
+
+    private final class DialPlanWrapper {
+        private final DialPlan dialPlan;
+
+        DialPlanWrapper(DialPlan dialPlan) {
+            this.dialPlan = dialPlan;
+        }
+
+        String getUniqueContextName() {
+            return AsteriskUtlities.makeContextIdentifierFromCompanyAndContextName(dialPlan.getCompany().getName
+                    (), dialPlan.getTitle());
+        }
     }
 
 
