@@ -101,10 +101,6 @@ public class DialPlanDefaultContextPrologBuilder extends DialPlanConfigBuilder {
         }
     }
 
-    public int getWaitInSeconds() {
-        return waitInSeconds;
-    }
-
     /**
      * Set the wait before answering in seconds. This value is valid only for newly added contexts. Existing contexts
      * won't have its wait seconds changed.

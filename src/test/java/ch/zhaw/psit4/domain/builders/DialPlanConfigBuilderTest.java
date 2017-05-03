@@ -5,6 +5,7 @@ import ch.zhaw.psit4.domain.beans.DialPlanExtension;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import ch.zhaw.psit4.domain.exceptions.ValidationException;
 import ch.zhaw.psit4.domain.interfaces.DialPlanAppInterface;
+import ch.zhaw.psit4.testsupport.fixtures.domain.DialPlanContextGenerator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -149,6 +150,50 @@ public class DialPlanConfigBuilderTest {
                 // We don't add a new extension, thus it's an empty context and it must fail
                 // This here must fail
                 .activateExistingContext("name");
+    }
+
+    @Test
+    public void testOrdinalHandlingZero() {
+        DialPlanContext dialPlanContext = DialPlanContextGenerator.dialPlanContext(1);
+
+        DialPlanExtension dialPlanExtension = spy(DialPlanExtension.class);
+        dialPlanExtension.setOrdinal(0);
+
+        dialPlanConfigBuilder
+                .addNewContext(dialPlanContext)
+                .addNewExtension(dialPlanExtension);
+
+        verify(dialPlanExtension).setOrdinal(1);
+        verify(dialPlanExtension).setOrdinal(1 * DialPlanConfigBuilder.USER_EXTENSION_ORDINAL_FACTOR);
+    }
+
+    @Test
+    public void testOrdinalHandlingNegativeValue() {
+        DialPlanContext dialPlanContext = DialPlanContextGenerator.dialPlanContext(1);
+
+        DialPlanExtension dialPlanExtension = spy(DialPlanExtension.class);
+        dialPlanExtension.setOrdinal(-2);
+
+        dialPlanConfigBuilder
+                .addNewContext(dialPlanContext)
+                .addNewExtension(dialPlanExtension);
+
+        verify(dialPlanExtension).setOrdinal(2);
+        verify(dialPlanExtension).setOrdinal(2 * DialPlanConfigBuilder.USER_EXTENSION_ORDINAL_FACTOR);
+    }
+
+    @Test
+    public void testOrdinalHandlingPositiveValue() {
+        DialPlanContext dialPlanContext = DialPlanContextGenerator.dialPlanContext(1);
+
+        DialPlanExtension dialPlanExtension = spy(DialPlanExtension.class);
+        dialPlanExtension.setOrdinal(2);
+
+        dialPlanConfigBuilder
+                .addNewContext(dialPlanContext)
+                .addNewExtension(dialPlanExtension);
+
+        verify(dialPlanExtension).setOrdinal(2 * DialPlanConfigBuilder.USER_EXTENSION_ORDINAL_FACTOR);
     }
 
     @Test

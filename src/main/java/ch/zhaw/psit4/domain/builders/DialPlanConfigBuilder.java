@@ -246,11 +246,10 @@ public class DialPlanConfigBuilder {
         }
 
         // Extract the DialPlanContexts from the Wrappers
-        List<DialPlanContext> returnValue = contexts.stream()
-                .map(x -> x.getDialPlanContext())
-                .collect(Collectors.toList());
 
-        return returnValue;
+        return contexts.stream()
+                .map(ContextWrapper::getDialPlanContext)
+                .collect(Collectors.toList());
     }
 
     private void saveActiveContext() {
@@ -339,8 +338,5 @@ public class DialPlanConfigBuilder {
             return dialPlanContext;
         }
 
-        public void setDialPlanContext(DialPlanContext dialPlanContext) {
-            this.dialPlanContext = dialPlanContext;
-        }
     }
 }
