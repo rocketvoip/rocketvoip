@@ -31,14 +31,50 @@ public class GotoAppTest {
         gotoApp.validate();
     }
 
-    @Test
-    public void validate() throws Exception {
+    @Test(expected = ValidationException.class)
+    public void validateNullExtensions() throws Exception {
+        GotoApp gotoApp = new GotoApp("ref", null, "1");
+        gotoApp.validate();
+    }
+
+    @Test(expected = ValidationException.class)
+    public void validateEmptyExtensions() throws Exception {
+        GotoApp gotoApp = new GotoApp("ref", "", "1");
+        gotoApp.validate();
+    }
+
+    @Test(expected = ValidationException.class)
+    public void validateNullPriority() throws Exception {
+        GotoApp gotoApp = new GotoApp("ref", "bla", null);
+        gotoApp.validate();
+    }
+
+    @Test(expected = ValidationException.class)
+    public void validateEmptyPriority() throws Exception {
+        GotoApp gotoApp = new GotoApp("ref", "bla", "");
         gotoApp.validate();
     }
 
     @Test
-    public void toApplicationCall() throws Exception {
+    public void validateSingleArgConstructor() throws Exception {
+        gotoApp.validate();
+    }
+
+    @Test
+    public void validateMultiArgConstructor() throws Exception {
+        GotoApp gotoApp = new GotoApp("ref", "bla", "1");
+        gotoApp.validate();
+    }
+
+    @Test
+    public void toApplicationCallSingleArgConstructor() throws Exception {
         assertThat(gotoApp.toApplicationCall(), equalTo("Goto(reference,s,1)"));
+    }
+
+    @Test
+    public void toApplicationCallMultiArgConstructor() throws Exception {
+        GotoApp gotoApp = new GotoApp("ref", "ext", "prio");
+        assertThat(gotoApp.toApplicationCall(), equalTo("Goto(ref,ext,prio)"));
     }
 
     @Test
