@@ -1,5 +1,7 @@
 package ch.zhaw.psit4.dto;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.validation.annotation.Validated;
 
 /**
@@ -9,49 +11,19 @@ import org.springframework.validation.annotation.Validated;
  */
 @Validated
 public class SipClientDto {
+    @Getter
+    @Setter
     private String name;
+    @Getter
+    @Setter
     private String phone;
+    @Getter
+    @Setter
     private String secret;
+    @Getter
+    @Setter
     private long id;
+    @Getter
+    @Setter
     private CompanyDto company;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getSecret() {
-        return secret;
-    }
-
-    public void setSecret(String secret) {
-        this.secret = secret;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public CompanyDto getCompany() {
-        return company;
-    }
-
-    public void setCompany(CompanyDto company) {
-        this.company = company;
-    }
 }

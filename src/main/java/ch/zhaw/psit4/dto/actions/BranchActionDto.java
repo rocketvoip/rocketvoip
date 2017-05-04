@@ -1,5 +1,8 @@
 package ch.zhaw.psit4.dto.actions;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
 /**
@@ -10,24 +13,10 @@ import java.util.List;
  * @author Jona Braun
  */
 public class BranchActionDto {
+    @Getter
+    @Setter
     private int hangupTime;
+    @Getter
+    @Setter
     private List<Long> nextDialPlanIds;
-
-    public int getHangupTime() {
-        return hangupTime;
-    }
-
-    public void setHangupTime(int hangupTime) {
-        this.hangupTime = hangupTime;
-    }
-
-    public List<Long> getNextDialPlanIds() {
-        return nextDialPlanIds;
-    }
-
-    public void setNextDialPlanIds(List<Long> nextDialPlanIds) {
-        this.nextDialPlanIds = nextDialPlanIds;
-    }
-
-
 }
