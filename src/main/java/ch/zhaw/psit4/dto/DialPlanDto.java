@@ -1,5 +1,8 @@
 package ch.zhaw.psit4.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
 /**
@@ -8,50 +11,19 @@ import java.util.List;
  * @author Jona Braun
  */
 public class DialPlanDto {
+    @Getter
+    @Setter
     private long id;
+    @Getter
+    @Setter
     private String name;
+    @Getter
+    @Setter
     private CompanyDto company;
+    @Getter
+    @Setter
     private List<ActionDto> actions;
+    @Getter
+    @Setter
     private String phone;
-
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public CompanyDto getCompany() {
-        return company;
-    }
-
-    public void setCompany(CompanyDto company) {
-        this.company = company;
-    }
-
-    public List<ActionDto> getActions() {
-        return actions;
-    }
-
-    public void setActions(List<ActionDto> actions) {
-        this.actions = actions;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
 }

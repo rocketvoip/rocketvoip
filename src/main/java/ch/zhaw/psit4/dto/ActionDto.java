@@ -1,5 +1,8 @@
 package ch.zhaw.psit4.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Map;
 
 /**
@@ -21,40 +24,16 @@ import java.util.Map;
  * @author Jona Braun
  */
 public class ActionDto {
+    @Getter
+    @Setter
     private long id;
+    @Getter
+    @Setter
     private String name;
+    @Getter
+    @Setter
     private String type;
+    @Getter
+    @Setter
     private Map<String, Object> typeSpecific;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Map<String, Object> getTypeSpecific() {
-        return typeSpecific;
-    }
-
-    public void setTypeSpecific(Map<String, Object> typeSpecific) {
-        this.typeSpecific = typeSpecific;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 }

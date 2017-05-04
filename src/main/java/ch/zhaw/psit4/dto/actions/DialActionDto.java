@@ -1,6 +1,8 @@
 package ch.zhaw.psit4.dto.actions;
 
 import ch.zhaw.psit4.dto.SipClientDto;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -10,24 +12,11 @@ import java.util.List;
  * @author Jona Braun
  */
 public class DialActionDto {
+    @Getter
+    @Setter
     private int ringingTime;
+    @Getter
+    @Setter
     private List<SipClientDto> sipClients;
-
-    public int getRingingTime() {
-        return ringingTime;
-    }
-
-    public void setRingingTime(int ringingTime) {
-        this.ringingTime = ringingTime;
-    }
-
-    public List<SipClientDto> getSipClients() {
-        return sipClients;
-    }
-
-    public void setSipClients(List<SipClientDto> sipClients) {
-        this.sipClients = sipClients;
-    }
-
 
 }
