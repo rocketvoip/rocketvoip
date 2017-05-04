@@ -68,10 +68,6 @@ public class DialPlanConfigBuilder {
         return activeContext;
     }
 
-    protected DialPlanExtension getActiveExtension() {
-        return activeExtension;
-    }
-
     /**
      * Add a new Dialplan context.
      * <p>
@@ -253,9 +249,7 @@ public class DialPlanConfigBuilder {
     }
 
     private void saveActiveContext() {
-        if (activeContext == null) {
-            throw new IllegalStateException("No active context");
-        }
+        assert activeContext != null;
 
         assignActiveExtensionToActiveContext();
 
@@ -330,7 +324,7 @@ public class DialPlanConfigBuilder {
          * @param key name of the key
          * @return value of key, or {@code false} if key is not found.
          */
-        public boolean getMetInformation(String key) {
+        public boolean getMetaInformation(String key) {
             return metaInformation.getOrDefault(key, false);
         }
 

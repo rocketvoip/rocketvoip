@@ -33,13 +33,15 @@ public class ServiceAdapterConfiguration {
                                                        DialPlanRepository dialPlanRepository,
                                                        DialRepository dialRepository,
                                                        SayAlphaRepository sayAlphaRepository,
-                                                       GotoRepository gotoRepository) {
+                                                       GotoRepository gotoRepository,
+                                                       BranchRepository branchRepository) {
         return new DialPlanConfigAdapter(
                 sipClientRepository,
                 dialPlanRepository,
                 dialRepository,
                 sayAlphaRepository,
-                gotoRepository);
+                gotoRepository,
+                branchRepository);
     }
 
     @Bean

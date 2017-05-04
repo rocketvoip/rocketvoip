@@ -9,6 +9,7 @@ import ch.zhaw.psit4.domain.beans.SipClient;
 import ch.zhaw.psit4.domain.builders.DialPlanConfigBuilder;
 import ch.zhaw.psit4.domain.builders.DialPlanDefaultContextPrologBuilder;
 import ch.zhaw.psit4.domain.builders.TopLevelContextBuilder;
+import ch.zhaw.psit4.domain.dialplan.applications.BranchApp;
 import ch.zhaw.psit4.domain.dialplan.applications.DialApp;
 import ch.zhaw.psit4.domain.dialplan.applications.GotoApp;
 import ch.zhaw.psit4.domain.dialplan.applications.SayAlphaApp;
@@ -34,17 +35,20 @@ public class DialPlanConfigAdapter {
     private final DialRepository dialRepository;
     private final SayAlphaRepository sayAlphaRepository;
     private final GotoRepository gotoRepository;
+    private final BranchRepository branchRepository;
 
     public DialPlanConfigAdapter(SipClientRepository sipClientRepository,
                                  DialPlanRepository dialPlanRepository,
                                  DialRepository dialRepository,
                                  SayAlphaRepository sayAlphaRepository,
-                                 GotoRepository gotoRepository) {
+                                 GotoRepository gotoRepository,
+                                 BranchRepository branchRepository) {
         this.sipClientRepository = sipClientRepository;
         this.dialPlanRepository = dialPlanRepository;
         this.dialRepository = dialRepository;
         this.sayAlphaRepository = sayAlphaRepository;
         this.gotoRepository = gotoRepository;
+        this.branchRepository = branchRepository;
     }
 
     private static List<SipClient> convertListOfSipClientEntitiesToDomainSipClients(Collection<ch.zhaw.psit4.data.jpa
@@ -88,7 +92,6 @@ public class DialPlanConfigAdapter {
 
             String reference = AsteriskUtlities.makeContextIdentifierFromCompanyAndContextName(companyContextName,
                     dialPlan.getTitle());
-            reference = reference.replaceAll(" ", "-");
             GotoApp gotoApp = new GotoApp(reference);
 
             dialPlanConfigBuilder
@@ -126,6 +129,12 @@ public class DialPlanConfigAdapter {
                 );
 
         StreamSupport.stream(gotoRepository.findAll().spliterator(), false)
+                .forEach(entry ->
+                        dialPlanMap.computeIfAbsent(entry.getDialPlan().getId(),
+                                x -> new DialPlanWrapper(entry.getDialPlan()))
+                );
+
+        StreamSupport.stream(branchRepository.findAll().spliterator(), false)
                 .forEach(entry ->
                         dialPlanMap.computeIfAbsent(entry.getDialPlan().getId(),
                                 x -> new DialPlanWrapper(entry.getDialPlan()))
@@ -186,6 +195,37 @@ public class DialPlanConfigAdapter {
                                         .setApplication(gotoApp);
                             }
                     );
+
+                    branchRepository.findAllByDialPlanId(dialPlanId).forEach(
+                            branchEntry -> {
+                                dialPlanBuilder.setWaitExtenInSeconds(branchEntry.getHangupTime());
+
+                                branchEntry.getBranchesDialPlans().forEach(dialPlanBranchTo -> {
+                                    DialPlanExtension dialPlanExtension = new DialPlanExtension();
+                                    dialPlanExtension.setPriority("n");
+                                    dialPlanExtension.setOrdinal(branchEntry.getPriority());
+                                    dialPlanExtension.setPhoneNumber(
+                                            Integer.toString(dialPlanBranchTo.getButtonNumber())
+                                    );
+
+                                    String branchGotoContextName = AsteriskUtlities
+                                            .makeContextIdentifierFromCompanyAndContextName(
+                                                    branchEntry.getDialPlan().getCompany().getName(),
+                                                    dialPlanBranchTo.getDialPlan().getTitle()
+                                            );
+
+                                    BranchApp branchApp = new BranchApp(branchGotoContextName,
+                                            "s",
+                                            GotoApp.DEFAULT_PRIORITY
+                                    );
+
+                                    dialPlanBuilder
+                                            .addNewExtension(dialPlanExtension)
+                                            .setApplication(branchApp);
+                                });
+                            }
+                    );
+
                 }
         );
 

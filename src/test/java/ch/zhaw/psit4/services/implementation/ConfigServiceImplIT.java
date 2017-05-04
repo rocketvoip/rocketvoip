@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
 import java.util.zip.ZipInputStream;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -218,6 +219,43 @@ public class ConfigServiceImplIT {
 
         expected = InputStreamStringyfier.slurpStream(
                 ConfigServiceImplIT.class.getResourceAsStream("/fixtures/simpleAsteriskConfigWithSayAlphaAndDial.txt")
+        );
+
+        assertThat(zipStreamReader.getFileContent("extensions.conf"), equalTo(expected));
+    }
+
+    @Test
+    public void getSimpleAsteriskConfigurationWithBranch() throws Exception {
+        databaseFixtureBuilder
+                .company(1)
+                .addSipClient(1)
+                .addSipClient(2)
+                .addSipClient(3)
+                .addDialPlan(1)
+                .addDialPlanNoPhoneNr(2)
+                .addDialPlanNoPhoneNr(3)
+                .addBranchDialPlan(1, 2)
+                .addBranchDialPlan(2, 3)
+                .addBranch(1, 2, 1, Arrays.asList(1, 2))
+                .addDial(1, 1, 2, new int[]{1})
+                .addDial(2, 1, 3, new int[]{2})
+                .build();
+
+        ByteArrayOutputStream baos = configServiceInterface.getAsteriskConfiguration();
+        ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(baos.toByteArray()));
+
+        ZipStreamReader zipStreamReader = new ZipStreamReader(zipInputStream);
+
+        assertThat(zipStreamReader.hasFile(ConfigZipWriter.SIP_CONFIG_FILE_NAME), equalTo(true));
+        assertThat(zipStreamReader.hasFile(ConfigZipWriter.DIAL_PLAN_CONFIG_FILE_NAME), equalTo(true));
+
+        String expected = InputStreamStringyfier.slurpStream(
+                ConfigServiceImplIT.class.getResourceAsStream("/fixtures/oneCompanyThreeClients.txt")
+        );
+        assertThat(zipStreamReader.getFileContent(ConfigZipWriter.SIP_CONFIG_FILE_NAME), equalTo(expected));
+
+        expected = InputStreamStringyfier.slurpStream(
+                ConfigServiceImplIT.class.getResourceAsStream("/fixtures/simpleAsteriskConfigWithBranch.txt")
         );
 
         assertThat(zipStreamReader.getFileContent("extensions.conf"), equalTo(expected));
