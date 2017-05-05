@@ -1,9 +1,9 @@
 package ch.zhaw.psit4.domain.builders;
 
+import ch.zhaw.psit4.domain.applications.DialApp;
 import ch.zhaw.psit4.domain.beans.DialPlanContext;
 import ch.zhaw.psit4.domain.beans.DialPlanExtension;
 import ch.zhaw.psit4.domain.beans.SipClient;
-import ch.zhaw.psit4.domain.dialplan.applications.DialApp;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 
 import java.util.Comparator;

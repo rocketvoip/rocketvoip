@@ -1,8 +1,8 @@
 package ch.zhaw.psit4.domain.beans;
 
 import ch.zhaw.psit4.domain.exceptions.ValidationException;
-import ch.zhaw.psit4.domain.interfaces.DialPlanAppInterface;
-import ch.zhaw.psit4.domain.interfaces.DialPlanExtensionConfigurationInterface;
+import ch.zhaw.psit4.domain.interfaces.AsteriskApplicationInterface;
+import ch.zhaw.psit4.domain.interfaces.AsteriskExtensionInterface;
 
 /**
  * Represents one extension in an asterisk dial plan context.
@@ -13,7 +13,7 @@ import ch.zhaw.psit4.domain.interfaces.DialPlanExtensionConfigurationInterface;
  * exten => number,priority,application([parameter[,parameter2...]])<br>
  * </code>
  * </p>
- * An application is represented with the interface @{@link DialPlanAppInterface}.
+ * An application is represented with the interface @{@link AsteriskApplicationInterface}.
  *
  * <h2>Ordinal vs Priority</h2>
  *
@@ -54,13 +54,13 @@ import ch.zhaw.psit4.domain.interfaces.DialPlanExtensionConfigurationInterface;
  *
  * @author Jona Braun
  */
-public class DialPlanExtension implements DialPlanExtensionConfigurationInterface {
+public class DialPlanExtension implements AsteriskExtensionInterface {
     public static final String EXTENSION_PREFIX = "exten=> ";
     private String phoneNumber;
 
     private int ordinal;
     private String priority;
-    private DialPlanAppInterface dialPlanApplication;
+    private AsteriskApplicationInterface dialPlanApplication;
 
     public String getPriority() {
         return priority;
@@ -77,11 +77,11 @@ public class DialPlanExtension implements DialPlanExtensionConfigurationInterfac
     }
 
     @Override
-    public DialPlanAppInterface getDialPlanApplication() {
+    public AsteriskApplicationInterface getDialPlanApplication() {
         return dialPlanApplication;
     }
 
-    public void setDialPlanApplication(DialPlanAppInterface dialPlanApplication) {
+    public void setDialPlanApplication(AsteriskApplicationInterface dialPlanApplication) {
         this.dialPlanApplication = dialPlanApplication;
     }
 

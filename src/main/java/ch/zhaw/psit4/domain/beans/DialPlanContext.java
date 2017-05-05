@@ -2,8 +2,8 @@ package ch.zhaw.psit4.domain.beans;
 
 import ch.zhaw.psit4.domain.AsteriskUtlities;
 import ch.zhaw.psit4.domain.exceptions.ValidationException;
-import ch.zhaw.psit4.domain.interfaces.DialPlanContextConfigurationInterface;
-import ch.zhaw.psit4.domain.interfaces.DialPlanExtensionConfigurationInterface;
+import ch.zhaw.psit4.domain.interfaces.AsteriskContextInterface;
+import ch.zhaw.psit4.domain.interfaces.AsteriskExtensionInterface;
 import ch.zhaw.psit4.domain.interfaces.Validatable;
 
 import java.util.List;
@@ -27,9 +27,9 @@ import java.util.Optional;
  *
  * @author Jona Braun
  */
-public class DialPlanContext implements DialPlanContextConfigurationInterface {
+public class DialPlanContext implements AsteriskContextInterface {
     private String contextName;
-    private List<DialPlanExtensionConfigurationInterface> dialPlanExtensionList;
+    private List<AsteriskExtensionInterface> dialPlanExtensionList;
 
     public String getContextName() {
         return contextName;
@@ -39,11 +39,11 @@ public class DialPlanContext implements DialPlanContextConfigurationInterface {
         this.contextName = AsteriskUtlities.toContextIdentifier(contextName);
     }
 
-    public List<DialPlanExtensionConfigurationInterface> getDialPlanExtensionList() {
+    public List<AsteriskExtensionInterface> getDialPlanExtensionList() {
         return dialPlanExtensionList;
     }
 
-    public void setDialPlanExtensionList(List<DialPlanExtensionConfigurationInterface> dialPlanExtensionList) {
+    public void setDialPlanExtensionList(List<AsteriskExtensionInterface> dialPlanExtensionList) {
         this.dialPlanExtensionList = dialPlanExtensionList;
     }
 

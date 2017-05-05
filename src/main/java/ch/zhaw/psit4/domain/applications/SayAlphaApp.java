@@ -1,12 +1,12 @@
-package ch.zhaw.psit4.domain.dialplan.applications;
+package ch.zhaw.psit4.domain.applications;
 
 import ch.zhaw.psit4.domain.exceptions.ValidationException;
-import ch.zhaw.psit4.domain.interfaces.DialPlanAppInterface;
+import ch.zhaw.psit4.domain.interfaces.AsteriskApplicationInterface;
 
 /**
  * @author Rafael Ostertag
  */
-public class SayAlphaApp implements DialPlanAppInterface {
+public class SayAlphaApp implements AsteriskApplicationInterface {
     private String text;
 
     public SayAlphaApp(String text) {

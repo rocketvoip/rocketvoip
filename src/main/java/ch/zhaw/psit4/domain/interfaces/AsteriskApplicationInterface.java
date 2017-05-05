@@ -5,7 +5,7 @@ package ch.zhaw.psit4.domain.interfaces;
  *
  * @author Jona Braun
  */
-public interface DialPlanAppInterface extends Validatable {
+public interface AsteriskApplicationInterface extends Validatable {
 
     /**
      * Convert one Asterisk dialplan application configuration to a string suitable for concatenation with one

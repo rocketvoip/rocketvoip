@@ -4,8 +4,8 @@ import ch.zhaw.psit4.domain.ConfigWriter;
 import ch.zhaw.psit4.domain.ConfigZipWriter;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import ch.zhaw.psit4.domain.exceptions.ZipFileCreationException;
-import ch.zhaw.psit4.domain.interfaces.DialPlanContextConfigurationInterface;
-import ch.zhaw.psit4.domain.interfaces.SipClientConfigurationInterface;
+import ch.zhaw.psit4.domain.interfaces.AsteriskContextInterface;
+import ch.zhaw.psit4.domain.interfaces.AsteriskSipClientInterface;
 import ch.zhaw.psit4.services.implementation.adapters.DialPlanConfigAdapter;
 import ch.zhaw.psit4.services.implementation.adapters.SipClientConfigAdapter;
 import ch.zhaw.psit4.services.interfaces.ConfigServiceInterface;
@@ -45,8 +45,8 @@ public class ConfigServiceImpl implements ConfigServiceInterface {
      */
     @Override
     public ByteArrayOutputStream getAsteriskConfiguration() {
-        List<SipClientConfigurationInterface> sipClientList = sipClientConfigAdapter.getSipClientList();
-        List<? extends DialPlanContextConfigurationInterface> contexts = dialPlanConfigAdapter.getDialPlan();
+        List<AsteriskSipClientInterface> sipClientList = sipClientConfigAdapter.getSipClientList();
+        List<? extends AsteriskContextInterface> contexts = dialPlanConfigAdapter.getDialPlan();
 
         String sipClientConf = ConfigWriter.generateSipClientConfiguration(sipClientList);
         String dialPlanConf = ConfigWriter.generateDialPlanConfiguration(contexts);

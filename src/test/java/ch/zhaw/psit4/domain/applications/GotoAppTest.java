@@ -1,4 +1,4 @@
-package ch.zhaw.psit4.domain.dialplan.applications;
+package ch.zhaw.psit4.domain.applications;
 
 import ch.zhaw.psit4.domain.exceptions.ValidationException;
 import org.junit.Before;

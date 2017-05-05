@@ -1,7 +1,7 @@
 package ch.zhaw.psit4.domain.beans;
 
 import ch.zhaw.psit4.domain.exceptions.ValidationException;
-import ch.zhaw.psit4.domain.interfaces.DialPlanExtensionConfigurationInterface;
+import ch.zhaw.psit4.domain.interfaces.AsteriskExtensionInterface;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
 public class DialPlanContextTest {
     private DialPlanContext dialPlanContext;
     private DialPlanExtension dialPlanExtensionMock;
-    private List<DialPlanExtensionConfigurationInterface> extensionList;
+    private List<AsteriskExtensionInterface> extensionList;
 
     @Before
     public void setUp() throws Exception {

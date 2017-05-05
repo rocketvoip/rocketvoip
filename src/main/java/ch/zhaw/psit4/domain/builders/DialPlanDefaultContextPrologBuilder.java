@@ -1,11 +1,11 @@
 package ch.zhaw.psit4.domain.builders;
 
+import ch.zhaw.psit4.domain.applications.AnswerApp;
+import ch.zhaw.psit4.domain.applications.RingingApp;
+import ch.zhaw.psit4.domain.applications.WaitApp;
+import ch.zhaw.psit4.domain.applications.WaitExtenApp;
 import ch.zhaw.psit4.domain.beans.DialPlanExtension;
-import ch.zhaw.psit4.domain.dialplan.applications.AnswerApp;
-import ch.zhaw.psit4.domain.dialplan.applications.RingingApp;
-import ch.zhaw.psit4.domain.dialplan.applications.WaitApp;
-import ch.zhaw.psit4.domain.dialplan.applications.WaitExtenApp;
-import ch.zhaw.psit4.domain.interfaces.DialPlanAppInterface;
+import ch.zhaw.psit4.domain.interfaces.AsteriskApplicationInterface;
 
 /**
  * Build context with a default prolog:
@@ -41,13 +41,13 @@ public class DialPlanDefaultContextPrologBuilder extends DialPlanConfigBuilder {
     /**
      * Value passed to Wait() application call if an Asterisk Application requires a Wait() application.
      *
-     * @see DialPlanAppInterface#requireAnswer()
+     * @see AsteriskApplicationInterface#requireAnswer()
      */
     private int waitInSeconds = 2;
     /**
      * Value passed to WaitExten() application if an Asterisk Application requires a WaitExten() application.
      *
-     * @see DialPlanAppInterface#requireWaitExten()
+     * @see AsteriskApplicationInterface#requireWaitExten()
      */
     private int waitExtenInSeconds = 30;
 
@@ -91,7 +91,7 @@ public class DialPlanDefaultContextPrologBuilder extends DialPlanConfigBuilder {
     }
 
     @Override
-    public DialPlanConfigBuilder setApplication(DialPlanAppInterface app) {
+    public DialPlanConfigBuilder setApplication(AsteriskApplicationInterface app) {
         super.setApplication(app);
 
         if (app.requireAnswer()) {

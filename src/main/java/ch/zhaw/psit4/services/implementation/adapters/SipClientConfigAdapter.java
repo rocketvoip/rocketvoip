@@ -3,7 +3,7 @@ package ch.zhaw.psit4.services.implementation.adapters;
 import ch.zhaw.psit4.data.jpa.repositories.SipClientRepository;
 import ch.zhaw.psit4.domain.beans.SipClient;
 import ch.zhaw.psit4.domain.builders.SipClientConfigBuilder;
-import ch.zhaw.psit4.domain.interfaces.SipClientConfigurationInterface;
+import ch.zhaw.psit4.domain.interfaces.AsteriskSipClientInterface;
 
 import java.util.List;
 
@@ -42,7 +42,7 @@ public class SipClientConfigAdapter {
      *
      * @return the domain specific sip clients
      */
-    public List<SipClientConfigurationInterface> getSipClientList() {
+    public List<AsteriskSipClientInterface> getSipClientList() {
         SipClientConfigBuilder sipClientConfigBuilder = new SipClientConfigBuilder();
         sipClientRepository.findAll().forEach(x -> sipClientConfigBuilder.addSipClient(sipClientEntityToSipClient(x)));
         return sipClientConfigBuilder.build();

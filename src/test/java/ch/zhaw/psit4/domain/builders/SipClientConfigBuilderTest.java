@@ -3,7 +3,7 @@ package ch.zhaw.psit4.domain.builders;
 import ch.zhaw.psit4.domain.beans.SipClient;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import ch.zhaw.psit4.domain.exceptions.ValidationException;
-import ch.zhaw.psit4.domain.interfaces.SipClientConfigurationInterface;
+import ch.zhaw.psit4.domain.interfaces.AsteriskSipClientInterface;
 import ch.zhaw.psit4.testsupport.fixtures.domain.SipClientGenerator;
 import ch.zhaw.psit4.testsupport.matchers.SipClientEqualTo;
 import org.junit.Before;
@@ -29,7 +29,7 @@ public class SipClientConfigBuilderTest {
     @Test
     public void addOneSipClient() throws Exception {
         SipClient sipClient = SipClientGenerator.getSipClient(1, 1);
-        List<SipClientConfigurationInterface> actual = sipClientConfigBuilder.addSipClient(sipClient).build();
+        List<AsteriskSipClientInterface> actual = sipClientConfigBuilder.addSipClient(sipClient).build();
 
         assertThat(actual, is(not(nullValue())));
         assertThat(actual, hasSize(1));
@@ -42,7 +42,7 @@ public class SipClientConfigBuilderTest {
         SipClient sipClient1 = SipClientGenerator.getSipClient(1, 1);
         SipClient sipClient2 = SipClientGenerator.getSipClient(1, 2);
         SipClient sipClient3 = SipClientGenerator.getSipClient(1, 3);
-        List<SipClientConfigurationInterface> actual = sipClientConfigBuilder
+        List<AsteriskSipClientInterface> actual = sipClientConfigBuilder
                 .addSipClient(sipClient1)
                 .addSipClient(sipClient2)
                 .addSipClient(sipClient3)
