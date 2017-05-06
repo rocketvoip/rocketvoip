@@ -5,7 +5,7 @@ package ch.zhaw.psit4.domain.interfaces;
  *
  * @author Rafael Ostertag
  */
-public interface DialPlanExtensionConfigurationInterface extends Validatable {
+public interface AsteriskExtensionInterface extends Validatable {
 
     /**
      * Convert one Astersik dialplan extension configuration to a valid Asterisk dialplan extension configuration
@@ -40,5 +40,5 @@ public interface DialPlanExtensionConfigurationInterface extends Validatable {
     /**
      * Get the DialPlanApp.
      */
-    DialPlanAppInterface getDialPlanApplication();
+    AsteriskApplicationInterface getDialPlanApplication();
 }

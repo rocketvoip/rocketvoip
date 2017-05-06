@@ -1,4 +1,4 @@
-package ch.zhaw.psit4.domain.dialplan.applications;
+package ch.zhaw.psit4.domain.applications;
 
 /**
  * This is a synthetic Branch application. It is synthetic, because there is no real Asterisk Branch() application.

@@ -4,8 +4,8 @@ import ch.zhaw.psit4.domain.beans.DialPlanContext;
 import ch.zhaw.psit4.domain.beans.DialPlanExtension;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import ch.zhaw.psit4.domain.exceptions.ValidationException;
-import ch.zhaw.psit4.domain.interfaces.DialPlanAppInterface;
-import ch.zhaw.psit4.domain.interfaces.DialPlanExtensionConfigurationInterface;
+import ch.zhaw.psit4.domain.interfaces.AsteriskApplicationInterface;
+import ch.zhaw.psit4.domain.interfaces.AsteriskExtensionInterface;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -212,7 +212,7 @@ public class DialPlanConfigBuilder {
      * @throws IllegalStateException         when no active extension exists.
      * @throws ValidationException           when app cannot be validated.
      */
-    public DialPlanConfigBuilder setApplication(DialPlanAppInterface app) {
+    public DialPlanConfigBuilder setApplication(AsteriskApplicationInterface app) {
         if (app == null) {
             throw new InvalidConfigurationException("extension must not be null");
         }
@@ -294,7 +294,7 @@ public class DialPlanConfigBuilder {
         assert activeContext != null;
         activeContext.getDialPlanContext().getDialPlanExtensionList()
                 .sort(
-                        Comparator.comparingInt(DialPlanExtensionConfigurationInterface::getOrdinal)
+                        Comparator.comparingInt(AsteriskExtensionInterface::getOrdinal)
                 );
     }
 

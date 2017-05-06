@@ -3,17 +3,17 @@ package ch.zhaw.psit4.services.implementation.adapters;
 import ch.zhaw.psit4.data.jpa.entities.DialPlan;
 import ch.zhaw.psit4.data.jpa.repositories.*;
 import ch.zhaw.psit4.domain.AsteriskUtlities;
+import ch.zhaw.psit4.domain.applications.BranchApp;
+import ch.zhaw.psit4.domain.applications.DialApp;
+import ch.zhaw.psit4.domain.applications.GotoApp;
+import ch.zhaw.psit4.domain.applications.SayAlphaApp;
 import ch.zhaw.psit4.domain.beans.DialPlanContext;
 import ch.zhaw.psit4.domain.beans.DialPlanExtension;
 import ch.zhaw.psit4.domain.beans.SipClient;
 import ch.zhaw.psit4.domain.builders.DialPlanConfigBuilder;
 import ch.zhaw.psit4.domain.builders.DialPlanDefaultContextPrologBuilder;
 import ch.zhaw.psit4.domain.builders.TopLevelContextBuilder;
-import ch.zhaw.psit4.domain.dialplan.applications.BranchApp;
-import ch.zhaw.psit4.domain.dialplan.applications.DialApp;
-import ch.zhaw.psit4.domain.dialplan.applications.GotoApp;
-import ch.zhaw.psit4.domain.dialplan.applications.SayAlphaApp;
-import ch.zhaw.psit4.domain.interfaces.DialPlanContextConfigurationInterface;
+import ch.zhaw.psit4.domain.interfaces.AsteriskContextInterface;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -59,7 +59,7 @@ public class DialPlanConfigAdapter {
                 .collect(Collectors.toList());
     }
 
-    public List<? extends DialPlanContextConfigurationInterface> getDialPlan() {
+    public List<? extends AsteriskContextInterface> getDialPlan() {
         TopLevelContextBuilder topLevelContextBuilder = new TopLevelContextBuilder();
 
         List<SipClient> sipClients =

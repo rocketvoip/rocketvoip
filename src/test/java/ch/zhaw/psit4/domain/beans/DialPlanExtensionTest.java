@@ -1,7 +1,7 @@
 package ch.zhaw.psit4.domain.beans;
 
 import ch.zhaw.psit4.domain.exceptions.ValidationException;
-import ch.zhaw.psit4.domain.interfaces.DialPlanAppInterface;
+import ch.zhaw.psit4.domain.interfaces.AsteriskApplicationInterface;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,13 +15,13 @@ import static org.mockito.Mockito.*;
  */
 public class DialPlanExtensionTest {
     private DialPlanExtension dialPlanExtension;
-    private DialPlanAppInterface dialPlanAppMock;
+    private AsteriskApplicationInterface dialPlanAppMock;
 
     @Before
     public void setUp() throws Exception {
         dialPlanExtension = new DialPlanExtension();
 
-        dialPlanAppMock = mock(DialPlanAppInterface.class);
+        dialPlanAppMock = mock(AsteriskApplicationInterface.class);
         when(dialPlanAppMock.toApplicationCall()).thenReturn("mockedApp");
 
         dialPlanExtension.setDialPlanApplication(dialPlanAppMock);

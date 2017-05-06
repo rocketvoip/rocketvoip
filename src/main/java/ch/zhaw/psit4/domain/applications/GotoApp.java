@@ -1,12 +1,12 @@
-package ch.zhaw.psit4.domain.dialplan.applications;
+package ch.zhaw.psit4.domain.applications;
 
 import ch.zhaw.psit4.domain.exceptions.ValidationException;
-import ch.zhaw.psit4.domain.interfaces.DialPlanAppInterface;
+import ch.zhaw.psit4.domain.interfaces.AsteriskApplicationInterface;
 
 /**
  * @author Rafael Ostertag
  */
-public class GotoApp implements DialPlanAppInterface {
+public class GotoApp implements AsteriskApplicationInterface {
     public static final String DEFAULT_EXTENSION = "s";
     public static final String DEFAULT_PRIORITY = "1";
     private String reference;

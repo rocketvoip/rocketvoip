@@ -2,14 +2,14 @@ package ch.zhaw.psit4.domain.beans;
 
 import ch.zhaw.psit4.domain.AsteriskUtlities;
 import ch.zhaw.psit4.domain.exceptions.ValidationException;
-import ch.zhaw.psit4.domain.interfaces.SipClientConfigurationInterface;
+import ch.zhaw.psit4.domain.interfaces.AsteriskSipClientInterface;
 
 /**
  * Holds the data for a SIP-Client.
  *
  * @author braunjon
  */
-public class SipClient implements SipClientConfigurationInterface {
+public class SipClient implements AsteriskSipClientInterface {
     private String company;
     private String username;
     private String secret;

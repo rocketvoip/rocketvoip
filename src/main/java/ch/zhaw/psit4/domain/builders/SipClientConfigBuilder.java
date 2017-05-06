@@ -1,7 +1,7 @@
 package ch.zhaw.psit4.domain.builders;
 
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
-import ch.zhaw.psit4.domain.interfaces.SipClientConfigurationInterface;
+import ch.zhaw.psit4.domain.interfaces.AsteriskSipClientInterface;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
  * @author Rafael Ostertag
  */
 public class SipClientConfigBuilder {
-    private List<SipClientConfigurationInterface> sipClients;
+    private List<AsteriskSipClientInterface> sipClients;
 
     public SipClientConfigBuilder() {
         sipClients = new LinkedList<>();
@@ -28,7 +28,7 @@ public class SipClientConfigBuilder {
      * @throws InvalidConfigurationException                       when sipClient is null.
      * @throws ch.zhaw.psit4.domain.exceptions.ValidationException when sipClient is invalid.
      */
-    public SipClientConfigBuilder addSipClient(SipClientConfigurationInterface sipClient) {
+    public SipClientConfigBuilder addSipClient(AsteriskSipClientInterface sipClient) {
         if (sipClient == null) {
             throw new InvalidConfigurationException("sipClientConfigurationInerface must not be null");
         }
@@ -43,7 +43,7 @@ public class SipClientConfigBuilder {
      * @return list of SipClientConfigurationInstances suitable for ConfigWriter.
      * @throws InvalidConfigurationException when no sip clients have been added.
      */
-    public List<SipClientConfigurationInterface> build() {
+    public List<AsteriskSipClientInterface> build() {
         if (sipClients.isEmpty()) {
             throw new InvalidConfigurationException("no sip clients in configuration");
         }

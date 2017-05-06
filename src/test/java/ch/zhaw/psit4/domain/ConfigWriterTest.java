@@ -1,8 +1,8 @@
 package ch.zhaw.psit4.domain;
 
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
-import ch.zhaw.psit4.domain.interfaces.DialPlanContextConfigurationInterface;
-import ch.zhaw.psit4.domain.interfaces.SipClientConfigurationInterface;
+import ch.zhaw.psit4.domain.interfaces.AsteriskContextInterface;
+import ch.zhaw.psit4.domain.interfaces.AsteriskSipClientInterface;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -40,10 +40,10 @@ public class ConfigWriterTest {
 
     @Test
     public void testSimpleSipClientConfigurationList() throws Exception {
-        SipClientConfigurationInterface sipClient = mock(SipClientConfigurationInterface.class);
+        AsteriskSipClientInterface sipClient = mock(AsteriskSipClientInterface.class);
         when(sipClient.toSipClientConfiguration()).thenReturn("sip client mock");
 
-        List<SipClientConfigurationInterface> list = new ArrayList<>();
+        List<AsteriskSipClientInterface> list = new ArrayList<>();
         list.add(sipClient);
 
         String actual = ConfigWriter.generateSipClientConfiguration(list);
@@ -54,13 +54,13 @@ public class ConfigWriterTest {
 
     @Test
     public void testMultipleSipClientsConfigurationList() throws Exception {
-        SipClientConfigurationInterface sipClient1 = mock(SipClientConfigurationInterface.class);
+        AsteriskSipClientInterface sipClient1 = mock(AsteriskSipClientInterface.class);
         when(sipClient1.toSipClientConfiguration()).thenReturn("sip client mock 1\n");
 
-        SipClientConfigurationInterface sipClient2 = mock(SipClientConfigurationInterface.class);
+        AsteriskSipClientInterface sipClient2 = mock(AsteriskSipClientInterface.class);
         when(sipClient2.toSipClientConfiguration()).thenReturn("sip client mock 2\n");
 
-        List<SipClientConfigurationInterface> list = new ArrayList<>();
+        List<AsteriskSipClientInterface> list = new ArrayList<>();
         list.add(sipClient1);
         list.add(sipClient2);
 
@@ -74,13 +74,13 @@ public class ConfigWriterTest {
 
     @Test
     public void testMultipleSipClientsConfigurationListWithNullInterspersed() throws Exception {
-        SipClientConfigurationInterface sipClient1 = mock(SipClientConfigurationInterface.class);
+        AsteriskSipClientInterface sipClient1 = mock(AsteriskSipClientInterface.class);
         when(sipClient1.toSipClientConfiguration()).thenReturn("sip client mock 1\n");
 
-        SipClientConfigurationInterface sipClient2 = mock(SipClientConfigurationInterface.class);
+        AsteriskSipClientInterface sipClient2 = mock(AsteriskSipClientInterface.class);
         when(sipClient2.toSipClientConfiguration()).thenReturn("sip client mock 2\n");
 
-        List<SipClientConfigurationInterface> list = new ArrayList<>();
+        List<AsteriskSipClientInterface> list = new ArrayList<>();
         list.add(null);
         list.add(sipClient1);
         list.add(null);
@@ -97,10 +97,10 @@ public class ConfigWriterTest {
 
     @Test
     public void testSimpleDialPlanConfigurationList() throws Exception {
-        DialPlanContextConfigurationInterface dialPlan = mock(DialPlanContextConfigurationInterface.class);
+        AsteriskContextInterface dialPlan = mock(AsteriskContextInterface.class);
         when(dialPlan.toDialPlanContextConfiguration()).thenReturn("dialplan context mock");
 
-        List<DialPlanContextConfigurationInterface> list = new ArrayList<>();
+        List<AsteriskContextInterface> list = new ArrayList<>();
         list.add(dialPlan);
 
         String actual = ConfigWriter.generateDialPlanConfiguration(list);
@@ -111,13 +111,13 @@ public class ConfigWriterTest {
 
     @Test
     public void testMultipleDialPlanConfigurationList() throws Exception {
-        DialPlanContextConfigurationInterface dialPlan1 = mock(DialPlanContextConfigurationInterface.class);
+        AsteriskContextInterface dialPlan1 = mock(AsteriskContextInterface.class);
         when(dialPlan1.toDialPlanContextConfiguration()).thenReturn("dialplan context mock 1\n");
 
-        DialPlanContextConfigurationInterface dialPlan2 = mock(DialPlanContextConfigurationInterface.class);
+        AsteriskContextInterface dialPlan2 = mock(AsteriskContextInterface.class);
         when(dialPlan2.toDialPlanContextConfiguration()).thenReturn("dialplan context mock 2\n");
 
-        List<DialPlanContextConfigurationInterface> list = new ArrayList<>();
+        List<AsteriskContextInterface> list = new ArrayList<>();
         list.add(dialPlan1);
         list.add(dialPlan2);
 
@@ -131,13 +131,13 @@ public class ConfigWriterTest {
 
     @Test
     public void testMultipleDialPlanConfigurationListWithNulInterspersed() throws Exception {
-        DialPlanContextConfigurationInterface dialPlan1 = mock(DialPlanContextConfigurationInterface.class);
+        AsteriskContextInterface dialPlan1 = mock(AsteriskContextInterface.class);
         when(dialPlan1.toDialPlanContextConfiguration()).thenReturn("dialplan context mock 1\n");
 
-        DialPlanContextConfigurationInterface dialPlan2 = mock(DialPlanContextConfigurationInterface.class);
+        AsteriskContextInterface dialPlan2 = mock(AsteriskContextInterface.class);
         when(dialPlan2.toDialPlanContextConfiguration()).thenReturn("dialplan context mock 2\n");
 
-        List<DialPlanContextConfigurationInterface> list = new ArrayList<>();
+        List<AsteriskContextInterface> list = new ArrayList<>();
         list.add(null);
         list.add(dialPlan1);
         list.add(null);

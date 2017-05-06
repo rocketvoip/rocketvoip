@@ -1,12 +1,12 @@
-package ch.zhaw.psit4.domain.dialplan.applications;
+package ch.zhaw.psit4.domain.applications;
 
 import ch.zhaw.psit4.domain.exceptions.ValidationException;
-import ch.zhaw.psit4.domain.interfaces.DialPlanAppInterface;
+import ch.zhaw.psit4.domain.interfaces.AsteriskApplicationInterface;
 
 /**
  * @author Rafael Ostertag
  */
-public class WaitApp implements DialPlanAppInterface {
+public class WaitApp implements AsteriskApplicationInterface {
     private int seconds;
 
     public WaitApp(int seconds) {

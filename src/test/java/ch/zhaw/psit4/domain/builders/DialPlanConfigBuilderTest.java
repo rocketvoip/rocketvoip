@@ -4,7 +4,7 @@ import ch.zhaw.psit4.domain.beans.DialPlanContext;
 import ch.zhaw.psit4.domain.beans.DialPlanExtension;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
 import ch.zhaw.psit4.domain.exceptions.ValidationException;
-import ch.zhaw.psit4.domain.interfaces.DialPlanAppInterface;
+import ch.zhaw.psit4.domain.interfaces.AsteriskApplicationInterface;
 import ch.zhaw.psit4.testsupport.fixtures.domain.DialPlanContextGenerator;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,7 +42,7 @@ public class DialPlanConfigBuilderTest {
     public void wrongCallingOrderAddNewContextSetApplication() throws Exception {
         dialPlanConfigBuilder
                 .addNewContext(new DialPlanContext())
-                .setApplication(mock(DialPlanAppInterface.class));
+                .setApplication(mock(AsteriskApplicationInterface.class));
     }
 
     @Test(expected = IllegalStateException.class)
@@ -57,7 +57,7 @@ public class DialPlanConfigBuilderTest {
 
     @Test(expected = IllegalStateException.class)
     public void wrongCallingOrderAddNewApp() throws Exception {
-        dialPlanConfigBuilder.setApplication(mock(DialPlanAppInterface.class));
+        dialPlanConfigBuilder.setApplication(mock(AsteriskApplicationInterface.class));
     }
 
     @Test(expected = InvalidConfigurationException.class)
@@ -84,12 +84,12 @@ public class DialPlanConfigBuilderTest {
         dialPlanExtension.setPhoneNumber("1234");
         dialPlanExtension.setPriority("1");
 
-        DialPlanAppInterface dialPlanAppInterface = mock(DialPlanAppInterface.class);
+        AsteriskApplicationInterface asteriskApplicationInterface = mock(AsteriskApplicationInterface.class);
 
         List<DialPlanContext> configuration = dialPlanConfigBuilder
                 .addNewContext(dialPlanContext)
                 .addNewExtension(dialPlanExtension)
-                .setApplication(dialPlanAppInterface)
+                .setApplication(asteriskApplicationInterface)
                 .activateExistingContext("should raise exception")
                 .build();
     }
@@ -104,7 +104,7 @@ public class DialPlanConfigBuilderTest {
         dialPlanExtension1.setPhoneNumber("1234");
         dialPlanExtension1.setPriority("1");
 
-        DialPlanAppInterface dialPlanAppInterface1 = mock(DialPlanAppInterface.class);
+        AsteriskApplicationInterface asteriskApplicationInterface1 = mock(AsteriskApplicationInterface.class);
 
         // Second Context
         DialPlanContext dialPlanContext2 = spy(DialPlanContext.class);
@@ -114,12 +114,12 @@ public class DialPlanConfigBuilderTest {
         dialPlanExtension2.setPhoneNumber("5678");
         dialPlanExtension2.setPriority("1");
 
-        DialPlanAppInterface dialPlanAppInterface2 = mock(DialPlanAppInterface.class);
+        AsteriskApplicationInterface asteriskApplicationInterface2 = mock(AsteriskApplicationInterface.class);
 
         dialPlanConfigBuilder
                 .addNewContext(dialPlanContext1)
                 .addNewExtension(dialPlanExtension1)
-                .setApplication(dialPlanAppInterface1)
+                .setApplication(asteriskApplicationInterface1)
                 .addNewContext(dialPlanContext2)
                 .addNewExtension(dialPlanExtension2)
                 // This here must fail
@@ -136,7 +136,7 @@ public class DialPlanConfigBuilderTest {
         dialPlanExtension1.setPhoneNumber("1234");
         dialPlanExtension1.setPriority("1");
 
-        DialPlanAppInterface dialPlanAppInterface1 = mock(DialPlanAppInterface.class);
+        AsteriskApplicationInterface asteriskApplicationInterface1 = mock(AsteriskApplicationInterface.class);
 
         // Second Context
         DialPlanContext dialPlanContext2 = spy(DialPlanContext.class);
@@ -145,7 +145,7 @@ public class DialPlanConfigBuilderTest {
         dialPlanConfigBuilder
                 .addNewContext(dialPlanContext1)
                 .addNewExtension(dialPlanExtension1)
-                .setApplication(dialPlanAppInterface1)
+                .setApplication(asteriskApplicationInterface1)
                 .addNewContext(dialPlanContext2)
                 // We don't add a new extension, thus it's an empty context and it must fail
                 // This here must fail
@@ -207,7 +207,7 @@ public class DialPlanConfigBuilderTest {
         dialPlanExtension1.setOrdinal(1);
         dialPlanExtension1.setPriority("1");
 
-        DialPlanAppInterface dialPlanAppInterface1 = mock(DialPlanAppInterface.class);
+        AsteriskApplicationInterface asteriskApplicationInterface1 = mock(AsteriskApplicationInterface.class);
 
         // Second Context
         DialPlanContext dialPlanContext2 = spy(DialPlanContext.class);
@@ -218,7 +218,7 @@ public class DialPlanConfigBuilderTest {
         dialPlanExtension2.setOrdinal(1);
         dialPlanExtension2.setPriority("1");
 
-        DialPlanAppInterface dialPlanAppInterface2 = mock(DialPlanAppInterface.class);
+        AsteriskApplicationInterface asteriskApplicationInterface2 = mock(AsteriskApplicationInterface.class);
 
         // Must be added to first context
         DialPlanExtension dialPlanExtensionLateAdditions = spy(DialPlanExtension.class);
@@ -226,37 +226,38 @@ public class DialPlanConfigBuilderTest {
         dialPlanExtensionLateAdditions.setOrdinal(2);
         dialPlanExtensionLateAdditions.setPriority("2");
 
-        DialPlanAppInterface dialPlanAppInterfaceLateAddition = mock(DialPlanAppInterface.class);
+        AsteriskApplicationInterface asteriskApplicationInterfaceLateAddition = mock(AsteriskApplicationInterface
+                .class);
 
         List<DialPlanContext> dialPlanContextList = dialPlanConfigBuilder
                 .addNewContext(dialPlanContext1)
                 .addNewExtension(dialPlanExtension1)
-                .setApplication(dialPlanAppInterface1)
+                .setApplication(asteriskApplicationInterface1)
                 .addNewContext(dialPlanContext2)
                 .addNewExtension(dialPlanExtension2)
-                .setApplication(dialPlanAppInterface2)
+                .setApplication(asteriskApplicationInterface2)
                 // This here will be tested
                 .activateExistingContext("name")
                 .addNewExtension(dialPlanExtensionLateAdditions)
-                .setApplication(dialPlanAppInterfaceLateAddition)
+                .setApplication(asteriskApplicationInterfaceLateAddition)
                 .build();
 
         verify(dialPlanContext1, atLeastOnce()).validate();
         verify(dialPlanExtension1, atLeastOnce()).validate();
         verify(dialPlanExtension1, atLeastOnce()).getOrdinal();
         verify(dialPlanExtension1, atLeast(2)).setOrdinal(anyInt());
-        verify(dialPlanAppInterface1, atLeastOnce()).validate();
+        verify(asteriskApplicationInterface1, atLeastOnce()).validate();
 
         verify(dialPlanContext2, atLeastOnce()).validate();
         verify(dialPlanExtension2, atLeastOnce()).validate();
         verify(dialPlanExtension2, atLeastOnce()).getOrdinal();
         verify(dialPlanExtension2, atLeast(2)).setOrdinal(anyInt());
-        verify(dialPlanAppInterface2, atLeastOnce()).validate();
+        verify(asteriskApplicationInterface2, atLeastOnce()).validate();
 
         verify(dialPlanExtensionLateAdditions, atLeastOnce()).validate();
         verify(dialPlanExtensionLateAdditions, atLeastOnce()).getOrdinal();
         verify(dialPlanExtensionLateAdditions, atLeast(2)).setOrdinal(anyInt());
-        verify(dialPlanAppInterfaceLateAddition, atLeastOnce()).validate();
+        verify(asteriskApplicationInterfaceLateAddition, atLeastOnce()).validate();
 
         assertThat(dialPlanContextList, hasSize(2));
 
@@ -281,17 +282,17 @@ public class DialPlanConfigBuilderTest {
         dialPlanExtension.setPhoneNumber("1234");
         dialPlanExtension.setPriority("1");
 
-        DialPlanAppInterface dialPlanAppInterface = mock(DialPlanAppInterface.class);
+        AsteriskApplicationInterface asteriskApplicationInterface = mock(AsteriskApplicationInterface.class);
 
         List<DialPlanContext> configuration = dialPlanConfigBuilder
                 .addNewContext(dialPlanContext)
                 .addNewExtension(dialPlanExtension)
-                .setApplication(dialPlanAppInterface)
+                .setApplication(asteriskApplicationInterface)
                 .build();
 
         verify(dialPlanContext, atLeastOnce()).validate();
         verify(dialPlanExtension, atLeastOnce()).validate();
-        verify(dialPlanAppInterface, atLeastOnce()).validate();
+        verify(asteriskApplicationInterface, atLeastOnce()).validate();
 
         assertThat(configuration, is(not(nullValue())));
         assertThat(configuration, hasSize(1));
@@ -303,7 +304,7 @@ public class DialPlanConfigBuilderTest {
         assertThat(dialPlanContext.getDialPlanExtensionList(), hasSize(1));
         assertThat(dialPlanContext.getDialPlanExtensionList().get(0), equalTo(dialPlanExtension));
 
-        assertThat(dialPlanExtension.getDialPlanApplication(), equalTo(dialPlanAppInterface));
+        assertThat(dialPlanExtension.getDialPlanApplication(), equalTo(asteriskApplicationInterface));
     }
 
     @Test
@@ -321,17 +322,17 @@ public class DialPlanConfigBuilderTest {
         dialPlanExtension2.setOrdinal(1);
         dialPlanExtension2.setPriority("1");
 
-        DialPlanAppInterface dialPlanAppInterface1 = mock(DialPlanAppInterface.class);
-        DialPlanAppInterface dialPlanAppInterface2 = mock(DialPlanAppInterface.class);
+        AsteriskApplicationInterface asteriskApplicationInterface1 = mock(AsteriskApplicationInterface.class);
+        AsteriskApplicationInterface asteriskApplicationInterface2 = mock(AsteriskApplicationInterface.class);
 
         List<DialPlanContext> configuration = dialPlanConfigBuilder
                 .addNewContext(dialPlanContext)
                 // The extensions are added in decreasing order. We expected them to be sorted in increasing order
                 .addNewExtension(dialPlanExtension1)
-                .setApplication(dialPlanAppInterface1)
+                .setApplication(asteriskApplicationInterface1)
 
                 .addNewExtension(dialPlanExtension2)
-                .setApplication(dialPlanAppInterface2)
+                .setApplication(asteriskApplicationInterface2)
                 .build();
 
         verify(dialPlanContext, atLeastOnce()).validate();
@@ -344,8 +345,8 @@ public class DialPlanConfigBuilderTest {
         verify(dialPlanExtension2, atLeastOnce()).getOrdinal();
         verify(dialPlanExtension2, atLeast(2)).setOrdinal(anyInt());
 
-        verify(dialPlanAppInterface1, atLeastOnce()).validate();
-        verify(dialPlanAppInterface2, atLeastOnce()).validate();
+        verify(asteriskApplicationInterface1, atLeastOnce()).validate();
+        verify(asteriskApplicationInterface2, atLeastOnce()).validate();
 
         assertThat(configuration, is(not(nullValue())));
         assertThat(configuration, hasSize(1));
@@ -359,8 +360,8 @@ public class DialPlanConfigBuilderTest {
         assertThat(dialPlanContext.getDialPlanExtensionList().get(0), equalTo(dialPlanExtension2));
         assertThat(dialPlanContext.getDialPlanExtensionList().get(1), equalTo(dialPlanExtension1));
 
-        assertThat(dialPlanExtension1.getDialPlanApplication(), equalTo(dialPlanAppInterface1));
-        assertThat(dialPlanExtension2.getDialPlanApplication(), equalTo(dialPlanAppInterface2));
+        assertThat(dialPlanExtension1.getDialPlanApplication(), equalTo(asteriskApplicationInterface1));
+        assertThat(dialPlanExtension2.getDialPlanApplication(), equalTo(asteriskApplicationInterface2));
     }
 
     @Test
@@ -396,33 +397,33 @@ public class DialPlanConfigBuilderTest {
         lateAddition.setOrdinal(1);
         lateAddition.setPriority("1");
 
-        DialPlanAppInterface dialPlanAppInterface1 = mock(DialPlanAppInterface.class);
-        DialPlanAppInterface dialPlanAppInterface2 = mock(DialPlanAppInterface.class);
-        DialPlanAppInterface dialPlanAppInterface3 = mock(DialPlanAppInterface.class);
-        DialPlanAppInterface dialPlanAppInterface4 = mock(DialPlanAppInterface.class);
-        DialPlanAppInterface dialPlanAppInterface5 = mock(DialPlanAppInterface.class);
+        AsteriskApplicationInterface asteriskApplicationInterface1 = mock(AsteriskApplicationInterface.class);
+        AsteriskApplicationInterface asteriskApplicationInterface2 = mock(AsteriskApplicationInterface.class);
+        AsteriskApplicationInterface asteriskApplicationInterface3 = mock(AsteriskApplicationInterface.class);
+        AsteriskApplicationInterface asteriskApplicationInterface4 = mock(AsteriskApplicationInterface.class);
+        AsteriskApplicationInterface asteriskApplicationInterface5 = mock(AsteriskApplicationInterface.class);
 
         dialPlanConfigBuilder
                 .addNewContext(dialPlanContext1)
                 // The extensions are added in decreasing order. We expected them to be sorted in increasing order
                 .addNewExtension(dialPlanExtension1)
-                .setApplication(dialPlanAppInterface1)
+                .setApplication(asteriskApplicationInterface1)
 
                 .addNewExtension(dialPlanExtension2)
-                .setApplication(dialPlanAppInterface2);
+                .setApplication(asteriskApplicationInterface2);
 
         DialPlanConfigBuilder dialPlanConfigBuilder2 = new DialPlanConfigBuilder(dialPlanConfigBuilder);
         List<DialPlanContext> configuration = dialPlanConfigBuilder2
                 .addNewContext(dialPlanContext2)
                 .addNewExtension(dialPlanExtension3)
-                .setApplication(dialPlanAppInterface3)
+                .setApplication(asteriskApplicationInterface3)
 
                 .addNewExtension(dialPlanExtension4)
-                .setApplication(dialPlanAppInterface4)
+                .setApplication(asteriskApplicationInterface4)
 
                 .activateExistingContext("name1")
                 .addNewExtension(lateAddition)
-                .setApplication(dialPlanAppInterface5)
+                .setApplication(asteriskApplicationInterface5)
                 .build();
 
 
@@ -448,11 +449,11 @@ public class DialPlanConfigBuilderTest {
         verify(lateAddition, atLeastOnce()).getOrdinal();
         verify(lateAddition, atLeast(2)).setOrdinal(anyInt());
 
-        verify(dialPlanAppInterface1, atLeastOnce()).validate();
-        verify(dialPlanAppInterface2, atLeastOnce()).validate();
-        verify(dialPlanAppInterface3, atLeastOnce()).validate();
-        verify(dialPlanAppInterface4, atLeastOnce()).validate();
-        verify(dialPlanAppInterface5, atLeastOnce()).validate();
+        verify(asteriskApplicationInterface1, atLeastOnce()).validate();
+        verify(asteriskApplicationInterface2, atLeastOnce()).validate();
+        verify(asteriskApplicationInterface3, atLeastOnce()).validate();
+        verify(asteriskApplicationInterface4, atLeastOnce()).validate();
+        verify(asteriskApplicationInterface5, atLeastOnce()).validate();
 
         assertThat(configuration, is(not(nullValue())));
         assertThat(configuration, hasSize(2));
@@ -475,11 +476,11 @@ public class DialPlanConfigBuilderTest {
         assertThat(dialPlanContext2.getDialPlanExtensionList().get(0), equalTo(dialPlanExtension4));
         assertThat(dialPlanContext2.getDialPlanExtensionList().get(1), equalTo(dialPlanExtension3));
 
-        assertThat(dialPlanExtension1.getDialPlanApplication(), equalTo(dialPlanAppInterface1));
-        assertThat(dialPlanExtension2.getDialPlanApplication(), equalTo(dialPlanAppInterface2));
-        assertThat(dialPlanExtension3.getDialPlanApplication(), equalTo(dialPlanAppInterface3));
-        assertThat(dialPlanExtension4.getDialPlanApplication(), equalTo(dialPlanAppInterface4));
-        assertThat(lateAddition.getDialPlanApplication(), equalTo(dialPlanAppInterface5));
+        assertThat(dialPlanExtension1.getDialPlanApplication(), equalTo(asteriskApplicationInterface1));
+        assertThat(dialPlanExtension2.getDialPlanApplication(), equalTo(asteriskApplicationInterface2));
+        assertThat(dialPlanExtension3.getDialPlanApplication(), equalTo(asteriskApplicationInterface3));
+        assertThat(dialPlanExtension4.getDialPlanApplication(), equalTo(asteriskApplicationInterface4));
+        assertThat(lateAddition.getDialPlanApplication(), equalTo(asteriskApplicationInterface5));
     }
 
     @Test
@@ -497,15 +498,15 @@ public class DialPlanConfigBuilderTest {
         dialPlanExtension2.setOrdinal(2);
         dialPlanExtension2.setPhoneNumber("s");
 
-        DialPlanAppInterface dialPlanAppInterface1 = mock(DialPlanAppInterface.class);
-        DialPlanAppInterface dialPlanAppInterface2 = mock(DialPlanAppInterface.class);
+        AsteriskApplicationInterface asteriskApplicationInterface1 = mock(AsteriskApplicationInterface.class);
+        AsteriskApplicationInterface asteriskApplicationInterface2 = mock(AsteriskApplicationInterface.class);
 
         List<DialPlanContext> configuration = dialPlanConfigBuilder
                 .addNewContext(dialPlanContext)
                 .addNewExtension(dialPlanExtension1)
-                .setApplication(dialPlanAppInterface1)
+                .setApplication(asteriskApplicationInterface1)
                 .addNewExtension(dialPlanExtension2)
-                .setApplication(dialPlanAppInterface2)
+                .setApplication(asteriskApplicationInterface2)
                 .build();
 
         assertThat(configuration, hasSize(1));
@@ -538,15 +539,15 @@ public class DialPlanConfigBuilderTest {
         dialPlanExtension2.setOrdinal(1);
         dialPlanExtension2.setPhoneNumber("s");
 
-        DialPlanAppInterface dialPlanAppInterface1 = mock(DialPlanAppInterface.class);
-        DialPlanAppInterface dialPlanAppInterface2 = mock(DialPlanAppInterface.class);
+        AsteriskApplicationInterface asteriskApplicationInterface1 = mock(AsteriskApplicationInterface.class);
+        AsteriskApplicationInterface asteriskApplicationInterface2 = mock(AsteriskApplicationInterface.class);
 
         List<DialPlanContext> configuration = dialPlanConfigBuilder
                 .addNewContext(dialPlanContext)
                 .addNewExtension(dialPlanExtension1)
-                .setApplication(dialPlanAppInterface1)
+                .setApplication(asteriskApplicationInterface1)
                 .addNewExtension(dialPlanExtension2)
-                .setApplication(dialPlanAppInterface2)
+                .setApplication(asteriskApplicationInterface2)
                 .build();
 
         assertThat(configuration, hasSize(1));
@@ -603,23 +604,23 @@ public class DialPlanConfigBuilderTest {
         dialPlanExtension4.setOrdinal(2);
         dialPlanExtension4.setPriority("2");
 
-        DialPlanAppInterface dialPlanAppInterface1 = mock(DialPlanAppInterface.class);
-        DialPlanAppInterface dialPlanAppInterface2 = mock(DialPlanAppInterface.class);
-        DialPlanAppInterface dialPlanAppInterface3 = mock(DialPlanAppInterface.class);
-        DialPlanAppInterface dialPlanAppInterface4 = mock(DialPlanAppInterface.class);
+        AsteriskApplicationInterface asteriskApplicationInterface1 = mock(AsteriskApplicationInterface.class);
+        AsteriskApplicationInterface asteriskApplicationInterface2 = mock(AsteriskApplicationInterface.class);
+        AsteriskApplicationInterface asteriskApplicationInterface3 = mock(AsteriskApplicationInterface.class);
+        AsteriskApplicationInterface asteriskApplicationInterface4 = mock(AsteriskApplicationInterface.class);
 
         List<DialPlanContext> configuration = dialPlanConfigBuilder
                 .addNewContext(dialPlanContext1)
                 .addNewExtension(dialPlanExtension1)
-                .setApplication(dialPlanAppInterface1)
+                .setApplication(asteriskApplicationInterface1)
                 .addNewExtension(dialPlanExtension2)
-                .setApplication(dialPlanAppInterface2)
+                .setApplication(asteriskApplicationInterface2)
 
                 .addNewContext(dialPlanContext2)
                 .addNewExtension(dialPlanExtension3)
-                .setApplication(dialPlanAppInterface3)
+                .setApplication(asteriskApplicationInterface3)
                 .addNewExtension(dialPlanExtension4)
-                .setApplication(dialPlanAppInterface4)
+                .setApplication(asteriskApplicationInterface4)
                 .build();
 
         verify(dialPlanContext1, atLeastOnce()).validate();
@@ -641,10 +642,10 @@ public class DialPlanConfigBuilderTest {
         verify(dialPlanExtension4, atLeastOnce()).getOrdinal();
         verify(dialPlanExtension4, atLeast(2)).setOrdinal(anyInt());
 
-        verify(dialPlanAppInterface1, atLeastOnce()).validate();
-        verify(dialPlanAppInterface2, atLeastOnce()).validate();
-        verify(dialPlanAppInterface3, atLeastOnce()).validate();
-        verify(dialPlanAppInterface4, atLeastOnce()).validate();
+        verify(asteriskApplicationInterface1, atLeastOnce()).validate();
+        verify(asteriskApplicationInterface2, atLeastOnce()).validate();
+        verify(asteriskApplicationInterface3, atLeastOnce()).validate();
+        verify(asteriskApplicationInterface4, atLeastOnce()).validate();
 
         assertThat(configuration, is(not(nullValue())));
         assertThat(configuration, hasSize(2));
@@ -659,8 +660,8 @@ public class DialPlanConfigBuilderTest {
         assertThat(dialPlanContext1.getDialPlanExtensionList().get(0), equalTo(dialPlanExtension1));
         assertThat(dialPlanContext1.getDialPlanExtensionList().get(1), equalTo(dialPlanExtension2));
 
-        assertThat(dialPlanExtension1.getDialPlanApplication(), equalTo(dialPlanAppInterface1));
-        assertThat(dialPlanExtension2.getDialPlanApplication(), equalTo(dialPlanAppInterface2));
+        assertThat(dialPlanExtension1.getDialPlanApplication(), equalTo(asteriskApplicationInterface1));
+        assertThat(dialPlanExtension2.getDialPlanApplication(), equalTo(asteriskApplicationInterface2));
 
 
         assertThat(dialPlanContext2.getDialPlanExtensionList(), is(not(nullValue())));
@@ -669,8 +670,8 @@ public class DialPlanConfigBuilderTest {
         assertThat(dialPlanContext2.getDialPlanExtensionList().get(0), equalTo(dialPlanExtension3));
         assertThat(dialPlanContext2.getDialPlanExtensionList().get(1), equalTo(dialPlanExtension4));
 
-        assertThat(dialPlanExtension3.getDialPlanApplication(), equalTo(dialPlanAppInterface3));
-        assertThat(dialPlanExtension4.getDialPlanApplication(), equalTo(dialPlanAppInterface4));
+        assertThat(dialPlanExtension3.getDialPlanApplication(), equalTo(asteriskApplicationInterface3));
+        assertThat(dialPlanExtension4.getDialPlanApplication(), equalTo(asteriskApplicationInterface4));
     }
 
     @Test
@@ -712,17 +713,17 @@ public class DialPlanConfigBuilderTest {
         dialPlanExtension4.setOrdinal(2);
         dialPlanExtension4.setPriority("2");
 
-        DialPlanAppInterface dialPlanAppInterface1 = mock(DialPlanAppInterface.class);
-        DialPlanAppInterface dialPlanAppInterface2 = mock(DialPlanAppInterface.class);
-        DialPlanAppInterface dialPlanAppInterface3 = mock(DialPlanAppInterface.class);
-        DialPlanAppInterface dialPlanAppInterface4 = mock(DialPlanAppInterface.class);
+        AsteriskApplicationInterface asteriskApplicationInterface1 = mock(AsteriskApplicationInterface.class);
+        AsteriskApplicationInterface asteriskApplicationInterface2 = mock(AsteriskApplicationInterface.class);
+        AsteriskApplicationInterface asteriskApplicationInterface3 = mock(AsteriskApplicationInterface.class);
+        AsteriskApplicationInterface asteriskApplicationInterface4 = mock(AsteriskApplicationInterface.class);
 
         dialPlanConfigBuilder
                 .addNewContext(dialPlanContext1)
                 .addNewExtension(dialPlanExtension1)
-                .setApplication(dialPlanAppInterface1)
+                .setApplication(asteriskApplicationInterface1)
                 .addNewExtension(dialPlanExtension2)
-                .setApplication(dialPlanAppInterface2)
+                .setApplication(asteriskApplicationInterface2)
                 // We let it build, to make sure we still can use this dialPlanConfigBuilder to initialize the new
                 // one below.
                 .build();
@@ -732,9 +733,9 @@ public class DialPlanConfigBuilderTest {
         List<DialPlanContext> configuration = dialPlanConfigBuilder2
                 .addNewContext(dialPlanContext2)
                 .addNewExtension(dialPlanExtension3)
-                .setApplication(dialPlanAppInterface3)
+                .setApplication(asteriskApplicationInterface3)
                 .addNewExtension(dialPlanExtension4)
-                .setApplication(dialPlanAppInterface4)
+                .setApplication(asteriskApplicationInterface4)
                 .build();
 
         verify(dialPlanContext1, atLeastOnce()).validate();
@@ -756,10 +757,10 @@ public class DialPlanConfigBuilderTest {
         verify(dialPlanExtension4, atLeastOnce()).getOrdinal();
         verify(dialPlanExtension4, atLeast(2)).setOrdinal(anyInt());
 
-        verify(dialPlanAppInterface1, atLeastOnce()).validate();
-        verify(dialPlanAppInterface2, atLeastOnce()).validate();
-        verify(dialPlanAppInterface3, atLeastOnce()).validate();
-        verify(dialPlanAppInterface4, atLeastOnce()).validate();
+        verify(asteriskApplicationInterface1, atLeastOnce()).validate();
+        verify(asteriskApplicationInterface2, atLeastOnce()).validate();
+        verify(asteriskApplicationInterface3, atLeastOnce()).validate();
+        verify(asteriskApplicationInterface4, atLeastOnce()).validate();
 
         assertThat(configuration, is(not(nullValue())));
         assertThat(configuration, hasSize(2));
@@ -774,8 +775,8 @@ public class DialPlanConfigBuilderTest {
         assertThat(dialPlanContext1.getDialPlanExtensionList().get(0), equalTo(dialPlanExtension1));
         assertThat(dialPlanContext1.getDialPlanExtensionList().get(1), equalTo(dialPlanExtension2));
 
-        assertThat(dialPlanExtension1.getDialPlanApplication(), equalTo(dialPlanAppInterface1));
-        assertThat(dialPlanExtension2.getDialPlanApplication(), equalTo(dialPlanAppInterface2));
+        assertThat(dialPlanExtension1.getDialPlanApplication(), equalTo(asteriskApplicationInterface1));
+        assertThat(dialPlanExtension2.getDialPlanApplication(), equalTo(asteriskApplicationInterface2));
 
 
         assertThat(dialPlanContext2.getDialPlanExtensionList(), is(not(nullValue())));
@@ -784,8 +785,8 @@ public class DialPlanConfigBuilderTest {
         assertThat(dialPlanContext2.getDialPlanExtensionList().get(0), equalTo(dialPlanExtension3));
         assertThat(dialPlanContext2.getDialPlanExtensionList().get(1), equalTo(dialPlanExtension4));
 
-        assertThat(dialPlanExtension3.getDialPlanApplication(), equalTo(dialPlanAppInterface3));
-        assertThat(dialPlanExtension4.getDialPlanApplication(), equalTo(dialPlanAppInterface4));
+        assertThat(dialPlanExtension3.getDialPlanApplication(), equalTo(asteriskApplicationInterface3));
+        assertThat(dialPlanExtension4.getDialPlanApplication(), equalTo(asteriskApplicationInterface4));
     }
 
     @Test
@@ -827,17 +828,17 @@ public class DialPlanConfigBuilderTest {
         dialPlanExtension4.setOrdinal(2);
         dialPlanExtension4.setPriority("2");
 
-        DialPlanAppInterface dialPlanAppInterface1 = mock(DialPlanAppInterface.class);
-        DialPlanAppInterface dialPlanAppInterface2 = mock(DialPlanAppInterface.class);
-        DialPlanAppInterface dialPlanAppInterface3 = mock(DialPlanAppInterface.class);
-        DialPlanAppInterface dialPlanAppInterface4 = mock(DialPlanAppInterface.class);
+        AsteriskApplicationInterface asteriskApplicationInterface1 = mock(AsteriskApplicationInterface.class);
+        AsteriskApplicationInterface asteriskApplicationInterface2 = mock(AsteriskApplicationInterface.class);
+        AsteriskApplicationInterface asteriskApplicationInterface3 = mock(AsteriskApplicationInterface.class);
+        AsteriskApplicationInterface asteriskApplicationInterface4 = mock(AsteriskApplicationInterface.class);
 
         dialPlanConfigBuilder
                 .addNewContext(dialPlanContext1)
                 .addNewExtension(dialPlanExtension1)
-                .setApplication(dialPlanAppInterface1)
+                .setApplication(asteriskApplicationInterface1)
                 .addNewExtension(dialPlanExtension2)
-                .setApplication(dialPlanAppInterface2);
+                .setApplication(asteriskApplicationInterface2);
 
 
         DialPlanConfigBuilder dialPlanConfigBuilder2 = new DialPlanConfigBuilder(dialPlanConfigBuilder);
@@ -845,9 +846,9 @@ public class DialPlanConfigBuilderTest {
         List<DialPlanContext> configuration = dialPlanConfigBuilder2
                 .addNewContext(dialPlanContext2)
                 .addNewExtension(dialPlanExtension3)
-                .setApplication(dialPlanAppInterface3)
+                .setApplication(asteriskApplicationInterface3)
                 .addNewExtension(dialPlanExtension4)
-                .setApplication(dialPlanAppInterface4)
+                .setApplication(asteriskApplicationInterface4)
                 .build();
 
         verify(dialPlanContext1, atLeastOnce()).validate();
@@ -869,10 +870,10 @@ public class DialPlanConfigBuilderTest {
         verify(dialPlanExtension4, atLeastOnce()).getOrdinal();
         verify(dialPlanExtension4, atLeast(2)).setOrdinal(anyInt());
 
-        verify(dialPlanAppInterface1, atLeastOnce()).validate();
-        verify(dialPlanAppInterface2, atLeastOnce()).validate();
-        verify(dialPlanAppInterface3, atLeastOnce()).validate();
-        verify(dialPlanAppInterface4, atLeastOnce()).validate();
+        verify(asteriskApplicationInterface1, atLeastOnce()).validate();
+        verify(asteriskApplicationInterface2, atLeastOnce()).validate();
+        verify(asteriskApplicationInterface3, atLeastOnce()).validate();
+        verify(asteriskApplicationInterface4, atLeastOnce()).validate();
 
         assertThat(configuration, is(not(nullValue())));
         assertThat(configuration, hasSize(2));
@@ -887,8 +888,8 @@ public class DialPlanConfigBuilderTest {
         assertThat(dialPlanContext1.getDialPlanExtensionList().get(0), equalTo(dialPlanExtension1));
         assertThat(dialPlanContext1.getDialPlanExtensionList().get(1), equalTo(dialPlanExtension2));
 
-        assertThat(dialPlanExtension1.getDialPlanApplication(), equalTo(dialPlanAppInterface1));
-        assertThat(dialPlanExtension2.getDialPlanApplication(), equalTo(dialPlanAppInterface2));
+        assertThat(dialPlanExtension1.getDialPlanApplication(), equalTo(asteriskApplicationInterface1));
+        assertThat(dialPlanExtension2.getDialPlanApplication(), equalTo(asteriskApplicationInterface2));
 
 
         assertThat(dialPlanContext2.getDialPlanExtensionList(), is(not(nullValue())));
@@ -897,8 +898,8 @@ public class DialPlanConfigBuilderTest {
         assertThat(dialPlanContext2.getDialPlanExtensionList().get(0), equalTo(dialPlanExtension3));
         assertThat(dialPlanContext2.getDialPlanExtensionList().get(1), equalTo(dialPlanExtension4));
 
-        assertThat(dialPlanExtension3.getDialPlanApplication(), equalTo(dialPlanAppInterface3));
-        assertThat(dialPlanExtension4.getDialPlanApplication(), equalTo(dialPlanAppInterface4));
+        assertThat(dialPlanExtension3.getDialPlanApplication(), equalTo(asteriskApplicationInterface3));
+        assertThat(dialPlanExtension4.getDialPlanApplication(), equalTo(asteriskApplicationInterface4));
     }
 
 }

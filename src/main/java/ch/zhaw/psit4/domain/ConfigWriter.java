@@ -1,8 +1,8 @@
 package ch.zhaw.psit4.domain;
 
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
-import ch.zhaw.psit4.domain.interfaces.DialPlanContextConfigurationInterface;
-import ch.zhaw.psit4.domain.interfaces.SipClientConfigurationInterface;
+import ch.zhaw.psit4.domain.interfaces.AsteriskContextInterface;
+import ch.zhaw.psit4.domain.interfaces.AsteriskSipClientInterface;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +30,7 @@ public final class ConfigWriter {
      * @return string suitable for sip.conf
      * @throws InvalidConfigurationException if the sipClientList is null or the list is empty
      */
-    public static String generateSipClientConfiguration(List<? extends SipClientConfigurationInterface> sipClientList) {
+    public static String generateSipClientConfiguration(List<? extends AsteriskSipClientInterface> sipClientList) {
         if (sipClientList == null) {
             throw new InvalidConfigurationException("sipClientList is null");
         }
@@ -58,7 +58,7 @@ public final class ConfigWriter {
      * @return string suitable for extension.conf
      * @throws InvalidConfigurationException if the sipClientList is null or the list is empty
      */
-    public static String generateDialPlanConfiguration(List<? extends DialPlanContextConfigurationInterface>
+    public static String generateDialPlanConfiguration(List<? extends AsteriskContextInterface>
                                                                dialPlanContextList) {
         if (dialPlanContextList == null) {
             throw new InvalidConfigurationException("dialPlanContextList is null");

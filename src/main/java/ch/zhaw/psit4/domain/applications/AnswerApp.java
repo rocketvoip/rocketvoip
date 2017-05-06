@@ -1,11 +1,11 @@
-package ch.zhaw.psit4.domain.dialplan.applications;
+package ch.zhaw.psit4.domain.applications;
 
-import ch.zhaw.psit4.domain.interfaces.DialPlanAppInterface;
+import ch.zhaw.psit4.domain.interfaces.AsteriskApplicationInterface;
 
 /**
  * @author Rafael Ostertag
  */
-public class AnswerApp implements DialPlanAppInterface {
+public class AnswerApp implements AsteriskApplicationInterface {
     @Override
     public void validate() {
         // intentionally empty

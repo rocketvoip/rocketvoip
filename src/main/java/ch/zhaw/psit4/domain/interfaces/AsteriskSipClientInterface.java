@@ -5,7 +5,7 @@ package ch.zhaw.psit4.domain.interfaces;
  *
  * @author Rafael Ostertag
  */
-public interface SipClientConfigurationInterface extends Validatable {
+public interface AsteriskSipClientInterface extends Validatable {
 
     /**
      * Create sip client configuration according to the asterisk drive standard.

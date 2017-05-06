@@ -1,12 +1,12 @@
 package ch.zhaw.psit4.domain.builders;
 
+import ch.zhaw.psit4.domain.applications.AnswerApp;
+import ch.zhaw.psit4.domain.applications.RingingApp;
+import ch.zhaw.psit4.domain.applications.WaitApp;
+import ch.zhaw.psit4.domain.applications.WaitExtenApp;
 import ch.zhaw.psit4.domain.beans.DialPlanContext;
 import ch.zhaw.psit4.domain.beans.DialPlanExtension;
-import ch.zhaw.psit4.domain.dialplan.applications.AnswerApp;
-import ch.zhaw.psit4.domain.dialplan.applications.RingingApp;
-import ch.zhaw.psit4.domain.dialplan.applications.WaitApp;
-import ch.zhaw.psit4.domain.dialplan.applications.WaitExtenApp;
-import ch.zhaw.psit4.domain.interfaces.DialPlanAppInterface;
+import ch.zhaw.psit4.domain.interfaces.AsteriskApplicationInterface;
 import ch.zhaw.psit4.testsupport.convenience.InputStreamStringyfier;
 import ch.zhaw.psit4.testsupport.fixtures.domain.DialPlanContextGenerator;
 import ch.zhaw.psit4.testsupport.fixtures.domain.DialPlanExtensionGenerator;
@@ -87,7 +87,7 @@ public class DialPlanDefaultContextPrologBuilderTest {
         dialPlanExtension.setPhoneNumber(DialPlanData.getPhoneNumber(1));
         dialPlanExtension.setPriority("1");
 
-        DialPlanAppInterface mockDialApp = mock(DialPlanAppInterface.class);
+        AsteriskApplicationInterface mockDialApp = mock(AsteriskApplicationInterface.class);
         when(mockDialApp.toApplicationCall()).thenReturn("mockApp");
 
         List<DialPlanContext> contexts = dialPlanDefaultContextPrologBuilder
@@ -169,7 +169,7 @@ public class DialPlanDefaultContextPrologBuilderTest {
 
         DialPlanExtension dialPlanExtension = DialPlanExtensionGenerator.dialPlanExtension(1);
 
-        DialPlanAppInterface dialPlanAppMock = mock(DialPlanAppInterface.class);
+        AsteriskApplicationInterface dialPlanAppMock = mock(AsteriskApplicationInterface.class);
         when(dialPlanAppMock.requireWaitExten()).thenReturn(true);
         when(dialPlanAppMock.toApplicationCall()).thenReturn("mockExtension");
 
@@ -200,7 +200,7 @@ public class DialPlanDefaultContextPrologBuilderTest {
 
         DialPlanExtension dialPlanExtension = DialPlanExtensionGenerator.dialPlanExtension(1);
 
-        DialPlanAppInterface dialPlanApp1 = makeDialAppMockNotRequiringAnything();
+        AsteriskApplicationInterface dialPlanApp1 = makeDialAppMockNotRequiringAnything();
 
         List<DialPlanContext> configuration = dialPlanDefaultContextPrologBuilder
                 .addNewContext(context1)
@@ -227,7 +227,7 @@ public class DialPlanDefaultContextPrologBuilderTest {
 
         DialPlanExtension dialPlanExtension = DialPlanExtensionGenerator.dialPlanExtension(1);
 
-        DialPlanAppInterface dialPlanApp1 = makeDialAppMockRequireAnswer();
+        AsteriskApplicationInterface dialPlanApp1 = makeDialAppMockRequireAnswer();
 
         List<DialPlanContext> configuration = dialPlanDefaultContextPrologBuilder
                 .addNewContext(context1)
@@ -254,7 +254,7 @@ public class DialPlanDefaultContextPrologBuilderTest {
 
         DialPlanExtension dialPlanExtension = DialPlanExtensionGenerator.dialPlanExtension(1);
 
-        DialPlanAppInterface dialPlanApp1 = makeDialAppMockRequireWaitExten();
+        AsteriskApplicationInterface dialPlanApp1 = makeDialAppMockRequireWaitExten();
 
         List<DialPlanContext> configuration = dialPlanDefaultContextPrologBuilder
                 .addNewContext(context1)
@@ -281,7 +281,7 @@ public class DialPlanDefaultContextPrologBuilderTest {
 
         DialPlanExtension dialPlanExtension1 = DialPlanExtensionGenerator.dialPlanExtension(1);
 
-        DialPlanAppInterface dialPlanApp1 = makeDialAppMockRequireAnswerAndWaitExten();
+        AsteriskApplicationInterface dialPlanApp1 = makeDialAppMockRequireAnswerAndWaitExten();
 
         List<DialPlanContext> configuration = dialPlanDefaultContextPrologBuilder
                 .addNewContext(context1)
@@ -312,8 +312,8 @@ public class DialPlanDefaultContextPrologBuilderTest {
         DialPlanExtension dialPlanExtension2 = DialPlanExtensionGenerator.dialPlanExtension(2);
         DialPlanExtension dialPlanExtension3 = DialPlanExtensionGenerator.dialPlanExtension(3);
 
-        DialPlanAppInterface dialPlanApp1 = makeDialAppMockRequireAnswerAndWaitExten();
-        DialPlanAppInterface dialPlanApp2 = makeDialAppMockNotRequiringAnything();
+        AsteriskApplicationInterface dialPlanApp1 = makeDialAppMockRequireAnswerAndWaitExten();
+        AsteriskApplicationInterface dialPlanApp2 = makeDialAppMockNotRequiringAnything();
 
         List<DialPlanContext> configuration = dialPlanDefaultContextPrologBuilder
                 .addNewContext(context1)
@@ -358,8 +358,8 @@ public class DialPlanDefaultContextPrologBuilderTest {
         DialPlanExtension dialPlanExtension2 = DialPlanExtensionGenerator.dialPlanExtension(2);
 
 
-        DialPlanAppInterface dialPlanApp1 = makeDialAppMockRequireAnswer();
-        DialPlanAppInterface dialPlanApp2 = makeDialAppMockRequireWaitExten();
+        AsteriskApplicationInterface dialPlanApp1 = makeDialAppMockRequireAnswer();
+        AsteriskApplicationInterface dialPlanApp2 = makeDialAppMockRequireWaitExten();
 
         List<DialPlanContext> configuration = dialPlanDefaultContextPrologBuilder
                 .addNewContext(context1)
@@ -392,7 +392,7 @@ public class DialPlanDefaultContextPrologBuilderTest {
 
         DialPlanExtension dialPlanExtension1 = DialPlanExtensionGenerator.dialPlanExtension(1);
 
-        DialPlanAppInterface dialPlanApp1 = makeDialAppMockRequireAnswer();
+        AsteriskApplicationInterface dialPlanApp1 = makeDialAppMockRequireAnswer();
 
         DialPlanExtension dialPlanExtension2 = DialPlanExtensionGenerator.dialPlanExtension(1);
 
@@ -424,7 +424,7 @@ public class DialPlanDefaultContextPrologBuilderTest {
 
         DialPlanExtension dialPlanExtension1 = DialPlanExtensionGenerator.dialPlanExtension(1);
 
-        DialPlanAppInterface dialPlanApp1 = makeDialAppMockRequireWaitExten();
+        AsteriskApplicationInterface dialPlanApp1 = makeDialAppMockRequireWaitExten();
 
         DialPlanExtension dialPlanExtension2 = DialPlanExtensionGenerator.dialPlanExtension(1);
 
@@ -458,9 +458,9 @@ public class DialPlanDefaultContextPrologBuilderTest {
 
         DialPlanExtension dialPlanExtension2 = DialPlanExtensionGenerator.dialPlanExtension(1);
 
-        DialPlanAppInterface dialPlanApp1 = makeDialAppMockRequireAnswer();
+        AsteriskApplicationInterface dialPlanApp1 = makeDialAppMockRequireAnswer();
 
-        DialPlanAppInterface dialPlanApp2 = makeDialAppMockNotRequiringAnything();
+        AsteriskApplicationInterface dialPlanApp2 = makeDialAppMockNotRequiringAnything();
 
 
         List<DialPlanContext> configuration = dialPlanDefaultContextPrologBuilder
@@ -497,9 +497,9 @@ public class DialPlanDefaultContextPrologBuilderTest {
 
         DialPlanExtension dialPlanExtension2 = DialPlanExtensionGenerator.dialPlanExtension(1);
 
-        DialPlanAppInterface dialPlanApp1 = makeDialAppMockRequireWaitExten();
+        AsteriskApplicationInterface dialPlanApp1 = makeDialAppMockRequireWaitExten();
 
-        DialPlanAppInterface dialPlanApp2 = makeDialAppMockNotRequiringAnything();
+        AsteriskApplicationInterface dialPlanApp2 = makeDialAppMockNotRequiringAnything();
 
 
         List<DialPlanContext> configuration = dialPlanDefaultContextPrologBuilder
@@ -535,9 +535,9 @@ public class DialPlanDefaultContextPrologBuilderTest {
 
         DialPlanExtension dialPlanExtension2 = DialPlanExtensionGenerator.dialPlanExtension(1);
 
-        DialPlanAppInterface dialPlanApp1 = makeDialAppMockNotRequiringAnything();
+        AsteriskApplicationInterface dialPlanApp1 = makeDialAppMockNotRequiringAnything();
 
-        DialPlanAppInterface dialPlanApp2 = makeDialAppMockRequireAnswer();
+        AsteriskApplicationInterface dialPlanApp2 = makeDialAppMockRequireAnswer();
 
 
         List<DialPlanContext> configuration = dialPlanDefaultContextPrologBuilder
@@ -574,9 +574,9 @@ public class DialPlanDefaultContextPrologBuilderTest {
 
         DialPlanExtension dialPlanExtension2 = DialPlanExtensionGenerator.dialPlanExtension(1);
 
-        DialPlanAppInterface dialPlanApp1 = makeDialAppMockNotRequiringAnything();
+        AsteriskApplicationInterface dialPlanApp1 = makeDialAppMockNotRequiringAnything();
 
-        DialPlanAppInterface dialPlanApp2 = makeDialAppMockRequireWaitExten();
+        AsteriskApplicationInterface dialPlanApp2 = makeDialAppMockRequireWaitExten();
 
 
         List<DialPlanContext> configuration = dialPlanDefaultContextPrologBuilder
@@ -613,9 +613,9 @@ public class DialPlanDefaultContextPrologBuilderTest {
 
         DialPlanExtension dialPlanExtension2 = DialPlanExtensionGenerator.dialPlanExtension(1);
 
-        DialPlanAppInterface dialPlanApp1 = makeDialAppMockRequireAnswer();
+        AsteriskApplicationInterface dialPlanApp1 = makeDialAppMockRequireAnswer();
 
-        DialPlanAppInterface dialPlanApp2 = makeDialAppMockNotRequiringAnything();
+        AsteriskApplicationInterface dialPlanApp2 = makeDialAppMockNotRequiringAnything();
 
 
         dialPlanDefaultContextPrologBuilder
@@ -659,9 +659,9 @@ public class DialPlanDefaultContextPrologBuilderTest {
 
         DialPlanExtension dialPlanExtension2 = DialPlanExtensionGenerator.dialPlanExtension(1);
 
-        DialPlanAppInterface dialPlanApp1 = makeDialAppMockRequireWaitExten();
+        AsteriskApplicationInterface dialPlanApp1 = makeDialAppMockRequireWaitExten();
 
-        DialPlanAppInterface dialPlanApp2 = makeDialAppMockNotRequiringAnything();
+        AsteriskApplicationInterface dialPlanApp2 = makeDialAppMockNotRequiringAnything();
 
 
         dialPlanDefaultContextPrologBuilder
@@ -705,9 +705,9 @@ public class DialPlanDefaultContextPrologBuilderTest {
 
         DialPlanExtension dialPlanExtension2 = DialPlanExtensionGenerator.dialPlanExtension(1);
 
-        DialPlanAppInterface dialPlanApp1 = makeDialAppMockNotRequiringAnything();
+        AsteriskApplicationInterface dialPlanApp1 = makeDialAppMockNotRequiringAnything();
 
-        DialPlanAppInterface dialPlanApp2 = makeDialAppMockRequireAnswer();
+        AsteriskApplicationInterface dialPlanApp2 = makeDialAppMockRequireAnswer();
 
 
         dialPlanDefaultContextPrologBuilder
@@ -751,9 +751,9 @@ public class DialPlanDefaultContextPrologBuilderTest {
 
         DialPlanExtension dialPlanExtension2 = DialPlanExtensionGenerator.dialPlanExtension(1);
 
-        DialPlanAppInterface dialPlanApp1 = makeDialAppMockNotRequiringAnything();
+        AsteriskApplicationInterface dialPlanApp1 = makeDialAppMockNotRequiringAnything();
 
-        DialPlanAppInterface dialPlanApp2 = makeDialAppMockRequireWaitExten();
+        AsteriskApplicationInterface dialPlanApp2 = makeDialAppMockRequireWaitExten();
 
 
         dialPlanDefaultContextPrologBuilder
@@ -797,9 +797,9 @@ public class DialPlanDefaultContextPrologBuilderTest {
 
         DialPlanExtension dialPlanExtension2 = DialPlanExtensionGenerator.dialPlanExtension(1);
 
-        DialPlanAppInterface dialPlanApp1 = makeDialAppMockRequireAnswer();
+        AsteriskApplicationInterface dialPlanApp1 = makeDialAppMockRequireAnswer();
 
-        DialPlanAppInterface dialPlanApp2 = makeDialAppMockRequireAnswer();
+        AsteriskApplicationInterface dialPlanApp2 = makeDialAppMockRequireAnswer();
 
 
         dialPlanDefaultContextPrologBuilder
@@ -843,9 +843,9 @@ public class DialPlanDefaultContextPrologBuilderTest {
 
         DialPlanExtension dialPlanExtension2 = DialPlanExtensionGenerator.dialPlanExtension(1);
 
-        DialPlanAppInterface dialPlanApp1 = makeDialAppMockRequireWaitExten();
+        AsteriskApplicationInterface dialPlanApp1 = makeDialAppMockRequireWaitExten();
 
-        DialPlanAppInterface dialPlanApp2 = makeDialAppMockRequireWaitExten();
+        AsteriskApplicationInterface dialPlanApp2 = makeDialAppMockRequireWaitExten();
 
 
         dialPlanDefaultContextPrologBuilder
@@ -891,9 +891,9 @@ public class DialPlanDefaultContextPrologBuilderTest {
 
         DialPlanExtension dialPlanExtension2 = DialPlanExtensionGenerator.dialPlanExtension(1);
 
-        DialPlanAppInterface dialPlanApp1 = makeDialAppMockRequireWaitExten();
+        AsteriskApplicationInterface dialPlanApp1 = makeDialAppMockRequireWaitExten();
 
-        DialPlanAppInterface dialPlanApp2 = makeDialAppMockRequireAnswer();
+        AsteriskApplicationInterface dialPlanApp2 = makeDialAppMockRequireAnswer();
 
 
         dialPlanDefaultContextPrologBuilder
@@ -938,9 +938,9 @@ public class DialPlanDefaultContextPrologBuilderTest {
 
         DialPlanExtension dialPlanExtension2 = DialPlanExtensionGenerator.dialPlanExtension(1);
 
-        DialPlanAppInterface dialPlanApp1 = makeDialAppMockRequireAnswer();
+        AsteriskApplicationInterface dialPlanApp1 = makeDialAppMockRequireAnswer();
 
-        DialPlanAppInterface dialPlanApp2 = makeDialAppMockRequireWaitExten();
+        AsteriskApplicationInterface dialPlanApp2 = makeDialAppMockRequireWaitExten();
 
 
         dialPlanDefaultContextPrologBuilder
@@ -970,8 +970,8 @@ public class DialPlanDefaultContextPrologBuilderTest {
         checkPrologExpectAnswerAndWaitExten(context1);
     }
 
-    private DialPlanAppInterface makeDialAppMockNotRequiringAnything() {
-        DialPlanAppInterface dialPlanApp = mock(DialPlanAppInterface.class);
+    private AsteriskApplicationInterface makeDialAppMockNotRequiringAnything() {
+        AsteriskApplicationInterface dialPlanApp = mock(AsteriskApplicationInterface.class);
         when(dialPlanApp.requireAnswer()).thenReturn(false);
         when(dialPlanApp.requireWaitExten()).thenReturn(false);
         when(dialPlanApp.toApplicationCall()).thenReturn("require_nothing");
@@ -988,24 +988,24 @@ public class DialPlanDefaultContextPrologBuilderTest {
         return dialPlanExtension;
     }
 
-    private DialPlanAppInterface makeDialAppMockRequireAnswer() {
-        DialPlanAppInterface dialPlanApp = mock(DialPlanAppInterface.class);
+    private AsteriskApplicationInterface makeDialAppMockRequireAnswer() {
+        AsteriskApplicationInterface dialPlanApp = mock(AsteriskApplicationInterface.class);
         when(dialPlanApp.requireAnswer()).thenReturn(true);
         when(dialPlanApp.requireWaitExten()).thenReturn(false);
         when(dialPlanApp.toApplicationCall()).thenReturn("require_answer");
         return dialPlanApp;
     }
 
-    private DialPlanAppInterface makeDialAppMockRequireWaitExten() {
-        DialPlanAppInterface dialPlanApp = mock(DialPlanAppInterface.class);
+    private AsteriskApplicationInterface makeDialAppMockRequireWaitExten() {
+        AsteriskApplicationInterface dialPlanApp = mock(AsteriskApplicationInterface.class);
         when(dialPlanApp.requireAnswer()).thenReturn(false);
         when(dialPlanApp.requireWaitExten()).thenReturn(true);
         when(dialPlanApp.toApplicationCall()).thenReturn("require_waitexten");
         return dialPlanApp;
     }
 
-    private DialPlanAppInterface makeDialAppMockRequireAnswerAndWaitExten() {
-        DialPlanAppInterface dialPlanApp = mock(DialPlanAppInterface.class);
+    private AsteriskApplicationInterface makeDialAppMockRequireAnswerAndWaitExten() {
+        AsteriskApplicationInterface dialPlanApp = mock(AsteriskApplicationInterface.class);
         when(dialPlanApp.requireAnswer()).thenReturn(true);
         when(dialPlanApp.requireWaitExten()).thenReturn(true);
         when(dialPlanApp.toApplicationCall()).thenReturn("require_answer_and_waitexten");

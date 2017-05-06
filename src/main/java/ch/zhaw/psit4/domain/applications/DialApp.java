@@ -1,8 +1,8 @@
-package ch.zhaw.psit4.domain.dialplan.applications;
+package ch.zhaw.psit4.domain.applications;
 
 import ch.zhaw.psit4.domain.beans.SipClient;
 import ch.zhaw.psit4.domain.exceptions.ValidationException;
-import ch.zhaw.psit4.domain.interfaces.DialPlanAppInterface;
+import ch.zhaw.psit4.domain.interfaces.AsteriskApplicationInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author Jona Braun
  */
-public class DialApp implements DialPlanAppInterface {
+public class DialApp implements AsteriskApplicationInterface {
 
     private Technology technology;
     private List<SipClient> sipClientList;
