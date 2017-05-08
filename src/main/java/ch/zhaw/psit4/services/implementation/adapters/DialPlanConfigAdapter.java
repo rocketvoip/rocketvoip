@@ -202,7 +202,7 @@ public class DialPlanConfigAdapter {
 
                                 branchEntry.getBranchesDialPlans().forEach(dialPlanBranchTo -> {
                                     DialPlanExtension dialPlanExtension = new DialPlanExtension();
-                                    dialPlanExtension.setPriority("n");
+                                    dialPlanExtension.setPriority("1");
                                     dialPlanExtension.setOrdinal(branchEntry.getPriority());
                                     dialPlanExtension.setPhoneNumber(
                                             Integer.toString(dialPlanBranchTo.getButtonNumber())

@@ -8,8 +8,8 @@ exten=> 001, 1, Goto(ACME1-DialPlan-1,s,1)
 exten=> s, 1, Ringing
 exten=> s, n, Wait(2)
 exten=> s, n, WaitExten(1)
-exten=> 1, n, Goto(ACME1-DialPlan-2,s,1)
-exten=> 2, n, Goto(ACME1-DialPlan-3,s,1)
+exten=> 1, 1, Goto(ACME1-DialPlan-2,s,1)
+exten=> 2, 1, Goto(ACME1-DialPlan-3,s,1)
 
 [ACME1-DialPlan-2]
 exten=> s, 1, Ringing

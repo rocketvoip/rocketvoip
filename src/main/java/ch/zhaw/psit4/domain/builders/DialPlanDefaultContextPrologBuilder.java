@@ -83,7 +83,9 @@ public class DialPlanDefaultContextPrologBuilder extends DialPlanConfigBuilder {
 
     @Override
     public DialPlanDefaultContextPrologBuilder addNewExtension(DialPlanExtension extension) {
-        super.addNewExtension(setPriorityN(extension));
+        // TODO: the priority will be set in two different places here and in setAsteriskPrioritiesOnActiveExtension
+        // (). This should be streamlined.
+        super.addNewExtension(setPriorityNIfNull(extension));
 
         addDefaultPrologIfRequired();
 
@@ -206,8 +208,10 @@ public class DialPlanDefaultContextPrologBuilder extends DialPlanConfigBuilder {
         return waitExtenExtension;
     }
 
-    private DialPlanExtension setPriorityN(DialPlanExtension extension) {
-        extension.setPriority("n");
+    private DialPlanExtension setPriorityNIfNull(DialPlanExtension extension) {
+        if (extension.getPriority() == null) {
+            extension.setPriority("n");
+        }
         return extension;
     }
 
