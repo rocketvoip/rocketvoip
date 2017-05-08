@@ -10,32 +10,24 @@ import javax.persistence.*;
  */
 
 @Entity
+@Setter
+@Getter
 public class Goto {
 
     @Id
     @GeneratedValue
-    @Getter
-    @Setter
     private long id;
 
     @Column(nullable = false)
-    @Getter
-    @Setter
     private String name;
 
     @Column(nullable = false)
-    @Getter
-    @Setter
     private int priority;
 
     @ManyToOne
-    @Getter
-    @Setter
     private DialPlan dialPlan;
 
     @OneToOne
-    @Getter
-    @Setter
     private DialPlan nextDialPlan;
 
     protected Goto() {

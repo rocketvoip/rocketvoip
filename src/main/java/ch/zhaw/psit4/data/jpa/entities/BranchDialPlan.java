@@ -11,24 +11,19 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "BRANCH_DIALPLAN")
+@Setter
+@Getter
 public class BranchDialPlan {
-
     @Id
     @GeneratedValue
     @Column(name = "BRANCH_DIALPLAN_ID")
-    @Getter
-    @Setter
     private long id;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "DIALPLAN_ID")
-    @Getter
-    @Setter
     private DialPlan dialPlan;
 
     @Column
-    @Getter
-    @Setter
     private int buttonNumber;
 
     protected BranchDialPlan() {

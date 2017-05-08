@@ -18,37 +18,27 @@ import java.util.List;
 
 @Entity
 @Table(name = "BRANCH")
+@Setter
+@Getter
 public class Branch {
 
     @Id
     @GeneratedValue
     @Column(name="BRANCH_ID")
-    @Getter
-    @Setter
     private long id;
 
     @Column(nullable = false)
-    @Getter
-    @Setter
     private String name;
 
     @Column(nullable = false)
-    @Getter
-    @Setter
     private int priority;
 
     @ManyToOne
-    @Getter
-    @Setter
     private DialPlan dialPlan;
 
     @OneToMany
-    @Getter
-    @Setter
     private List<BranchDialPlan> branchesDialPlans;
 
-    @Getter
-    @Setter
     private int hangupTime;
 
     protected Branch() {

@@ -1,7 +1,6 @@
 package ch.zhaw.psit4.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.util.Map;
 
@@ -23,17 +22,13 @@ import java.util.Map;
  *
  * @author Jona Braun
  */
+@Data
 public class ActionDto {
-    @Getter
-    @Setter
     private long id;
-    @Getter
-    @Setter
+
     private String name;
-    @Getter
-    @Setter
+
     private String type;
-    @Getter
-    @Setter
+
     private Map<String, Object> typeSpecific;
 }

@@ -19,34 +19,25 @@ import java.io.Serializable;
         uniqueConstraints=
         @UniqueConstraint(columnNames={"phoneNr", "company"})
 )
-
+@Getter
+@Setter
 public class SipClient implements Serializable {
 
     @Id
     @GeneratedValue
-    @Getter
-    @Setter
     private long id;
 
     @ManyToOne
     @JoinColumn(name="company")
-    @Getter
-    @Setter
     private Company company;
 
     @Column(nullable = false)
-    @Getter
-    @Setter
     private String label;
 
     @Column(nullable = false, name = "phoneNr")
-    @Getter
-    @Setter
     private String phoneNr;
 
     @Column(nullable = false)
-    @Getter
-    @Setter
     private String secret;
 
     protected SipClient() {

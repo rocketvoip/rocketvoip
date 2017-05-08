@@ -12,6 +12,8 @@ import java.util.Collection;
  */
 
 @Entity
+@Setter
+@Getter
 public class Dial {
 
     @Id
