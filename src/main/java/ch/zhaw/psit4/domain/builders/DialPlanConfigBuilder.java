@@ -272,12 +272,7 @@ public class DialPlanConfigBuilder {
     protected void setAsteriskPrioritiesOnActiveExtension() {
         assert activeContext != null;
         // Set all priorities to n, the first extension in the list is set to 1 later on.
-        activeContext.getDialPlanContext().getDialPlanExtensionList().forEach(x -> {
-            assert x.getDialPlanApplication() != null;
-            if (!x.getDialPlanApplication().requireExplicitPriority()) {
-                x.setPriority("n");
-            }
-        });
+        activeContext.getDialPlanContext().getDialPlanExtensionList().forEach(x -> x.setPriority("n"));
         setPriorityOneOnFirstExtension();
     }
 

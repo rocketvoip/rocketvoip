@@ -29,11 +29,6 @@ public class SayAlphaApp implements AsteriskApplicationInterface {
     }
 
     @Override
-    public boolean requireExplicitPriority() {
-        return false;
-    }
-
-    @Override
     public void validate() {
         if (text == null) {
             throw new ValidationException("text is null");

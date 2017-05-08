@@ -45,11 +45,4 @@ public class SayAlphaAppTest {
         SayAlphaApp sayAlphaApp = new SayAlphaApp("abcd");
         assertThat(sayAlphaApp.requireWaitExten(), equalTo(false));
     }
-
-    @Test
-    public void requireExplicitPriority() throws Exception {
-        SayAlphaApp sayAlphaApp = new SayAlphaApp("abcd");
-        assertThat(sayAlphaApp.requireExplicitPriority(), equalTo(false));
-    }
-
 }

@@ -151,12 +151,4 @@ public class DialAppTest {
 
         assertThat(dialApp.requireWaitExten(), equalTo(false));
     }
-
-    @Test
-    public void requireExplicitPriority() throws Exception {
-        sipClientList = SipClientGenerator.generateSipClientList(1, 1);
-        DialApp dialApp = new DialApp(DialApp.Technology.PSIP, sipClientList, DialAppCallGenerator.TIMEOUT);
-
-        assertThat(dialApp.requireExplicitPriority(), equalTo(false));
-    }
 }
