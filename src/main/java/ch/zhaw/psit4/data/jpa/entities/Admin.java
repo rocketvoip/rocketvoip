@@ -14,7 +14,7 @@ import java.util.Collection;
  */
 @Entity
 public class Admin implements Serializable {
-    private static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
+
 
     @Id
     @GeneratedValue
@@ -44,6 +44,7 @@ public class Admin implements Serializable {
 
     @Column(nullable = false)
     @Getter
+    @Setter
     private String password;
 
     @Column
@@ -62,11 +63,8 @@ public class Admin implements Serializable {
         this.firstname = firstname;
         this.lastname = lastname;
         this.username = username;
-        setPassword(password);
+        this.password = password;
         this.superAdmin = superAdmin;
     }
 
-    public void setPassword(String password) {
-        this.password = PASSWORD_ENCODER.encode(password);
-    }
 }
