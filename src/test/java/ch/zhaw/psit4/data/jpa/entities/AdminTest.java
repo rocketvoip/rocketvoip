@@ -17,13 +17,13 @@ public class AdminTest {
         Admin admin = new Admin();
         admin.setPassword("test");
 
-        assertThat(admin.getPassword(), is(not(equalTo("test"))));
+        assertThat(admin.getPassword(), is((equalTo("test"))));
     }
 
     @Test
     public void testConstructor() throws Exception {
         Admin admin = new Admin(null, "firstname", "lastname", "username", "password", false);
-        assertThat(admin.getPassword(), is(not(equalTo("password"))));
+        assertThat(admin.getPassword(), is((equalTo("password"))));
         assertThat(admin.getCompany(), is(nullValue()));
         assertThat(admin.getUsername(), is(equalTo("username")));
         assertThat(admin.getLastname(), is(equalTo("lastname")));
@@ -45,7 +45,7 @@ public class AdminTest {
 
 
         assertThat(admin.getPassword(), is(not(equalTo("password"))));
-        assertThat(admin.getPassword(), is(not(equalTo("password2"))));
+        assertThat(admin.getPassword(), is((equalTo("password2"))));
 
         assertThat(admin.getCompany(), is(not(nullValue())));
 
