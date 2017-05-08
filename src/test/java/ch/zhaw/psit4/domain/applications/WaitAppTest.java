@@ -46,4 +46,10 @@ public class WaitAppTest {
         assertThat(waitApp.requireWaitExten(), equalTo(false));
     }
 
+    @Test
+    public void requireExplicitPriority() throws Exception {
+        WaitApp waitApp = new WaitApp(1);
+        assertThat(waitApp.requireExplicitPriority(), equalTo(false));
+    }
+
 }

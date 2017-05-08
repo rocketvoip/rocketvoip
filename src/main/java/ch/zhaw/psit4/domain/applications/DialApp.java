@@ -96,6 +96,11 @@ public class DialApp implements AsteriskApplicationInterface {
     }
 
     @Override
+    public boolean requireExplicitPriority() {
+        return false;
+    }
+
+    @Override
     public void validate() {
         if (technology == null) {
             throw new ValidationException("technology is null");

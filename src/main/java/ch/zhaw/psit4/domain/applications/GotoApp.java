@@ -66,4 +66,9 @@ public class GotoApp implements AsteriskApplicationInterface {
     public boolean requireWaitExten() {
         return false;
     }
+
+    @Override
+    public boolean requireExplicitPriority() {
+        return false;
+    }
 }

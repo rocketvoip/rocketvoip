@@ -15,4 +15,10 @@ public class BranchAppTest {
         assertThat(branchApp.requireWaitExten(), equalTo(true));
     }
 
+    @Test
+    public void requireExplicitPriority() throws Exception {
+        BranchApp branchApp = new BranchApp("ref", "ext", "prio");
+        assertThat(branchApp.requireExplicitPriority(), equalTo(true));
+    }
+
 }
