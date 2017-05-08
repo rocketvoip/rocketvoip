@@ -1,7 +1,6 @@
 package ch.zhaw.psit4.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import org.springframework.validation.annotation.Validated;
 
 /**
@@ -10,20 +9,11 @@ import org.springframework.validation.annotation.Validated;
  * @author Rafael Ostertag
  */
 @Validated
+@Data
 public class SipClientDto {
-    @Getter
-    @Setter
     private String name;
-    @Getter
-    @Setter
     private String phone;
-    @Getter
-    @Setter
     private String secret;
-    @Getter
-    @Setter
     private long id;
-    @Getter
-    @Setter
     private CompanyDto company;
 }

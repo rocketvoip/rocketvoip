@@ -13,28 +13,22 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "DIALPLAN")
+@Getter
+@Setter
 public class DialPlan {
 
     @Id
     @GeneratedValue
     @Column(name = "DIALPLAN_ID")
-    @Getter
-    @Setter
     private long id;
 
     @Column(nullable = false)
-    @Getter
-    @Setter
     private String title;
 
     @Column(nullable = true)
-    @Getter
-    @Setter
     private String phoneNr;
 
     @ManyToOne
-    @Getter
-    @Setter
     private Company company;
 
     protected DialPlan() {
