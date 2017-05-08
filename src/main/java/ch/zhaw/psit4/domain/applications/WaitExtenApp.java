@@ -39,4 +39,9 @@ public class WaitExtenApp implements AsteriskApplicationInterface {
     public boolean requireWaitExten() {
         return false;
     }
+
+    @Override
+    public boolean requireExplicitPriority() {
+        return false;
+    }
 }

@@ -17,4 +17,9 @@ public final class BranchApp extends GotoApp {
     public boolean requireWaitExten() {
         return true;
     }
+
+    @Override
+    public boolean requireExplicitPriority() {
+        return true;
+    }
 }

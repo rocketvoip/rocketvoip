@@ -31,6 +31,11 @@ public interface AsteriskExtensionInterface extends Validatable {
     int getOrdinal();
 
     /**
+     * Get the Asterisk priority.
+     */
+    String getPriority();
+
+    /**
      * Set the Asterisk priority.
      *
      * @param priority numerals such as '1', '2', etc. or 'n'

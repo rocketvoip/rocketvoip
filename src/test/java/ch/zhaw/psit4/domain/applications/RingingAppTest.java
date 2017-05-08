@@ -37,5 +37,9 @@ public class RingingAppTest {
         assertThat(ringingApp.requireWaitExten(), equalTo(false));
     }
 
+    @Test
+    public void requireExplicitPriority() throws Exception {
+        assertThat(ringingApp.requireExplicitPriority(), equalTo(false));
+    }
 
 }

@@ -983,6 +983,7 @@ public class DialPlanDefaultContextPrologBuilderTest {
         when(dialPlanExtension.getPhoneNumber()).thenReturn("0001");
         when(dialPlanExtension.getPriority()).thenReturn(priority);
         when(dialPlanExtension.getOrdinal()).thenReturn(100);
+        when(dialPlanExtension.getDialPlanApplication()).thenReturn(mock(AsteriskApplicationInterface.class));
         when(dialPlanExtension.toDialPlanExtensionConfiguration()).thenReturn("exten=> 0001, " + priority + ", " +
                 "mockExtension\n");
         return dialPlanExtension;

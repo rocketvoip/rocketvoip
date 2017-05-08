@@ -50,4 +50,9 @@ public class WaitExtenAppTest {
         assertThat(waitExtenApp.requireWaitExten(), equalTo(false));
     }
 
+    @Test
+    public void requireExplicitPriority() throws Exception {
+        assertThat(waitExtenApp.requireExplicitPriority(), equalTo(false));
+    }
+
 }
