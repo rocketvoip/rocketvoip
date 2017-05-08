@@ -4,6 +4,8 @@ import ch.zhaw.psit4.data.jpa.entities.Admin;
 import ch.zhaw.psit4.data.jpa.repositories.AdminRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -22,6 +24,7 @@ public class CreateInitialAdministrator {
     public static final String INITIAL_USERNAME = "masteradmin@rocketvoip.local";
     private static final Logger LOGGER = LoggerFactory.getLogger(CreateInitialAdministrator.class);
     private AdminRepository adminRepository;
+    private static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 
     public CreateInitialAdministrator(AdminRepository adminRepository) {
         this.adminRepository = adminRepository;
@@ -38,7 +41,7 @@ public class CreateInitialAdministrator {
 
         LOGGER.info("No administrator accounts found. Creating initial administrator accounts");
 
-        String password = createRandomPassword();
+        String password = encodePassword();
         Admin initialAdminAccount = createInitialAdminAccountEntity(password);
         adminRepository.save(initialAdminAccount);
         LOGGER.warn("Created initial administrator account '{}' with password '{}'", initialAdminAccount.getUsername
@@ -52,6 +55,11 @@ public class CreateInitialAdministrator {
     private String createRandomPassword() {
         final SecureRandom random = new SecureRandom();
         return new BigInteger(130, random).toString(32);
+    }
+
+    private String encodePassword(){
+        String password = createRandomPassword();
+        return PASSWORD_ENCODER.encode(password);
     }
 
     private boolean hasAdminUsers() {
