@@ -15,7 +15,8 @@ import java.util.List;
  * @author Jona Braun
  */
 @RestController
-@RequestMapping(path = "/v1")
+@RequestMapping(path = "/v1",
+        produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class CompanyController {
     private final CompanyServiceInterface companyServiceInterface;
 
@@ -23,34 +24,30 @@ public class CompanyController {
         this.companyServiceInterface = companyService;
     }
 
-    @GetMapping(path = "/companies", produces = MediaType
-            .APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(path = "/companies")
     public ResponseEntity<List<CompanyDto>> getAllCompanies() {
         return new ResponseEntity<>(companyServiceInterface.getAllCompanies(), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/companies/{id}", produces = MediaType
-            .APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(path = "/companies/{id}")
     public ResponseEntity<CompanyDto> getCompany(@PathVariable long id) {
         return new ResponseEntity<>
                 (companyServiceInterface.getCompany(id), HttpStatus.OK);
     }
 
-    @DeleteMapping(path = "/companies/{id}", produces = MediaType
-            .APPLICATION_JSON_UTF8_VALUE)
+    @DeleteMapping(path = "/companies/{id}")
     public ResponseEntity<Void> deleteCompany(@PathVariable long id) {
         companyServiceInterface.deleteCompany(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping(path = "/companies/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PutMapping(path = "/companies/{id}")
     public ResponseEntity<CompanyDto> updateCompany(@PathVariable long id, @RequestBody CompanyDto companyDto) {
         companyDto.setId(id);
         return new ResponseEntity<>(companyServiceInterface.updateCompany(companyDto), HttpStatus.OK);
     }
 
-    @PostMapping(path = "/companies", produces = MediaType
-            .APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(path = "/companies")
     public ResponseEntity<CompanyDto> createCompany(@RequestBody CompanyDto companyDto) {
         return new ResponseEntity<>(
                 companyServiceInterface.createCompany(companyDto), HttpStatus.CREATED);
