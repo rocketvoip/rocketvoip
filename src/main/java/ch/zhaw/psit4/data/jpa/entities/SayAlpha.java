@@ -11,37 +11,27 @@ import javax.persistence.*;
  */
 
 @Entity
+@Setter
+@Getter
 public class SayAlpha {
 
     @Id
     @GeneratedValue
-    @Getter
-    @Setter
     private long id;
 
     @Column(nullable = false)
-    @Getter
-    @Setter
     private String name;
 
     @Column(nullable = false)
-    @Getter
-    @Setter
     private int priority;
 
     @Column(nullable = false)
-    @Getter
-    @Setter
     private String voiceMessage;
 
     @Column(nullable = false)
-    @Getter
-    @Setter
     private int sleepTime;
 
     @ManyToOne
-    @Getter
-    @Setter
     private DialPlan dialPlan;
 
     protected SayAlpha() {

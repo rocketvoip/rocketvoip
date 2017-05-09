@@ -14,17 +14,15 @@ import java.io.Serializable;
  * Created by beni on 20.03.17.
  */
 @Entity
+@Setter
+@Getter
 public class Company implements Serializable {
 
     @Id
     @GeneratedValue
-    @Getter
-    @Setter
     private Long id;
 
     @Column(nullable = false, unique = true)
-    @Getter
-    @Setter
     private String name;
 
     protected Company() {

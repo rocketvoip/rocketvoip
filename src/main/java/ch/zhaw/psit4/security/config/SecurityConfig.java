@@ -20,7 +20,7 @@ import java.security.SecureRandom;
  * @author Rafael Ostertag
  */
 @Configuration
-public class SpringBeans {
+public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService(AdminRepository adminRepository) {
         return new UserDetailsServiceImpl(adminRepository);
