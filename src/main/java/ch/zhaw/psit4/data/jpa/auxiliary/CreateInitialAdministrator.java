@@ -23,8 +23,8 @@ public class CreateInitialAdministrator {
     public static final String INITIAL_LASTNAME = "Administrator";
     public static final String INITIAL_USERNAME = "masteradmin@rocketvoip.local";
     private static final Logger LOGGER = LoggerFactory.getLogger(CreateInitialAdministrator.class);
-    private AdminRepository adminRepository;
     private static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
+    private AdminRepository adminRepository;
 
     public CreateInitialAdministrator(AdminRepository adminRepository) {
         this.adminRepository = adminRepository;
@@ -41,7 +41,7 @@ public class CreateInitialAdministrator {
 
         LOGGER.info("No administrator accounts found. Creating initial administrator accounts");
 
-        String password = encodePassword();
+        String password = createRandomPassword();
         Admin initialAdminAccount = createInitialAdminAccountEntity(password);
         adminRepository.save(initialAdminAccount);
         LOGGER.warn("Created initial administrator account '{}' with password '{}'", initialAdminAccount.getUsername
@@ -49,7 +49,12 @@ public class CreateInitialAdministrator {
     }
 
     private Admin createInitialAdminAccountEntity(String password) {
-        return new Admin(null, INITIAL_FIRSTNAME, INITIAL_LASTNAME, INITIAL_USERNAME, password, true);
+        return new Admin(null,
+                INITIAL_FIRSTNAME,
+                INITIAL_LASTNAME,
+                INITIAL_USERNAME,
+                encodePassword(password),
+                true);
     }
 
     private String createRandomPassword() {
@@ -57,8 +62,7 @@ public class CreateInitialAdministrator {
         return new BigInteger(130, random).toString(32);
     }
 
-    private String encodePassword(){
-        String password = createRandomPassword();
+    private String encodePassword(String password) {
         return PASSWORD_ENCODER.encode(password);
     }
 
