@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
@@ -45,6 +46,7 @@ public class CreateInitialAdministratorTest {
         assertThat(admin.getFirstname(), equalTo(CreateInitialAdministrator.INITIAL_FIRSTNAME));
         assertThat(admin.getLastname(), equalTo(CreateInitialAdministrator.INITIAL_LASTNAME));
         assertThat(admin.getUsername(), equalTo(CreateInitialAdministrator.INITIAL_USERNAME));
+        assertThat(admin.getPassword(), startsWith("$2a$"));
 
     }
 
