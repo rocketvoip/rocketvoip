@@ -52,10 +52,15 @@ public class StatelessAuthenticationFilter extends GenericFilterBean {
             );
         } catch (NullPointerException e) {
             OUR_LOGGER.error("No authentication token found", e);
+            abortWithUnauthorizedResponse((HttpServletResponse) servletResponse);
         } catch (AuthenticationException | JwtException e) {
             OUR_LOGGER.error("Error processing JWT token: {}", e.getMessage(), e);
-            SecurityContextHolder.clearContext();
-            ((HttpServletResponse) servletResponse).setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            abortWithUnauthorizedResponse((HttpServletResponse) servletResponse);
         }
+    }
+
+    private void abortWithUnauthorizedResponse(HttpServletResponse servletResponse) {
+        SecurityContextHolder.clearContext();
+        servletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
 }
