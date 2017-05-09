@@ -107,8 +107,7 @@ public class DialPlanConfigBuilderTest {
         AsteriskApplicationInterface asteriskApplicationInterface1 = mock(AsteriskApplicationInterface.class);
 
         // Second Context
-        DialPlanContext dialPlanContext2 = spy(DialPlanContext.class);
-        dialPlanContext2.setContextName("name2");
+        DialPlanContext dialPlanContext2 = createSpyDialPlanContext2();
 
         DialPlanExtension dialPlanExtension2 = spy(DialPlanExtension.class);
         dialPlanExtension2.setPhoneNumber("5678");
@@ -139,8 +138,7 @@ public class DialPlanConfigBuilderTest {
         AsteriskApplicationInterface asteriskApplicationInterface1 = mock(AsteriskApplicationInterface.class);
 
         // Second Context
-        DialPlanContext dialPlanContext2 = spy(DialPlanContext.class);
-        dialPlanContext2.setContextName("name2");
+        DialPlanContext dialPlanContext2 = createSpyDialPlanContext2();
 
         dialPlanConfigBuilder
                 .addNewContext(dialPlanContext1)
@@ -199,19 +197,14 @@ public class DialPlanConfigBuilderTest {
     @Test
     public void activateExistingContext() throws Exception {
         // First context
-        DialPlanContext dialPlanContext1 = spy(DialPlanContext.class);
-        dialPlanContext1.setContextName("name");
+        DialPlanContext dialPlanContext1 = createSpyDialPlanContext1();
 
-        DialPlanExtension dialPlanExtension1 = spy(DialPlanExtension.class);
-        dialPlanExtension1.setPhoneNumber("1234");
-        dialPlanExtension1.setOrdinal(1);
-        dialPlanExtension1.setPriority("1");
+        DialPlanExtension dialPlanExtension1 = createSpyDialPlanExtension1();
 
         AsteriskApplicationInterface asteriskApplicationInterface1 = mock(AsteriskApplicationInterface.class);
 
         // Second Context
-        DialPlanContext dialPlanContext2 = spy(DialPlanContext.class);
-        dialPlanContext2.setContextName("name2");
+        DialPlanContext dialPlanContext2 = createSpyDialPlanContext2();
 
         DialPlanExtension dialPlanExtension2 = spy(DialPlanExtension.class);
         dialPlanExtension2.setPhoneNumber("5678");
@@ -237,7 +230,7 @@ public class DialPlanConfigBuilderTest {
                 .addNewExtension(dialPlanExtension2)
                 .setApplication(asteriskApplicationInterface2)
                 // This here will be tested
-                .activateExistingContext("name")
+                .activateExistingContext("name1")
                 .addNewExtension(dialPlanExtensionLateAdditions)
                 .setApplication(asteriskApplicationInterfaceLateAddition)
                 .build();
@@ -262,15 +255,23 @@ public class DialPlanConfigBuilderTest {
         assertThat(dialPlanContextList, hasSize(2));
 
         assertThat(dialPlanContext1.getDialPlanExtensionList(), hasSize(2));
-        assertThat(((DialPlanExtension) dialPlanContext1.getDialPlanExtensionList().get(0)).getPhoneNumber(),
+        assertThat(dialPlanContext1.getDialPlanExtensionList().get(0).getPhoneNumber(),
                 equalTo("1234"));
-        assertThat(((DialPlanExtension) dialPlanContext1.getDialPlanExtensionList().get(1)).getPhoneNumber(),
+        assertThat(dialPlanContext1.getDialPlanExtensionList().get(1).getPhoneNumber(),
                 equalTo("9101"));
 
         assertThat(dialPlanContext2.getDialPlanExtensionList(), hasSize(1));
-        assertThat(((DialPlanExtension) dialPlanContext2.getDialPlanExtensionList().get(0)).getPhoneNumber(),
+        assertThat(dialPlanContext2.getDialPlanExtensionList().get(0).getPhoneNumber(),
                 equalTo("5678"));
 
+    }
+
+    private DialPlanExtension createSpyDialPlanExtension1() {
+        DialPlanExtension dialPlanExtension1 = spy(DialPlanExtension.class);
+        dialPlanExtension1.setPhoneNumber("1234");
+        dialPlanExtension1.setOrdinal(1);
+        dialPlanExtension1.setPriority("1");
+        return dialPlanExtension1;
     }
 
     @Test
@@ -366,11 +367,9 @@ public class DialPlanConfigBuilderTest {
 
     @Test
     public void testOrdinalOrderingWithTwoBuilders() throws Exception {
-        DialPlanContext dialPlanContext1 = spy(DialPlanContext.class);
-        dialPlanContext1.setContextName("name1");
+        DialPlanContext dialPlanContext1 = createSpyDialPlanContext1();
 
-        DialPlanContext dialPlanContext2 = spy(DialPlanContext.class);
-        dialPlanContext2.setContextName("name2");
+        DialPlanContext dialPlanContext2 = createSpyDialPlanContext2();
 
         DialPlanExtension dialPlanExtension1 = spy(DialPlanExtension.class);
         dialPlanExtension1.setPhoneNumber("1234");
@@ -566,6 +565,180 @@ public class DialPlanConfigBuilderTest {
     }
 
     @Test
+    public void testPriorityHandlingWithDifferentPhoneNumbers() throws Exception {
+        /*
+         * We expect the context expressed as Asterisk configuration to look like
+         * <code>
+         *     [name]
+         *     exten => 001,1,...
+         *     exten => 001,n,...
+         *     exten => 002,1,...
+         *     exten => 002,n,...
+         * </code>
+         *
+         * It is expected, that priority numbering within context restarts from 1 if phone number changes.
+         */
+        DialPlanContext dialPlanContext = spy(DialPlanContext.class);
+        dialPlanContext.setContextName("name");
+
+        DialPlanExtension dialPlanExtension1 = spy(DialPlanExtension.class);
+        dialPlanExtension1.setOrdinal(1);
+        dialPlanExtension1.setPhoneNumber("001");
+
+        DialPlanExtension dialPlanExtension2 = spy(DialPlanExtension.class);
+        dialPlanExtension2.setOrdinal(2);
+        dialPlanExtension2.setPhoneNumber("001");
+
+        DialPlanExtension dialPlanExtension3 = spy(DialPlanExtension.class);
+        dialPlanExtension3.setOrdinal(3);
+        dialPlanExtension3.setPhoneNumber("002");
+
+        DialPlanExtension dialPlanExtension4 = spy(DialPlanExtension.class);
+        dialPlanExtension4.setOrdinal(4);
+        dialPlanExtension4.setPhoneNumber("002");
+
+        AsteriskApplicationInterface asteriskApplicationInterface1 = mock(AsteriskApplicationInterface.class);
+
+        List<DialPlanContext> configuration = dialPlanConfigBuilder
+                .addNewContext(dialPlanContext)
+                .addNewExtension(dialPlanExtension1)
+                .setApplication(asteriskApplicationInterface1)
+                .addNewExtension(dialPlanExtension2)
+                .setApplication(asteriskApplicationInterface1)
+                .addNewExtension(dialPlanExtension3)
+                .setApplication(asteriskApplicationInterface1)
+                .addNewExtension(dialPlanExtension4)
+                .setApplication(asteriskApplicationInterface1)
+                .build();
+
+        assertThat(configuration, hasSize(1));
+        assertThat(configuration.get(0), equalTo(dialPlanContext));
+
+        assertThat(dialPlanContext.getDialPlanExtensionList(), hasSize(4));
+        assertThat(dialPlanContext.getDialPlanExtensionList().get(0), equalTo(dialPlanExtension1));
+        assertThat(dialPlanContext.getDialPlanExtensionList().get(1), equalTo(dialPlanExtension2));
+        assertThat(dialPlanContext.getDialPlanExtensionList().get(2), equalTo(dialPlanExtension3));
+        assertThat(dialPlanContext.getDialPlanExtensionList().get(3), equalTo(dialPlanExtension4));
+
+        assertThat(dialPlanExtension1.getPriority(), equalTo("1"));
+        assertThat(dialPlanExtension2.getPriority(), equalTo("n"));
+        assertThat(dialPlanExtension3.getPriority(), equalTo("1"));
+        assertThat(dialPlanExtension4.getPriority(), equalTo("n"));
+    }
+
+    @Test
+    public void testPriorityHandlingWithDifferentPhoneNumbersAndContextReactivation() throws Exception {
+        /*
+         * We expect the context expressed as Asterisk configuration to look like
+         * <code>
+         *     [name1]
+         *     exten => 001,1,...
+         *     exten => 001,n,...
+         *     exten => 001,n,...
+         *     exten => 002,1,...
+         *     exten => 002,n,...
+         *
+         *     [name2]
+         *     exten => 001,1,...
+         *     exten => 001,n,...
+         * </code>
+         *
+         * It is expected, that priority numbering within context restarts from 1 if phone number changes.
+         *
+         * We test that it behaves properly, even when reactivating a context
+         */
+        DialPlanContext dialPlanContext1 = createSpyDialPlanContext1();
+        DialPlanContext dialPlanContext2 = createSpyDialPlanContext2();
+
+        DialPlanExtension dialPlanExtension1 = spy(DialPlanExtension.class);
+        // we use ordinal 2, so that we can add ordinal 1 upon reactivation of context.
+        dialPlanExtension1.setOrdinal(2);
+        dialPlanExtension1.setPhoneNumber("001");
+
+        DialPlanExtension dialPlanExtension2 = spy(DialPlanExtension.class);
+        dialPlanExtension2.setOrdinal(3);
+        dialPlanExtension2.setPhoneNumber("001");
+
+        DialPlanExtension dialPlanExtension3 = spy(DialPlanExtension.class);
+
+        dialPlanExtension3.setOrdinal(4);
+        dialPlanExtension3.setPhoneNumber("002");
+
+        DialPlanExtension dialPlanExtension4 = spy(DialPlanExtension.class);
+        dialPlanExtension4.setOrdinal(5);
+        dialPlanExtension4.setPhoneNumber("002");
+
+        DialPlanExtension dialPlanExtension5 = spy(DialPlanExtension.class);
+        dialPlanExtension5.setOrdinal(1);
+        dialPlanExtension5.setPhoneNumber("001");
+
+        DialPlanExtension dialPlanExtension6 = spy(DialPlanExtension.class);
+        dialPlanExtension6.setOrdinal(2);
+        dialPlanExtension6.setPhoneNumber("001");
+
+        DialPlanExtension dialPlanExtension7 = spy(DialPlanExtension.class);
+        dialPlanExtension7.setOrdinal(1);
+        dialPlanExtension7.setPhoneNumber("001");
+
+        AsteriskApplicationInterface asteriskApplicationInterface1 = mock(AsteriskApplicationInterface.class);
+
+        List<DialPlanContext> configuration = dialPlanConfigBuilder
+                .addNewContext(dialPlanContext1)
+                .addNewExtension(dialPlanExtension1)
+                .setApplication(asteriskApplicationInterface1)
+                .addNewExtension(dialPlanExtension2)
+                .setApplication(asteriskApplicationInterface1)
+                .addNewExtension(dialPlanExtension3)
+                .setApplication(asteriskApplicationInterface1)
+                .addNewExtension(dialPlanExtension4)
+                .setApplication(asteriskApplicationInterface1)
+
+                .addNewContext(dialPlanContext2)
+                .addNewExtension(dialPlanExtension5)
+                .setApplication(asteriskApplicationInterface1)
+                .addNewExtension(dialPlanExtension6)
+                .setApplication(asteriskApplicationInterface1)
+
+                .activateExistingContext("name1")
+                .addNewExtension(dialPlanExtension7)
+                .setApplication(asteriskApplicationInterface1)
+                .build();
+
+        assertThat(configuration, hasSize(2));
+        assertThat(configuration.get(0), equalTo(dialPlanContext1));
+        assertThat(configuration.get(1), equalTo(dialPlanContext2));
+
+        assertThat(dialPlanContext1.getDialPlanExtensionList(), hasSize(5));
+        assertThat(dialPlanContext1.getDialPlanExtensionList().get(0), equalTo(dialPlanExtension7));
+        assertThat(dialPlanContext1.getDialPlanExtensionList().get(1), equalTo(dialPlanExtension1));
+        assertThat(dialPlanContext1.getDialPlanExtensionList().get(2), equalTo(dialPlanExtension2));
+        assertThat(dialPlanContext1.getDialPlanExtensionList().get(3), equalTo(dialPlanExtension3));
+        assertThat(dialPlanContext1.getDialPlanExtensionList().get(4), equalTo(dialPlanExtension4));
+
+        assertThat(dialPlanContext2.getDialPlanExtensionList(), hasSize(2));
+        assertThat(dialPlanContext2.getDialPlanExtensionList().get(0), equalTo(dialPlanExtension5));
+        assertThat(dialPlanContext2.getDialPlanExtensionList().get(1), equalTo(dialPlanExtension6));
+
+        // context "name1"
+        assertThat(dialPlanExtension7.getPriority(), equalTo("1"));
+        assertThat(dialPlanExtension1.getPriority(), equalTo("n"));
+        assertThat(dialPlanExtension2.getPriority(), equalTo("n"));
+        assertThat(dialPlanExtension3.getPriority(), equalTo("1"));
+        assertThat(dialPlanExtension4.getPriority(), equalTo("n"));
+
+        // context "name2"
+        assertThat(dialPlanExtension5.getPriority(), equalTo("1"));
+        assertThat(dialPlanExtension6.getPriority(), equalTo("n"));
+    }
+
+    private DialPlanContext createSpyDialPlanContext1() {
+        DialPlanContext dialPlanContext1 = spy(DialPlanContext.class);
+        dialPlanContext1.setContextName("name1");
+        return dialPlanContext1;
+    }
+
+
+    @Test
     public void testExhaustiveConfiguration() throws Exception {
         /*
          The configuration would look like this:
@@ -578,21 +751,13 @@ public class DialPlanConfigBuilderTest {
         exten=> 1111, 1, ...
         exten=> 2222, 2, ...
          */
-        DialPlanContext dialPlanContext1 = spy(DialPlanContext.class);
-        dialPlanContext1.setContextName("name1");
+        DialPlanContext dialPlanContext1 = createSpyDialPlanContext1();
 
-        DialPlanContext dialPlanContext2 = spy(DialPlanContext.class);
-        dialPlanContext2.setContextName("name2");
+        DialPlanContext dialPlanContext2 = createSpyDialPlanContext2();
 
-        DialPlanExtension dialPlanExtension1 = spy(DialPlanExtension.class);
-        dialPlanExtension1.setPhoneNumber("1234");
-        dialPlanExtension1.setOrdinal(1);
-        dialPlanExtension1.setPriority("1");
+        DialPlanExtension dialPlanExtension1 = createSpyDialPlanExtension1();
 
-        DialPlanExtension dialPlanExtension2 = spy(DialPlanExtension.class);
-        dialPlanExtension2.setPhoneNumber("5678");
-        dialPlanExtension2.setOrdinal(2);
-        dialPlanExtension2.setPriority("2");
+        DialPlanExtension dialPlanExtension2 = createSpyDialPlanExtension2();
 
         DialPlanExtension dialPlanExtension3 = spy(DialPlanExtension.class);
         dialPlanExtension3.setPhoneNumber("1111");
@@ -687,21 +852,13 @@ public class DialPlanConfigBuilderTest {
         exten=> 1111, 1, ...
         exten=> 2222, 2, ...
          */
-        DialPlanContext dialPlanContext1 = spy(DialPlanContext.class);
-        dialPlanContext1.setContextName("name1");
+        DialPlanContext dialPlanContext1 = createSpyDialPlanContext1();
 
-        DialPlanContext dialPlanContext2 = spy(DialPlanContext.class);
-        dialPlanContext2.setContextName("name2");
+        DialPlanContext dialPlanContext2 = createSpyDialPlanContext2();
 
-        DialPlanExtension dialPlanExtension1 = spy(DialPlanExtension.class);
-        dialPlanExtension1.setPhoneNumber("1234");
-        dialPlanExtension1.setOrdinal(1);
-        dialPlanExtension1.setPriority("1");
+        DialPlanExtension dialPlanExtension1 = createSpyDialPlanExtension1();
 
-        DialPlanExtension dialPlanExtension2 = spy(DialPlanExtension.class);
-        dialPlanExtension2.setPhoneNumber("5678");
-        dialPlanExtension2.setOrdinal(2);
-        dialPlanExtension2.setPriority("2");
+        DialPlanExtension dialPlanExtension2 = createSpyDialPlanExtension2();
 
         DialPlanExtension dialPlanExtension3 = spy(DialPlanExtension.class);
         dialPlanExtension3.setPhoneNumber("1111");
@@ -802,21 +959,13 @@ public class DialPlanConfigBuilderTest {
         exten=> 1111, 1, ...
         exten=> 2222, 2, ...
          */
-        DialPlanContext dialPlanContext1 = spy(DialPlanContext.class);
-        dialPlanContext1.setContextName("name1");
+        DialPlanContext dialPlanContext1 = createSpyDialPlanContext1();
 
-        DialPlanContext dialPlanContext2 = spy(DialPlanContext.class);
-        dialPlanContext2.setContextName("name2");
+        DialPlanContext dialPlanContext2 = createSpyDialPlanContext2();
 
-        DialPlanExtension dialPlanExtension1 = spy(DialPlanExtension.class);
-        dialPlanExtension1.setPhoneNumber("1234");
-        dialPlanExtension1.setOrdinal(1);
-        dialPlanExtension1.setPriority("1");
+        DialPlanExtension dialPlanExtension1 = createSpyDialPlanExtension1();
 
-        DialPlanExtension dialPlanExtension2 = spy(DialPlanExtension.class);
-        dialPlanExtension2.setPhoneNumber("5678");
-        dialPlanExtension2.setOrdinal(2);
-        dialPlanExtension2.setPriority("2");
+        DialPlanExtension dialPlanExtension2 = createSpyDialPlanExtension2();
 
         DialPlanExtension dialPlanExtension3 = spy(DialPlanExtension.class);
         dialPlanExtension3.setPhoneNumber("1111");
@@ -900,6 +1049,20 @@ public class DialPlanConfigBuilderTest {
 
         assertThat(dialPlanExtension3.getDialPlanApplication(), equalTo(asteriskApplicationInterface3));
         assertThat(dialPlanExtension4.getDialPlanApplication(), equalTo(asteriskApplicationInterface4));
+    }
+
+    private DialPlanExtension createSpyDialPlanExtension2() {
+        DialPlanExtension dialPlanExtension2 = spy(DialPlanExtension.class);
+        dialPlanExtension2.setPhoneNumber("5678");
+        dialPlanExtension2.setOrdinal(2);
+        dialPlanExtension2.setPriority("2");
+        return dialPlanExtension2;
+    }
+
+    private DialPlanContext createSpyDialPlanContext2() {
+        DialPlanContext dialPlanContext2 = spy(DialPlanContext.class);
+        dialPlanContext2.setContextName("name2");
+        return dialPlanContext2;
     }
 
 }
