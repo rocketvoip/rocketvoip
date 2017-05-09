@@ -35,7 +35,17 @@ public class DialPlanContext implements AsteriskContextInterface {
         return contextName;
     }
 
+    /**
+     * Set the context name.
+     *
+     * @param contextName name of the context
+     * @throws ValidationException if context name is null
+     */
     public void setContextName(String contextName) {
+        if (contextName == null) {
+            throw new ValidationException("contextName is null");
+        }
+
         this.contextName = AsteriskUtlities.toContextIdentifier(contextName);
     }
 
@@ -70,10 +80,6 @@ public class DialPlanContext implements AsteriskContextInterface {
 
     @Override
     public void validate() {
-        if (contextName == null) {
-            throw new ValidationException("contextName is null");
-        }
-
         if (contextName.isEmpty()) {
             throw new ValidationException("contextName is empty");
         }
