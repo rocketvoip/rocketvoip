@@ -86,10 +86,4 @@ public class GotoAppTest {
     public void requireWaitExten() throws Exception {
         assertThat(gotoApp.requireWaitExten(), equalTo(false));
     }
-
-    @Test
-    public void requireExplicitPriority() throws Exception {
-        assertThat(gotoApp.requireExplicitPriority(), equalTo(false));
-    }
-
 }

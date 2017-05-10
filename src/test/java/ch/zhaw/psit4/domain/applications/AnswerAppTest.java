@@ -36,10 +36,4 @@ public class AnswerAppTest {
     public void requireWaitExten() throws Exception {
         assertThat(answerApp.requireWaitExten(), equalTo(false));
     }
-
-    @Test
-    public void requireExplicitPriority() throws Exception {
-        assertThat(answerApp.requireExplicitPriority(), equalTo(false));
-    }
-
 }

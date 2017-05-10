@@ -8,6 +8,7 @@ import ch.zhaw.psit4.domain.interfaces.AsteriskApplicationInterface;
 import ch.zhaw.psit4.domain.interfaces.AsteriskExtensionInterface;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -24,6 +25,16 @@ import java.util.stream.Collectors;
  *     exten => nr,n,...
  *     exten => nr,n,...
  * </pre>
+ * Priority numbering restarts from {@code 1} if the extension number changes within a context, for instance
+ * <pre>
+ *     [context]
+ *     exten => 1,1,...
+ *     exten => 1,n,...
+ *     exten => 1,n,...
+ *     ; Here, a new extension number is used and thus the priority numbering restarts from 1
+ *     exten => 2,1,...
+ *     exten => 2,n,...
+ * </pre>
  * <p>
  * You most likely don't want to use this builder. Use specialized builders derived from it.
  *
@@ -31,6 +42,7 @@ import java.util.stream.Collectors;
  */
 public class DialPlanConfigBuilder {
     public static final int USER_EXTENSION_ORDINAL_FACTOR = 100;
+    public static final String PRIORITY_ONE = "1";
     private List<ContextWrapper> contexts;
     private ContextWrapper activeContext;
     private DialPlanExtension activeExtension;
@@ -71,7 +83,8 @@ public class DialPlanConfigBuilder {
     /**
      * Add a new Dialplan context.
      * <p>
-     * Please note, that this method has will set an empty dial plan extension list on the provided context.
+     * Please note, that this method will set an empty dial plan extension list on the provided context, discarding
+     * any extension added to the context by the caller
      *
      * @param context the new dialplan context.
      * @return the DialPlanConfigBuilder.
@@ -134,6 +147,8 @@ public class DialPlanConfigBuilder {
      *     This method will alter the ordinal of the extension. This is required to guarantee internal consistency of
      *     a given context.
      * </p>
+     * It will also unconditionally modify the priority of the DialPlanExtension. It is thus not necessary for the
+     * caller to set the priority of the DialPlanExtension.
      *
      * @param extension the new extension context
      * @return DialPlanConfigBuilder.
@@ -154,7 +169,7 @@ public class DialPlanConfigBuilder {
             assignActiveExtensionToActiveContext();
         }
 
-        activeExtension = multiplyOrdinalByUserFactor(extension);
+        activeExtension = multiplyOrdinalByUserFactor((DialPlanExtension) setPriorityN(extension));
 
         return this;
     }
@@ -174,14 +189,14 @@ public class DialPlanConfigBuilder {
      * </pre>
      * <p>
      * If we allow user supplied ordinals to start with 1, a user might interfere with the prolog. For instance, we
-     * might end up this invalid context
+     * might end up with this invalid context
      * <pre>
      *     [contextM]
      *     exten => s,1,...   ; this is a builder provided prolog extension
      *     exten => s,n,...   ; this is a user provided extension
      *     exten => s,2,...   ; this is a builder provided prolog extension
      * </pre>
-     * This method prevents such interference by guaranteeing, that user supplied extensions always have a priority
+     * This method prevents such interference by guaranteeing, that user supplied extensions always have an ordinal
      * >= 100.
      *
      * @param extension the extension to modify
@@ -227,7 +242,7 @@ public class DialPlanConfigBuilder {
     }
 
     /**
-     * Build the context list.
+     * Build the list of contexts stored in this builder.
      *
      * @return the list with contexts.
      * @throws InvalidConfigurationException when no contexts have been added.
@@ -255,7 +270,7 @@ public class DialPlanConfigBuilder {
 
         activeContext.getDialPlanContext().validate();
         sortActiveExtension();
-        setAsteriskPrioritiesOnActiveExtension();
+        setAsteriskPrioritiesOnActiveContext();
 
         // If we save an reactivated context, we must no re-add it to the list.
         if (!contextReactivated) {
@@ -268,26 +283,47 @@ public class DialPlanConfigBuilder {
 
     /**
      * Set the Asterisk priority before the active context is stowed away in the contexts list.
+     *
+     * Priorities for extensions start with {@code 1} and continue with {@code n}. Expressed as Asterisk configuration:
+     * <pre>
+     * [context]
+     * exten => 001,1,...
+     * exten => 001,n,...
+     * </pre>
+     *
+     * The priority numbering restarts if the extension number in a context changes. Expressed as Asterisk
+     * configuration:
+     * <pre>
+     * [context]
+     * exten => 001,1,...
+     * exten => 001,n,...
+     * exten => 001,n,...
+     * ; Restart priority numbering
+     * exten => 002,1,...
+     * exten => 002,n,...
+     * </pre>
+     *
+     * This method expects the extensions within a context to be sorted.
      */
-    protected void setAsteriskPrioritiesOnActiveExtension() {
+    protected void setAsteriskPrioritiesOnActiveContext() {
         assert activeContext != null;
-        // Set all priorities to n, the first extension in the list is set to 1 later on.
-        activeContext.getDialPlanContext().getDialPlanExtensionList().forEach(x -> {
-            assert x.getDialPlanApplication() != null;
-            if (!x.getDialPlanApplication().requireExplicitPriority()) {
-                x.setPriority("n");
-            }
-        });
-        setPriorityOneOnFirstExtension();
-    }
 
-    /**
-     * Set the priority on the first extension in the list to 1. This is required by Asterisk
-     */
-    protected void setPriorityOneOnFirstExtension() {
-        activeContext.getDialPlanContext().getDialPlanExtensionList().stream()
-                .findFirst()
-                .ifPresent(x -> x.setPriority("1"));
+        activeContext
+                .getDialPlanContext()
+                .getDialPlanExtensionList()
+                .forEach(new Consumer<AsteriskExtensionInterface>() {
+                    private String lastNumber = "";
+
+                    @Override
+                    public void accept(AsteriskExtensionInterface extension) {
+                        if (lastNumber.equals(extension.getPhoneNumber())) {
+                            setPriorityN(extension);
+                        } else {
+                            lastNumber = extension.getPhoneNumber();
+                            setPriorityOne(extension);
+                        }
+                    }
+                });
     }
 
     private void assignActiveExtensionToActiveContext() {
@@ -310,7 +346,31 @@ public class DialPlanConfigBuilder {
     }
 
     /**
+     * Unconditionally set the priority of the extension to {@code n}
+     *
+     * @param extension extension having the priority set to {@code 1}.
+     * @return the same {@link AsteriskExtensionInterface} instance as passed in {@code extension}
+     */
+    protected AsteriskExtensionInterface setPriorityN(AsteriskExtensionInterface extension) {
+        extension.setPriority("n");
+        return extension;
+    }
+
+    /**
+     * Unconditionally set the priority of the extension to {@code 1}
+     *
+     * @param extension extension having the priority set to {@code 1}
+     * @return the same {@link AsteriskExtensionInterface} instance as passed in {@code extension}
+     */
+    protected AsteriskExtensionInterface setPriorityOne(AsteriskExtensionInterface extension) {
+        extension.setPriority(PRIORITY_ONE);
+        return extension;
+    }
+
+    /**
      * Wrap a DialPlanContext. It allows to provide meta information to contexts.
+     *
+     * Meta information can be added as KV pair, where the key is a string and the value a boolean.
      */
     protected class ContextWrapper {
         private DialPlanContext dialPlanContext;

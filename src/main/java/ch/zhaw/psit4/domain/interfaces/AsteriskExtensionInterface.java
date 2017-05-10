@@ -46,4 +46,9 @@ public interface AsteriskExtensionInterface extends Validatable {
      * Get the DialPlanApp.
      */
     AsteriskApplicationInterface getDialPlanApplication();
+
+    /**
+     * Get extension (phone)number.
+     */
+    String getPhoneNumber();
 }

@@ -31,8 +31,4 @@ public interface AsteriskApplicationInterface extends Validatable {
      */
     boolean requireWaitExten();
 
-    /**
-     * Indicate that the Application requires the priority set in the extension and must not be altered.
-     */
-    boolean requireExplicitPriority();
 }

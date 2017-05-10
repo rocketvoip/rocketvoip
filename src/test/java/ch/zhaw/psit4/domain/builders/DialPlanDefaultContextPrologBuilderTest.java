@@ -11,7 +11,6 @@ import ch.zhaw.psit4.testsupport.convenience.InputStreamStringyfier;
 import ch.zhaw.psit4.testsupport.fixtures.domain.DialPlanContextGenerator;
 import ch.zhaw.psit4.testsupport.fixtures.domain.DialPlanExtensionGenerator;
 import ch.zhaw.psit4.testsupport.fixtures.general.DialPlanContextData;
-import ch.zhaw.psit4.testsupport.fixtures.general.DialPlanData;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -78,30 +77,7 @@ public class DialPlanDefaultContextPrologBuilderTest {
         assertThat(contexts.get(0).toDialPlanContextConfiguration(), equalTo(expected));
 
     }
-
-    @Test
-    public void testPriorityN() throws Exception {
-        DialPlanContext context = DialPlanContextGenerator.dialPlanContext(1);
-
-        DialPlanExtension dialPlanExtension = new DialPlanExtension();
-        dialPlanExtension.setPhoneNumber(DialPlanData.getPhoneNumber(1));
-        dialPlanExtension.setPriority("1");
-
-        AsteriskApplicationInterface mockDialApp = mock(AsteriskApplicationInterface.class);
-        when(mockDialApp.toApplicationCall()).thenReturn("mockApp");
-
-        List<DialPlanContext> contexts = dialPlanDefaultContextPrologBuilder
-                .addNewContext(context)
-                .addNewExtension(dialPlanExtension)
-                .setApplication(mockDialApp)
-                .build();
-
-        assertThat(contexts, hasSize(1));
-
-        // remember, that the builder updates the instances passed, thus we can test the dialPlanExtension
-        assertThat(dialPlanExtension.getPriority(), equalTo("n"));
-    }
-
+    
     @Test
     public void addNewTwoExtension() throws Exception {
         DialPlanContext context = DialPlanContextGenerator.dialPlanContext(1);
