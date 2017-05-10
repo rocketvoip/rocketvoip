@@ -1,17 +1,18 @@
 package ch.zhaw.psit4.services.implementation;
 
 import ch.zhaw.psit4.data.jpa.entities.Company;
+import ch.zhaw.psit4.data.jpa.entities.SipClient;
 import ch.zhaw.psit4.dto.CompanyDto;
 import ch.zhaw.psit4.dto.SipClientDto;
-import ch.zhaw.psit4.fixtures.database.BeanConfiguration;
-import ch.zhaw.psit4.fixtures.database.CompanyEntity;
-import ch.zhaw.psit4.fixtures.database.DatabaseFixtureBuilder;
-import ch.zhaw.psit4.fixtures.dto.SipClientDtoGenerator;
 import ch.zhaw.psit4.services.exceptions.SipClientCreationException;
 import ch.zhaw.psit4.services.exceptions.SipClientDeletionException;
 import ch.zhaw.psit4.services.exceptions.SipClientRetrievalException;
 import ch.zhaw.psit4.services.exceptions.SipClientUpdateException;
 import ch.zhaw.psit4.services.interfaces.SipClientServiceInterface;
+import ch.zhaw.psit4.testsupport.fixtures.database.BeanConfiguration;
+import ch.zhaw.psit4.testsupport.fixtures.database.CompanyEntity;
+import ch.zhaw.psit4.testsupport.fixtures.database.DatabaseFixtureBuilder;
+import ch.zhaw.psit4.testsupport.fixtures.dto.SipClientDtoGenerator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,11 +25,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static ch.zhaw.psit4.helper.matchers.SipClientDtoEqualTo.sipClientDtoEqualTo;
-import static ch.zhaw.psit4.helper.matchers.SipClientDtoPartialMatcher.sipClientDtoAlmostEqualTo;
+import static ch.zhaw.psit4.testsupport.matchers.SipClientDtoEqualTo.sipClientDtoEqualTo;
+import static ch.zhaw.psit4.testsupport.matchers.SipClientDtoPartialMatcher.sipClientDtoAlmostEqualTo;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 /**
  * @author Rafael Ostertag
@@ -76,7 +77,7 @@ public class SipClientServiceImplIT {
         );
         SipClientDto sipClientDto = SipClientDtoGenerator.createTestSipClientDto(
                 companyDto,
-                2
+                3
         );
 
         SipClientDto actual = sipClientServiceInterface.createSipClient(sipClientDto);
@@ -174,6 +175,69 @@ public class SipClientServiceImplIT {
 
         assertThat(newSipClientDto, sipClientDtoEqualTo(retrievedUpdatedSipClientDto));
         assertThat(updatedSipClientDto, sipClientDtoEqualTo(retrievedUpdatedSipClientDto));
+    }
+
+    @Test
+    public void sipClientEntityToSipClientDto() throws Exception {
+        Company company = new Company("ACME");
+        company.setId(new Long(1));
+        SipClient sipClient = new SipClient(company, "SipClient", "phone", "secret");
+        sipClient.setId(2);
+
+        SipClientDto sipClientDto = SipClientServiceImpl.sipClientEntityToSipClientDto(sipClient);
+
+        assertTrue("ACME".equals(sipClientDto.getCompany().getName()));
+        assertTrue(1 == sipClientDto.getCompany().getId());
+        assertTrue("SipClient".equals(sipClientDto.getName()));
+        assertTrue("phone".equals(sipClientDto.getPhone()));
+        assertTrue("secret".equals(sipClientDto.getSecret()));
+        assertTrue(2 == sipClientDto.getId());
+    }
+
+    @Test
+    public void sipClientDtoToSipClientEntity() throws Exception {
+        CompanyDto companyDto = new CompanyDto();
+        companyDto.setName("ACME");
+        companyDto.setId(new Long(1));
+
+        SipClientDto sipClientDto = new SipClientDto();
+        sipClientDto.setCompany(companyDto);
+        sipClientDto.setId(2);
+        sipClientDto.setName("SipClient");
+        sipClientDto.setPhone("phone");
+        sipClientDto.setSecret("secret");
+
+        SipClient sipClient = SipClientServiceImpl.sipClientDtoToSipClientEntity(sipClientDto);
+
+        assertTrue("ACME".equals(sipClient.getCompany().getName()));
+        assertTrue(1 == sipClient.getCompany().getId());
+        assertTrue("SipClient".equals(sipClient.getLabel()));
+        assertTrue("phone".equals(sipClient.getPhoneNr()));
+        assertTrue("secret".equals(sipClient.getSecret()));
+        assertFalse(2 == sipClient.getId());
+    }
+
+    @Test
+    public void sipClientDtoToSipClientEntityWithId() throws Exception {
+        CompanyDto companyDto = new CompanyDto();
+        companyDto.setName("ACME");
+        companyDto.setId(new Long(1));
+
+        SipClientDto sipClientDto = new SipClientDto();
+        sipClientDto.setCompany(companyDto);
+        sipClientDto.setId(2);
+        sipClientDto.setName("SipClient");
+        sipClientDto.setPhone("phone");
+        sipClientDto.setSecret("secret");
+
+        SipClient sipClient = SipClientServiceImpl.sipClientDtoToSipClientEntityWithId(sipClientDto);
+
+        assertTrue("ACME".equals(sipClient.getCompany().getName()));
+        assertTrue(1 == sipClient.getCompany().getId());
+        assertTrue("SipClient".equals(sipClient.getLabel()));
+        assertTrue("phone".equals(sipClient.getPhoneNr()));
+        assertTrue("secret".equals(sipClient.getSecret()));
+        assertTrue(2 == sipClient.getId());
     }
 
     private void setupDatabase() {

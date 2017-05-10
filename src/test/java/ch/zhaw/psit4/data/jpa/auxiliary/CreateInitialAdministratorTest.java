@@ -2,18 +2,18 @@ package ch.zhaw.psit4.data.jpa.auxiliary;
 
 import ch.zhaw.psit4.data.jpa.entities.Admin;
 import ch.zhaw.psit4.data.jpa.repositories.AdminRepository;
-import ch.zhaw.psit4.data.jpa.repositories.CompanyRepository;
-import ch.zhaw.psit4.data.jpa.repositories.SipClientRepository;
-import ch.zhaw.psit4.helper.jpa.DatabaseFixture;
+import ch.zhaw.psit4.testsupport.fixtures.database.BeanConfiguration;
+import ch.zhaw.psit4.testsupport.fixtures.database.DatabaseFixtureBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
@@ -24,12 +24,13 @@ import static org.junit.Assert.assertThat;
  */
 @RunWith(SpringRunner.class)
 @DataJpaTest
+@Import(BeanConfiguration.class)
 public class CreateInitialAdministratorTest {
     @Autowired
     private AdminRepository adminRepository;
 
     @Autowired
-    private DatabaseFixture databaseFixture;
+    private ApplicationContext applicationContext;
 
     @Test
     public void testEmptyDatabase() throws Exception {
@@ -45,12 +46,16 @@ public class CreateInitialAdministratorTest {
         assertThat(admin.getFirstname(), equalTo(CreateInitialAdministrator.INITIAL_FIRSTNAME));
         assertThat(admin.getLastname(), equalTo(CreateInitialAdministrator.INITIAL_LASTNAME));
         assertThat(admin.getUsername(), equalTo(CreateInitialAdministrator.INITIAL_USERNAME));
+        assertThat(admin.getPassword(), startsWith("$2a$"));
 
     }
 
     @Test
     public void testNonEmptyDatabase() throws Exception {
-        databaseFixture.setup();
+        DatabaseFixtureBuilder databaseFixtureBuilder = applicationContext.getBean(DatabaseFixtureBuilder.class);
+        // Create an administrator.
+        databaseFixtureBuilder.company(1).addAdministrator(1).build();
+
         assertThat(adminRepository.count(), is(not(equalTo(0L))));
         CreateInitialAdministrator createInitialAdministrator = new CreateInitialAdministrator(adminRepository);
         createInitialAdministrator.init();
@@ -59,15 +64,4 @@ public class CreateInitialAdministratorTest {
         assertThat(admin, is(nullValue()));
 
     }
-
-
-    @TestConfiguration
-    public static class SpringConfiguration {
-        @Bean
-        public DatabaseFixture databaseFixture(CompanyRepository companyRepository, AdminRepository adminRepository,
-                                               SipClientRepository sipClientRepository) {
-            return new DatabaseFixture(companyRepository, adminRepository, sipClientRepository);
-        }
-    }
-
 }

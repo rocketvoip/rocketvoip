@@ -4,6 +4,8 @@ import ch.zhaw.psit4.data.jpa.entities.Admin;
 import ch.zhaw.psit4.data.jpa.repositories.AdminRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -21,6 +23,7 @@ public class CreateInitialAdministrator {
     public static final String INITIAL_LASTNAME = "Administrator";
     public static final String INITIAL_USERNAME = "masteradmin@rocketvoip.local";
     private static final Logger LOGGER = LoggerFactory.getLogger(CreateInitialAdministrator.class);
+    private static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
     private AdminRepository adminRepository;
 
     public CreateInitialAdministrator(AdminRepository adminRepository) {
@@ -46,12 +49,21 @@ public class CreateInitialAdministrator {
     }
 
     private Admin createInitialAdminAccountEntity(String password) {
-        return new Admin(null, INITIAL_FIRSTNAME, INITIAL_LASTNAME, INITIAL_USERNAME, password, true);
+        return new Admin(null,
+                INITIAL_FIRSTNAME,
+                INITIAL_LASTNAME,
+                INITIAL_USERNAME,
+                encodePassword(password),
+                true);
     }
 
     private String createRandomPassword() {
         final SecureRandom random = new SecureRandom();
         return new BigInteger(130, random).toString(32);
+    }
+
+    private String encodePassword(String password) {
+        return PASSWORD_ENCODER.encode(password);
     }
 
     private boolean hasAdminUsers() {

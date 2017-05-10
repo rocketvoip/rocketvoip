@@ -1,0 +1,3 @@
+[ACME1]
+exten=> 0000000001, 1, Dial(SIP/SipClientLabel1-ACME1, 30)
+

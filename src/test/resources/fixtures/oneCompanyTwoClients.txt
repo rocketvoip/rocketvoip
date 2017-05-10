@@ -1,0 +1,12 @@
+[SipClientLabel1-ACME1]
+type=friend
+context=ACME1
+host=dynamic
+secret=SipClientSecret1
+
+[SipClientLabel2-ACME1]
+type=friend
+context=ACME1
+host=dynamic
+secret=SipClientSecret2
+

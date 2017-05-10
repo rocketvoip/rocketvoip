@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static ch.zhaw.psit4.services.implementation.CompanyServiceImpl.companyDtoToCompanyEntity;
@@ -65,6 +66,43 @@ public class SipClientServiceImpl implements SipClientServiceInterface {
         company.setId(sipClientDto.getCompany().getId());
         return new SipClient(company, sipClientDto.getName(),
                 sipClientDto.getPhone(), sipClientDto.getSecret());
+    }
+
+    /**
+     * Convert a SipClientDto to a SipClient entity. A Company Dto is required for the conversion.
+     * The id of the Dto will also be converted.
+     *
+     * @param sipClientDto SipClientDto instance to be converted
+     * @return SipClient entity instance.
+     */
+    public static SipClient sipClientDtoToSipClientEntityWithId(SipClientDto sipClientDto) {
+        SipClient sipClient = sipClientDtoToSipClientEntity(sipClientDto);
+        sipClient.setId(sipClientDto.getId());
+        return sipClient;
+    }
+
+    /**
+     * Converts a list of sip client entities to sip client dtos.
+     *
+     * @param sipClientEntities the list of entities
+     * @return the sip client dtos
+     */
+    public static List<SipClientDto> sipClientEntitiesToSipClientDtos(Collection<SipClient> sipClientEntities) {
+        List<SipClientDto> sipClientDtos = new ArrayList<>();
+        sipClientEntities.forEach(x -> sipClientDtos.add(sipClientEntityToSipClientDto(x)));
+        return sipClientDtos;
+    }
+
+    /**
+     * Converts a list of sip client dtos to entities. The id is also converted.
+     *
+     * @param sipClientDtos the list to convert
+     * @return the sip client entities
+     */
+    public static List<SipClient> sipClientDtosToSipClientEntitiesWithId(List<SipClientDto> sipClientDtos) {
+        List<SipClient> sipClientEntities = new ArrayList<>();
+        sipClientDtos.forEach(x -> sipClientEntities.add(sipClientDtoToSipClientEntityWithId(x)));
+        return sipClientEntities;
     }
 
     @Override

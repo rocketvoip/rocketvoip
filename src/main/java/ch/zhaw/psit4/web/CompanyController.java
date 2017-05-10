@@ -1,11 +1,7 @@
 package ch.zhaw.psit4.web;
 
 import ch.zhaw.psit4.dto.CompanyDto;
-import ch.zhaw.psit4.dto.ErrorDto;
-import ch.zhaw.psit4.services.exceptions.CompanyDeletionException;
-import ch.zhaw.psit4.services.exceptions.CompanyRetrievalException;
 import ch.zhaw.psit4.services.interfaces.CompanyServiceInterface;
-import ch.zhaw.psit4.web.utils.Utilities;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -58,21 +54,6 @@ public class CompanyController {
     public ResponseEntity<CompanyDto> createCompany(@RequestBody CompanyDto companyDto) {
         return new ResponseEntity<>(
                 companyServiceInterface.createCompany(companyDto), HttpStatus.CREATED);
-    }
-
-    @ExceptionHandler(CompanyRetrievalException.class)
-    public ResponseEntity<ErrorDto> handleCompanyRetrievalException(CompanyRetrievalException ex) {
-        return new ResponseEntity<>(Utilities.exceptionToErrorDto(ex), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(CompanyDeletionException.class)
-    public ResponseEntity<ErrorDto> handleCompanyDeletionException(CompanyDeletionException ex) {
-        return new ResponseEntity<>(Utilities.exceptionToErrorDto(ex), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorDto> handleException(Exception e) {
-        return new ResponseEntity<>(Utilities.exceptionToErrorDto(e), HttpStatus.BAD_REQUEST);
     }
 
 }

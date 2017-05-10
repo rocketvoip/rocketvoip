@@ -15,8 +15,8 @@ import java.util.zip.ZipOutputStream;
  * @author Jona Braun
  */
 public class ConfigZipWriter {
-    private static final String SIP_CONFIG_FILE_NAME = "sip.conf";
-    private static final String DIAL_PLAN_CONFIG_FILE_NAME = "extensions.conf";
+    public static final String SIP_CONFIG_FILE_NAME = "sip.conf";
+    public static final String DIAL_PLAN_CONFIG_FILE_NAME = "extensions.conf";
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigZipWriter.class);
     private String sipClientConf;
     private String dialPlanConf;
@@ -51,7 +51,8 @@ public class ConfigZipWriter {
         return baos;
     }
 
-    private void writeZipEntry(ZipOutputStream zos, ZipEntry sipClientConfEntry, byte[] bytes) throws IOException {
+    // This method is package private in order to make it mockable
+    void writeZipEntry(ZipOutputStream zos, ZipEntry sipClientConfEntry, byte[] bytes) throws IOException {
         zos.putNextEntry(sipClientConfEntry);
         zos.write(bytes);
         zos.closeEntry();

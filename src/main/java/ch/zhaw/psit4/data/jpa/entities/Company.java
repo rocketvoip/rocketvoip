@@ -1,5 +1,8 @@
 package ch.zhaw.psit4.data.jpa.entities;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +14,8 @@ import java.io.Serializable;
  * Created by beni on 20.03.17.
  */
 @Entity
+@Setter
+@Getter
 public class Company implements Serializable {
 
     @Id
@@ -26,21 +31,5 @@ public class Company implements Serializable {
 
     public Company(String name) {
         this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 }

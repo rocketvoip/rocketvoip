@@ -1,0 +1,11 @@
+[ACME1]
+exten=> 0000000001, 1, Dial(SIP/SipClientLabel1-ACME1, 30)
+exten=> 0000000002, 1, Dial(SIP/SipClientLabel2-ACME1, 30)
+exten=> 0000000003, 1, Dial(SIP/SipClientLabel3-ACME1, 30)
+exten=> 001, 1, Goto(ACME1-DialPlan-1,s,1)
+
+[ACME1-DialPlan-1]
+exten=> s, 1, Ringing
+exten=> s, n, Wait(2)
+exten=> s, n, Dial(SIP/SipClientLabel2-ACME1&SIP/SipClientLabel3-ACME1, 30)
+

@@ -1,0 +1,6 @@
+[ContextName1]
+exten=> s, 1, Ringing
+exten=> s, n, Wait(2)
+exten=> s, n, WaitExten(42)
+exten=> 001, n, mockExtension
+

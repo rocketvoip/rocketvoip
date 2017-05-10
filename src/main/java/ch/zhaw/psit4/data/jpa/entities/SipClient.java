@@ -1,5 +1,8 @@
 package ch.zhaw.psit4.data.jpa.entities;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -10,19 +13,28 @@ import java.io.Serializable;
  */
 
 @Entity
+
+@Table(
+        name="SipClient",
+        uniqueConstraints=
+        @UniqueConstraint(columnNames={"phoneNr", "company"})
+)
+@Getter
+@Setter
 public class SipClient implements Serializable {
 
     @Id
     @GeneratedValue
     private long id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
+    @JoinColumn(name="company")
     private Company company;
 
     @Column(nullable = false)
     private String label;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "phoneNr")
     private String phoneNr;
 
     @Column(nullable = false)
@@ -36,46 +48,6 @@ public class SipClient implements Serializable {
         this.company = company;
         this.label = label;
         this.phoneNr = phoneNr;
-        this.secret = secret;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public Company getCompany() {
-        return company;
-    }
-
-    public void setCompany(Company company) {
-        this.company = company;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public String getPhoneNr() {
-        return phoneNr;
-    }
-
-    public void setPhoneNr(String phoneNr) {
-        this.phoneNr = phoneNr;
-    }
-
-    public String getSecret() {
-        return secret;
-    }
-
-    public void setSecret(String secret) {
         this.secret = secret;
     }
 }

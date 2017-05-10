@@ -14,7 +14,7 @@ jdk:
 
 deploy:
   provider: heroku
-  app: rocketvoip
+  app: rocketvoip-staging
   api_key:
     secure: h+9pverv7p9f89bbPmv7WB4qtxzqGCUhssRNIFv8J+7WdVkkT72YipcPmM7AJfNJOVtqji+DnGJ9v+zBKx0nIuCDFV5C16Ex/unUe1mEzQkogfrKVPf8aGZiDRUYmJA5Y64xeZLZl4dTLv9XozU3nYo25wqw9gA3KyH6CaFKQCOdF1MgZR98wnMayHZqMN5jK7Ainz04ffxpiLclmPmTQkuKuStgTSba5xgjjHu5as33f8Vr3OO5PTz5+J2uyNK/E2cHzN3qfPzDYMuw9FkB6HWkfNqMKowfN1MGd606jajmrJv6Tqj+Tlyi3FRq+qwzQiNWOGG6SDxrLfww/7yIat+mGrbAEoGq2bDXVYXnSaH9R/S3Tw+Ds8OPLX/4NlhKokp+bIfWnCKUb2T0ar7k95Zgg/7f7rJIpqPdsGUtsVmUoDDlXg8n/eF7PjBstj6/jsRzHbWPpu9YUizAS+9k1+3uKp6h7oGW7YRhS6x3WYMxp4VZzkiw3QBy5x/D0jvj8a/JBAyeD7EiLgakKVbViPq3tE8yrnmes/rzGJ7R403mAt6cxxZFpjI1YtPapCb5pvOAAawOfYpo7DLma/1iwxsxbOSltc/sKH1kqKUmu58f4w0Kw1m4LVxEpZIe/uK5NB/zTCL1EUiLi+ZX9XYlFJ+TwOTBzkaF9ybszYPcOb4=
 

@@ -1,12 +1,12 @@
 package ch.zhaw.psit4.services.implementation;
 
+import ch.zhaw.psit4.domain.ConfigZipWriter;
 import ch.zhaw.psit4.domain.exceptions.InvalidConfigurationException;
-import ch.zhaw.psit4.domain.helper.DialPlanTestHelper;
-import ch.zhaw.psit4.domain.helper.SipClientTestHelper;
-import ch.zhaw.psit4.fixtures.database.BeanConfiguration;
-import ch.zhaw.psit4.fixtures.database.DatabaseFixtureBuilder;
-import ch.zhaw.psit4.helper.ZipStreamTestHelper;
 import ch.zhaw.psit4.services.interfaces.ConfigServiceInterface;
+import ch.zhaw.psit4.testsupport.convenience.InputStreamStringyfier;
+import ch.zhaw.psit4.testsupport.convenience.ZipStreamReader;
+import ch.zhaw.psit4.testsupport.fixtures.database.BeanConfiguration;
+import ch.zhaw.psit4.testsupport.fixtures.database.DatabaseFixtureBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
 import java.util.zip.ZipInputStream;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @author Jona Braun
@@ -29,11 +33,9 @@ import java.util.zip.ZipInputStream;
 @Transactional
 @Import(BeanConfiguration.class)
 public class ConfigServiceImplIT {
-    private final ZipStreamTestHelper zipStreamTestHelper = new ZipStreamTestHelper();
-    private final SipClientTestHelper sipClientTestHelper = new SipClientTestHelper();
     @Autowired
     ApplicationContext applicationContext;
-    private DialPlanTestHelper dialPlanTestHelper = new DialPlanTestHelper();
+
     @Autowired
     private ConfigServiceInterface configServiceInterface;
     private DatabaseFixtureBuilder databaseFixtureBuilder;
@@ -55,11 +57,21 @@ public class ConfigServiceImplIT {
         ByteArrayOutputStream baos = configServiceInterface.getAsteriskConfiguration();
         ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(baos.toByteArray()));
 
-        String[] expectedNames = {"sip.conf", "extensions.conf"};
-        String[] expectedContent = {sipClientTestHelper.generateSipClientConfig(1, 1),
-                dialPlanTestHelper.getSimpleDialPlan(1, 1)};
+        ZipStreamReader zipStreamReader = new ZipStreamReader(zipInputStream);
 
-        zipStreamTestHelper.testZipEntryContent(zipInputStream, expectedNames, expectedContent);
+        assertThat(zipStreamReader.hasFile(ConfigZipWriter.SIP_CONFIG_FILE_NAME), equalTo(true));
+        assertThat(zipStreamReader.hasFile(ConfigZipWriter.DIAL_PLAN_CONFIG_FILE_NAME), equalTo(true));
+
+        String expected = InputStreamStringyfier.slurpStream(
+                ConfigServiceImplIT.class.getResourceAsStream("/fixtures/oneCompanyOneClient" +
+                        ".txt")
+        );
+        assertThat(zipStreamReader.getFileContent(ConfigZipWriter.SIP_CONFIG_FILE_NAME), equalTo(expected));
+
+        expected = InputStreamStringyfier.slurpStream(
+                ConfigServiceImplIT.class.getResourceAsStream("/fixtures/oneContextOneApp.txt")
+        );
+        assertThat(zipStreamReader.getFileContent(ConfigZipWriter.DIAL_PLAN_CONFIG_FILE_NAME), equalTo(expected));
 
     }
 
@@ -70,12 +82,183 @@ public class ConfigServiceImplIT {
         ByteArrayOutputStream baos = configServiceInterface.getAsteriskConfiguration();
         ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(baos.toByteArray()));
 
-        String[] expectedNames = {"sip.conf", "extensions.conf"};
-        String[] expectedContent = {sipClientTestHelper.generateSipClientConfig(1, 2),
-                dialPlanTestHelper.getSimpleDialPlan(1, 2)};
+        ZipStreamReader zipStreamReader = new ZipStreamReader(zipInputStream);
 
-        zipStreamTestHelper.testZipEntryContent(zipInputStream, expectedNames, expectedContent);
+        assertThat(zipStreamReader.hasFile(ConfigZipWriter.SIP_CONFIG_FILE_NAME), equalTo(true));
+        assertThat(zipStreamReader.hasFile(ConfigZipWriter.DIAL_PLAN_CONFIG_FILE_NAME), equalTo(true));
 
+        String expected = InputStreamStringyfier.slurpStream(
+                ConfigServiceImplIT.class.getResourceAsStream("/fixtures/oneCompanyTwoClients.txt")
+        );
+        assertThat(zipStreamReader.getFileContent(ConfigZipWriter.SIP_CONFIG_FILE_NAME), equalTo(expected));
+
+        expected = InputStreamStringyfier.slurpStream(
+                ConfigServiceImplIT.class.getResourceAsStream("/fixtures/oneContextTwoApps.txt")
+        );
+    }
+
+    @Test
+    public void getSimpleAsteriskConfigWithSayAlpha() throws Exception {
+        databaseFixtureBuilder
+                .company(1)
+                .addSipClient(1)
+                .addSipClient(2)
+                .addSipClient(3)
+                .addDialPlan(1)
+                .addSayAlpha(1, 1, 1)
+                .build();
+
+        ByteArrayOutputStream baos = configServiceInterface.getAsteriskConfiguration();
+        ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(baos.toByteArray()));
+
+        ZipStreamReader zipStreamReader = new ZipStreamReader(zipInputStream);
+
+        assertThat(zipStreamReader.hasFile(ConfigZipWriter.SIP_CONFIG_FILE_NAME), equalTo(true));
+        assertThat(zipStreamReader.hasFile(ConfigZipWriter.DIAL_PLAN_CONFIG_FILE_NAME), equalTo(true));
+
+        String expected = InputStreamStringyfier.slurpStream(
+                ConfigServiceImplIT.class.getResourceAsStream("/fixtures/oneCompanyThreeClients.txt")
+        );
+        assertThat(zipStreamReader.getFileContent(ConfigZipWriter.SIP_CONFIG_FILE_NAME), equalTo(expected));
+
+        expected = InputStreamStringyfier.slurpStream(
+                ConfigServiceImplIT.class.getResourceAsStream("/fixtures/simpleAsteriskConfigWithSayAlpha.txt")
+        );
+
+        assertThat(zipStreamReader.getFileContent("extensions.conf"), equalTo(expected));
+    }
+
+    @Test
+    public void getSimpleAsteriskConfigWithDial() throws Exception {
+        databaseFixtureBuilder
+                .company(1)
+                .addSipClient(1)
+                .addSipClient(2)
+                .addSipClient(3)
+                .addDialPlan(1)
+                .addDial(1, 2, 1, new int[]{2, 3})
+                .build();
+
+        ByteArrayOutputStream baos = configServiceInterface.getAsteriskConfiguration();
+        ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(baos.toByteArray()));
+
+        ZipStreamReader zipStreamReader = new ZipStreamReader(zipInputStream);
+
+        assertThat(zipStreamReader.hasFile(ConfigZipWriter.SIP_CONFIG_FILE_NAME), equalTo(true));
+        assertThat(zipStreamReader.hasFile(ConfigZipWriter.DIAL_PLAN_CONFIG_FILE_NAME), equalTo(true));
+
+        String expected = InputStreamStringyfier.slurpStream(
+                ConfigServiceImplIT.class.getResourceAsStream("/fixtures/oneCompanyThreeClients.txt")
+        );
+        assertThat(zipStreamReader.getFileContent(ConfigZipWriter.SIP_CONFIG_FILE_NAME), equalTo(expected));
+
+        expected = InputStreamStringyfier.slurpStream(
+                ConfigServiceImplIT.class.getResourceAsStream("/fixtures/simpleAsteriskConfigWithDial.txt")
+        );
+
+        assertThat(zipStreamReader.getFileContent("extensions.conf"), equalTo(expected));
+    }
+
+    @Test
+    public void getSimpleAsteriskConfigWithGoto() throws Exception {
+        databaseFixtureBuilder
+                .company(1)
+                .addSipClient(1)
+                .addSipClient(2)
+                .addSipClient(3)
+                .addDialPlan(1)
+                .addDialPlanNoPhoneNr(2)
+                .addGoto(1, 1, 1, 2)
+                .addDial(1, 1, 2, new int[]{1, 2, 3})
+                .build();
+
+        ByteArrayOutputStream baos = configServiceInterface.getAsteriskConfiguration();
+        ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(baos.toByteArray()));
+
+        ZipStreamReader zipStreamReader = new ZipStreamReader(zipInputStream);
+
+        assertThat(zipStreamReader.hasFile(ConfigZipWriter.SIP_CONFIG_FILE_NAME), equalTo(true));
+        assertThat(zipStreamReader.hasFile(ConfigZipWriter.DIAL_PLAN_CONFIG_FILE_NAME), equalTo(true));
+
+        String expected = InputStreamStringyfier.slurpStream(
+                ConfigServiceImplIT.class.getResourceAsStream("/fixtures/oneCompanyThreeClients.txt")
+        );
+        assertThat(zipStreamReader.getFileContent(ConfigZipWriter.SIP_CONFIG_FILE_NAME), equalTo(expected));
+
+        expected = InputStreamStringyfier.slurpStream(
+                ConfigServiceImplIT.class.getResourceAsStream("/fixtures/simpleAsteriskConfigWithGoto.txt")
+        );
+
+        assertThat(zipStreamReader.getFileContent("extensions.conf"), equalTo(expected));
+    }
+
+    @Test
+    public void getSimpleAsteriskConfigWithSayAlphaAndDial() throws Exception {
+        databaseFixtureBuilder
+                .company(1)
+                .addSipClient(1)
+                .addSipClient(2)
+                .addSipClient(3)
+                .addDialPlan(1)
+                .addSayAlpha(1, 1, 1)
+                .addDial(1, 2, 1, new int[]{2, 3})
+                .build();
+
+        ByteArrayOutputStream baos = configServiceInterface.getAsteriskConfiguration();
+        ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(baos.toByteArray()));
+
+        ZipStreamReader zipStreamReader = new ZipStreamReader(zipInputStream);
+
+        assertThat(zipStreamReader.hasFile(ConfigZipWriter.SIP_CONFIG_FILE_NAME), equalTo(true));
+        assertThat(zipStreamReader.hasFile(ConfigZipWriter.DIAL_PLAN_CONFIG_FILE_NAME), equalTo(true));
+
+        String expected = InputStreamStringyfier.slurpStream(
+                ConfigServiceImplIT.class.getResourceAsStream("/fixtures/oneCompanyThreeClients.txt")
+        );
+        assertThat(zipStreamReader.getFileContent(ConfigZipWriter.SIP_CONFIG_FILE_NAME), equalTo(expected));
+
+        expected = InputStreamStringyfier.slurpStream(
+                ConfigServiceImplIT.class.getResourceAsStream("/fixtures/simpleAsteriskConfigWithSayAlphaAndDial.txt")
+        );
+
+        assertThat(zipStreamReader.getFileContent("extensions.conf"), equalTo(expected));
+    }
+
+    @Test
+    public void getSimpleAsteriskConfigurationWithBranch() throws Exception {
+        databaseFixtureBuilder
+                .company(1)
+                .addSipClient(1)
+                .addSipClient(2)
+                .addSipClient(3)
+                .addDialPlan(1)
+                .addDialPlanNoPhoneNr(2)
+                .addDialPlanNoPhoneNr(3)
+                .addBranchDialPlan(1, 2)
+                .addBranchDialPlan(2, 3)
+                .addBranch(1, 2, 1, Arrays.asList(1, 2))
+                .addDial(1, 1, 2, new int[]{1})
+                .addDial(2, 1, 3, new int[]{2})
+                .build();
+
+        ByteArrayOutputStream baos = configServiceInterface.getAsteriskConfiguration();
+        ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(baos.toByteArray()));
+
+        ZipStreamReader zipStreamReader = new ZipStreamReader(zipInputStream);
+
+        assertThat(zipStreamReader.hasFile(ConfigZipWriter.SIP_CONFIG_FILE_NAME), equalTo(true));
+        assertThat(zipStreamReader.hasFile(ConfigZipWriter.DIAL_PLAN_CONFIG_FILE_NAME), equalTo(true));
+
+        String expected = InputStreamStringyfier.slurpStream(
+                ConfigServiceImplIT.class.getResourceAsStream("/fixtures/oneCompanyThreeClients.txt")
+        );
+        assertThat(zipStreamReader.getFileContent(ConfigZipWriter.SIP_CONFIG_FILE_NAME), equalTo(expected));
+
+        expected = InputStreamStringyfier.slurpStream(
+                ConfigServiceImplIT.class.getResourceAsStream("/fixtures/simpleAsteriskConfigWithBranch.txt")
+        );
+
+        assertThat(zipStreamReader.getFileContent("extensions.conf"), equalTo(expected));
     }
 
 }
