@@ -15,7 +15,7 @@ import java.util.List;
  * @author Jona Braun
  */
 @RestController
-@RequestMapping(path = "/v1")
+@RequestMapping(path = "/v1", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class DialPlanController {
     private final DialPlanServiceInterface dialPlanServiceInterface;
 
@@ -23,29 +23,29 @@ public class DialPlanController {
         this.dialPlanServiceInterface = dialPlanServiceInterface;
     }
 
-    @GetMapping(path = "/dialplans", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(path = "/dialplans")
     public ResponseEntity<List<DialPlanDto>> getAllDialPlans() {
         return new ResponseEntity<>(dialPlanServiceInterface.getAllDialPlans(), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/dialplans/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(path = "/dialplans/{id}")
     public ResponseEntity<DialPlanDto> getDialPlan(@PathVariable long id) {
         return new ResponseEntity<>(dialPlanServiceInterface.getDialPlan(id), HttpStatus.OK);
     }
 
-    @DeleteMapping(path = "/dialplans/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @DeleteMapping(path = "/dialplans/{id}")
     public ResponseEntity<Void> deleteDialPlan(@PathVariable long id) {
         dialPlanServiceInterface.deleteDialPlan(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping(path = "/dialplans/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PutMapping(path = "/dialplans/{id}")
     public ResponseEntity<DialPlanDto> updateDialPlan(@PathVariable long id, @RequestBody DialPlanDto dialPlanDto) {
         dialPlanDto.setId(id);
         return new ResponseEntity<>(dialPlanServiceInterface.updateDialPlan(dialPlanDto), HttpStatus.OK);
     }
 
-    @PostMapping(path = "/dialplans", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(path = "/dialplans")
     public ResponseEntity<DialPlanDto> createDialPlan(@RequestBody DialPlanDto dialPlanDto) {
         return new ResponseEntity<>(dialPlanServiceInterface.createDialPlan(dialPlanDto), HttpStatus.CREATED);
     }

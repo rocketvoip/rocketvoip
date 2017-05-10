@@ -8,13 +8,13 @@ import ch.zhaw.psit4.services.exceptions.AbstractUpdateException;
 import ch.zhaw.psit4.web.utils.Utilities;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
  * @author Rafael Ostertag
  */
-@ControllerAdvice
+@RestControllerAdvice(basePackages = "ch.zhaw.psit4.web")
 public class GlobalControllerExceptionHandler {
     @ExceptionHandler(AbstractRetrievalException.class)
     public ResponseEntity<ErrorDto> handleRetrievalException(AbstractRetrievalException ex) {
