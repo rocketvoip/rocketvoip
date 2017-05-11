@@ -4,6 +4,7 @@ import ch.zhaw.psit4.data.jpa.repositories.AdminRepository;
 import ch.zhaw.psit4.security.auxiliary.SecurityConstants;
 import ch.zhaw.psit4.security.auxiliary.UserDetailsServiceImpl;
 import ch.zhaw.psit4.security.jwt.TokenAuthenticationService;
+import ch.zhaw.psit4.security.jwt.TokenHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -27,10 +28,16 @@ public class SecurityConfig {
     }
 
     @Bean
-    public TokenAuthenticationService tokenAuthenticationService(UserDetailsService userDetailsService) {
+    public TokenHandler tokenHandler(UserDetailsService userDetailsService) {
         SecureRandom secureRandom = new SecureRandom();
         String secret = new BigInteger(130, secureRandom).toString(32);
-        return new TokenAuthenticationService(secret, userDetailsService);
+
+        return new TokenHandler(secret, userDetailsService);
+    }
+
+    @Bean
+    public TokenAuthenticationService tokenAuthenticationService(TokenHandler tokenHandler) {
+        return new TokenAuthenticationService(tokenHandler);
     }
 
     @Bean
