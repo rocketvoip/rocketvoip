@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -30,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
 @Import(BeanConfiguration.class)
-public class ConfigurationControllerSecurityIT {
+public class SipClientControllerSecurityIT {
     @Autowired
     private TokenHandler tokenHandler;
 
@@ -41,8 +40,9 @@ public class ConfigurationControllerSecurityIT {
 
     private DatabaseFixtureBuilder databaseFixtureBuilder;
 
+
     @Before
-    public void setup() {
+    public void setup() throws Exception {
         mvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .apply(springSecurity())
@@ -53,43 +53,41 @@ public class ConfigurationControllerSecurityIT {
 
     @Test
     public void testUnauthenticated() throws Exception {
-        mvc.perform(get("/v1/configuration/zip")).andExpect(
+        mvc.perform(get("/v1/sipclients")).andExpect(
                 status().isUnauthorized()
         );
     }
 
-    @Test(expected = AccessDeniedException.class)
+    @Test
     public void testEndpointWithUnauthorizedUser() throws Exception {
         databaseFixtureBuilder.company(1).addAdministrator(1).build();
         String authToken = tokenHandler.createTokenForUser(new AdminDetails(databaseFixtureBuilder.getAdminList().get
                 (1)));
 
         mvc.perform(
-                get("/v1/configuration/zip")
-                        .accept("application/zip")
+                get("/v1/sipclients")
+                        .accept(MediaType.APPLICATION_JSON_UTF8)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
-                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
-        );
-    }
-
-    @Test
-    public void testEndpointWithAuthorizedUser() throws Exception {
-        databaseFixtureBuilder.company(1)
-                .addSipClient(1)
-                .addOperator(1)
-                .build();
-
-        String authToken = tokenHandler.createTokenForUser(new AdminDetails(databaseFixtureBuilder.getOperatorList().get
-                (1)));
-
-        mvc.perform(
-                get("/v1/configuration/zip")
-                        .accept("application/zip")
                         .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
         ).andExpect(
                 status().isOk()
         );
     }
 
+    @Test
+    public void testEndpointWithAuthorizedUser() throws Exception {
+        databaseFixtureBuilder.company(1).addOperator(1).build();
 
+        String authToken = tokenHandler.createTokenForUser(new AdminDetails(databaseFixtureBuilder.getOperatorList()
+                .get(1)));
+
+        mvc.perform(
+                get("/v1/sipclients")
+                        .accept(MediaType.APPLICATION_JSON_UTF8)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
+        ).andExpect(
+                status().isOk()
+        );
+    }
 }

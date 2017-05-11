@@ -1,9 +1,10 @@
 package ch.zhaw.psit4.web;
 
-import ch.zhaw.psit4.fixtures.database.BeanConfiguration;
-import ch.zhaw.psit4.fixtures.database.DatabaseFixtureBuilder;
-import ch.zhaw.psit4.helper.security.AuthenticationToken;
+import ch.zhaw.psit4.security.auxiliary.AdminDetails;
 import ch.zhaw.psit4.security.auxiliary.SecurityConstants;
+import ch.zhaw.psit4.security.jwt.TokenHandler;
+import ch.zhaw.psit4.testsupport.fixtures.database.BeanConfiguration;
+import ch.zhaw.psit4.testsupport.fixtures.database.DatabaseFixtureBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +32,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(BeanConfiguration.class)
 public class CompanyControllerSecurityIT {
     @Autowired
+    private TokenHandler tokenHandler;
+
+    @Autowired
     private WebApplicationContext context;
 
     private MockMvc mvc;
@@ -56,29 +60,25 @@ public class CompanyControllerSecurityIT {
     }
 
     @Test(expected = AccessDeniedException.class)
-    public void testConfigurationEndpointWithUnauthorizedUser() throws Exception {
+    public void testEndpointWithUnauthorizedUser() throws Exception {
         databaseFixtureBuilder.company(1).addAdministrator(1).build();
-        String authToken = AuthenticationToken.createTokenFor(
-                databaseFixtureBuilder.getAdminList().get(1)
-        );
+        String authToken = tokenHandler.createTokenForUser(new AdminDetails(databaseFixtureBuilder.getAdminList().get
+                (1)));
 
         mvc.perform(
                 get("/v1/companies")
                         .accept(MediaType.APPLICATION_JSON_UTF8)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
-        ).andExpect(
-                status().isForbidden()
         );
     }
 
-    @Test()
-    public void testConfigurationEndpointWithAuthorizedUser() throws Exception {
+    @Test
+    public void testEndpointWithAuthorizedUser() throws Exception {
         databaseFixtureBuilder.company(1).addOperator(1).build();
 
-        String authToken = AuthenticationToken.createTokenFor(
-                databaseFixtureBuilder.getOperatorList().get(1)
-        );
+        String authToken = tokenHandler.createTokenForUser(new AdminDetails(databaseFixtureBuilder.getOperatorList()
+                .get(1)));
 
         mvc.perform(
                 get("/v1/companies")
