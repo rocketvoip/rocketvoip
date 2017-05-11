@@ -10,14 +10,13 @@ import ch.zhaw.psit4.testsupport.mocks.HttpServletMock;
 import ch.zhaw.psit4.testsupport.mocks.UserDetailsServiceMock;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static ch.zhaw.psit4.testsupport.matchers.AdminDetailsEqualTo.adminDetailsEqualTo;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -29,6 +28,7 @@ public class TokenAuthenticationServiceTest {
     private UserDetailsService userDetailsServiceMock;
     private HttpServletResponse httpServletResponseMock;
     private HttpServletRequest httpServletRequestMock;
+    private TokenHandler tokenHandler;
     private Admin admin;
     private AdminDetails adminDetails;
 
@@ -37,7 +37,8 @@ public class TokenAuthenticationServiceTest {
         admin = AdminEntity.createAdmin(1);
         adminDetails = AdminUserFixture.createAdminDetails(admin);
         userDetailsServiceMock = UserDetailsServiceMock.makeMockForAdmin(admin);
-        tokenAuthenticationService = new TokenAuthenticationService("secret", userDetailsServiceMock);
+        tokenHandler = mock(TokenHandler.class);
+        tokenAuthenticationService = new TokenAuthenticationService(tokenHandler);
 
         httpServletResponseMock = HttpServletMock.mockHttpServletResponse();
         httpServletRequestMock = HttpServletMock.mockHttpServletRequest();
@@ -45,36 +46,56 @@ public class TokenAuthenticationServiceTest {
 
     @Test
     public void addAuthentication() throws Exception {
-        UserAuthentication userAuthentication = new UserAuthentication(new AdminDetails(admin));
+        UserDetails userDetails = new AdminDetails(admin);
+        UserAuthentication userAuthentication = new UserAuthentication(userDetails);
+
+        when(tokenHandler.createTokenForUser(userDetails)).thenReturn("token");
+
         String token = tokenAuthenticationService.addAuthentication(httpServletResponseMock, userAuthentication);
 
+        verify(tokenHandler).createTokenForUser(userDetails);
         verify(httpServletResponseMock).addHeader(SecurityConstants.AUTH_HEADER_NAME, token);
+        assertThat(token, equalTo("token"));
     }
 
     @Test
-    public void getAuthentication() throws Exception {
-        UserAuthentication userAuthentication = new UserAuthentication(adminDetails);
-        TokenHandler tokenHandler = new TokenHandler("secret", userDetailsServiceMock);
+    public void getAuthenticationNonNullToken() throws Exception {
+        when(httpServletRequestMock.getHeader(SecurityConstants.AUTH_HEADER_NAME)).thenReturn("token");
+        when(tokenHandler.parseUserFromToken("token")).thenReturn(adminDetails);
 
-        when(httpServletRequestMock.getHeader(SecurityConstants.AUTH_HEADER_NAME))
-                .thenReturn(tokenHandler.createTokenForUser(new AdminDetails(admin)));
+        UserAuthentication actual = tokenAuthenticationService.getAuthentication(httpServletRequestMock);
 
-        UserAuthentication actualUserAuthentication = tokenAuthenticationService.getAuthentication
-                (httpServletRequestMock);
-        AdminDetails actual = (AdminDetails) actualUserAuthentication.getDetails();
-
-        assertThat(actual, adminDetailsEqualTo(adminDetails));
         verify(httpServletRequestMock).getHeader(SecurityConstants.AUTH_HEADER_NAME);
-        verify(userDetailsServiceMock).loadUserByUsername(any());
+        verify(tokenHandler).parseUserFromToken("token");
+
+        assertThat(actual, is(not(nullValue())));
+        assertThat(actual.getName(), equalTo(adminDetails.getUsername()));
+
     }
 
     @Test
-    public void getAuthenticationNull() throws Exception {
-        when(httpServletRequestMock.getHeader(SecurityConstants.AUTH_HEADER_NAME))
-                .thenReturn(null);
+    public void getAuthenticationNullToken() throws Exception {
+        when(httpServletRequestMock.getHeader(SecurityConstants.AUTH_HEADER_NAME)).thenReturn(null);
 
-        UserAuthentication actualUserAuthentication = tokenAuthenticationService.getAuthentication
-                (httpServletRequestMock);
-        assertThat(actualUserAuthentication, is(nullValue()));
+        UserAuthentication actual = tokenAuthenticationService.getAuthentication(httpServletRequestMock);
+
+        verify(httpServletRequestMock).getHeader(SecurityConstants.AUTH_HEADER_NAME);
+        verify(tokenHandler, never()).parseUserFromToken(anyString());
+
+        assertThat(actual, is(nullValue()));
     }
+
+    @Test
+    public void getAuthenticationNullUserDetails() throws Exception {
+        when(httpServletRequestMock.getHeader(SecurityConstants.AUTH_HEADER_NAME)).thenReturn("token");
+        when(tokenHandler.parseUserFromToken("token")).thenReturn(null);
+
+        UserAuthentication actual = tokenAuthenticationService.getAuthentication(httpServletRequestMock);
+
+        verify(httpServletRequestMock).getHeader(SecurityConstants.AUTH_HEADER_NAME);
+        verify(tokenHandler).parseUserFromToken("token");
+
+        assertThat(actual, is(nullValue()));
+    }
+
 }
