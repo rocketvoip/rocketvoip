@@ -49,6 +49,7 @@ public class WebSecurityJWT extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/v1/login").permitAll()
                 .antMatchers("/v1/sipclients/**").hasRole(SecurityConstants.COMPANY_ADMIN_ROLE_NAME)
+                .antMatchers("/v1/dialplans/**").hasRole(SecurityConstants.COMPANY_ADMIN_ROLE_NAME)
                 .antMatchers("/v1/companies/**").hasRole(SecurityConstants.CONFIG_ADMIN_ROLE_NAME)
                 .antMatchers("/v1/configuration/**").hasRole(SecurityConstants.CONFIG_ADMIN_ROLE_NAME)
                 .anyRequest().authenticated();

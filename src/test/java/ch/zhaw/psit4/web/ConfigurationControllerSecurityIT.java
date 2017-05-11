@@ -64,9 +64,9 @@ public class ConfigurationControllerSecurityTest {
     }
 
     @Test
+    @WithMockUser(username = "admin", roles = {SecurityConstants.CONFIG_ADMIN_ROLE_NAME})
     public void testConfigurationEndpointWithAuthorizedUser() throws Exception {
         mvc.perform(get("/v1/configuration/zip")
-                .with(user("admin").roles(SecurityConstants.CONFIG_ADMIN_ROLE_NAME))
                 .accept("application/zip")
         ).andExpect(
                 status().isOk()
