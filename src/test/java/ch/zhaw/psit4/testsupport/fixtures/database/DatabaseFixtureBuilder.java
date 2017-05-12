@@ -24,6 +24,7 @@ public class DatabaseFixtureBuilder {
 
     private Collection<Company> company;
     private Map<Integer, Admin> adminList;
+    private Map<Integer, Admin> operatorList;
     private Map<Integer, SipClient> sipClientList;
     private Map<Integer, DialPlan> dialPlanList;
     private Map<Integer, Dial> dialList;
@@ -50,6 +51,8 @@ public class DatabaseFixtureBuilder {
 
         this.company = new ArrayList<>();
         this.adminList = new HashMap<>();
+        this.operatorList = new HashMap<>();
+
         this.sipClientList = new HashMap<>();
         this.dialPlanList = new HashMap<>();
         this.dialList = new HashMap<>();
@@ -57,6 +60,10 @@ public class DatabaseFixtureBuilder {
         this.gotoList = new HashMap<>();
         this.branchList = new HashMap<>();
         this.branchDialPlanList = new HashMap<>();
+    }
+
+    public Map<Integer, Admin> getOperatorList() {
+        return operatorList;
     }
 
     public DialPlanRepository getDialPlanRepository() {
@@ -99,6 +106,11 @@ public class DatabaseFixtureBuilder {
 
     public DatabaseFixtureBuilder addAdministrator(int number) {
         adminList.put(number, AdminEntity.createAdmin(number));
+        return this;
+    }
+
+    public DatabaseFixtureBuilder addOperator(int number) {
+        operatorList.put(number, OperatorAdminEntity.createOperatorAdmin(number));
         return this;
     }
 
@@ -191,6 +203,11 @@ public class DatabaseFixtureBuilder {
         companyRepository.save(company);
 
         adminList.values().forEach(x -> {
+            x.setCompany(company);
+            adminRepository.save(x);
+        });
+
+        operatorList.values().forEach(x -> {
             x.setCompany(company);
             adminRepository.save(x);
         });

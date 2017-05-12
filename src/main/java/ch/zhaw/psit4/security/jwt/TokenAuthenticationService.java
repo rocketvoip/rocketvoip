@@ -4,7 +4,6 @@ import ch.zhaw.psit4.security.auxiliary.SecurityConstants;
 import ch.zhaw.psit4.security.auxiliary.UserAuthentication;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,8 +16,8 @@ public class TokenAuthenticationService {
 
     private final TokenHandler tokenHandler;
 
-    public TokenAuthenticationService(String secret, UserDetailsService userDetailsService) {
-        tokenHandler = new TokenHandler(secret, userDetailsService);
+    public TokenAuthenticationService(TokenHandler tokenHandler) {
+        this.tokenHandler = tokenHandler;
     }
 
     public String addAuthentication(HttpServletResponse response, UserAuthentication authentication) {
