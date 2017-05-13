@@ -33,6 +33,7 @@ public class SipClientDtoPartialMatcher extends TypeSafeMatcher<SipClientDto> {
     protected boolean matchesSafely(SipClientDto sipClientDto) {
         return expected.getName().equals(sipClientDto.getName()) &&
                 expected.getPhone().equals(sipClientDto.getPhone()) &&
-                expected.getSecret().equals(sipClientDto.getSecret());
+                expected.getSecret().equals(sipClientDto.getSecret()) &&
+                expected.getCompany().equals(sipClientDto.getCompany());
     }
 }
