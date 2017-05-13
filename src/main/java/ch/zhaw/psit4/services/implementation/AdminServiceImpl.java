@@ -62,10 +62,7 @@ public class AdminServiceImpl implements AdminServiceInterface {
     @Override
     public List<AdminDto> getAllAdmins() {
         List<AdminDto> adminDtos = new ArrayList<>();
-        for (Admin admin : adminRepository.findAll()) {
-            if (admin.isSuperAdmin()) {
-                continue;
-            }
+        for (Admin admin : adminRepository.findAllBySuperAdminIsFalse()) {
             adminDtos.add(adminEntityToAdminDto(admin));
         }
         return adminDtos;
@@ -86,13 +83,14 @@ public class AdminServiceImpl implements AdminServiceInterface {
 
     @Override
     public AdminDto updateAdmin(AdminDto adminDto) {
-        List<Company> existingCompanyEntities = new ArrayList<>();
-        adminDto.getCompanyDtoList().forEach(x -> existingCompanyEntities.add(
-                companyRepository.findOne(x.getId())
-        ));
         try {
+            List<Company> existingCompanyEntities = new ArrayList<>();
+            adminDto.getCompanyDtoList().forEach(x -> existingCompanyEntities.add(
+                    companyRepository.findOne(x.getId())
+            ));
 
-            Admin existingAdmin = adminRepository.findOne(adminDto.getId());
+            Admin existingAdmin = adminRepository.findFirstByIdAndSuperAdminIsFalse(adminDto.getId());
+
             existingAdmin.setCompany(existingCompanyEntities);
             existingAdmin.setFirstname(adminDto.getFirstName());
             existingAdmin.setLastname(adminDto.getLastName());
@@ -111,7 +109,7 @@ public class AdminServiceImpl implements AdminServiceInterface {
 
     @Override
     public AdminDto getAdmin(long id) {
-        Admin existingAdmin = adminRepository.findOne(id);
+        Admin existingAdmin = adminRepository.findFirstByIdAndSuperAdminIsFalse(id);
         if (existingAdmin == null) {
             String message = String.format("Could not find admin with id %d", id);
             LOGGER.error(message);
@@ -123,7 +121,8 @@ public class AdminServiceImpl implements AdminServiceInterface {
     @Override
     public void deleteAdmin(long id) {
         try {
-            adminRepository.delete(id);
+            Admin existingAdmin = adminRepository.findFirstByIdAndSuperAdminIsFalse(id);
+            adminRepository.delete(existingAdmin);
         } catch (Exception e) {
             String message = String.format("Could not delete admin with id %d", id);
             LOGGER.error(message, e);

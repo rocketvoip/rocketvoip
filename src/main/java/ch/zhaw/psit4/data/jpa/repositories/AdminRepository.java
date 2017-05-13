@@ -8,4 +8,10 @@ import org.springframework.data.repository.CrudRepository;
  */
 public interface AdminRepository extends CrudRepository<Admin, Long> {
     Admin findByUsername(String username);
+
+    Iterable<Admin> findAllBySuperAdminIsFalse();
+
+    Admin findFirstByIdAndSuperAdminIsFalse(long id);
+
+    void deleteByIdAndSuperAdmin(long id, boolean superAdmin);
 }
