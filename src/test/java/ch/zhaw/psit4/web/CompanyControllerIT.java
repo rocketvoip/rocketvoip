@@ -127,7 +127,7 @@ public class CompanyControllerIT {
         CompanyDto companyDto = CompanyDtoGenerator.getCompanyDto(1);
 
         String creationResponse = mockMvc.perform(
-                MockMvcRequestBuilders.post("/v1/companies")
+                MockMvcRequestBuilders.post(V1_COMPANIES_PATH)
                         .content(Json.toJson(companyDto))
                         .accept(MediaType.APPLICATION_JSON_UTF8)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
