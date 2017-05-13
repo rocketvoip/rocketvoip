@@ -13,5 +13,4 @@ public interface AdminRepository extends CrudRepository<Admin, Long> {
 
     Admin findFirstByIdAndSuperAdminIsFalse(long id);
 
-    void deleteByIdAndSuperAdmin(long id, boolean superAdmin);
 }
