@@ -23,7 +23,7 @@ import java.util.List;
 
 import static ch.zhaw.psit4.testsupport.matchers.CompanyDtoEqualTo.companyDtoEqualTo;
 import static ch.zhaw.psit4.testsupport.matchers.CompanyDtoPartialMatcher.companyDtoAlmostEqualTo;
-import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 
@@ -37,6 +37,7 @@ import static org.junit.Assert.assertThat;
 public class CompanyServiceImplIT {
     private static final long NON_EXISTENT_COMPANY_ID = 124;
     private DatabaseFixtureBuilder databaseFixtureBuilder;
+    private DatabaseFixtureBuilder databaseFixtureBuilder2;
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -47,19 +48,26 @@ public class CompanyServiceImplIT {
     @Before
     public void setUp() throws Exception {
         databaseFixtureBuilder = applicationContext.getBean(DatabaseFixtureBuilder.class);
+        databaseFixtureBuilder2 = applicationContext.getBean(DatabaseFixtureBuilder.class);
     }
 
     @Test
     public void getAllCompanies() throws Exception {
-        // TODO exception when number is set to more then one ?!
         databaseFixtureBuilder.company(1).build();
+        databaseFixtureBuilder2.company(2).build();
 
         List<CompanyDto> companyDtoList = companyServiceImpl.getAllCompanies();
 
-        assertThat(companyDtoList, hasSize(1));
+        assertThat(companyDtoList, hasSize(2));
 
         CompanyDto companyDto1 = CompanyDtoGenerator.getCompanyDto(1);
-        assertThat(companyDtoList, contains(companyDtoAlmostEqualTo(companyDto1)));
+        CompanyDto companyDto2 = CompanyDtoGenerator.getCompanyDto(2);
+
+        assertThat(companyDtoList, containsInAnyOrder(
+                companyDtoAlmostEqualTo(companyDto1),
+                companyDtoAlmostEqualTo(companyDto2)
+        ));
+
     }
 
     @Test
