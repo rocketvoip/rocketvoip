@@ -34,7 +34,7 @@ public class AdminServiceImpl implements AdminServiceInterface {
         this.companyRepository = companyRepository;
     }
 
-    public AdminDto adminEntityToAdminDto(Admin admin) {
+    public static AdminDto adminEntityToAdminDto(Admin admin) {
         AdminDto adminDto = new AdminDto();
         adminDto.setId(admin.getId());
 
@@ -45,12 +45,12 @@ public class AdminServiceImpl implements AdminServiceInterface {
         adminDto.setFirstName(admin.getFirstname());
         adminDto.setLastName(admin.getLastname());
         adminDto.setUserName(admin.getUsername());
-        adminDto.setPassword(admin.getUsername());
+        adminDto.setPassword(admin.getPassword());
 
         return adminDto;
     }
 
-    public Admin adminDtoToAdminEntity(AdminDto adminDto) {
+    public static Admin adminDtoToAdminEntity(AdminDto adminDto) {
         return new Admin(companyDtosToCompanyEntitiesWithId(adminDto.getCompanyDtoList()),
                 adminDto.getFirstName(),
                 adminDto.getLastName(),
@@ -63,6 +63,9 @@ public class AdminServiceImpl implements AdminServiceInterface {
     public List<AdminDto> getAllAdmins() {
         List<AdminDto> adminDtos = new ArrayList<>();
         for (Admin admin : adminRepository.findAll()) {
+            if (admin.isSuperAdmin()) {
+                continue;
+            }
             adminDtos.add(adminEntityToAdminDto(admin));
         }
         return adminDtos;

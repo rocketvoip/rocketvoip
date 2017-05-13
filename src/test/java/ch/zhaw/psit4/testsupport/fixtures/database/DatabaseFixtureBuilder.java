@@ -62,6 +62,10 @@ public class DatabaseFixtureBuilder {
         this.branchDialPlanList = new HashMap<>();
     }
 
+    public Collection<Company> getCompanyList() {
+        return company;
+    }
+
     public Map<Integer, Admin> getOperatorList() {
         return operatorList;
     }
@@ -98,8 +102,24 @@ public class DatabaseFixtureBuilder {
         return branchDialPlanRepository;
     }
 
+    /**
+     * Resets the company list and sets the company with the given number.
+     *
+     * @param number company number
+     * @return this
+     */
     public DatabaseFixtureBuilder company(int number) {
         company.clear();
+        return this.addCompany(number);
+    }
+
+    /**
+     * Used when testing an Admin which can handel multiple companies.
+     *
+     * @param number company number
+     * @return this
+     */
+    public DatabaseFixtureBuilder addCompany(int number) {
         company.add(CompanyEntity.createCompany(number));
         return this;
     }

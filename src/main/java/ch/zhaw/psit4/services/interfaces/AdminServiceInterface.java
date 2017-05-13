@@ -1,6 +1,10 @@
 package ch.zhaw.psit4.services.interfaces;
 
 import ch.zhaw.psit4.dto.AdminDto;
+import ch.zhaw.psit4.services.exceptions.AdminCreationException;
+import ch.zhaw.psit4.services.exceptions.AdminDeletionException;
+import ch.zhaw.psit4.services.exceptions.AdminRetrievalException;
+import ch.zhaw.psit4.services.exceptions.AdminUpdateException;
 
 import java.util.List;
 
