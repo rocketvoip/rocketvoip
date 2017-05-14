@@ -1,15 +1,14 @@
 package ch.zhaw.psit4.security.web;
 
-/**
- * @author Rafael Ostertag
- */
-
 import ch.zhaw.psit4.security.auxiliary.LoginData;
 import ch.zhaw.psit4.security.auxiliary.UserAuthentication;
+import ch.zhaw.psit4.security.dto.AuthenticationDto;
 import ch.zhaw.psit4.security.jwt.TokenAuthenticationService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -24,10 +23,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * @author Rafael Ostertag
+ */
 public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter {
     private static final Logger OUR_LOGGER = LoggerFactory.getLogger(StatelessLoginFilter.class);
-
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
     private final TokenAuthenticationService tokenAuthenticationService;
     private final UserDetailsService userDetailsService;
 
@@ -61,6 +63,22 @@ public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter
 
         userAuthentication.setAuthenticated(true);
         SecurityContextHolder.getContext().setAuthentication(userAuthentication);
+
+        populateResponseWithInformation(response, authenticatedUser);
+
         OUR_LOGGER.info("Successfully authenticated '{}'", authenticatedUser.getUsername());
+    }
+
+    private void populateResponseWithInformation(HttpServletResponse response, UserDetails authenticatedUser) {
+        try {
+            AuthenticationDto authenticationDto = AuthenticationDto.fromUserDetails(authenticatedUser);
+
+            response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+            response.getWriter().print(OBJECT_MAPPER.writeValueAsString(authenticationDto));
+        } catch (JsonProcessingException e) {
+            OUR_LOGGER.error("Error serializing authentication information", e);
+        } catch (IOException e) {
+            OUR_LOGGER.error("Error writing response", e);
+        }
     }
 }
