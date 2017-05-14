@@ -1,6 +1,6 @@
 package ch.zhaw.psit4.web;
 
-import ch.zhaw.psit4.security.auxiliary.LoginDataDto;
+import ch.zhaw.psit4.security.dto.LoginDataDto;
 import ch.zhaw.psit4.testsupport.convenience.Json;
 import ch.zhaw.psit4.testsupport.fixtures.database.BeanConfiguration;
 import ch.zhaw.psit4.testsupport.fixtures.database.DatabaseFixtureBuilder;

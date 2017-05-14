@@ -1,8 +1,8 @@
 package ch.zhaw.psit4.security.web;
 
-import ch.zhaw.psit4.security.auxiliary.LoginDataDto;
 import ch.zhaw.psit4.security.auxiliary.UserAuthentication;
 import ch.zhaw.psit4.security.dto.AuthenticationDto;
+import ch.zhaw.psit4.security.dto.LoginDataDto;
 import ch.zhaw.psit4.security.jwt.TokenAuthenticationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
