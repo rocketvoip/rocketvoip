@@ -1,11 +1,11 @@
 package ch.zhaw.psit4.web;
 
-import ch.zhaw.psit4.dto.CompanyDto;
-import ch.zhaw.psit4.services.implementation.CompanyServiceImpl;
+import ch.zhaw.psit4.dto.AdminDto;
+import ch.zhaw.psit4.services.implementation.AdminServiceImpl;
 import ch.zhaw.psit4.testsupport.convenience.Json;
 import ch.zhaw.psit4.testsupport.fixtures.database.BeanConfiguration;
 import ch.zhaw.psit4.testsupport.fixtures.database.DatabaseFixtureBuilder;
-import ch.zhaw.psit4.testsupport.fixtures.dto.CompanyDtoGenerator;
+import ch.zhaw.psit4.testsupport.fixtures.dto.AdminDtoGenerator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,8 +20,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import static ch.zhaw.psit4.testsupport.matchers.CompanyDtoEqualTo.companyDtoEqualTo;
-import static org.hamcrest.CoreMatchers.*;
+import static ch.zhaw.psit4.testsupport.matchers.AdminDtoEqualTo.adminDtoEqualTo;
+import static ch.zhaw.psit4.testsupport.matchers.AdminDtoPartialMatcher.adminDtoAlmostEqualTo;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayContainingInAnyOrder;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -34,31 +36,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
 @Import(BeanConfiguration.class)
-public class CompanyControllerIT {
-    private static final String V1_COMPANIES_PATH = "/v1/companies";
-    private static final int NON_EXISTING_COMPANY_ID = 100;
+public class AdminControllerIT {
+    private static final String V1_ADMINS_PATH = "/v1/admins";
+    private static final int NON_EXISTING_ADMIN_ID = 1;
 
     @Autowired
     private WebApplicationContext wac;
 
     private DatabaseFixtureBuilder databaseFixtureBuilder1;
     private DatabaseFixtureBuilder databaseFixtureBuilder2;
-
-
     private MockMvc mockMvc;
 
     @Before
     public void setUp() throws Exception {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
-
         databaseFixtureBuilder1 = wac.getBean(DatabaseFixtureBuilder.class);
         databaseFixtureBuilder2 = wac.getBean(DatabaseFixtureBuilder.class);
     }
 
     @Test
-    public void getAllCompaniesEmpty() throws Exception {
+    public void getAllAdminsEmpty() throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders.get(V1_COMPANIES_PATH)
+                MockMvcRequestBuilders.get(V1_ADMINS_PATH)
                         .accept(MediaType.APPLICATION_JSON_UTF8)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
         ).andExpect(
@@ -69,38 +68,38 @@ public class CompanyControllerIT {
     }
 
     @Test
-    public void getNonExistingCompany() throws Exception {
+    public void getNonExistingAdmin() throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders.get(V1_COMPANIES_PATH + "/{id}", NON_EXISTING_COMPANY_ID)
+                MockMvcRequestBuilders.get(V1_ADMINS_PATH + "/{id}", NON_EXISTING_ADMIN_ID)
                         .accept(MediaType.APPLICATION_JSON_UTF8)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
         ).andExpect(
                 status().isNotFound()
         ).andExpect(
-                jsonPath("$.reason").value(equalTo("Could not find company with id " + NON_EXISTING_COMPANY_ID))
+                jsonPath("$.reason").value(equalTo("Could not find admin with id " + NON_EXISTING_ADMIN_ID))
         );
     }
 
     @Test
-    public void deleteNonExistingCompany() throws Exception {
+    public void updateNonExistingAdmin() throws Exception {
+        databaseFixtureBuilder1.addCompany(1).addCompany(2).build();
+        AdminDto adminDto = AdminDtoGenerator.createAdminDto(databaseFixtureBuilder1.getCompanyList(), 1);
+
         mockMvc.perform(
-                MockMvcRequestBuilders.delete(V1_COMPANIES_PATH + "/{id}", NON_EXISTING_COMPANY_ID)
+                MockMvcRequestBuilders.put(V1_ADMINS_PATH + "/{id}", NON_EXISTING_ADMIN_ID)
+                        .content(Json.toJson(adminDto))
                         .accept(MediaType.APPLICATION_JSON_UTF8)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
         ).andExpect(
-                status().isNotFound()
-        ).andExpect(
-                jsonPath("$.reason").value(startsWith("Could not delete company with id " +
-                        NON_EXISTING_COMPANY_ID))
+                status().isBadRequest()
         );
     }
 
     @Test
-    public void updateNonExistingCompany() throws Exception {
-        CompanyDto companyDto = CompanyDtoGenerator.getCompanyDto(1);
-
+    public void createInvalidAdmin() throws Exception {
+        AdminDto companyDto = new AdminDto();
         mockMvc.perform(
-                MockMvcRequestBuilders.put(V1_COMPANIES_PATH + "/{id}", NON_EXISTING_COMPANY_ID)
+                MockMvcRequestBuilders.post(V1_ADMINS_PATH)
                         .content(Json.toJson(companyDto))
                         .accept(MediaType.APPLICATION_JSON_UTF8)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -110,56 +109,50 @@ public class CompanyControllerIT {
     }
 
     @Test
-    public void createInvalidCompany() throws Exception {
-        CompanyDto companyDto = new CompanyDto();
-        mockMvc.perform(
-                MockMvcRequestBuilders.post(V1_COMPANIES_PATH)
-                        .content(Json.toJson(companyDto))
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
-        ).andExpect(
-                status().isBadRequest()
-        );
-    }
-
-    @Test
-    public void createCompany() throws Exception {
-        CompanyDto companyDto = CompanyDtoGenerator.getCompanyDto(1);
+    public void createAdmin() throws Exception {
+        databaseFixtureBuilder1.addCompany(1).addCompany(2).build();
+        AdminDto adminDto = AdminDtoGenerator.createAdminDto(databaseFixtureBuilder1.getCompanyList(), 1);
 
         String creationResponse = mockMvc.perform(
-                MockMvcRequestBuilders.post(V1_COMPANIES_PATH)
-                        .content(Json.toJson(companyDto))
+                MockMvcRequestBuilders.post(V1_ADMINS_PATH)
+                        .content(Json.toJson(adminDto))
                         .accept(MediaType.APPLICATION_JSON_UTF8)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
         ).andExpect(
                 status().isCreated()
         ).andExpect(
-                jsonPath("$.id").value(not(equalTo(companyDto.getId())))
+                jsonPath("$.id").value(not(equalTo(adminDto.getId())))
         ).andExpect(
-                jsonPath("$.name").value(equalTo(companyDto.getName()))
+                jsonPath("$.firstName").value(equalTo(adminDto.getFirstName()))
+        ).andExpect(
+                jsonPath("$.lastName").value(equalTo(adminDto.getLastName()))
+        ).andExpect(
+                jsonPath("$.userName").value(equalTo(adminDto.getUserName()))
+        ).andExpect(
+                jsonPath("$.password").value(equalTo(adminDto.getPassword()))
         ).andReturn().getResponse().getContentAsString();
 
-        CompanyDto createdCompanyDto = Json.toObjectTypeSafe(creationResponse, CompanyDto.class);
+        AdminDto createdAdminDto = Json.toObjectTypeSafe(creationResponse, AdminDto.class);
 
         String response = mockMvc.perform(
-                MockMvcRequestBuilders.get(V1_COMPANIES_PATH + "/{id}", createdCompanyDto.getId())
+                MockMvcRequestBuilders.get(V1_ADMINS_PATH + "/{id}", createdAdminDto.getId())
                         .accept(MediaType.APPLICATION_JSON_UTF8)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
         ).andExpect(
                 status().isOk()
         ).andReturn().getResponse().getContentAsString();
-        CompanyDto actual = Json.toObjectTypeSafe(response, CompanyDto.class);
+        AdminDto actual = Json.toObjectTypeSafe(response, AdminDto.class);
 
-        assertThat(createdCompanyDto, companyDtoEqualTo(actual));
+        assertThat(adminDto, adminDtoAlmostEqualTo(actual));
     }
 
     @Test
-    public void getAllCompanies() throws Exception {
-        databaseFixtureBuilder1.company(1).build();
-        databaseFixtureBuilder2.company(2).build();
+    public void getAllAdmins() throws Exception {
+        databaseFixtureBuilder1.addCompany(1).addCompany(2).addAdministrator(1).build();
+        databaseFixtureBuilder2.addCompany(3).addAdministrator(2).build();
 
         String response = mockMvc.perform(
-                MockMvcRequestBuilders.get(V1_COMPANIES_PATH)
+                MockMvcRequestBuilders.get(V1_ADMINS_PATH)
                         .accept(MediaType.APPLICATION_JSON_UTF8)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
         ).andExpect(
@@ -168,32 +161,36 @@ public class CompanyControllerIT {
                 jsonPath("$.length()").value(equalTo(2))
         ).andReturn().getResponse().getContentAsString();
 
-        CompanyDto createdCompanyDto1 = CompanyServiceImpl.companyEntityToCompanyDto(
-                databaseFixtureBuilder1.getCompany()
+        AdminDto createdAdminDto1 = AdminServiceImpl.adminEntityToAdminDto(
+                databaseFixtureBuilder1.getAdminList().get(1)
         );
-        CompanyDto createdCompanyDto2 = CompanyServiceImpl.companyEntityToCompanyDto(
-                databaseFixtureBuilder2.getCompany()
+
+        AdminDto createdAdminDto2 = AdminServiceImpl.adminEntityToAdminDto(
+                databaseFixtureBuilder2.getAdminList().get(2)
         );
-        CompanyDto[] actual = Json.toObjectTypeSafe(response, CompanyDto[].class);
+
+        AdminDto[] actual = Json.toObjectTypeSafe(response, AdminDto[].class);
 
         assertThat(actual, arrayContainingInAnyOrder(
-                companyDtoEqualTo(createdCompanyDto1),
-                companyDtoEqualTo(createdCompanyDto2)
+                adminDtoEqualTo(createdAdminDto1),
+                adminDtoEqualTo(createdAdminDto2)
         ));
+
+
     }
 
     @Test
-    public void updateCompany() throws Exception {
-        databaseFixtureBuilder1.company(1).build();
-        CompanyDto existingCompany = CompanyServiceImpl.companyEntityToCompanyDto(
-                databaseFixtureBuilder1.getCompany()
+    public void updateAdmin() throws Exception {
+        databaseFixtureBuilder1.addCompany(1).addCompany(2).addAdministrator(1).build();
+        AdminDto existingAdmin = AdminServiceImpl.adminEntityToAdminDto(
+                databaseFixtureBuilder1.getAdminList().get(1)
         );
 
-        CompanyDto updatedCompany = CompanyDtoGenerator.getCompanyDto(2);
-        updatedCompany.setId(existingCompany.getId());
+        AdminDto updatedCompany = AdminDtoGenerator.createAdminDto(existingAdmin.getCompanyDtoList(), 2);
+        updatedCompany.setId(existingAdmin.getId());
 
         String putResult = mockMvc.perform(
-                MockMvcRequestBuilders.put(V1_COMPANIES_PATH + "/{id}", existingCompany.getId())
+                MockMvcRequestBuilders.put(V1_ADMINS_PATH + "/{id}", existingAdmin.getId())
                         .accept(MediaType.APPLICATION_JSON_UTF8)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(Json.toJson(updatedCompany))
@@ -201,31 +198,32 @@ public class CompanyControllerIT {
                 status().isOk()
         ).andReturn().getResponse().getContentAsString();
 
-        CompanyDto actual = Json.toObjectTypeSafe(putResult, CompanyDto.class);
-        assertThat(actual, companyDtoEqualTo(updatedCompany));
+        AdminDto actual = Json.toObjectTypeSafe(putResult, AdminDto.class);
+        assertThat(actual, adminDtoEqualTo(updatedCompany));
 
         String response = mockMvc.perform(
-                MockMvcRequestBuilders.get(V1_COMPANIES_PATH + "/{id}", existingCompany.getId())
+                MockMvcRequestBuilders.get(V1_ADMINS_PATH + "/{id}", existingAdmin.getId())
                         .accept(MediaType.APPLICATION_JSON_UTF8)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
         ).andExpect(
                 status().isOk()
         ).andReturn().getResponse().getContentAsString();
 
-        actual = Json.toObjectTypeSafe(response, CompanyDto.class);
+        actual = Json.toObjectTypeSafe(response, AdminDto.class);
 
-        assertThat(actual, companyDtoEqualTo(updatedCompany));
+        assertThat(actual, adminDtoEqualTo(updatedCompany));
     }
 
     @Test
-    public void deleteCompany() throws Exception {
-        databaseFixtureBuilder1.company(1).build();
-        CompanyDto existingCompany = CompanyServiceImpl.companyEntityToCompanyDto(
-                databaseFixtureBuilder1.getCompany()
+    public void deleteAdmin() throws Exception {
+
+        databaseFixtureBuilder1.addCompany(1).addCompany(2).addAdministrator(1).build();
+        AdminDto existingAdmin = AdminServiceImpl.adminEntityToAdminDto(
+                databaseFixtureBuilder1.getAdminList().get(1)
         );
 
         mockMvc.perform(
-                MockMvcRequestBuilders.delete(V1_COMPANIES_PATH + "/{id}", existingCompany.getId())
+                MockMvcRequestBuilders.delete(V1_ADMINS_PATH + "/{id}", existingAdmin.getId())
                         .accept(MediaType.APPLICATION_JSON_UTF8)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
         ).andExpect(
@@ -233,11 +231,12 @@ public class CompanyControllerIT {
         );
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get(V1_COMPANIES_PATH + "/{id}", existingCompany.getId())
+                MockMvcRequestBuilders.get(V1_ADMINS_PATH + "/{id}", existingAdmin.getId())
                         .accept(MediaType.APPLICATION_JSON_UTF8)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
         ).andExpect(
                 status().isNotFound()
         );
     }
+
 }

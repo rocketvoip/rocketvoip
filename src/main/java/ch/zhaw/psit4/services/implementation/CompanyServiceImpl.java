@@ -52,6 +52,45 @@ public class CompanyServiceImpl implements CompanyServiceInterface {
         return new Company(companyDto.getName());
     }
 
+    /**
+     * Converts a CompanyDto into a Company. The id is also converted.
+     *
+     * @param companyDto instance to be converted
+     * @return Company instance
+     */
+    public static Company companyDtoToCompanyEntityWithId(CompanyDto companyDto) {
+        Company company = companyDtoToCompanyEntity(companyDto);
+        company.setId(companyDto.getId());
+        return company;
+    }
+
+    /**
+     * Converts a list of company entities to dtos. The id is also converted.
+     *
+     * @param companyEntities the list to convert
+     * @return the company dtos
+     */
+    public static List<CompanyDto> companyEntitiesToCompanyDtos(List<Company> companyEntities) {
+        List<CompanyDto> companyDtos = new ArrayList<>();
+        companyEntities.forEach(x -> companyDtos.add(companyEntityToCompanyDto(x)));
+        return companyDtos;
+    }
+
+    /**
+     * Converts a list of company dtos to entities. The id is also converted.
+     *
+     * @param companyDtos the list to convert
+     * @return the company entities
+     */
+    public static List<Company> companyDtosToCompanyEntitiesWithId(List<CompanyDto> companyDtos) {
+        List<Company> companyEntities = new ArrayList<>();
+        companyDtos.forEach(x -> {
+            Company company = companyDtoToCompanyEntityWithId(x);
+            companyEntities.add(company);
+        });
+        return companyEntities;
+    }
+
     @Override
     public List<CompanyDto> getAllCompanies() {
         List<CompanyDto> companyDtoList = new ArrayList<>();
