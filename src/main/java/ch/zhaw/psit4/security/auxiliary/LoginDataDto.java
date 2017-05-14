@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
  * @author Rafael Ostertag
  */
 @Validated
-public class LoginData {
+public class LoginDataDto {
     @NotNull
     @Size(min = 8)
     @JsonProperty

@@ -1,6 +1,6 @@
 package ch.zhaw.psit4.web;
 
-import ch.zhaw.psit4.security.auxiliary.LoginData;
+import ch.zhaw.psit4.security.auxiliary.LoginDataDto;
 import ch.zhaw.psit4.testsupport.convenience.Json;
 import ch.zhaw.psit4.testsupport.fixtures.database.BeanConfiguration;
 import ch.zhaw.psit4.testsupport.fixtures.database.DatabaseFixtureBuilder;
@@ -96,10 +96,10 @@ public class LoginIT {
     }
 
     private String makeAuthenticationJsonStream(String username, String password) throws Exception {
-        LoginData loginData = new LoginData();
-        loginData.setUsername(username);
-        loginData.setPassword(password);
+        LoginDataDto loginDataDto = new LoginDataDto();
+        loginDataDto.setUsername(username);
+        loginDataDto.setPassword(password);
 
-        return Json.toJson(loginData);
+        return Json.toJson(loginDataDto);
     }
 }

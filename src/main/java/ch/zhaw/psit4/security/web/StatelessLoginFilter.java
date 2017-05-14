@@ -1,6 +1,6 @@
 package ch.zhaw.psit4.security.web;
 
-import ch.zhaw.psit4.security.auxiliary.LoginData;
+import ch.zhaw.psit4.security.auxiliary.LoginDataDto;
 import ch.zhaw.psit4.security.auxiliary.UserAuthentication;
 import ch.zhaw.psit4.security.dto.AuthenticationDto;
 import ch.zhaw.psit4.security.jwt.TokenAuthenticationService;
@@ -46,11 +46,12 @@ public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter
     @Override
     public Authentication attemptAuthentication(HttpServletRequest httpServletRequest, HttpServletResponse
             httpServletResponse) throws IOException, ServletException {
-        final LoginData loginData = OBJECT_MAPPER.readValue(httpServletRequest.getInputStream(), LoginData.class);
-        final UsernamePasswordAuthenticationToken authenticationToken = loginData
+        final LoginDataDto loginDataDto = OBJECT_MAPPER.readValue(httpServletRequest.getInputStream(), LoginDataDto
+                .class);
+        final UsernamePasswordAuthenticationToken authenticationToken = loginDataDto
                 .toUsernamePasswordAuthenticationToken();
 
-        OUR_LOGGER.debug("Trying to authenticate user '{}'", loginData.getUsername());
+        OUR_LOGGER.debug("Trying to authenticate user '{}'", loginDataDto.getUsername());
         return getAuthenticationManager().authenticate(authenticationToken);
     }
 
