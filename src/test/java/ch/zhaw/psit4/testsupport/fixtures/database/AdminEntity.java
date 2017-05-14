@@ -11,6 +11,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * @author Rafael Ostertag
  */
 public final class AdminEntity {
+    private static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
+
     private AdminEntity() {
         // intentionally empty
     }
@@ -23,8 +25,6 @@ public final class AdminEntity {
      * @return Admin entity.
      */
     public static Admin createAdmin(int number) {
-
-        final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 
         return new Admin(null,
                 AdminData.getAdminFirstname(number),
