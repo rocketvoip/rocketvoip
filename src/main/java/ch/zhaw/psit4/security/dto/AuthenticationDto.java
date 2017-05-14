@@ -1,6 +1,7 @@
 package ch.zhaw.psit4.security.dto;
 
 import ch.zhaw.psit4.security.auxiliary.SecurityConstants;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -11,7 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
  */
 @Data
 public class AuthenticationDto {
-    private boolean isOperator = false;
+    @JsonProperty("isOperator")
+    private boolean operator = false;
 
     /**
      * Create a AuthenticationDto from a UserDetails instance, based on the Authorities.
