@@ -5,6 +5,7 @@ import ch.zhaw.psit4.testsupport.convenience.Json;
 import ch.zhaw.psit4.testsupport.fixtures.database.BeanConfiguration;
 import ch.zhaw.psit4.testsupport.fixtures.database.DatabaseFixtureBuilder;
 import ch.zhaw.psit4.testsupport.fixtures.general.AdminData;
+import ch.zhaw.psit4.testsupport.fixtures.general.OperatorAdminData;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,8 +21,10 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.transaction.Transactional;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -61,7 +64,7 @@ public class LoginIT {
     }
 
     @Test
-    public void testKnownUser() throws Exception {
+    public void testAdmin() throws Exception {
         databaseFixtureBuilder.addAdministrator(1).build();
 
         String loginJsonStream = makeAuthenticationJsonStream(AdminData.getAdminUsername(1), AdminData
@@ -71,6 +74,24 @@ public class LoginIT {
                 post("/v1/login").contentType(MediaType.APPLICATION_JSON_UTF8).content(loginJsonStream)
         ).andExpect(
                 status().isOk()
+        ).andExpect(
+                jsonPath("$.isOperator").value(equalTo(false))
+        );
+    }
+
+    @Test
+    public void testOperator() throws Exception {
+        databaseFixtureBuilder.addOperator(1).build();
+
+        String loginJsonStream = makeAuthenticationJsonStream(OperatorAdminData.getOperatorAdminUsername(1),
+                OperatorAdminData.getOperatorAdminPassword(1)
+        );
+        mockMvc.perform(
+                post("/v1/login").contentType(MediaType.APPLICATION_JSON_UTF8).content(loginJsonStream)
+        ).andExpect(
+                status().isOk()
+        ).andExpect(
+                jsonPath("$.isOperator").value(equalTo(true))
         );
     }
 
