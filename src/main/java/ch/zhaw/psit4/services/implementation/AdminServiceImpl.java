@@ -137,7 +137,7 @@ public class AdminServiceImpl implements AdminServiceInterface {
                 .map(CompanyDto::getId)
                 .collect(Collectors.toList());
 
-        List<Company> companies = companyRepository.findCompaniesById(companyIds);
+        List<Company> companies = companyRepository.idIsIn(companyIds);
         assert companies != null;
 
         if (companyIds.size() != companies.size()) {

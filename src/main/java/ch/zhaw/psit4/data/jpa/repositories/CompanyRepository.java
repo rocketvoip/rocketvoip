@@ -11,5 +11,5 @@ import java.util.List;
 public interface CompanyRepository extends CrudRepository<Company, Long> {
     Company findByName(String name);
 
-    List<Company> findCompaniesById(List<Long> idList);
+    List<Company> idIsIn(List<Long> idList);
 }
