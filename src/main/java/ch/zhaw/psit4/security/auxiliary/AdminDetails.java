@@ -5,9 +5,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Rafael Ostertag
@@ -19,12 +18,14 @@ public class AdminDetails implements UserDetails {
     private String username;
     private String password;
     private boolean superAdmin;
+    private List<Long> companyIds;
     private Set<GrantedAuthority> grantedAuthorityList;
 
     public AdminDetails(Admin admin) {
         super();
 
         grantedAuthorityList = new HashSet<>(INITIAL_AUTHORITY_CAPACITY);
+        companyIds = new ArrayList<>();
 
         initializeFromAdmin(admin);
         computeAuthorities();
@@ -60,6 +61,14 @@ public class AdminDetails implements UserDetails {
         username = admin.getUsername();
         password = admin.getPassword();
         superAdmin = admin.isSuperAdmin();
+
+        if (admin.getCompany() != null) {
+            companyIds = admin
+                    .getCompany()
+                    .stream()
+                    .map(x -> x.getId())
+                    .collect(Collectors.toList());
+        }
     }
 
     @Override
@@ -96,5 +105,9 @@ public class AdminDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public List<Long> getCompanyIds() {
+        return companyIds;
     }
 }
