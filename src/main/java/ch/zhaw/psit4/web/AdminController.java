@@ -16,7 +16,7 @@ import java.util.List;
  * @author Jona Braun
  */
 @RestController
-@RequestMapping(path = "/v1",
+@RequestMapping(path = "/v1/admins",
         produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class AdminController {
     private final AdminServiceInterface adminServiceInterface;
@@ -25,30 +25,30 @@ public class AdminController {
         this.adminServiceInterface = adminServiceInterface;
     }
 
-    @GetMapping(path = "/admins")
+    @GetMapping()
     public ResponseEntity<List<AdminDto>> getAllAdmins() {
         return new ResponseEntity<>(adminServiceInterface.getAllAdmins(), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/admins/{id}")
+    @GetMapping(path = "/{id}")
     public ResponseEntity<AdminDto> getAdmin(@PathVariable long id) {
         return new ResponseEntity<>
                 (adminServiceInterface.getAdmin(id), HttpStatus.OK);
     }
 
-    @DeleteMapping(path = "/admins/{id}")
+    @DeleteMapping(path = "/{id}")
     public ResponseEntity<Void> deleteAdmin(@PathVariable long id) {
         adminServiceInterface.deleteAdmin(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping(path = "/admins/{id}")
+    @PutMapping(path = "/{id}")
     public ResponseEntity<AdminDto> updateAdmin(@PathVariable long id, @RequestBody AdminDto adminDto) {
         adminDto.setId(id);
         return new ResponseEntity<>(adminServiceInterface.updateAdmin(adminDto), HttpStatus.OK);
     }
 
-    @PostMapping(path = "/admins")
+    @PostMapping()
     public ResponseEntity<AdminDto> createAdmin(@RequestBody AdminWithPasswordDto adminDto) {
         return new ResponseEntity<>(
                 adminServiceInterface.createAdmin(adminDto), HttpStatus.CREATED);
