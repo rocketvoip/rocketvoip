@@ -1,6 +1,7 @@
 package ch.zhaw.psit4.services.interfaces;
 
 import ch.zhaw.psit4.dto.AdminDto;
+import ch.zhaw.psit4.dto.AdminWithPasswordDto;
 import ch.zhaw.psit4.services.exceptions.AdminCreationException;
 import ch.zhaw.psit4.services.exceptions.AdminDeletionException;
 import ch.zhaw.psit4.services.exceptions.AdminRetrievalException;
@@ -30,7 +31,7 @@ public interface AdminServiceInterface {
      * @return The created admin with the the unique id.
      * @throws AdminCreationException Implementations are expected to throw this exception on error.
      */
-    AdminDto createAdmin(AdminDto newAdmin);
+    AdminDto createAdmin(AdminWithPasswordDto newAdmin);
 
     /**
      * Updates an existing admin.
