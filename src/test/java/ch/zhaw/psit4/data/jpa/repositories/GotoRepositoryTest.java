@@ -34,7 +34,7 @@ public class GotoRepositoryTest {
 
     @Test
     public void createOneGoto() throws Exception {
-        databaseFixtureBuilder.company(1).addDialPlan(1).addDialPlan(2);
+        databaseFixtureBuilder.setCompany(1).addDialPlan(1).addDialPlan(2);
         databaseFixtureBuilder.addGoto(1, 1234, 1, 2);
         databaseFixtureBuilder.build();
 
@@ -54,7 +54,7 @@ public class GotoRepositoryTest {
 
     @Test
     public void createTwoGoto() throws Exception {
-        databaseFixtureBuilder.company(1).addDialPlan(1).addDialPlan(2).addDialPlan(3);
+        databaseFixtureBuilder.setCompany(1).addDialPlan(1).addDialPlan(2).addDialPlan(3);
         databaseFixtureBuilder.addGoto(1, 1, 1, 2);
         databaseFixtureBuilder.addGoto(2, 1, 2, 3);
         databaseFixtureBuilder.build();

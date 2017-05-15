@@ -69,7 +69,7 @@ public class ConfigurationControllerIT {
     public void getAsteriskConfigurationTestZipAttachment() throws Exception {
         for (int companyNumber = 1; companyNumber <= NUMBER_OF_TEST_COMPANIES; companyNumber++) {
             DatabaseFixtureBuilder databaseFixtureBuilder = wac.getBean(DatabaseFixtureBuilder.class);
-            databaseFixtureBuilder.company(companyNumber);
+            databaseFixtureBuilder.setCompany(companyNumber);
             for (int i = 1; i <= NUMBER_CLIENTS_PER_COMPANY; i++) {
                 databaseFixtureBuilder.addSipClient(i);
             }

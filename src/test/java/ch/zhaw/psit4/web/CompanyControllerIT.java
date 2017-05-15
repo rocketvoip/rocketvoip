@@ -155,8 +155,8 @@ public class CompanyControllerIT {
 
     @Test
     public void getAllCompanies() throws Exception {
-        databaseFixtureBuilder1.company(1).build();
-        databaseFixtureBuilder2.company(2).build();
+        databaseFixtureBuilder1.setCompany(1).build();
+        databaseFixtureBuilder2.setCompany(2).build();
 
         String response = mockMvc.perform(
                 MockMvcRequestBuilders.get(V1_COMPANIES_PATH)
@@ -169,10 +169,10 @@ public class CompanyControllerIT {
         ).andReturn().getResponse().getContentAsString();
 
         CompanyDto createdCompanyDto1 = CompanyServiceImpl.companyEntityToCompanyDto(
-                databaseFixtureBuilder1.getCompany()
+                databaseFixtureBuilder1.getFirstCompany()
         );
         CompanyDto createdCompanyDto2 = CompanyServiceImpl.companyEntityToCompanyDto(
-                databaseFixtureBuilder2.getCompany()
+                databaseFixtureBuilder2.getFirstCompany()
         );
         CompanyDto[] actual = Json.toObjectTypeSafe(response, CompanyDto[].class);
 
@@ -184,9 +184,9 @@ public class CompanyControllerIT {
 
     @Test
     public void updateCompany() throws Exception {
-        databaseFixtureBuilder1.company(1).build();
+        databaseFixtureBuilder1.setCompany(1).build();
         CompanyDto existingCompany = CompanyServiceImpl.companyEntityToCompanyDto(
-                databaseFixtureBuilder1.getCompany()
+                databaseFixtureBuilder1.getFirstCompany()
         );
 
         CompanyDto updatedCompany = CompanyDtoGenerator.getCompanyDto(2);
@@ -219,9 +219,9 @@ public class CompanyControllerIT {
 
     @Test
     public void deleteCompany() throws Exception {
-        databaseFixtureBuilder1.company(1).build();
+        databaseFixtureBuilder1.setCompany(1).build();
         CompanyDto existingCompany = CompanyServiceImpl.companyEntityToCompanyDto(
-                databaseFixtureBuilder1.getCompany()
+                databaseFixtureBuilder1.getFirstCompany()
         );
 
         mockMvc.perform(

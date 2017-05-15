@@ -61,7 +61,7 @@ public class CompanyControllerSecurityIT {
 
     @Test(expected = AccessDeniedException.class)
     public void testEndpointWithUnauthorizedUser() throws Exception {
-        databaseFixtureBuilder.company(1).addAdministrator(1).build();
+        databaseFixtureBuilder.setCompany(1).addAdministrator(1).build();
         String authToken = tokenHandler.createTokenForUser(new AdminDetails(databaseFixtureBuilder.getAdminList().get
                 (1)));
 
@@ -75,7 +75,7 @@ public class CompanyControllerSecurityIT {
 
     @Test
     public void testEndpointWithAuthorizedUser() throws Exception {
-        databaseFixtureBuilder.company(1).addOperator(1).build();
+        databaseFixtureBuilder.setCompany(1).addOperator(1).build();
 
         String authToken = tokenHandler.createTokenForUser(new AdminDetails(databaseFixtureBuilder.getOperatorList()
                 .get(1)));
