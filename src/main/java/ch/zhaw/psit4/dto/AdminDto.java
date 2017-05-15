@@ -1,7 +1,6 @@
 package ch.zhaw.psit4.dto;
 
 import lombok.Data;
-import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -13,7 +12,6 @@ import java.util.List;
  * @author Jona Braun
  */
 @Data
-@Validated
 public class AdminDto {
 
     private long id;
