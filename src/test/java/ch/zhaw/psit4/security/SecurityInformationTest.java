@@ -7,17 +7,18 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
+
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Rafael Ostertag
  */
 public class SecurityInformationTest {
     @Test
-    public void currentPrincipalHappyPath() throws Exception {
+    public void getAdminDetailsHappyPath() throws Exception {
         SecurityContext securityContext = mock(SecurityContext.class);
         Authentication authentication = mock(Authentication.class);
 
@@ -28,7 +29,7 @@ public class SecurityInformationTest {
         when(authentication.getPrincipal()).thenReturn(adminDetails);
 
         SecurityInformation securityInformation = new SecurityInformation(securityContext);
-        assertThat(securityInformation.currentPrincipal(), equalTo(adminDetails));
+        assertThat(securityInformation.getAdminDetails(), equalTo(adminDetails));
     }
 
     @Test(expected = SecurityException.class)
@@ -40,7 +41,6 @@ public class SecurityInformationTest {
         when(securityContext.getAuthentication()).thenReturn(authentication);
 
         SecurityInformation securityInformation = new SecurityInformation(securityContext);
-        securityInformation.currentPrincipal();
     }
 
     @Test(expected = SecurityException.class)
@@ -53,7 +53,64 @@ public class SecurityInformationTest {
         when(securityContext.getAuthentication()).thenReturn(authentication);
 
         SecurityInformation securityInformation = new SecurityInformation(securityContext);
-        securityInformation.currentPrincipal();
+    }
+
+    @Test
+    public void isOperatorTrue() throws Exception {
+        SecurityContext securityContext = mock(SecurityContext.class);
+        Authentication authentication = mock(Authentication.class);
+
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+
+        AdminDetails adminDetails = mock(AdminDetails.class);
+        when(adminDetails.isSuperAdmin()).thenReturn(true);
+
+        when(authentication.getPrincipal()).thenReturn(adminDetails);
+
+        SecurityInformation securityInformation = new SecurityInformation(securityContext);
+
+        assertThat(securityInformation.getAdminDetails(), equalTo(adminDetails));
+        assertThat(securityInformation.isOperator(), equalTo(true));
+
+        verify(adminDetails).isSuperAdmin();
+    }
+
+    @Test
+    public void isOperatorFalse() throws Exception {
+        SecurityContext securityContext = mock(SecurityContext.class);
+        Authentication authentication = mock(Authentication.class);
+
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+
+        AdminDetails adminDetails = mock(AdminDetails.class);
+        when(adminDetails.isSuperAdmin()).thenReturn(false);
+
+        when(authentication.getPrincipal()).thenReturn(adminDetails);
+
+        SecurityInformation securityInformation = new SecurityInformation(securityContext);
+
+        assertThat(securityInformation.getAdminDetails(), equalTo(adminDetails));
+        assertThat(securityInformation.isOperator(), equalTo(false));
+
+        verify(adminDetails).isSuperAdmin();
+    }
+
+    @Test
+    public void allowedCompanies() throws Exception {
+        SecurityContext securityContext = mock(SecurityContext.class);
+        Authentication authentication = mock(Authentication.class);
+
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+
+        AdminDetails adminDetails = mock(AdminDetails.class);
+        when(adminDetails.getCompanyIds()).thenReturn(new ArrayList<>());
+
+        when(authentication.getPrincipal()).thenReturn(adminDetails);
+
+        SecurityInformation securityInformation = new SecurityInformation(securityContext);
+
+        securityInformation.allowedCompanies();
+        verify(adminDetails).getCompanyIds();
     }
 
 }

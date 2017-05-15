@@ -5,6 +5,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContext;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Easy access to current Spring Security Context information.
  * <p>
@@ -15,13 +18,14 @@ import org.springframework.security.core.context.SecurityContext;
  */
 public class SecurityInformation {
     private static final Logger LOGGER = LoggerFactory.getLogger(SecurityInformation.class);
-    private final SecurityContext securityContext;
+
+    private final AdminDetails adminDetails;
 
     public SecurityInformation(final SecurityContext securityContext) {
-        this.securityContext = securityContext;
+        adminDetails = currentPrincipal(securityContext);
     }
 
-    public AdminDetails currentPrincipal() {
+    private AdminDetails currentPrincipal(final SecurityContext securityContext) {
         final Object principal = securityContext.getAuthentication().getPrincipal();
 
         if (principal == null) {
@@ -38,4 +42,17 @@ public class SecurityInformation {
 
         return (AdminDetails) principal;
     }
+
+    public boolean isOperator() {
+        return adminDetails.isSuperAdmin();
+    }
+
+    public AdminDetails getAdminDetails() {
+        return adminDetails;
+    }
+
+    public List<Long> allowedCompanies() {
+        return Collections.unmodifiableList(adminDetails.getCompanyIds());
+    }
+
 }
