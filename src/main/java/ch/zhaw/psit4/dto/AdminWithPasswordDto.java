@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -14,14 +15,14 @@ import javax.validation.constraints.Size;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(exclude = {"password"}, callSuper = true)
+@Validated
 public class AdminWithPasswordDto extends AdminDto {
     private static final BCryptPasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 
-    @NotNull
-    @Size(min = 8)
     private String password;
 
-    public void setPassword(String password) {
+    // TODO: Get the validation working...
+    public void setPassword(@NotNull @Size(min = 8) String password) {
         this.password = PASSWORD_ENCODER.encode(password);
     }
 }
