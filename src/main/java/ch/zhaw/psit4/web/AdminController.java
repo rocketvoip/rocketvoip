@@ -6,6 +6,7 @@ import ch.zhaw.psit4.services.interfaces.AdminServiceInterface;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,13 +44,13 @@ public class AdminController {
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity<AdminDto> updateAdmin(@PathVariable long id, @RequestBody AdminDto adminDto) {
+    public ResponseEntity<AdminDto> updateAdmin(@PathVariable long id, @Validated @RequestBody AdminDto adminDto) {
         adminDto.setId(id);
         return new ResponseEntity<>(adminServiceInterface.updateAdmin(adminDto), HttpStatus.OK);
     }
 
     @PostMapping()
-    public ResponseEntity<AdminDto> createAdmin(@RequestBody AdminWithPasswordDto adminDto) {
+    public ResponseEntity<AdminDto> createAdmin(@Validated @RequestBody AdminWithPasswordDto adminDto) {
         return new ResponseEntity<>(
                 adminServiceInterface.createAdmin(adminDto), HttpStatus.CREATED);
     }
