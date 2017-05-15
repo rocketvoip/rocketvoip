@@ -1,8 +1,11 @@
 package ch.zhaw.psit4.dto;
 
+import ch.zhaw.psit4.testsupport.fixtures.dto.AdminDtoGenerator;
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.startsWith;
+import java.util.Collections;
+
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -17,4 +20,10 @@ public class AdminWithPasswordDtoTest {
         assertThat(adminWithPasswordDto.getPassword(), startsWith("$2a$"));
     }
 
+    @Test
+    public void toStringDoesNotRevealPassword() throws Exception {
+        AdminWithPasswordDto adminWithPasswordDto = AdminDtoGenerator.createAdminDto(Collections
+                .<CompanyDto>emptyList(), 1);
+        assertThat(adminWithPasswordDto.toString(), not(containsString("password")));
+    }
 }
