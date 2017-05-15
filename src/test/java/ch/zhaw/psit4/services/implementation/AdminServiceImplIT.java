@@ -88,7 +88,7 @@ public class AdminServiceImplIT {
     }
 
     @Test
-    public void updateAdmin() throws Exception {
+    public void updateAdminOneCompany() throws Exception {
         databaseFixtureBuilder
                 .addCompany(1)
                 .addCompany(2)
@@ -115,12 +115,43 @@ public class AdminServiceImplIT {
     }
 
     @Test
+    public void updateAdminTwoCompanies() throws Exception {
+        databaseFixtureBuilder
+                .addCompany(1)
+                .addCompany(2)
+                .addCompany(3)
+                .addAdministrator(1)
+                .build();
+
+        // Make sure we've created an admin belonging to three companies
+        AdminDto adminDto = adminServiceImpl.getAdmin(databaseFixtureBuilder.getAdminList().get(1).getId());
+        assertThat(adminDto.getCompanyDtoList(), hasSize(3));
+
+        // Prepare to updated the existing admin update. We want to have two companies
+        CompanyDto companyDto1 = CompanyDtoGenerator.getCompanyDto(3);
+        companyDto1.setId(databaseFixtureBuilder.getCompany(3).getId());
+
+        CompanyDto companyDto2 = CompanyDtoGenerator.getCompanyDto(2);
+        companyDto2.setId(databaseFixtureBuilder.getCompany(2).getId());
+
+        // Create the admin 2 Dto used to update the existing admin 1.
+        AdminDto updatedAdmin = AdminDtoGenerator.createAdminDto(Arrays.asList(new CompanyDto[]{companyDto1,
+                companyDto2}), 2);
+        // Set the id to the id of admin 1
+        updatedAdmin.setId(databaseFixtureBuilder.getAdminList().get(1).getId());
+
+        AdminDto actual = adminServiceImpl.updateAdmin(updatedAdmin);
+
+        assertThat(updatedAdmin, adminDtoEqualTo(actual));
+    }
+
+    @Test
     public void updateAdminWithEmptyCompanies() throws Exception {
         databaseFixtureBuilder
                 .addAdministrator(1)
                 .build();
 
-        // Make sure we've created an admin belonging to three companies
+        // Make sure we've created an admin belonging to no company
         AdminDto adminDto = adminServiceImpl.getAdmin(databaseFixtureBuilder.getAdminList().get(1).getId());
         assertThat(adminDto.getCompanyDtoList(), hasSize(0));
 
@@ -141,7 +172,7 @@ public class AdminServiceImplIT {
                 .addAdministrator(1)
                 .build();
 
-        // Make sure we've created an admin belonging to three companies
+        // Make sure we've created an admin belonging to one company
         AdminDto adminDto = adminServiceImpl.getAdmin(databaseFixtureBuilder.getAdminList().get(1).getId());
         assertThat(adminDto.getCompanyDtoList(), hasSize(1));
 
@@ -162,19 +193,28 @@ public class AdminServiceImplIT {
     public void updateAdminWithNonExistingCompany() throws Exception {
         databaseFixtureBuilder
                 .addCompany(1)
+                .addCompany(2)
                 .addAdministrator(1)
                 .build();
 
-        // Make sure we've created an admin belonging to three companies
+        // Make sure we've created an admin belonging to two companies
         AdminDto adminDto = adminServiceImpl.getAdmin(databaseFixtureBuilder.getAdminList().get(1).getId());
-        assertThat(adminDto.getCompanyDtoList(), hasSize(1));
+        assertThat(adminDto.getCompanyDtoList(), hasSize(2));
 
         // Prepare to updated the existing admin update. We want to have only one company.
-        CompanyDto companyDto = CompanyDtoGenerator.getCompanyDto(3);
-        companyDto.setId(NON_EXISTING_COMPANY_ID);
+        CompanyDto companyDto1 = CompanyDtoGenerator.getCompanyDto(1);
+        companyDto1.setId(databaseFixtureBuilder.getCompany(1).getId());
+
+        CompanyDto companyDto2 = CompanyDtoGenerator.getCompanyDto(2);
+        companyDto2.setId(databaseFixtureBuilder.getCompany(2).getId());
+
+        // Prepare the non existing company
+        CompanyDto nonExistingCompany = CompanyDtoGenerator.getCompanyDto(3);
+        nonExistingCompany.setId(NON_EXISTING_COMPANY_ID);
 
         // Create the admin 2 Dto used to update the existing admin 1.
-        AdminDto updatedAdmin = AdminDtoGenerator.createAdminDto(Arrays.asList(new CompanyDto[]{companyDto}), 2);
+        AdminDto updatedAdmin = AdminDtoGenerator.createAdminDto(
+                Arrays.asList(new CompanyDto[]{companyDto1, companyDto2, nonExistingCompany}), 2);
         // Set the id to the id of admin 1
         updatedAdmin.setId(databaseFixtureBuilder.getAdminList().get(1).getId());
 
@@ -196,8 +236,7 @@ public class AdminServiceImplIT {
 
     /**
      * It is possible for an admin to have no companies associated (in the database backend). In fact, we rely on that
-     * when creating the
-     * initial admin.
+     * when creating the initial admin.
      *
      * @throws Exception
      */
