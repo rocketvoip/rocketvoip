@@ -1,6 +1,7 @@
 package ch.zhaw.psit4.web;
 
 import ch.zhaw.psit4.dto.AdminDto;
+import ch.zhaw.psit4.dto.AdminWithPasswordDto;
 import ch.zhaw.psit4.services.interfaces.AdminServiceInterface;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -48,7 +49,7 @@ public class AdminController {
     }
 
     @PostMapping(path = "/admins")
-    public ResponseEntity<AdminDto> createAdmin(@RequestBody AdminDto adminDto) {
+    public ResponseEntity<AdminDto> createAdmin(@RequestBody AdminWithPasswordDto adminDto) {
         return new ResponseEntity<>(
                 adminServiceInterface.createAdmin(adminDto), HttpStatus.CREATED);
     }
