@@ -138,11 +138,23 @@ public class AdminServiceImpl implements AdminServiceInterface {
                 .collect(Collectors.toList());
 
         List<Company> companies = companyRepository.findCompaniesById(companyIds);
+        assert companies != null;
+
         if (companyIds.size() != companies.size()) {
-            // TODO: provide list of ids.
-            String message = "Could not retrieve all companies specified in Dto List";
-            LOGGER.error(message);
-            throw new CompanyRetrievalException(message);
+            // We have a simple message, intended for the exception which might leave the server, thus leaking
+            // information and an exhaustive message intended for the log on the server.
+            String simpleMessage = "Could not retrieve all companies specified in Dto List";
+
+            String dtoIdList = companyDtos.stream().reduce(
+                    "", (a, b) -> a + b.getId(), (a, b) -> a + "," + b);
+
+            String foundCompanies = companies.stream().reduce(
+                    "", (a, b) -> a + b.getId(), (a, b) -> a + "," + b);
+
+            if (LOGGER.isErrorEnabled()) {
+                LOGGER.error(String.format("%s: DTO IDs %s, found IDs %s", simpleMessage, dtoIdList, foundCompanies));
+            }
+            throw new CompanyRetrievalException(simpleMessage);
         }
 
         return companies;
