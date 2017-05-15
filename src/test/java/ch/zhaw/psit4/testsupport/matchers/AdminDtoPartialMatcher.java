@@ -28,7 +28,24 @@ public class AdminDtoPartialMatcher extends TypeSafeMatcher<AdminDto> {
         return expected.getFirstName().equals(item.getFirstName())
                 && expected.getLastName().equals(item.getLastName())
                 && expected.getUserName().equals(item.getUserName())
-                && expected.getCompanyDtoList().containsAll(item.getCompanyDtoList());
+                && matchCompanies(item);
+    }
+
+    private boolean matchCompanies(AdminDto item) {
+        if (expected.getCompanyDtoList() == null &&
+                item.getCompanyDtoList() == null) {
+            return true;
+        }
+
+        if (expected.getCompanyDtoList() != null && item.getCompanyDtoList() == null) {
+            return false;
+        }
+
+        if (expected.getCompanyDtoList() == null && item.getCompanyDtoList() != null) {
+            return false;
+        }
+
+        return expected.getCompanyDtoList().containsAll(item.getCompanyDtoList());
     }
 
     @Override
