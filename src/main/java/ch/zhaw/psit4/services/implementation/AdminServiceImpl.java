@@ -146,10 +146,16 @@ public class AdminServiceImpl implements AdminServiceInterface {
             String simpleMessage = "Could not retrieve all companies specified in Dto List";
 
             String dtoIdList = companyDtos.stream().reduce(
-                    "", (a, b) -> a + b.getId(), (a, b) -> a + "," + b);
+                    "",
+                    (a, b) -> a.isEmpty() ? a + b.getId() : a + "," + b.getId(),
+                    (a, b) -> a + b
+            );
 
             String foundCompanies = companies.stream().reduce(
-                    "", (a, b) -> a + b.getId(), (a, b) -> a + "," + b);
+                    "",
+                    (a, b) -> a.isEmpty() ? a + b.getId() : a + "," + b.getId(),
+                    (a, b) -> a + b
+            );
 
             if (LOGGER.isErrorEnabled()) {
                 LOGGER.error(String.format("%s: DTO IDs %s, found IDs %s", simpleMessage, dtoIdList, foundCompanies));
