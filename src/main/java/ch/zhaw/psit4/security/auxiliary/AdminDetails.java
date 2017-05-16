@@ -1,6 +1,7 @@
 package ch.zhaw.psit4.security.auxiliary;
 
 import ch.zhaw.psit4.data.jpa.entities.Admin;
+import ch.zhaw.psit4.data.jpa.entities.Company;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -66,7 +67,7 @@ public class AdminDetails implements UserDetails {
             companyIds = admin
                     .getCompany()
                     .stream()
-                    .map(x -> x.getId())
+                    .map(Company::getId)
                     .collect(Collectors.toList());
         }
     }

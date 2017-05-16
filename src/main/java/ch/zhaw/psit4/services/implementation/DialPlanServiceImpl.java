@@ -98,12 +98,9 @@ public class DialPlanServiceImpl implements DialPlanServiceInterface {
 
     @Override
     public List<DialPlanDto> getAllDialPlans() {
-        List<DialPlanDto> dialPlanDtoList =
-                StreamSupport.stream(dialPlanRepository.findAll().spliterator(), false)
-                        .map(this::dialPlanEntityToDialPlanDto)
-                        .collect(Collectors.toList());
-
-        return dialPlanDtoList;
+        return StreamSupport.stream(dialPlanRepository.findAll().spliterator(), false)
+                .map(this::dialPlanEntityToDialPlanDto)
+                .collect(Collectors.toList());
     }
 
     @Override
