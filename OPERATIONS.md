@@ -39,6 +39,8 @@ Dies muss folgendermassen geschehen:
 DATABASE_URL="postgres://USERNAME:PASSWORD@HOST:PORT/DATABASE" java -jar ROCKETVOIP.jar
 ```
 
+RocketVoIP ist dann auf dem entsprechenden System, unter dem Port 8080 erreichbar (`http://<SERVER>:8080/v1`)
+
 ## RocketVoIP-Frontend
 
 ### Vorbedingungen
@@ -67,6 +69,8 @@ des RocketVoIP-Frontend Verzeichnisses:
 ```
 BACKEND_URL="https://<URL-OF-BACKEND>/" node web.js
 ```
+
+Das Frontend höhrt standardmässig auf den Port 5000 -> `http://<SERVER>:5000/app/`
 
 ## Asterisk-Server
 
