@@ -119,7 +119,7 @@ public class SipClientServiceImpl implements SipClientServiceInterface {
     @Override
     public List<SipClientDto> getAllSipClientsForCompanies(List<Long> companyIds) {
         List<SipClientDto> sipClientDtoList =
-                sipClientRepository.findByCompanyIdIsIn(companyIds)
+                sipClientRepository.findAllByCompanyIdIsIn(companyIds)
                         .stream()
                         .map(SipClientServiceImpl::sipClientEntityToSipClientDto)
                         .collect(Collectors.toList());

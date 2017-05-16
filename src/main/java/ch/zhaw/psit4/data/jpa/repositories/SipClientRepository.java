@@ -9,6 +9,6 @@ import java.util.List;
  * @author Rafael Ostertag
  */
 public interface SipClientRepository extends CrudRepository<SipClient, Long> {
-    List<SipClient> findByCompanyIdIsIn(List<Long> idList);
+    List<SipClient> findAllByCompanyIdIsIn(List<Long> idList);
 
 }
