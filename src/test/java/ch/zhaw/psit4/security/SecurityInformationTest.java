@@ -2,6 +2,7 @@ package ch.zhaw.psit4.security;
 
 import ch.zhaw.psit4.data.jpa.entities.Admin;
 import ch.zhaw.psit4.security.auxiliary.AdminDetails;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -17,100 +18,78 @@ import static org.mockito.Mockito.*;
  * @author Rafael Ostertag
  */
 public class SecurityInformationTest {
+    private SecurityContext securityContextMock;
+    private Authentication authenticationMock;
+    private Admin adminMock;
+    private AdminDetails adminDetailsMock;
+
+    @Before
+    public void setUp() throws Exception {
+        securityContextMock = mock(SecurityContext.class);
+        authenticationMock = mock(Authentication.class);
+        adminMock = mock(Admin.class);
+        adminDetailsMock = mock(AdminDetails.class);
+
+        when(securityContextMock.getAuthentication()).thenReturn(authenticationMock);
+        when(authenticationMock.getPrincipal()).thenReturn(adminDetailsMock);
+    }
+
     @Test
-    public void getAdminDetailsHappyPath() throws Exception {
-        SecurityContext securityContext = mock(SecurityContext.class);
-        Authentication authentication = mock(Authentication.class);
+    public void initializationHappyPath() throws Exception {
+        AdminDetails adminDetails = new AdminDetails(adminMock);
+        when(authenticationMock.getPrincipal()).thenReturn(adminDetails);
 
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-
-        Admin admin = mock(Admin.class);
-        AdminDetails adminDetails = new AdminDetails(admin);
-        when(authentication.getPrincipal()).thenReturn(adminDetails);
-
-        SecurityInformation securityInformation = new SecurityInformation(securityContext);
+        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
         assertThat(securityInformation.getAdminDetails(), equalTo(adminDetails));
     }
 
     @Test(expected = SecurityException.class)
     public void currentPrincipalNullPrincipal() throws Exception {
-        Authentication authentication = mock(Authentication.class);
-        when(authentication.getPrincipal()).thenReturn(null);
+        when(authenticationMock.getPrincipal()).thenReturn(null);
 
-        SecurityContext securityContext = mock(SecurityContext.class);
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-
-        SecurityInformation securityInformation = new SecurityInformation(securityContext);
+        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
     }
 
     @Test(expected = SecurityException.class)
     public void currentPrincipalNonAdminDetailsInstance() throws Exception {
-        Authentication authentication = mock(Authentication.class);
-        UserDetails userDetails = mock(UserDetails.class);
-        when(authentication.getPrincipal()).thenReturn(userDetails);
+        UserDetails userDetailsMock = mock(UserDetails.class);
+        when(authenticationMock.getPrincipal()).thenReturn(userDetailsMock);
 
-        SecurityContext securityContext = mock(SecurityContext.class);
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-
-        SecurityInformation securityInformation = new SecurityInformation(securityContext);
+        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
     }
 
     @Test
     public void isOperatorTrue() throws Exception {
-        SecurityContext securityContext = mock(SecurityContext.class);
-        Authentication authentication = mock(Authentication.class);
+        when(adminDetailsMock.isSuperAdmin()).thenReturn(true);
 
-        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
 
-        AdminDetails adminDetails = mock(AdminDetails.class);
-        when(adminDetails.isSuperAdmin()).thenReturn(true);
-
-        when(authentication.getPrincipal()).thenReturn(adminDetails);
-
-        SecurityInformation securityInformation = new SecurityInformation(securityContext);
-
-        assertThat(securityInformation.getAdminDetails(), equalTo(adminDetails));
+        assertThat(securityInformation.getAdminDetails(), equalTo(adminDetailsMock));
         assertThat(securityInformation.isOperator(), equalTo(true));
 
-        verify(adminDetails).isSuperAdmin();
+        verify(adminDetailsMock).isSuperAdmin();
     }
 
     @Test
     public void isOperatorFalse() throws Exception {
-        SecurityContext securityContext = mock(SecurityContext.class);
-        Authentication authentication = mock(Authentication.class);
+        when(adminDetailsMock.isSuperAdmin()).thenReturn(false);
 
-        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
 
-        AdminDetails adminDetails = mock(AdminDetails.class);
-        when(adminDetails.isSuperAdmin()).thenReturn(false);
-
-        when(authentication.getPrincipal()).thenReturn(adminDetails);
-
-        SecurityInformation securityInformation = new SecurityInformation(securityContext);
-
-        assertThat(securityInformation.getAdminDetails(), equalTo(adminDetails));
+        assertThat(securityInformation.getAdminDetails(), equalTo(adminDetailsMock));
         assertThat(securityInformation.isOperator(), equalTo(false));
 
-        verify(adminDetails).isSuperAdmin();
+        verify(adminDetailsMock).isSuperAdmin();
     }
 
     @Test
     public void allowedCompanies() throws Exception {
-        SecurityContext securityContext = mock(SecurityContext.class);
-        Authentication authentication = mock(Authentication.class);
+        when(adminDetailsMock.getCompanyIds()).thenReturn(new ArrayList<>());
 
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-
-        AdminDetails adminDetails = mock(AdminDetails.class);
-        when(adminDetails.getCompanyIds()).thenReturn(new ArrayList<>());
-
-        when(authentication.getPrincipal()).thenReturn(adminDetails);
-
-        SecurityInformation securityInformation = new SecurityInformation(securityContext);
+        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
 
         securityInformation.allowedCompanies();
-        verify(adminDetails).getCompanyIds();
+        verify(adminDetailsMock).getCompanyIds();
     }
 
 }
