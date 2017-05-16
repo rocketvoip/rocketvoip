@@ -49,8 +49,8 @@ public class DialPlanServiceImplIT {
     public void setUp() throws Exception {
         databaseFixtureBuilder1 = applicationContext.getBean(DatabaseFixtureBuilder.class);
         databaseFixtureBuilder2 = applicationContext.getBean(DatabaseFixtureBuilder.class);
-        databaseFixtureBuilder1.company(1).addSipClient(1).addDialPlan(1).addDialPlan(2).build();
-        databaseFixtureBuilder2.company(2).addSipClient(2).addDialPlan(3).build();
+        databaseFixtureBuilder1.setCompany(1).addSipClient(1).addDialPlan(1).addDialPlan(2).build();
+        databaseFixtureBuilder2.setCompany(2).addSipClient(2).addDialPlan(3).build();
     }
 
     @Test
@@ -77,7 +77,7 @@ public class DialPlanServiceImplIT {
     @Test
     public void createDialPlan() throws Exception {
         CompanyDto companyDto = CompanyServiceImpl.companyEntityToCompanyDto(
-                databaseFixtureBuilder2.getCompany()
+                databaseFixtureBuilder2.getFirstCompany()
         );
         DialPlanDto dialPlanDto = DialPlanDtoGenerator.createTestDialPlanDto(
                 companyDto,
@@ -158,7 +158,7 @@ public class DialPlanServiceImplIT {
     @Test(expected = DialPlanCreationException.class)
     public void createInvalidDialPlan() throws Exception {
         CompanyDto existingCompanyDto = CompanyServiceImpl.companyEntityToCompanyDto(
-                databaseFixtureBuilder1.getCompany()
+                databaseFixtureBuilder1.getFirstCompany()
         );
 
         DialPlanDto dialPlanDto = new DialPlanDto();
@@ -169,7 +169,7 @@ public class DialPlanServiceImplIT {
     @Test(expected = DialPlanUpdateException.class)
     public void updateInvalidDialPlan() throws Exception {
         CompanyDto existingCompanyDto = CompanyServiceImpl.companyEntityToCompanyDto(
-                databaseFixtureBuilder2.getCompany()
+                databaseFixtureBuilder2.getFirstCompany()
         );
 
         DialPlanDto nonExistingDialPlan =

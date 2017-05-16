@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -83,6 +84,9 @@ public class CompanyServiceImpl implements CompanyServiceInterface {
      * @return the company entities
      */
     public static List<Company> companyDtosToCompanyEntitiesWithId(List<CompanyDto> companyDtos) {
+        if (companyDtos == null) {
+            return Collections.emptyList();
+        }
         List<Company> companyEntities = new ArrayList<>();
         companyDtos.forEach(x -> {
             Company company = companyDtoToCompanyEntityWithId(x);

@@ -111,7 +111,7 @@ public class SipClientControllerIT {
 
     @Test
     public void updateSipClient() throws Exception {
-        databaseFixtureBuilder1.company(1).addSipClient(1).build();
+        databaseFixtureBuilder1.setCompany(1).addSipClient(1).build();
         SipClientDto existingSipClient = SipClientServiceImpl.sipClientEntityToSipClientDto
                 (databaseFixtureBuilder1.getSipClientList().get(1));
 
@@ -158,9 +158,9 @@ public class SipClientControllerIT {
 
     @Test
     public void createSipClient() throws Exception {
-        databaseFixtureBuilder2.company(2).build();
+        databaseFixtureBuilder2.setCompany(2).build();
         CompanyDto companyDto = CompanyServiceImpl.companyEntityToCompanyDto(
-                databaseFixtureBuilder2.getCompany()
+                databaseFixtureBuilder2.getFirstCompany()
         );
 
         SipClientDto sipClientDto = SipClientDtoGenerator.createTestSipClientDto(companyDto, 3);
@@ -198,8 +198,8 @@ public class SipClientControllerIT {
 
     @Test
     public void getAllSipClients() throws Exception {
-        databaseFixtureBuilder1.company(1).addSipClient(1).build();
-        databaseFixtureBuilder2.company(2).addSipClient(2).build();
+        databaseFixtureBuilder1.setCompany(1).addSipClient(1).build();
+        databaseFixtureBuilder2.setCompany(2).addSipClient(2).build();
 
         String response = mockMvc.perform(
                 MockMvcRequestBuilders.get("/v1/sipclients")
@@ -226,7 +226,7 @@ public class SipClientControllerIT {
 
     @Test
     public void deleteSipClient() throws Exception {
-        databaseFixtureBuilder1.company(1).addSipClient(1).build();
+        databaseFixtureBuilder1.setCompany(1).addSipClient(1).build();
         SipClientDto createdSipClient1 = SipClientServiceImpl.sipClientEntityToSipClientDto(
                 databaseFixtureBuilder1.getSipClientList().get(1)
         );

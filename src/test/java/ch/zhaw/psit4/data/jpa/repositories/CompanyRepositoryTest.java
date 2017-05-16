@@ -35,7 +35,7 @@ public class CompanyRepositoryTest {
 
     @Test
     public void findCompanyByName() throws Exception {
-        databaseFixtureBuilder.company(1).build();
+        databaseFixtureBuilder.setCompany(1).build();
 
         CompanyRepository companyRepository = databaseFixtureBuilder.getCompanyRepository();
         Company actual = companyRepository.findByName(CompanyData.getCompanyName(1));

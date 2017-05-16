@@ -1,10 +1,11 @@
 package ch.zhaw.psit4.testsupport.fixtures.dto;
 
 import ch.zhaw.psit4.data.jpa.entities.Company;
-import ch.zhaw.psit4.dto.AdminDto;
+import ch.zhaw.psit4.dto.AdminWithPasswordDto;
 import ch.zhaw.psit4.dto.CompanyDto;
 import ch.zhaw.psit4.testsupport.fixtures.general.AdminData;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -27,8 +28,8 @@ public final class AdminDtoGenerator {
      * @param number number of the AdminDto
      * @return AdminDto
      */
-    public static AdminDto createAdminDto(List<CompanyDto> companyDtoList, long number) {
-        AdminDto adminDto = new AdminDto();
+    public static AdminWithPasswordDto createAdminDto(List<CompanyDto> companyDtoList, long number) {
+        AdminWithPasswordDto adminDto = new AdminWithPasswordDto();
         adminDto.setId(number);
         adminDto.setFirstName(AdminData.getAdminFirstname((int) number));
         adminDto.setLastName(AdminData.getAdminLastname((int) number));
@@ -38,7 +39,7 @@ public final class AdminDtoGenerator {
         return adminDto;
     }
 
-    public static AdminDto createAdminDto(Collection<Company> companies, long number) {
-        return createAdminDto(companyEntitiesToCompanyDtos((List<Company>) companies), number);
+    public static AdminWithPasswordDto createAdminDto(Collection<Company> companies, long number) {
+        return createAdminDto(companyEntitiesToCompanyDtos(new ArrayList<>(companies)), number);
     }
 }

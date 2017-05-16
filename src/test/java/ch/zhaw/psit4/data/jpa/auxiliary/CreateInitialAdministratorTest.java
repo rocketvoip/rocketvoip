@@ -54,7 +54,7 @@ public class CreateInitialAdministratorTest {
     public void testNonEmptyDatabase() throws Exception {
         DatabaseFixtureBuilder databaseFixtureBuilder = applicationContext.getBean(DatabaseFixtureBuilder.class);
         // Create an administrator.
-        databaseFixtureBuilder.company(1).addAdministrator(1).build();
+        databaseFixtureBuilder.setCompany(1).addAdministrator(1).build();
 
         assertThat(adminRepository.count(), is(not(equalTo(0L))));
         CreateInitialAdministrator createInitialAdministrator = new CreateInitialAdministrator(adminRepository);

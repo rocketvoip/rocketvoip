@@ -42,11 +42,11 @@ public class SipClientRepositoryTest {
 
     @Test
     public void createSipClient() throws Exception {
-        databaseFixtureBuilder.company(1).build();
+        databaseFixtureBuilder.setCompany(1).build();
 
         SipClientRepository sipClientRepository = databaseFixtureBuilder.getSipClientRepository();
 
-        Company company = databaseFixtureBuilder.getCompany();
+        Company company = databaseFixtureBuilder.getFirstCompany();
         SipClient sipClient = SipClientEntity.createSipClient(1);
         sipClient.setCompany(company);
         sipClientRepository.save(sipClient);
@@ -57,11 +57,11 @@ public class SipClientRepositoryTest {
 
     @Test(expected = DataIntegrityViolationException.class)
     public void createNonUniqueSipClient() throws Exception {
-        databaseFixtureBuilder.company(1).addSipClient(1).build();
+        databaseFixtureBuilder.setCompany(1).addSipClient(1).build();
 
         SipClientRepository sipClientRepository = databaseFixtureBuilder.getSipClientRepository();
 
-        Company company = databaseFixtureBuilder.getCompany();
+        Company company = databaseFixtureBuilder.getFirstCompany();
         SipClient sipClient = SipClientEntity.createSipClient(2);
         sipClient.setCompany(company);
         sipClient.setPhoneNr(SipClientData.getSipClientPhoneNumber(1));
@@ -71,8 +71,8 @@ public class SipClientRepositoryTest {
 
     @Test
     public void sipClientEqualPhoneNr() throws Exception {
-        databaseFixtureBuilder.company(1).addSipClient(1).build();
-        databaseFixtureBuilder.company(2).addSipClient(2).build();
+        databaseFixtureBuilder.setCompany(1).addSipClient(1).build();
+        databaseFixtureBuilder.setCompany(2).addSipClient(2).build();
 
         SipClientRepository sipClientRepository = databaseFixtureBuilder.getSipClientRepository();
 

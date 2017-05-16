@@ -144,9 +144,9 @@ public class DialPlanControllerIT {
 
     @Test
     public void createDialPlan() throws Exception {
-        databaseFixtureBuilder2.company(2).addSipClient(1).addSipClient(2).build();
+        databaseFixtureBuilder2.setCompany(2).addSipClient(1).addSipClient(2).build();
         CompanyDto companyDto = CompanyServiceImpl.companyEntityToCompanyDto(
-                databaseFixtureBuilder2.getCompany()
+                databaseFixtureBuilder2.getFirstCompany()
         );
 
         DialPlanDto testDialPlanDto = DialPlanDtoGenerator.createTestDialPlanDto(companyDto, 3);
@@ -196,7 +196,7 @@ public class DialPlanControllerIT {
 
     @Test
     public void deleteDialPlanWithNoActions() throws Exception {
-        databaseFixtureBuilder1.company(1).addSipClient(1).addDialPlan(1).build();
+        databaseFixtureBuilder1.setCompany(1).addSipClient(1).addDialPlan(1).build();
         DialPlanDto createdDialPlan = DialPlanServiceImpl.dialPlanEntityToDialPlanDtoIgnoreActions(
                 databaseFixtureBuilder1.getDialPlanList().get(1)
         );
@@ -223,7 +223,7 @@ public class DialPlanControllerIT {
         int dialPriority = 1;
         int sayAlphaPriority = 2;
         databaseFixtureBuilder1
-                .company(1)
+                .setCompany(1)
                 .addSipClient(1)
                 .addDialPlan(1)
                 .addDial(1, dialPriority, 1, new int[]{1})
@@ -268,7 +268,7 @@ public class DialPlanControllerIT {
     @Test
     public void updateDialPlan() throws Exception {
         databaseFixtureBuilder1
-                .company(1)
+                .setCompany(1)
                 .addSipClient(1)
                 .addDialPlan(1)
                 .addDial(1, 1, 1, new int[]{1})

@@ -38,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(BeanConfiguration.class)
 public class AdminControllerIT {
     private static final String V1_ADMINS_PATH = "/v1/admins";
-    private static final int NON_EXISTING_ADMIN_ID = 1;
+    private static final int NON_EXISTING_ADMIN_ID = 100;
 
     @Autowired
     private WebApplicationContext wac;
@@ -83,7 +83,7 @@ public class AdminControllerIT {
     @Test
     public void updateNonExistingAdmin() throws Exception {
         databaseFixtureBuilder1.addCompany(1).addCompany(2).build();
-        AdminDto adminDto = AdminDtoGenerator.createAdminDto(databaseFixtureBuilder1.getCompanyList(), 1);
+        AdminDto adminDto = AdminDtoGenerator.createAdminDto(databaseFixtureBuilder1.getCompanyList().values(), 1);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.put(V1_ADMINS_PATH + "/{id}", NON_EXISTING_ADMIN_ID)
@@ -111,7 +111,7 @@ public class AdminControllerIT {
     @Test
     public void createAdmin() throws Exception {
         databaseFixtureBuilder1.addCompany(1).addCompany(2).build();
-        AdminDto adminDto = AdminDtoGenerator.createAdminDto(databaseFixtureBuilder1.getCompanyList(), 1);
+        AdminDto adminDto = AdminDtoGenerator.createAdminDto(databaseFixtureBuilder1.getCompanyList().values(), 1);
 
         String creationResponse = mockMvc.perform(
                 MockMvcRequestBuilders.post(V1_ADMINS_PATH)
@@ -129,7 +129,7 @@ public class AdminControllerIT {
         ).andExpect(
                 jsonPath("$.userName").value(equalTo(adminDto.getUserName()))
         ).andExpect(
-                jsonPath("$.password").value(equalTo(adminDto.getPassword()))
+                jsonPath("$.password").doesNotExist()
         ).andReturn().getResponse().getContentAsString();
 
         AdminDto createdAdminDto = Json.toObjectTypeSafe(creationResponse, AdminDto.class);

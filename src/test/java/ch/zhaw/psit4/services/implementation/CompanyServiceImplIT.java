@@ -53,8 +53,8 @@ public class CompanyServiceImplIT {
 
     @Test
     public void getAllCompanies() throws Exception {
-        databaseFixtureBuilder.company(1).build();
-        databaseFixtureBuilder2.company(2).build();
+        databaseFixtureBuilder.setCompany(1).build();
+        databaseFixtureBuilder2.setCompany(2).build();
 
         List<CompanyDto> companyDtoList = companyServiceImpl.getAllCompanies();
 

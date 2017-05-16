@@ -22,7 +22,7 @@ public class DatabaseFixtureBuilder {
     private final BranchRepository branchRepository;
     private final BranchDialPlanRepository branchDialPlanRepository;
 
-    private Collection<Company> company;
+    private Map<Integer, Company> companyList;
     private Map<Integer, Admin> adminList;
     private Map<Integer, Admin> operatorList;
     private Map<Integer, SipClient> sipClientList;
@@ -49,7 +49,7 @@ public class DatabaseFixtureBuilder {
         this.branchRepository = branchRepository;
         this.branchDialPlanRepository = branchDialPlanRepository;
 
-        this.company = new ArrayList<>();
+        this.companyList = new HashMap<>();
         this.adminList = new HashMap<>();
         this.operatorList = new HashMap<>();
 
@@ -62,8 +62,8 @@ public class DatabaseFixtureBuilder {
         this.branchDialPlanList = new HashMap<>();
     }
 
-    public Collection<Company> getCompanyList() {
-        return company;
+    public Map<Integer, Company> getCompanyList() {
+        return companyList;
     }
 
     public Map<Integer, Admin> getOperatorList() {
@@ -108,8 +108,8 @@ public class DatabaseFixtureBuilder {
      * @param number company number
      * @return this
      */
-    public DatabaseFixtureBuilder company(int number) {
-        company.clear();
+    public DatabaseFixtureBuilder setCompany(int number) {
+        companyList.clear();
         return this.addCompany(number);
     }
 
@@ -120,7 +120,7 @@ public class DatabaseFixtureBuilder {
      * @return this
      */
     public DatabaseFixtureBuilder addCompany(int number) {
-        company.add(CompanyEntity.createCompany(number));
+        companyList.put(number, CompanyEntity.createCompany(number));
         return this;
     }
 
@@ -220,20 +220,20 @@ public class DatabaseFixtureBuilder {
     }
 
     public void build() {
-        companyRepository.save(company);
+        companyRepository.save(companyList.values());
 
         adminList.values().forEach(x -> {
-            x.setCompany(company);
+            x.setCompany(companyList.values());
             adminRepository.save(x);
         });
 
         operatorList.values().forEach(x -> {
-            x.setCompany(company);
+            x.setCompany(companyList.values());
             adminRepository.save(x);
         });
 
         sipClientList.values().forEach(x -> {
-            x.setCompany(company.stream()
+            x.setCompany(companyList.values().stream()
                     .findFirst()
                     .orElseThrow(
                             () -> new RuntimeException("No companies in builder")
@@ -243,7 +243,7 @@ public class DatabaseFixtureBuilder {
         });
 
         dialPlanList.values().forEach(x -> {
-            x.setCompany(company.stream().findFirst().orElseThrow(
+            x.setCompany(companyList.values().stream().findFirst().orElseThrow(
                     () -> new RuntimeException("No companies in builder")
             ));
             dialPlanRepository.save(x);
@@ -256,8 +256,13 @@ public class DatabaseFixtureBuilder {
         branchRepository.save(branchList.values());
     }
 
-    public Company getCompany() {
-        return company.stream().findFirst().orElseThrow(() -> new RuntimeException("No company in builder"));
+    public Company getFirstCompany() {
+        return companyList.values().stream().findFirst().orElseThrow(() -> new RuntimeException("No company in " +
+                "builder"));
+    }
+
+    public Company getCompany(int number) {
+        return companyList.get(number);
     }
 
     public Map<Integer, Admin> getAdminList() {
