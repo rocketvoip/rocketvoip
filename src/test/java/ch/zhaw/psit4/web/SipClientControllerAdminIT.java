@@ -140,7 +140,7 @@ public class SipClientControllerAdminIT {
     }
 
     @Test
-    public void updateNonExistingSipClient() throws Exception {
+    public void updateSipClientWithNullCompany() throws Exception {
         databaseFixtureBuilder1
                 .setCompany(1)
                 .addAdministrator(1)
@@ -153,6 +153,30 @@ public class SipClientControllerAdminIT {
         String authToken = getTokenForAdministrator1Company1();
 
         SipClientDto sipClientDto = SipClientDtoGenerator.createTestSipClientDto((CompanyDto) null, 1);
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/v1/sipclients/{id}", NON_EXISTING_SIP_CLIENT_ID)
+                        .content(Json.toJson(sipClientDto))
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
+        ).andExpect(
+                status().isBadRequest()
+        );
+    }
+
+    @Test
+    public void updateNonExistingSipClient() throws Exception {
+        databaseFixtureBuilder1
+                .setCompany(1)
+                .addAdministrator(1)
+                .build();
+        databaseFixtureBuilder2
+                .setCompany(2)
+                .addAdministrator(2)
+                .build();
+
+        String authToken = getTokenForAdministrator1Company1();
+
+        SipClientDto sipClientDto = SipClientDtoGenerator.createTestSipClientDto
+                (databaseFixtureBuilder1.getFirstCompany(), 1);
         mockMvc.perform(
                 MockMvcRequestBuilders.put("/v1/sipclients/{id}", NON_EXISTING_SIP_CLIENT_ID)
                         .content(Json.toJson(sipClientDto))
