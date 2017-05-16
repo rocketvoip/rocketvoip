@@ -8,6 +8,7 @@ import ch.zhaw.psit4.services.exceptions.AbstractUpdateException;
 import ch.zhaw.psit4.web.utils.Utilities;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -29,6 +30,11 @@ public class GlobalControllerExceptionHandler {
     @ExceptionHandler({AbstractCreationException.class, AbstractUpdateException.class, Exception.class})
     public ResponseEntity<ErrorDto> handleException(Exception e) {
         return new ResponseEntity<>(Utilities.exceptionToErrorDto(e), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorDto> handleAccessDeniedException(AccessDeniedException e) {
+        return new ResponseEntity<>(Utilities.exceptionToErrorDto(e), HttpStatus.FORBIDDEN);
     }
 
 }
