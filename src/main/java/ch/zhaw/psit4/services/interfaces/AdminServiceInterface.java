@@ -2,6 +2,7 @@ package ch.zhaw.psit4.services.interfaces;
 
 import ch.zhaw.psit4.dto.AdminDto;
 import ch.zhaw.psit4.dto.AdminWithPasswordDto;
+import ch.zhaw.psit4.dto.PasswordOnlyDto;
 import ch.zhaw.psit4.services.exceptions.AdminCreationException;
 import ch.zhaw.psit4.services.exceptions.AdminDeletionException;
 import ch.zhaw.psit4.services.exceptions.AdminRetrievalException;
@@ -58,5 +59,13 @@ public interface AdminServiceInterface {
      * @throws AdminDeletionException Implementations are expected to throw this exception on error.
      */
     void deleteAdmin(long id);
+
+    /**
+     * Change password for Admin with given id.
+     *
+     * @param id              Id of admin
+     * @param passwordOnlyDto password dto
+     */
+    void changePassword(long id, PasswordOnlyDto passwordOnlyDto);
 
 }
