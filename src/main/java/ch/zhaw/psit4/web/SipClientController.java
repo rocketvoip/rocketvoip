@@ -15,7 +15,7 @@ import java.util.List;
  * @author Rafael Ostertag
  */
 @RestController
-@RequestMapping(path = "/v1", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(path = "/v1/sipclients", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class SipClientController {
     private final SipClientServiceInterface sipClientServiceInterface;
 
@@ -23,32 +23,32 @@ public class SipClientController {
         this.sipClientServiceInterface = sipClientService;
     }
 
-    @GetMapping(path = "/sipclients")
+    @GetMapping
     public ResponseEntity<List<SipClientDto>> getAllSipClient() {
         return new ResponseEntity<>
                 (sipClientServiceInterface.getAllSipClients(), HttpStatus.OK);
     }
 
-    @GetMapping(path = "/sipclients/{id}")
+    @GetMapping(path = "/{id}")
     public ResponseEntity<SipClientDto> getSipClient(@PathVariable long id) {
         return new ResponseEntity<>
                 (sipClientServiceInterface.getSipClient(id), HttpStatus.OK);
     }
 
-    @DeleteMapping(path = "/sipclients/{id}")
+    @DeleteMapping(path = "/{id}")
     public ResponseEntity<Void> deleteSipCLient(@PathVariable long id) {
         sipClientServiceInterface.deleteSipClient(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping(path = "/sipclients/{id}")
+    @PutMapping(path = "/{id}")
     public ResponseEntity<SipClientDto> updateSipClient(@PathVariable long id, @RequestBody SipClientDto sipClientDto) {
         sipClientDto.setId(id);
         return new ResponseEntity<>(sipClientServiceInterface.updateSipClient(sipClientDto),
                 HttpStatus.OK);
     }
 
-    @PostMapping(path = "/sipclients")
+    @PostMapping
     public ResponseEntity<SipClientDto> createSipClient(@RequestBody SipClientDto sipClientDto) {
         return new ResponseEntity<>(
                 sipClientServiceInterface.createSipClient(sipClientDto),
