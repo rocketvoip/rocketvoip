@@ -23,6 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
+ * Test whether or not the roles have been assigned properly in {@link ch.zhaw.psit4.security.web.WebSecurityJWT}
  * @author Rafael Ostertag
  */
 @RunWith(SpringRunner.class)
@@ -59,7 +60,7 @@ public class SipClientControllerSecurityIT {
     }
 
     @Test
-    public void testEndpointWithUnauthorizedUser() throws Exception {
+    public void testEndpointWithAdminUser() throws Exception {
         databaseFixtureBuilder.setCompany(1).addAdministrator(1).build();
         String authToken = tokenHandler.createTokenForUser(new AdminDetails(databaseFixtureBuilder.getAdminList().get
                 (1)));
@@ -75,7 +76,7 @@ public class SipClientControllerSecurityIT {
     }
 
     @Test
-    public void testEndpointWithAuthorizedUser() throws Exception {
+    public void testEndpointWithOperatorUser() throws Exception {
         databaseFixtureBuilder.setCompany(1).addOperator(1).build();
 
         String authToken = tokenHandler.createTokenForUser(new AdminDetails(databaseFixtureBuilder.getOperatorList()
