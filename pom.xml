@@ -43,6 +43,13 @@
         </developer>
     </developers>
 
+    <licenses>
+        <license>
+            <name>The 2-Clause BSD License</name>
+            <url>https://opensource.org/licenses/BSD-2-Clause</url>
+        </license>
+    </licenses>
+
     <!-- When running `mvn site`, this information will be added to the report -->
     <scm>
         <connection>scm:git:https://github.com/rocketvoip/rocketvoip.git</connection>
