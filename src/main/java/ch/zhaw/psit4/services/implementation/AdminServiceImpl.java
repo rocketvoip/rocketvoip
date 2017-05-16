@@ -7,6 +7,7 @@ import ch.zhaw.psit4.data.jpa.repositories.CompanyRepository;
 import ch.zhaw.psit4.dto.AdminDto;
 import ch.zhaw.psit4.dto.AdminWithPasswordDto;
 import ch.zhaw.psit4.dto.CompanyDto;
+import ch.zhaw.psit4.dto.PasswordOnlyDto;
 import ch.zhaw.psit4.services.exceptions.*;
 import ch.zhaw.psit4.services.interfaces.AdminServiceInterface;
 import org.slf4j.Logger;
@@ -124,6 +125,25 @@ public class AdminServiceImpl implements AdminServiceInterface {
             String message = String.format("Could not delete admin with id %d", id);
             LOGGER.error(message, e);
             throw new AdminDeletionException(message, e);
+        }
+    }
+
+    @Override
+    public void changePassword(long id, PasswordOnlyDto passwordOnlyDto) {
+        try {
+            Admin existingAdmin = adminRepository.findOne(id);
+            if (existingAdmin == null) {
+                String message = String.format("Could not find admin with id %d", id);
+                LOGGER.error(message);
+                throw new AdminRetrievalException(message);
+            }
+
+            existingAdmin.setPassword(passwordOnlyDto.getPassword());
+            adminRepository.save(existingAdmin);
+        } catch (Exception e) {
+            String message = String.format("Could not change password of admin with id %d", id);
+            LOGGER.error(message, e);
+            throw new AdminUpdateException(message, e);
         }
     }
 
