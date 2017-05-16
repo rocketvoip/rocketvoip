@@ -2,6 +2,9 @@ package ch.zhaw.psit4.web;
 
 import ch.zhaw.psit4.dto.CompanyDto;
 import ch.zhaw.psit4.dto.SipClientDto;
+import ch.zhaw.psit4.security.auxiliary.AdminDetails;
+import ch.zhaw.psit4.security.auxiliary.SecurityConstants;
+import ch.zhaw.psit4.security.jwt.TokenHandler;
 import ch.zhaw.psit4.services.implementation.CompanyServiceImpl;
 import ch.zhaw.psit4.services.implementation.SipClientServiceImpl;
 import ch.zhaw.psit4.testsupport.convenience.Json;
@@ -29,6 +32,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayContainingInAnyOrder;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -39,8 +43,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
 @Import(BeanConfiguration.class)
-public class SipClientControllerIT {
-    private static final int NON_EXISTING_USER_ID = 100;
+public class SipClientControllerOperatorIT {
+    private static final int NON_EXISTING_SIP_CLIENT_ID = 100;
+
+    @Autowired
+    private TokenHandler tokenHandler;
 
     @Autowired
     private WebApplicationContext wac;
@@ -51,17 +58,27 @@ public class SipClientControllerIT {
 
     @Before
     public void setUp() throws Exception {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
+        this.mockMvc = MockMvcBuilders
+                .webAppContextSetup(this.wac)
+                .apply(springSecurity())
+                .defaultRequest(MockMvcRequestBuilders
+                        .get("/")
+                        .accept(MediaType.APPLICATION_JSON_UTF8)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                )
+                .build();
         databaseFixtureBuilder1 = wac.getBean(DatabaseFixtureBuilder.class);
         databaseFixtureBuilder2 = wac.getBean(DatabaseFixtureBuilder.class);
     }
 
     @Test
     public void getAllSipClientEmpty() throws Exception {
+        databaseFixtureBuilder1.setCompany(1).addOperator(1).build();
+        String authToken = getTokenForOperator1Company1();
+
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/v1/sipclients")
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
         ).andExpect(
                 status().isOk()
         ).andExpect(
@@ -71,47 +88,59 @@ public class SipClientControllerIT {
 
     @Test
     public void getNonExistingSipClient() throws Exception {
+        databaseFixtureBuilder1.setCompany(1).addOperator(1).build();
+        String authToken = getTokenForOperator1Company1();
+
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/v1/sipclients/{id}", NON_EXISTING_USER_ID)
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                MockMvcRequestBuilders.get("/v1/sipclients/{id}", NON_EXISTING_SIP_CLIENT_ID)
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
         ).andExpect(
                 status().isNotFound()
         ).andExpect(
-                jsonPath("$.reason").value(equalTo("Could not find SIP Client with id " + NON_EXISTING_USER_ID))
+                jsonPath("$.reason").value(equalTo("Could not find SIP Client with id " + NON_EXISTING_SIP_CLIENT_ID))
         );
     }
 
     @Test
     public void deleteNonExistingSipClient() throws Exception {
+        databaseFixtureBuilder1.setCompany(1).addOperator(1).build();
+        String authToken = getTokenForOperator1Company1();
+
         mockMvc.perform(
-                MockMvcRequestBuilders.delete("/v1/sipclients/{id}", NON_EXISTING_USER_ID)
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                MockMvcRequestBuilders.delete("/v1/sipclients/{id}", NON_EXISTING_SIP_CLIENT_ID)
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
         ).andExpect(
                 status().isNotFound()
         ).andExpect(
-                jsonPath("$.reason").value(startsWith("Could not delete SIP Client with id " +
-                        NON_EXISTING_USER_ID))
+                jsonPath("$.reason").value(startsWith("Could not find SIP Client with id " +
+                        NON_EXISTING_SIP_CLIENT_ID))
         );
     }
 
     @Test
     public void updateNonExistingSipClient() throws Exception {
+        databaseFixtureBuilder1.setCompany(1).addOperator(1).build();
+        String authToken = getTokenForOperator1Company1();
+
         SipClientDto sipClientDto = SipClientDtoGenerator.createTestSipClientDto((CompanyDto) null, 1);
         mockMvc.perform(
-                MockMvcRequestBuilders.put("/v1/sipclients/{id}", NON_EXISTING_USER_ID)
+                MockMvcRequestBuilders.put("/v1/sipclients/{id}", NON_EXISTING_SIP_CLIENT_ID)
                         .content(Json.toJson(sipClientDto))
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
         ).andExpect(
-                status().isBadRequest()
+                status().isNotFound()
         );
     }
 
     @Test
     public void updateSipClient() throws Exception {
-        databaseFixtureBuilder1.setCompany(1).addSipClient(1).build();
+        databaseFixtureBuilder1
+                .setCompany(1)
+                .addOperator(1)
+                .addSipClient(1)
+                .build();
+        String authToken = getTokenForOperator1Company1();
+
         SipClientDto existingSipClient = SipClientServiceImpl.sipClientEntityToSipClientDto
                 (databaseFixtureBuilder1.getSipClientList().get(1));
 
@@ -120,9 +149,8 @@ public class SipClientControllerIT {
 
         String putResult = mockMvc.perform(
                 MockMvcRequestBuilders.put("/v1/sipclients/{id}", existingSipClient.getId())
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(Json.toJson(updatedSipClient))
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
         ).andExpect(
                 status().isOk()
         ).andReturn().getResponse().getContentAsString();
@@ -132,8 +160,7 @@ public class SipClientControllerIT {
 
         String response = mockMvc.perform(
                 MockMvcRequestBuilders.get("/v1/sipclients/{id}", existingSipClient.getId())
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
         ).andExpect(
                 status().isOk()
         ).andReturn().getResponse().getContentAsString();
@@ -145,12 +172,17 @@ public class SipClientControllerIT {
 
     @Test
     public void createInvalidSipClient() throws Exception {
+        databaseFixtureBuilder1
+                .setCompany(1)
+                .addOperator(1)
+                .build();
+        String authToken = getTokenForOperator1Company1();
+
         SipClientDto sipClientDto = new SipClientDto();
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/v1/sipclients")
                         .content(Json.toJson(sipClientDto))
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
         ).andExpect(
                 status().isBadRequest()
         );
@@ -158,7 +190,12 @@ public class SipClientControllerIT {
 
     @Test
     public void createSipClient() throws Exception {
-        databaseFixtureBuilder2.setCompany(2).build();
+        databaseFixtureBuilder2
+                .setCompany(2)
+                .addOperator(1)
+                .build();
+        String authToken = getTokenForOperator1Company2();
+
         CompanyDto companyDto = CompanyServiceImpl.companyEntityToCompanyDto(
                 databaseFixtureBuilder2.getFirstCompany()
         );
@@ -167,8 +204,7 @@ public class SipClientControllerIT {
         String creationResponse = mockMvc.perform(
                 MockMvcRequestBuilders.post("/v1/sipclients")
                         .content(Json.toJson(sipClientDto))
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
         ).andExpect(
                 MockMvcResultMatchers.status().isCreated()
         ).andExpect(
@@ -186,8 +222,7 @@ public class SipClientControllerIT {
 
         String response = mockMvc.perform(
                 MockMvcRequestBuilders.get("/v1/sipclients/{id}", createdSipClient.getId())
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
         ).andExpect(
                 status().isOk()
         ).andReturn().getResponse().getContentAsString();
@@ -198,13 +233,22 @@ public class SipClientControllerIT {
 
     @Test
     public void getAllSipClients() throws Exception {
-        databaseFixtureBuilder1.setCompany(1).addSipClient(1).build();
-        databaseFixtureBuilder2.setCompany(2).addSipClient(2).build();
+        databaseFixtureBuilder1
+                .setCompany(1)
+                .addOperator(1)
+                .addSipClient(1)
+                .build();
+
+        databaseFixtureBuilder2
+                .setCompany(2)
+                .addSipClient(2)
+                .build();
+
+        String authToken = getTokenForOperator1Company1();
 
         String response = mockMvc.perform(
                 MockMvcRequestBuilders.get("/v1/sipclients")
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
         ).andExpect(
                 status().isOk()
         ).andReturn().getResponse().getContentAsString();
@@ -226,25 +270,39 @@ public class SipClientControllerIT {
 
     @Test
     public void deleteSipClient() throws Exception {
-        databaseFixtureBuilder1.setCompany(1).addSipClient(1).build();
+        databaseFixtureBuilder1
+                .setCompany(1)
+                .addOperator(1)
+                .addSipClient(1)
+                .build();
+        String authToken = getTokenForOperator1Company1();
+
         SipClientDto createdSipClient1 = SipClientServiceImpl.sipClientEntityToSipClientDto(
                 databaseFixtureBuilder1.getSipClientList().get(1)
         );
 
         mockMvc.perform(
                 MockMvcRequestBuilders.delete("/v1/sipclients/{id}", createdSipClient1.getId())
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
         ).andExpect(
                 status().isNoContent()
         );
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/v1/sipclients/{id}", createdSipClient1.getId())
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
         ).andExpect(
                 status().isNotFound()
         );
+    }
+
+    private String getTokenForOperator1Company1() {
+        return tokenHandler.createTokenForUser(new AdminDetails(databaseFixtureBuilder1.getOperatorList()
+                .get(1)));
+    }
+
+    private String getTokenForOperator1Company2() {
+        return tokenHandler.createTokenForUser(new AdminDetails(databaseFixtureBuilder2.getOperatorList()
+                .get(1)));
     }
 }
