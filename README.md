@@ -19,6 +19,9 @@ The `localdb` profile expects the database user to be named `rocketvoip` with th
 
 Setting up a local PostgreSQL server is outside the scope of this README. Please refer to the appropriate documentation on how to setup a local PostgreSQL database.
 
+Operations Manual
+---
+[Operations Manual](OPERATIONS.md)
 
 
 Build Pipeline

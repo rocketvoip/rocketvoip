@@ -1,6 +1,7 @@
 package ch.zhaw.psit4.web;
 
 import ch.zhaw.psit4.dto.AdminDto;
+import ch.zhaw.psit4.dto.PasswordOnlyDto;
 import ch.zhaw.psit4.services.implementation.AdminServiceImpl;
 import ch.zhaw.psit4.testsupport.convenience.Json;
 import ch.zhaw.psit4.testsupport.fixtures.database.BeanConfiguration;
@@ -26,6 +27,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayContainingInAnyOrder;
+import static org.hamcrest.Matchers.startsWith;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -236,6 +238,53 @@ public class AdminControllerIT {
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
         ).andExpect(
                 status().isNotFound()
+        );
+    }
+
+    @Test
+    public void updatePassword() throws Exception {
+        databaseFixtureBuilder1
+                .addCompany(1)
+                .addCompany(2)
+                .addAdministrator(1)
+                .build();
+
+        Long adminId = databaseFixtureBuilder1.getAdminList().get(1).getId();
+        String initialPassword = databaseFixtureBuilder1.getAdminList().get(1).getPassword();
+
+        PasswordOnlyDto passwordOnlyDto = new PasswordOnlyDto();
+        passwordOnlyDto.setPassword("test1234");
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put(V1_ADMINS_PATH + "/{id}/password", adminId)
+                        .content(Json.toJson(passwordOnlyDto))
+                        .accept(MediaType.APPLICATION_JSON_UTF8)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        ).andExpect(
+                status().isNoContent()
+        );
+
+        assertThat(databaseFixtureBuilder1.getAdminList().get(1).getPassword(), not(equalTo(initialPassword)));
+        assertThat(databaseFixtureBuilder1.getAdminList().get(1).getPassword(), startsWith("$2a$"));
+    }
+
+    @Test
+    public void updateNonExistingPassword() throws Exception {
+        databaseFixtureBuilder1
+                .addCompany(1)
+                .addAdministrator(1)
+                .build();
+
+        PasswordOnlyDto passwordOnlyDto = new PasswordOnlyDto();
+        passwordOnlyDto.setPassword("test1234");
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put(V1_ADMINS_PATH + "/{id}/password", NON_EXISTING_ADMIN_ID)
+                        .content(Json.toJson(passwordOnlyDto))
+                        .accept(MediaType.APPLICATION_JSON_UTF8)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+        ).andExpect(
+                status().isBadRequest()
         );
     }
 

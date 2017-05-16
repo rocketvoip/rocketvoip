@@ -4,6 +4,7 @@ import ch.zhaw.psit4.data.jpa.entities.Admin;
 import ch.zhaw.psit4.dto.AdminDto;
 import ch.zhaw.psit4.dto.AdminWithPasswordDto;
 import ch.zhaw.psit4.dto.CompanyDto;
+import ch.zhaw.psit4.dto.PasswordOnlyDto;
 import ch.zhaw.psit4.services.exceptions.AdminCreationException;
 import ch.zhaw.psit4.services.exceptions.AdminDeletionException;
 import ch.zhaw.psit4.services.exceptions.AdminRetrievalException;
@@ -187,6 +188,26 @@ public class AdminServiceImplIT {
         updatedAdmin.setCompanyDtoList(Collections.emptyList());
 
         assertThat(actual, adminDtoEqualTo(updatedAdmin));
+    }
+
+    @Test
+    public void updatePassword() throws Exception {
+        databaseFixtureBuilder
+                .addCompany(1)
+                .addAdministrator(1)
+                .build();
+
+        String currentPassword = databaseFixtureBuilder.getAdminList().get(1).getPassword();
+        long adminId = databaseFixtureBuilder.getAdminList().get(1).getId();
+
+        PasswordOnlyDto passwordOnlyDto = new PasswordOnlyDto();
+        passwordOnlyDto.setPassword("test1234");
+
+        adminServiceImpl.changePassword(adminId, passwordOnlyDto);
+
+        assertThat(databaseFixtureBuilder.getAdminList().get(1).getPassword(), not(equalTo(currentPassword)));
+        assertThat(databaseFixtureBuilder.getAdminList().get(1).getPassword(), startsWith("$2a$"));
+
     }
 
     @Test(expected = AdminUpdateException.class)
