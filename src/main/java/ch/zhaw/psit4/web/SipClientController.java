@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -65,7 +66,8 @@ public class SipClientController {
     }
 
     @PutMapping(path = "/{id}")
-    public ResponseEntity<SipClientDto> updateSipClient(@PathVariable long id, @RequestBody SipClientDto sipClientDto) {
+    public ResponseEntity<SipClientDto> updateSipClient(@PathVariable long id,
+                                                        @RequestBody @Validated SipClientDto sipClientDto) {
         final SecurityInformation securityInformation = new SecurityInformation(SecurityContextHolder.getContext());
 
         sipClientDto.setId(id);
@@ -81,7 +83,7 @@ public class SipClientController {
     }
 
     @PostMapping
-    public ResponseEntity<SipClientDto> createSipClient(@RequestBody SipClientDto sipClientDto) {
+    public ResponseEntity<SipClientDto> createSipClient(@RequestBody @Validated SipClientDto sipClientDto) {
         final SecurityInformation securityInformation = new SecurityInformation(SecurityContextHolder.getContext());
 
         // Since the SipClient does not exist yet, we can only test access to the Company.
