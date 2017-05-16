@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static ch.zhaw.psit4.services.implementation.CompanyServiceImpl.companyDtoToCompanyEntity;
 import static ch.zhaw.psit4.services.implementation.CompanyServiceImpl.companyEntityToCompanyDto;
@@ -113,6 +114,17 @@ public class SipClientServiceImpl implements SipClientServiceInterface {
             sipClientDtoList.add(sipClientDto);
         }
         return sipClientDtoList;
+    }
+
+    @Override
+    public List<SipClientDto> getAllSipClientsForCompanies(List<Long> companyIds) {
+        List<SipClientDto> sipClientDtoList =
+                sipClientRepository.findByCompanyIdIsIn(companyIds)
+                        .stream()
+                        .map(SipClientServiceImpl::sipClientEntityToSipClientDto)
+                        .collect(Collectors.toList());
+        return sipClientDtoList;
+
     }
 
     @Override

@@ -21,7 +21,7 @@ public class TokenAuthenticationService {
     }
 
     public String addAuthentication(HttpServletResponse response, UserAuthentication authentication) {
-        final UserDetails userDetails = authentication.getDetails();
+        final UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String token = tokenHandler.createTokenForUser(userDetails);
         response.addHeader(SecurityConstants.AUTH_HEADER_NAME, token);
         LOGGER.debug("Added authentication token to headers");
