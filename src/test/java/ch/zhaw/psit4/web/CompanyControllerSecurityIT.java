@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -59,8 +58,8 @@ public class CompanyControllerSecurityIT {
         );
     }
 
-    @Test(expected = AccessDeniedException.class)
-    public void testEndpointWithUnauthorizedUser() throws Exception {
+    @Test
+    public void testEndpointWithAdminUser() throws Exception {
         databaseFixtureBuilder.setCompany(1).addAdministrator(1).build();
         String authToken = tokenHandler.createTokenForUser(new AdminDetails(databaseFixtureBuilder.getAdminList().get
                 (1)));
@@ -70,11 +69,13 @@ public class CompanyControllerSecurityIT {
                         .accept(MediaType.APPLICATION_JSON_UTF8)
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
+        ).andExpect(
+                status().isOk()
         );
     }
 
     @Test
-    public void testEndpointWithAuthorizedUser() throws Exception {
+    public void testEndpointWithOperatorUser() throws Exception {
         databaseFixtureBuilder.setCompany(1).addOperator(1).build();
 
         String authToken = tokenHandler.createTokenForUser(new AdminDetails(databaseFixtureBuilder.getOperatorList()
