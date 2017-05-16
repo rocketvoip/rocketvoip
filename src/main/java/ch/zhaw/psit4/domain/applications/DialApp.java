@@ -1,3 +1,32 @@
+/*
+ * Copyright 2017 Jona Braun, Benedikt Herzog, Rafael Ostertag,
+ *                Marcel Schöni, Marco Studerus, Martin Wittwer
+ *
+ * Redistribution and  use in  source and binary  forms, with  or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ * 1. Redistributions  of  source code  must retain  the above  copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in  binary form must reproduce  the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation   and/or   other    materials   provided   with   the
+ *    distribution.
+ *
+ * THIS SOFTWARE  IS PROVIDED BY  THE COPYRIGHT HOLDERS  AND CONTRIBUTORS
+ * "AS  IS" AND  ANY EXPRESS  OR IMPLIED  WARRANTIES, INCLUDING,  BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES  OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE  ARE DISCLAIMED. IN NO EVENT  SHALL THE COPYRIGHT
+ * HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT  NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE  GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS  INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF  LIABILITY, WHETHER IN  CONTRACT, STRICT LIABILITY,  OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN  ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package ch.zhaw.psit4.domain.applications;
 
 import ch.zhaw.psit4.domain.beans.SipClient;
@@ -62,22 +91,20 @@ public class DialApp implements AsteriskApplicationInterface {
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append("Dial(");
-        for (int index = 1; index <= sipClientList.size(); index++) {
 
-            SipClient sipClient = sipClientList.get(index - 1);
+        sipClientList.forEach(
+                sipClient -> {
+                    stringBuilder.append(technology.toString());
+                    stringBuilder.append('/');
+                    stringBuilder.append(sipClient.getLabel());
+                    stringBuilder.append("&");
+                }
+        );
 
-            if (technology == Technology.SIP) {
-                stringBuilder.append("SIP/");
-            } else if (technology == Technology.PSIP) {
-                stringBuilder.append("PSIP/");
-            }
+        // We have a trailing '&', trim that away. If the sipClientList is empty, we remove the opening brace from
+        // 'Dial('. We don't concern us with that case, since validate() will fail anyway.
+        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
 
-            stringBuilder.append(sipClient.getLabel());
-
-            if (sipClientList.size() > index) {
-                stringBuilder.append("&");
-            }
-        }
         stringBuilder.append(", ");
         stringBuilder.append(timeout);
 
@@ -105,6 +132,7 @@ public class DialApp implements AsteriskApplicationInterface {
             throw new ValidationException("sipClientList is null");
         }
 
+        // toApplicationCall() counts on this check.
         if (sipClientList.isEmpty()) {
             throw new ValidationException("sipClientList is empty");
         }
@@ -118,5 +146,8 @@ public class DialApp implements AsteriskApplicationInterface {
         }
     }
 
-    public enum Technology {SIP, PSIP}
+    public enum Technology {
+        SIP,
+        PSIP
+    }
 }
