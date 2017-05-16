@@ -36,7 +36,7 @@ ausgeführt werden.
 Dies muss folgendermassen geschehen:
 
 ```
-DATABASE_URL="postgres://USERNAME:PASSWORD@HOST:PORT/DATABASE java -jar ROCKETVOIP.jar
+DATABASE_URL="postgres://USERNAME:PASSWORD@HOST:PORT/DATABASE" java -jar ROCKETVOIP.jar
 ```
 
 ## RocketVoIP-Frontend
@@ -53,13 +53,19 @@ Auch das Frontend muss zuerst von github.com ausgecheckt werden:
 git clone https://github.com/rocketvoip/rocketvoip-frontend.git
 ```
 
+Die restlichen Abhängigkeiten können dann via `npm` installiert werden:
+
+```
+npm install
+```
+
 ### Starten
-Die node.js Anwendung kann ohne weiteres gestartet werden.
-Dies geschieht durch Ausführen des folgenden Befehls, innerhalb 
+Die node.js Anwendung kann dann ohne weiteres mittels dem web.js gestartet 
+werden. Dies geschieht durch Ausführen des folgenden Befehls, innerhalb 
 des RocketVoIP-Frontend Verzeichnisses:
 
 ```
-npm start
+BACKEND_URL="https://<URL-OF-BACKEND>/" node web.js
 ```
 
 ## Asterisk-Server
@@ -72,7 +78,7 @@ npm start
 
 Asterisk und Cron müssen auf dem System vorhanden sein, auf welchem der 
 VoIP-Server, mit der durch RocketVoIP erstellten Konfiguration, betrieben 
-werden soll.
+werden soll.    
 
 Folgende Konfigurationen von Asterisk sollten vor der ersten Verwendung 
 des unten angegeben Scripts entfernt werden:
