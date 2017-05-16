@@ -73,7 +73,10 @@ public class SipClientControllerOperatorIT {
 
     @Test
     public void getAllSipClientEmpty() throws Exception {
-        databaseFixtureBuilder1.setCompany(1).addOperator(1).build();
+        databaseFixtureBuilder1
+                .setCompany(1)
+                .addOperator(1)
+                .build();
         String authToken = getTokenForOperator1Company1();
 
         mockMvc.perform(
@@ -88,7 +91,10 @@ public class SipClientControllerOperatorIT {
 
     @Test
     public void getNonExistingSipClient() throws Exception {
-        databaseFixtureBuilder1.setCompany(1).addOperator(1).build();
+        databaseFixtureBuilder1
+                .setCompany(1)
+                .addOperator(1)
+                .build();
         String authToken = getTokenForOperator1Company1();
 
         mockMvc.perform(
@@ -103,7 +109,10 @@ public class SipClientControllerOperatorIT {
 
     @Test
     public void deleteNonExistingSipClient() throws Exception {
-        databaseFixtureBuilder1.setCompany(1).addOperator(1).build();
+        databaseFixtureBuilder1
+                .setCompany(1)
+                .addOperator(1)
+                .build();
         String authToken = getTokenForOperator1Company1();
 
         mockMvc.perform(
@@ -119,7 +128,10 @@ public class SipClientControllerOperatorIT {
 
     @Test
     public void updateNonExistingSipClient() throws Exception {
-        databaseFixtureBuilder1.setCompany(1).addOperator(1).build();
+        databaseFixtureBuilder1
+                .setCompany(1)
+                .addOperator(1)
+                .build();
         String authToken = getTokenForOperator1Company1();
 
         SipClientDto sipClientDto = SipClientDtoGenerator.createTestSipClientDto((CompanyDto) null, 1);
@@ -139,7 +151,11 @@ public class SipClientControllerOperatorIT {
                 .addOperator(1)
                 .addSipClient(1)
                 .build();
-        String authToken = getTokenForOperator1Company1();
+        databaseFixtureBuilder2
+                .setCompany(2)
+                .addOperator(2)
+                .build();
+        String authToken = getTokenForOperator2Company2();
 
         SipClientDto existingSipClient = SipClientServiceImpl.sipClientEntityToSipClientDto
                 (databaseFixtureBuilder1.getSipClientList().get(1));
@@ -190,11 +206,15 @@ public class SipClientControllerOperatorIT {
 
     @Test
     public void createSipClient() throws Exception {
-        databaseFixtureBuilder2
-                .setCompany(2)
+        databaseFixtureBuilder1
+                .setCompany(1)
                 .addOperator(1)
                 .build();
-        String authToken = getTokenForOperator1Company2();
+        databaseFixtureBuilder2
+                .setCompany(2)
+                .addOperator(2)
+                .build();
+        String authToken = getTokenForOperator1Company1();
 
         CompanyDto companyDto = CompanyServiceImpl.companyEntityToCompanyDto(
                 databaseFixtureBuilder2.getFirstCompany()
@@ -270,12 +290,16 @@ public class SipClientControllerOperatorIT {
 
     @Test
     public void deleteSipClient() throws Exception {
+        databaseFixtureBuilder2
+                .setCompany(2)
+                .addOperator(2)
+                .build();
         databaseFixtureBuilder1
                 .setCompany(1)
                 .addOperator(1)
                 .addSipClient(1)
                 .build();
-        String authToken = getTokenForOperator1Company1();
+        String authToken = getTokenForOperator2Company2();
 
         SipClientDto createdSipClient1 = SipClientServiceImpl.sipClientEntityToSipClientDto(
                 databaseFixtureBuilder1.getSipClientList().get(1)
@@ -301,8 +325,8 @@ public class SipClientControllerOperatorIT {
                 .get(1)));
     }
 
-    private String getTokenForOperator1Company2() {
+    private String getTokenForOperator2Company2() {
         return tokenHandler.createTokenForUser(new AdminDetails(databaseFixtureBuilder2.getOperatorList()
-                .get(1)));
+                .get(2)));
     }
 }
