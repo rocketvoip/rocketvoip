@@ -41,7 +41,7 @@ public class DialPlanRepositoryTest {
     @Test
     public void createDialPlan() throws Exception {
         databaseFixtureBuilder
-                .company(1)
+                .setCompany(1)
                 .addAdministrator(1)
                 .addSipClient(1)
                 .addDialPlan(1)
@@ -62,14 +62,14 @@ public class DialPlanRepositoryTest {
     @Test
     public void findByCompany() throws Exception {
         databaseFixtureBuilder
-                .company(1)
+                .setCompany(1)
                 .addAdministrator(1)
                 .addSipClient(1)
                 .addDialPlan(1)
                 .addDialPlan(2)
                 .build();
 
-        Company company = databaseFixtureBuilder.getCompany();
+        Company company = databaseFixtureBuilder.getFirstCompany();
 
         List<DialPlan> dialPlanList = databaseFixtureBuilder
                 .getDialPlanRepository()

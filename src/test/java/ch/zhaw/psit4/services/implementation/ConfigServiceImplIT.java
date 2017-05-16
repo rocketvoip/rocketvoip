@@ -52,7 +52,7 @@ public class ConfigServiceImplIT {
 
     @Test
     public void getAsteriskConfigurationWithOneSipClient() throws Exception {
-        databaseFixtureBuilder.company(1).addSipClient(1).build();
+        databaseFixtureBuilder.setCompany(1).addSipClient(1).build();
 
         ByteArrayOutputStream baos = configServiceInterface.getAsteriskConfiguration();
         ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(baos.toByteArray()));
@@ -77,7 +77,7 @@ public class ConfigServiceImplIT {
 
     @Test
     public void getAsteriskConfigurationWithMultipleSipClients() throws Exception {
-        databaseFixtureBuilder.company(1).addSipClient(1).addSipClient(2).build();
+        databaseFixtureBuilder.setCompany(1).addSipClient(1).addSipClient(2).build();
 
         ByteArrayOutputStream baos = configServiceInterface.getAsteriskConfiguration();
         ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream(baos.toByteArray()));
@@ -100,7 +100,7 @@ public class ConfigServiceImplIT {
     @Test
     public void getSimpleAsteriskConfigWithSayAlpha() throws Exception {
         databaseFixtureBuilder
-                .company(1)
+                .setCompany(1)
                 .addSipClient(1)
                 .addSipClient(2)
                 .addSipClient(3)
@@ -131,7 +131,7 @@ public class ConfigServiceImplIT {
     @Test
     public void getSimpleAsteriskConfigWithDial() throws Exception {
         databaseFixtureBuilder
-                .company(1)
+                .setCompany(1)
                 .addSipClient(1)
                 .addSipClient(2)
                 .addSipClient(3)
@@ -162,7 +162,7 @@ public class ConfigServiceImplIT {
     @Test
     public void getSimpleAsteriskConfigWithGoto() throws Exception {
         databaseFixtureBuilder
-                .company(1)
+                .setCompany(1)
                 .addSipClient(1)
                 .addSipClient(2)
                 .addSipClient(3)
@@ -195,7 +195,7 @@ public class ConfigServiceImplIT {
     @Test
     public void getSimpleAsteriskConfigWithSayAlphaAndDial() throws Exception {
         databaseFixtureBuilder
-                .company(1)
+                .setCompany(1)
                 .addSipClient(1)
                 .addSipClient(2)
                 .addSipClient(3)
@@ -227,7 +227,7 @@ public class ConfigServiceImplIT {
     @Test
     public void getSimpleAsteriskConfigurationWithBranch() throws Exception {
         databaseFixtureBuilder
-                .company(1)
+                .setCompany(1)
                 .addSipClient(1)
                 .addSipClient(2)
                 .addSipClient(3)

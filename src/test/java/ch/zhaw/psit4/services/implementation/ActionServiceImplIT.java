@@ -63,7 +63,7 @@ public class ActionServiceImplIT {
 
     @Test
     public void saveDialPlanWithNullActions() throws Exception {
-        databaseFixtureBuilder1.company(1).addDialPlan(1).addSipClient(1).addSipClient(2).build();
+        databaseFixtureBuilder1.setCompany(1).addDialPlan(1).addSipClient(1).addSipClient(2).build();
         DialPlanDto dialPlanDto = generateDialPlan(generateDialActionDto(1), 1);
         dialPlanDto.setActions(null);
         actionServiceInterface.saveActions(dialPlanDto);
@@ -74,7 +74,7 @@ public class ActionServiceImplIT {
 
     @Test
     public void saveOneDialAction() throws Exception {
-        databaseFixtureBuilder1.company(1).addDialPlan(1).addSipClient(1).addSipClient(2).build();
+        databaseFixtureBuilder1.setCompany(1).addDialPlan(1).addSipClient(1).addSipClient(2).build();
         DialPlanDto dialPlanDto = generateDialPlan(generateDialActionDto(1), 1);
         actionServiceInterface.saveActions(dialPlanDto);
 
@@ -92,7 +92,7 @@ public class ActionServiceImplIT {
 
     @Test
     public void saveMultipleDialActions() throws Exception {
-        databaseFixtureBuilder1.company(1).addDialPlan(1).addSipClient(1).addSipClient(2).build();
+        databaseFixtureBuilder1.setCompany(1).addDialPlan(1).addSipClient(1).addSipClient(2).build();
         DialPlanDto dialPlanDto = generateDialPlan(generateDialActionDtos(2), 1);
 
         actionServiceInterface.saveActions(dialPlanDto);
@@ -118,7 +118,7 @@ public class ActionServiceImplIT {
 
     @Test
     public void saveGotoActions() throws Exception {
-        databaseFixtureBuilder1.company(1).addDialPlan(1).addDialPlan(2).build();
+        databaseFixtureBuilder1.setCompany(1).addDialPlan(1).addDialPlan(2).build();
 
         ActionDto gotoActionDto1 = generateGotoActionDto(1, 2);
         ActionDto gotoActionDto2 = generateGotoActionDto(2, 2);
@@ -154,7 +154,8 @@ public class ActionServiceImplIT {
         int dialPlanNumberButton1 = 2;
         int dialPlanNumberButton2 = 3;
 
-        databaseFixtureBuilder1.company(1).addDialPlan(1).addDialPlan(dialPlanNumberButton1).addDialPlan(dialPlanNumberButton2).build();
+        databaseFixtureBuilder1.setCompany(1).addDialPlan(1).addDialPlan(dialPlanNumberButton1).addDialPlan
+                (dialPlanNumberButton2).build();
 
         // normal order: dialPlanNumberButton1, dialPlanNumberButton2
         ActionDto branchActionDto1 = generateBranchActionDto(1, Arrays.asList(dialPlanNumberButton1, dialPlanNumberButton2));
@@ -183,7 +184,7 @@ public class ActionServiceImplIT {
         int branchDialPlanNumber1 = 1;
         int branchDialPlanNumber2 = 2;
 
-        databaseFixtureBuilder1.company(1).addDialPlan(normalDialPlanNumber)
+        databaseFixtureBuilder1.setCompany(1).addDialPlan(normalDialPlanNumber)
                 .addDialPlan(dialPlanNumberButton1)
                 .addDialPlan(dialPlanNumberButton2)
                 .addBranchDialPlan(branchDialPlanNumber1, dialPlanNumberButton1)
@@ -223,7 +224,7 @@ public class ActionServiceImplIT {
 
     @Test
     public void updateActions() throws Exception {
-        databaseFixtureBuilder1.company(1).addDialPlan(1).addSipClient(1).addSipClient(2).build();
+        databaseFixtureBuilder1.setCompany(1).addDialPlan(1).addSipClient(1).addSipClient(2).build();
         DialPlanDto dialPlanDto = generateDialPlan(generateDialActionDto(1), 1);
         actionServiceInterface.saveActions(dialPlanDto);
 
@@ -263,7 +264,7 @@ public class ActionServiceImplIT {
 
     @Test
     public void deleteActions() throws Exception {
-        databaseFixtureBuilder1.company(1).addDialPlan(1).addDialPlan(2).addSipClient(1).addSipClient(2).build();
+        databaseFixtureBuilder1.setCompany(1).addDialPlan(1).addDialPlan(2).addSipClient(1).addSipClient(2).build();
         DialPlanDto dialPlanDto = generateDialPlan(generateDialActionDto(1), 1);
         actionServiceInterface.saveActions(dialPlanDto);
 

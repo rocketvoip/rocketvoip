@@ -73,7 +73,7 @@ public class SipClientServiceImplIT {
     @Test
     public void createSipClient() throws Exception {
         CompanyDto companyDto = CompanyServiceImpl.companyEntityToCompanyDto(
-                databaseFixtureBuilder2.getCompany()
+                databaseFixtureBuilder2.getFirstCompany()
         );
         SipClientDto sipClientDto = SipClientDtoGenerator.createTestSipClientDto(
                 companyDto,
@@ -134,7 +134,7 @@ public class SipClientServiceImplIT {
     @Test(expected = SipClientCreationException.class)
     public void createInvalidSipClient() throws Exception {
         CompanyDto existingCompanyDto = CompanyServiceImpl.companyEntityToCompanyDto(
-                databaseFixtureBuilder1.getCompany()
+                databaseFixtureBuilder1.getFirstCompany()
         );
 
         SipClientDto sipClientDto = new SipClientDto();
@@ -145,7 +145,7 @@ public class SipClientServiceImplIT {
     @Test(expected = SipClientUpdateException.class)
     public void updateInvalidSipClient() throws Exception {
         CompanyDto existingCompanyDto = CompanyServiceImpl.companyEntityToCompanyDto(
-                databaseFixtureBuilder2.getCompany()
+                databaseFixtureBuilder2.getFirstCompany()
         );
 
         SipClientDto nonExistingSipClient =
@@ -244,8 +244,8 @@ public class SipClientServiceImplIT {
         databaseFixtureBuilder1 = applicationContext.getBean(DatabaseFixtureBuilder.class);
         databaseFixtureBuilder2 = applicationContext.getBean(DatabaseFixtureBuilder.class);
 
-        databaseFixtureBuilder1.company(1).addSipClient(1).build();
-        databaseFixtureBuilder2.company(2).addSipClient(2).build();
+        databaseFixtureBuilder1.setCompany(1).addSipClient(1).build();
+        databaseFixtureBuilder2.setCompany(2).addSipClient(2).build();
     }
 
 }

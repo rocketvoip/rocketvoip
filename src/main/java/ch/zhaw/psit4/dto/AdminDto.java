@@ -31,8 +31,4 @@ public class AdminDto {
     @Size(min = 2)
     private String userName;
 
-    @NotNull
-    @Size(min = 8)
-    private String password;
-
 }
