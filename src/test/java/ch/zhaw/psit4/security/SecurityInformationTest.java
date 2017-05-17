@@ -1,7 +1,37 @@
+/*
+ * Copyright 2017 Jona Braun, Benedikt Herzog, Rafael Ostertag,
+ *                Marcel Schöni, Marco Studerus, Martin Wittwer
+ *
+ * Redistribution and  use in  source and binary  forms, with  or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ * 1. Redistributions  of  source code  must retain  the above  copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in  binary form must reproduce  the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation   and/or   other    materials   provided   with   the
+ *    distribution.
+ *
+ * THIS SOFTWARE  IS PROVIDED BY  THE COPYRIGHT HOLDERS  AND CONTRIBUTORS
+ * "AS  IS" AND  ANY EXPRESS  OR IMPLIED  WARRANTIES, INCLUDING,  BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES  OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE  ARE DISCLAIMED. IN NO EVENT  SHALL THE COPYRIGHT
+ * HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT  NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE  GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS  INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF  LIABILITY, WHETHER IN  CONTRACT, STRICT LIABILITY,  OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN  ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package ch.zhaw.psit4.security;
 
 import ch.zhaw.psit4.data.jpa.entities.Admin;
 import ch.zhaw.psit4.dto.CompanyDto;
+import ch.zhaw.psit4.dto.DialPlanDto;
 import ch.zhaw.psit4.dto.SipClientDto;
 import ch.zhaw.psit4.security.auxiliary.AdminDetails;
 import org.junit.Before;
@@ -181,7 +211,7 @@ public class SecurityInformationTest {
     }
 
     @Test
-    public void sipClientHasAccessToOrThrowAdminUserAlowedCompany() throws Exception {
+    public void sipClientHasAccessToOrThrowAdminUserAllowedCompany() throws Exception {
         when(adminDetailsMock.isSuperAdmin()).thenReturn(false);
         when(adminDetailsMock.getCompanyIds()).thenReturn(Arrays.asList(1L, 2L));
 
@@ -197,4 +227,55 @@ public class SecurityInformationTest {
         securityInformation.hasAccessToOrThrow(sipClientDto);
     }
 
+    @Test
+    public void dialPlanHasAccessToOrThrowOperator() throws Exception {
+        when(adminDetailsMock.isSuperAdmin()).thenReturn(true);
+
+        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
+        securityInformation.hasAccessToOrThrow(new DialPlanDto());
+
+        verify(adminDetailsMock).isSuperAdmin();
+    }
+
+    @Test(expected = AccessDeniedException.class)
+    public void dialPlanHasAccessToOrThrowAdminUserNullCompany() throws Exception {
+        when(adminDetailsMock.isSuperAdmin()).thenReturn(false);
+
+        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
+        securityInformation.hasAccessToOrThrow(new DialPlanDto());
+    }
+
+    @Test(expected = AccessDeniedException.class)
+    public void dialPlantHasAccessToOrThrowAdminUserDeniedCompany() throws Exception {
+        when(adminDetailsMock.isSuperAdmin()).thenReturn(false);
+        when(adminDetailsMock.getCompanyIds()).thenReturn(Arrays.asList(1L, 2L));
+
+
+        CompanyDto companyDto = new CompanyDto();
+        companyDto.setId(3L);
+        companyDto.setName("test");
+
+        DialPlanDto dialPlanDto = new DialPlanDto();
+        dialPlanDto.setCompany(companyDto);
+
+        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
+        securityInformation.hasAccessToOrThrow(dialPlanDto);
+    }
+
+    @Test
+    public void dialPlanHasAccessToOrThrowAdminUserAllowedCompany() throws Exception {
+        when(adminDetailsMock.isSuperAdmin()).thenReturn(false);
+        when(adminDetailsMock.getCompanyIds()).thenReturn(Arrays.asList(1L, 2L));
+
+
+        CompanyDto companyDto = new CompanyDto();
+        companyDto.setId(1L);
+        companyDto.setName("test");
+
+        DialPlanDto dialPlanDto = new DialPlanDto();
+        dialPlanDto.setCompany(companyDto);
+
+        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
+        securityInformation.hasAccessToOrThrow(dialPlanDto);
+    }
 }
