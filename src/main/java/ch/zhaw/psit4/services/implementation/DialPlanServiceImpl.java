@@ -134,7 +134,7 @@ public class DialPlanServiceImpl implements DialPlanServiceInterface {
 
     @Override
     public List<DialPlanDto> getAllDialPlansForCompanies(List<Long> companyIds) {
-        return dialPlanRepository.findAllByIdIsIn(companyIds)
+        return dialPlanRepository.findAllByCompanyIdIsIn(companyIds)
                 .stream()
                 .map(this::dialPlanEntityToDialPlanDto)
                 .collect(Collectors.toList());
