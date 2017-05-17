@@ -52,6 +52,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static ch.zhaw.psit4.testsupport.matchers.SipClientDtoEqualTo.sipClientDtoEqualTo;
@@ -89,6 +91,89 @@ public class SipClientServiceImplIT {
         List<SipClientDto> actual = sipClientServiceInterface.getAllSipClients();
 
         assertThat(actual, hasSize(4));
+        SipClientDto testSipClient1 = SipClientServiceImpl.sipClientEntityToSipClientDto(
+                databaseFixtureBuilder1.getSipClientList().get(1)
+        );
+        SipClientDto testSipClient2 = SipClientServiceImpl.sipClientEntityToSipClientDto(
+                databaseFixtureBuilder1.getSipClientList().get(2)
+        );
+        SipClientDto testSipClient3 = SipClientServiceImpl.sipClientEntityToSipClientDto(
+                databaseFixtureBuilder2.getSipClientList().get(3)
+        );
+        SipClientDto testSipClient4 = SipClientServiceImpl.sipClientEntityToSipClientDto(
+                databaseFixtureBuilder2.getSipClientList().get(4)
+        );
+
+        assertThat(actual, containsInAnyOrder(
+                sipClientDtoEqualTo(testSipClient1),
+                sipClientDtoEqualTo(testSipClient2),
+                sipClientDtoEqualTo(testSipClient3),
+                sipClientDtoEqualTo(testSipClient4)
+                )
+        );
+    }
+
+    @Test
+    public void getAllSipClientsForCompaniesEmptyList() throws Exception {
+        List<SipClientDto> list = sipClientServiceInterface.getAllSipClientsForCompanies(Collections.emptyList());
+        assertThat(list, hasSize(0));
+    }
+
+    @Test
+    public void getAllSipClientsForCompany1() throws Exception {
+        List<Long> companyIds = new ArrayList<>();
+        companyIds.add(databaseFixtureBuilder1.getFirstCompany().getId());
+
+        List<SipClientDto> actual = sipClientServiceInterface.getAllSipClientsForCompanies(companyIds);
+        assertThat(actual, hasSize(2));
+
+        SipClientDto testSipClient1 = SipClientServiceImpl.sipClientEntityToSipClientDto(
+                databaseFixtureBuilder1.getSipClientList().get(1)
+        );
+        SipClientDto testSipClient2 = SipClientServiceImpl.sipClientEntityToSipClientDto(
+                databaseFixtureBuilder1.getSipClientList().get(2)
+        );
+
+        assertThat(actual, containsInAnyOrder(
+                sipClientDtoEqualTo(testSipClient1),
+                sipClientDtoEqualTo(testSipClient2)
+                )
+        );
+
+    }
+
+    @Test
+    public void getAllSipClientsForCompany2() throws Exception {
+        List<Long> companyIds = new ArrayList<>();
+        companyIds.add(databaseFixtureBuilder2.getFirstCompany().getId());
+
+        List<SipClientDto> actual = sipClientServiceInterface.getAllSipClientsForCompanies(companyIds);
+        assertThat(actual, hasSize(2));
+
+        SipClientDto testSipClient3 = SipClientServiceImpl.sipClientEntityToSipClientDto(
+                databaseFixtureBuilder2.getSipClientList().get(3)
+        );
+        SipClientDto testSipClient4 = SipClientServiceImpl.sipClientEntityToSipClientDto(
+                databaseFixtureBuilder2.getSipClientList().get(4)
+        );
+
+        assertThat(actual, containsInAnyOrder(
+                sipClientDtoEqualTo(testSipClient3),
+                sipClientDtoEqualTo(testSipClient4)
+                )
+        );
+
+    }
+
+    @Test
+    public void getAllSipClientsForAllCompanies() throws Exception {
+        List<Long> companyIds = new ArrayList<>();
+        companyIds.add(databaseFixtureBuilder2.getFirstCompany().getId());
+        companyIds.add(databaseFixtureBuilder1.getFirstCompany().getId());
+
+        List<SipClientDto> actual = sipClientServiceInterface.getAllSipClientsForCompanies(companyIds);
+        assertThat(actual, hasSize(4));
+
         SipClientDto testSipClient1 = SipClientServiceImpl.sipClientEntityToSipClientDto(
                 databaseFixtureBuilder1.getSipClientList().get(1)
         );
