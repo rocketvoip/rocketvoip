@@ -83,7 +83,19 @@ public class SipClientServiceImplIT {
 
     @Before
     public void setUp() throws Exception {
-        setupDatabase();
+        databaseFixtureBuilder1 = applicationContext.getBean(DatabaseFixtureBuilder.class);
+        databaseFixtureBuilder2 = applicationContext.getBean(DatabaseFixtureBuilder.class);
+
+        databaseFixtureBuilder1
+                .setCompany(1)
+                .addSipClient(1)
+                .addSipClient(2)
+                .build();
+        databaseFixtureBuilder2
+                .setCompany(2)
+                .addSipClient(3)
+                .addSipClient(4)
+                .build();
     }
 
     @Test
@@ -364,22 +376,6 @@ public class SipClientServiceImplIT {
         assertTrue("phone".equals(sipClient.getPhoneNr()));
         assertTrue("secret".equals(sipClient.getSecret()));
         assertTrue(2 == sipClient.getId());
-    }
-
-    private void setupDatabase() {
-        databaseFixtureBuilder1 = applicationContext.getBean(DatabaseFixtureBuilder.class);
-        databaseFixtureBuilder2 = applicationContext.getBean(DatabaseFixtureBuilder.class);
-
-        databaseFixtureBuilder1
-                .setCompany(1)
-                .addSipClient(1)
-                .addSipClient(2)
-                .build();
-        databaseFixtureBuilder2
-                .setCompany(2)
-                .addSipClient(3)
-                .addSipClient(4)
-                .build();
     }
 
 }
