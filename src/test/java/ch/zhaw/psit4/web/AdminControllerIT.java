@@ -238,6 +238,8 @@ public class AdminControllerIT {
                         .contentType(MediaType.APPLICATION_JSON_UTF8)
         ).andExpect(
                 status().isOk()
+        ).andExpect(
+                jsonPath("$.password").doesNotExist()
         ).andReturn().getResponse().getContentAsString();
 
         actual = Json.toObjectTypeSafe(response, AdminDto.class);
