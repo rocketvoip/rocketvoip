@@ -63,7 +63,7 @@ public class DialPlanController {
             return new ResponseEntity<>(dialPlanServiceInterface.getAllDialPlans(), HttpStatus.OK);
         }
 
-        return new ResponseEntity<List<DialPlanDto>>(
+        return new ResponseEntity<>(
                 dialPlanServiceInterface.getAllDialPlansForCompanies(securityInformation.allowedCompanies()),
                 HttpStatus.OK
         );
