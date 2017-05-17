@@ -171,13 +171,13 @@ public class DialPlanControllerOperatorIT {
         ).andExpect(
                 status().isNotFound()
         ).andExpect(
-                jsonPath("$.reason").value(startsWith("Could not delete dial plan with id " +
+                jsonPath("$.reason").value(startsWith("Could not find dial plan with id " +
                         NON_EXISTING_DIAL_PLAN_ID))
         );
     }
 
     @Test
-    public void updateNonExistingDialPlan() throws Exception {
+    public void updateDialPlanWithNullCompany() throws Exception {
         databaseFixtureBuilder1
                 .setCompany(1)
                 .addOperator(1)
@@ -193,6 +193,26 @@ public class DialPlanControllerOperatorIT {
                 status().isBadRequest()
         );
     }
+
+    @Test
+    public void updateDialPlanNonExistingDialPlan() throws Exception {
+        databaseFixtureBuilder1
+                .setCompany(1)
+                .addOperator(1)
+                .build();
+        String authToken = getTokenForOperator1Company1();
+
+        DialPlanDto dialPlanDto = DialPlanDtoGenerator.createTestDialPlanDto(databaseFixtureBuilder1.getFirstCompany
+                (), 1);
+        mockMvc.perform(
+                MockMvcRequestBuilders.put(V1_DIAL_PLANS_PATH + "/{id}", NON_EXISTING_DIAL_PLAN_ID)
+                        .content(Json.toJson(dialPlanDto))
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
+        ).andExpect(
+                status().isNotFound()
+        );
+    }
+
 
     @Test
     public void updateDialPlan() throws Exception {
