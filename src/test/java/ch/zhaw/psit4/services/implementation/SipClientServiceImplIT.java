@@ -1,3 +1,32 @@
+/*
+ * Copyright 2017 Jona Braun, Benedikt Herzog, Rafael Ostertag,
+ *                Marcel Schöni, Marco Studerus, Martin Wittwer
+ *
+ * Redistribution and  use in  source and binary  forms, with  or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ *
+ * 1. Redistributions  of  source code  must retain  the above  copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in  binary form must reproduce  the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation   and/or   other    materials   provided   with   the
+ *    distribution.
+ *
+ * THIS SOFTWARE  IS PROVIDED BY  THE COPYRIGHT HOLDERS  AND CONTRIBUTORS
+ * "AS  IS" AND  ANY EXPRESS  OR IMPLIED  WARRANTIES, INCLUDING,  BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES  OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE  ARE DISCLAIMED. IN NO EVENT  SHALL THE COPYRIGHT
+ * HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT  NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE  GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS  INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF  LIABILITY, WHETHER IN  CONTRACT, STRICT LIABILITY,  OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN  ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package ch.zhaw.psit4.services.implementation;
 
 import ch.zhaw.psit4.data.jpa.entities.Company;
@@ -39,6 +68,7 @@ import static org.junit.Assert.*;
 @Transactional
 @Import(BeanConfiguration.class)
 public class SipClientServiceImplIT {
+    public static final int NON_EXISTING_COMPANY_NUMBER = 123;
     @Autowired
     private ApplicationContext applicationContext;
 
@@ -58,16 +88,27 @@ public class SipClientServiceImplIT {
     public void getAllSipClients() throws Exception {
         List<SipClientDto> actual = sipClientServiceInterface.getAllSipClients();
 
-        assertThat(actual, hasSize(2));
+        assertThat(actual, hasSize(4));
         SipClientDto testSipClient1 = SipClientServiceImpl.sipClientEntityToSipClientDto(
                 databaseFixtureBuilder1.getSipClientList().get(1)
         );
         SipClientDto testSipClient2 = SipClientServiceImpl.sipClientEntityToSipClientDto(
-                databaseFixtureBuilder2.getSipClientList().get(2)
+                databaseFixtureBuilder1.getSipClientList().get(2)
+        );
+        SipClientDto testSipClient3 = SipClientServiceImpl.sipClientEntityToSipClientDto(
+                databaseFixtureBuilder2.getSipClientList().get(3)
+        );
+        SipClientDto testSipClient4 = SipClientServiceImpl.sipClientEntityToSipClientDto(
+                databaseFixtureBuilder2.getSipClientList().get(4)
         );
 
-        assertThat(actual, containsInAnyOrder(sipClientDtoEqualTo(testSipClient1), sipClientDtoEqualTo
-                (testSipClient2)));
+        assertThat(actual, containsInAnyOrder(
+                sipClientDtoEqualTo(testSipClient1),
+                sipClientDtoEqualTo(testSipClient2),
+                sipClientDtoEqualTo(testSipClient3),
+                sipClientDtoEqualTo(testSipClient4)
+                )
+        );
     }
 
     @Test
@@ -77,7 +118,7 @@ public class SipClientServiceImplIT {
         );
         SipClientDto sipClientDto = SipClientDtoGenerator.createTestSipClientDto(
                 companyDto,
-                3
+                5
         );
 
         SipClientDto actual = sipClientServiceInterface.createSipClient(sipClientDto);
@@ -108,8 +149,8 @@ public class SipClientServiceImplIT {
 
     @Test(expected = SipClientCreationException.class)
     public void createSipClientNonExistentCompany() throws Exception {
-        Company companyNonExistentID = CompanyEntity.createCompany(123);
-        companyNonExistentID.setId((long) 123);
+        Company companyNonExistentID = CompanyEntity.createCompany(NON_EXISTING_COMPANY_NUMBER);
+        companyNonExistentID.setId((long) NON_EXISTING_COMPANY_NUMBER);
 
         SipClientDto sipClientDto = SipClientDtoGenerator.createTestSipClientDto(companyNonExistentID, 10);
 
@@ -119,7 +160,7 @@ public class SipClientServiceImplIT {
     @Test(expected = SipClientRetrievalException.class)
     public void deleteSipClient() throws Exception {
         SipClientDto sipClientDto = SipClientServiceImpl.sipClientEntityToSipClientDto(
-                databaseFixtureBuilder2.getSipClientList().get(2)
+                databaseFixtureBuilder2.getSipClientList().get(3)
         );
         sipClientServiceInterface.deleteSipClient(sipClientDto.getId());
 
@@ -159,10 +200,10 @@ public class SipClientServiceImplIT {
     @Test
     public void updateSipClient() throws Exception {
         SipClientDto existingSipClientDto = SipClientServiceImpl.sipClientEntityToSipClientDto(
-                databaseFixtureBuilder2.getSipClientList().get(2)
+                databaseFixtureBuilder2.getSipClientList().get(3)
         );
 
-        SipClientDto newSipClientDto = SipClientDtoGenerator.createTestSipClientDto((CompanyDto) null, 4);
+        SipClientDto newSipClientDto = SipClientDtoGenerator.createTestSipClientDto((CompanyDto) null, 5);
         newSipClientDto.setId(existingSipClientDto.getId());
         newSipClientDto.setCompany(existingSipClientDto.getCompany());
 
@@ -244,8 +285,16 @@ public class SipClientServiceImplIT {
         databaseFixtureBuilder1 = applicationContext.getBean(DatabaseFixtureBuilder.class);
         databaseFixtureBuilder2 = applicationContext.getBean(DatabaseFixtureBuilder.class);
 
-        databaseFixtureBuilder1.setCompany(1).addSipClient(1).build();
-        databaseFixtureBuilder2.setCompany(2).addSipClient(2).build();
+        databaseFixtureBuilder1
+                .setCompany(1)
+                .addSipClient(1)
+                .addSipClient(2)
+                .build();
+        databaseFixtureBuilder2
+                .setCompany(2)
+                .addSipClient(3)
+                .addSipClient(4)
+                .build();
     }
 
 }
