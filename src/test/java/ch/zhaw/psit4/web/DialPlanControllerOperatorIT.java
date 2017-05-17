@@ -195,7 +195,7 @@ public class DialPlanControllerOperatorIT {
     }
 
     @Test
-    public void updateDialPlanNonExistingDialPlan() throws Exception {
+    public void updateNonExistingDialPlan() throws Exception {
         databaseFixtureBuilder1
                 .setCompany(1)
                 .addOperator(1)
