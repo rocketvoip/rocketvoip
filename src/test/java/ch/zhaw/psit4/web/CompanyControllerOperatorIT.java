@@ -63,7 +63,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
 @Import(BeanConfiguration.class)
-public class CompanyControllerIT {
+public class CompanyControllerOperatorIT {
     private static final String V1_COMPANIES_PATH = "/v1/companies";
     private static final int NON_EXISTING_COMPANY_ID = 100;
 
