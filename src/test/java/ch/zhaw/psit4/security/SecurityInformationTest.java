@@ -127,6 +127,22 @@ public class SecurityInformationTest {
         verify(adminDetailsMock).getCompanyIds();
     }
 
+    @Test(expected = AccessDeniedException.class)
+    public void isOperatorOrThrowNonOperator() throws Exception {
+        when(adminDetailsMock.isSuperAdmin()).thenReturn(false);
+        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
+        securityInformation.isOperatorOrThrow();
+    }
+
+    @Test
+    public void isOperatorOrThrowOperator() throws Exception {
+        when(adminDetailsMock.isSuperAdmin()).thenReturn(true);
+        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
+        securityInformation.isOperatorOrThrow();
+
+        verify(adminDetailsMock).isSuperAdmin();
+    }
+
 
     @Test(expected = AccessDeniedException.class)
     public void hasAccessToOrThrowNullCompany() throws Exception {

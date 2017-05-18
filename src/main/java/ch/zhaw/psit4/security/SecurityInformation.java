@@ -88,6 +88,15 @@ public class SecurityInformation {
         return Collections.unmodifiableList(adminDetails.getCompanyIds());
     }
 
+    public void isOperatorOrThrow() {
+        if (adminDetails.isSuperAdmin()) {
+            return;
+        }
+        LOGGER.error("User '{}' tried to access object where only operators have access", adminDetails.getUsername());
+
+        throw new AccessDeniedException("Not allowed");
+    }
+
     public void hasAccessToOrThrow(SipClientDto sipClientDto) {
         assert sipClientDto != null;
 
