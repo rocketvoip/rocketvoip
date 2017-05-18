@@ -128,6 +128,42 @@ public class SecurityInformationTest {
     }
 
     @Test(expected = AccessDeniedException.class)
+    public void inAllowedCompaniesOrThrowEmptyList() throws Exception {
+        when(adminDetailsMock.getCompanyIds()).thenReturn(new ArrayList<>());
+        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
+
+        securityInformation.inAllowedCompaniesOrThrow(1L);
+    }
+
+    @Test(expected = AccessDeniedException.class)
+    public void inAllowedCompaniesOrThrowNotInList() throws Exception {
+        when(adminDetailsMock.getCompanyIds()).thenReturn(Arrays.asList(2L, 3L));
+        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
+
+        securityInformation.inAllowedCompaniesOrThrow(1L);
+    }
+
+    @Test
+    public void inAllowedCompaniesOrThrowInList() throws Exception {
+        when(adminDetailsMock.getCompanyIds()).thenReturn(Arrays.asList(1L, 2L, 3L));
+        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
+
+        securityInformation.inAllowedCompaniesOrThrow(1L);
+        verify(adminDetailsMock).getCompanyIds();
+    }
+
+    @Test
+    public void inAllowedCompaniesOrThrowOperator() throws Exception {
+        when(adminDetailsMock.isSuperAdmin()).thenReturn(true);
+        when(adminDetailsMock.getCompanyIds()).thenReturn(Arrays.asList(1L, 2L, 3L));
+        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
+
+        securityInformation.inAllowedCompaniesOrThrow(1L);
+        verify(adminDetailsMock).isSuperAdmin();
+        verify(adminDetailsMock, never()).getCompanyIds();
+    }
+
+    @Test(expected = AccessDeniedException.class)
     public void isOperatorOrThrowNonOperator() throws Exception {
         when(adminDetailsMock.isSuperAdmin()).thenReturn(false);
         SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
@@ -142,7 +178,6 @@ public class SecurityInformationTest {
 
         verify(adminDetailsMock).isSuperAdmin();
     }
-
 
     @Test(expected = AccessDeniedException.class)
     public void hasAccessToOrThrowNullCompany() throws Exception {

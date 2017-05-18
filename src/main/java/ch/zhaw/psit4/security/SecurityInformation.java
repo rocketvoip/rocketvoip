@@ -88,6 +88,20 @@ public class SecurityInformation {
         return Collections.unmodifiableList(adminDetails.getCompanyIds());
     }
 
+    public void inAllowedCompaniesOrThrow(long id) {
+        if (isOperator()) {
+            return;
+        }
+
+        if (allowedCompanies().contains(id)) {
+            return;
+        }
+
+        LOGGER.error("User '{}' tried to access Company with id {})", adminDetails.getUsername(), id);
+
+        throw new AccessDeniedException("Access denied");
+    }
+
     public void isOperatorOrThrow() {
         if (adminDetails.isSuperAdmin()) {
             return;
