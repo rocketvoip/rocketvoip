@@ -52,6 +52,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
+ * Test whether or not the roles have been assigned properly in {@link ch.zhaw.psit4.security.web.WebSecurityJWT}
+ *
  * @author Rafael Ostertag
  */
 @RunWith(SpringRunner.class)
