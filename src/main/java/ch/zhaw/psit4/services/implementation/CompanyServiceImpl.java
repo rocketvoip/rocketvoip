@@ -44,6 +44,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Implements the CompanyServiceInterface.
@@ -132,6 +133,14 @@ public class CompanyServiceImpl implements CompanyServiceInterface {
             companyDtoList.add(companyDto);
         }
         return companyDtoList;
+    }
+
+    @Override
+    public List<CompanyDto> getCompaniesById(List<Long> ids) {
+        return companyRepository.idIsIn(ids)
+                .stream()
+                .map(CompanyServiceImpl::companyEntityToCompanyDto)
+                .collect(Collectors.toList());
     }
 
     @Override
