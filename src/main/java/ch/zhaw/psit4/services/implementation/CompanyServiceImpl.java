@@ -137,7 +137,7 @@ public class CompanyServiceImpl implements CompanyServiceInterface {
 
     @Override
     public List<CompanyDto> getCompaniesById(List<Long> ids) {
-        return companyRepository.idIsIn(ids)
+        return companyRepository.findAllByIdIsIn(ids)
                 .stream()
                 .map(CompanyServiceImpl::companyEntityToCompanyDto)
                 .collect(Collectors.toList());
