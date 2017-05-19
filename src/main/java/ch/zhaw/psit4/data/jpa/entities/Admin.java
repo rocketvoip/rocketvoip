@@ -31,6 +31,8 @@ package ch.zhaw.psit4.data.jpa.entities;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -50,6 +52,7 @@ public class Admin implements Serializable {
     private long id;
 
     @ManyToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
     private Collection<Company> company;
 
     @Column(nullable = false)
@@ -58,7 +61,7 @@ public class Admin implements Serializable {
     @Column(nullable = false)
     private String lastname;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String username;
 
     @Column(nullable = false)

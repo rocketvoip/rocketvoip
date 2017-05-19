@@ -30,10 +30,12 @@
 package ch.zhaw.psit4.web;
 
 import ch.zhaw.psit4.dto.CompanyDto;
+import ch.zhaw.psit4.security.SecurityInformation;
 import ch.zhaw.psit4.services.interfaces.CompanyServiceInterface;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -55,29 +57,48 @@ public class CompanyController {
 
     @GetMapping(path = "/companies")
     public ResponseEntity<List<CompanyDto>> getAllCompanies() {
-        return new ResponseEntity<>(companyServiceInterface.getAllCompanies(), HttpStatus.OK);
+        final SecurityInformation securityInformation = new SecurityInformation(SecurityContextHolder.getContext());
+
+        if (securityInformation.isOperator()) {
+            return new ResponseEntity<>(companyServiceInterface.getAllCompanies(), HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(companyServiceInterface.getCompaniesById(securityInformation.allowedCompanies()),
+                HttpStatus.OK);
     }
 
     @GetMapping(path = "/companies/{id}")
     public ResponseEntity<CompanyDto> getCompany(@PathVariable long id) {
+        final SecurityInformation securityInformation = new SecurityInformation(SecurityContextHolder.getContext());
+        securityInformation.inAllowedCompaniesOrThrow(id);
+
         return new ResponseEntity<>
                 (companyServiceInterface.getCompany(id), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/companies/{id}")
     public ResponseEntity<Void> deleteCompany(@PathVariable long id) {
+        final SecurityInformation securityInformation = new SecurityInformation(SecurityContextHolder.getContext());
+        securityInformation.isOperatorOrThrow();
+
         companyServiceInterface.deleteCompany(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping(path = "/companies/{id}")
     public ResponseEntity<CompanyDto> updateCompany(@PathVariable long id, @RequestBody CompanyDto companyDto) {
+        final SecurityInformation securityInformation = new SecurityInformation(SecurityContextHolder.getContext());
+        securityInformation.isOperatorOrThrow();
+
         companyDto.setId(id);
         return new ResponseEntity<>(companyServiceInterface.updateCompany(companyDto), HttpStatus.OK);
     }
 
     @PostMapping(path = "/companies")
     public ResponseEntity<CompanyDto> createCompany(@RequestBody CompanyDto companyDto) {
+        final SecurityInformation securityInformation = new SecurityInformation(SecurityContextHolder.getContext());
+        securityInformation.isOperatorOrThrow();
+
         return new ResponseEntity<>(
                 companyServiceInterface.createCompany(companyDto), HttpStatus.CREATED);
     }

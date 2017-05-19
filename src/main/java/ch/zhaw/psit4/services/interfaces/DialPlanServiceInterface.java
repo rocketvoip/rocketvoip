@@ -52,6 +52,15 @@ public interface DialPlanServiceInterface {
     List<DialPlanDto> getAllDialPlans();
 
     /**
+     * Retrieve all DialPlans for given companies.
+     *
+     * @param companyIds list of company IDs
+     * @return list of all DialPlans, or an empty list if no DialPlans are found
+     * @throws DialPlanRetrievalException Implementations are expected to throw DialPlanRetrievalExcpetion on error.
+     */
+    List<DialPlanDto> getAllDialPlansForCompanies(List<Long> companyIds);
+
+    /**
      * Create a new DialPlan. The {$code id} attribute of {$code newDialPlan} will be ignored if set. The returned
      * {$code DialPlan} has its {$code id} attribute set to unique value.
      *

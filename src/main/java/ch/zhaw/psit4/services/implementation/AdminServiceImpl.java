@@ -55,6 +55,7 @@ import static ch.zhaw.psit4.services.implementation.CompanyServiceImpl.companyDt
  */
 @Service
 public class AdminServiceImpl implements AdminServiceInterface {
+    public static final String COULD_NOT_FIND_ADMIN_FORMAT = "Could not find admin with id %d";
     private static final Logger LOGGER = LoggerFactory.getLogger(AdminServiceInterface.class);
     private AdminRepository adminRepository;
     private CompanyRepository companyRepository;
@@ -115,7 +116,7 @@ public class AdminServiceImpl implements AdminServiceInterface {
         try {
             Admin existingAdmin = adminRepository.findFirstByIdAndSuperAdminIsFalse(adminDto.getId());
             if (existingAdmin == null) {
-                throw new AdminRetrievalException(String.format("Could not find admin with id %d", adminDto.getId()));
+                throw new AdminRetrievalException(String.format(COULD_NOT_FIND_ADMIN_FORMAT, adminDto.getId()));
             }
 
             existingAdmin.setCompany(retrieveCompaniesByCompanyDtos(adminDto.getCompanyDtoList()));
@@ -138,7 +139,7 @@ public class AdminServiceImpl implements AdminServiceInterface {
     public AdminDto getAdmin(long id) {
         Admin existingAdmin = adminRepository.findFirstByIdAndSuperAdminIsFalse(id);
         if (existingAdmin == null) {
-            String message = String.format("Could not find admin with id %d", id);
+            String message = String.format(COULD_NOT_FIND_ADMIN_FORMAT, id);
             LOGGER.error(message);
             throw new AdminRetrievalException(message);
         }
@@ -162,7 +163,7 @@ public class AdminServiceImpl implements AdminServiceInterface {
         try {
             Admin existingAdmin = adminRepository.findOne(id);
             if (existingAdmin == null) {
-                String message = String.format("Could not find admin with id %d", id);
+                String message = String.format(COULD_NOT_FIND_ADMIN_FORMAT, id);
                 LOGGER.error(message);
                 throw new AdminRetrievalException(message);
             }
@@ -186,7 +187,7 @@ public class AdminServiceImpl implements AdminServiceInterface {
                 .map(CompanyDto::getId)
                 .collect(Collectors.toList());
 
-        List<Company> companies = companyRepository.idIsIn(companyIds);
+        List<Company> companies = companyRepository.findAllByIdIsIn(companyIds);
         assert companies != null;
 
         if (companyIds.size() != companies.size()) {

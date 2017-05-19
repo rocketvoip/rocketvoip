@@ -52,6 +52,15 @@ public interface SipClientServiceInterface {
     List<SipClientDto> getAllSipClients();
 
     /**
+     * Retrieve all SipClients for given Companies.
+     *
+     * @param companyIds list of company IDs.
+     * @return list of all SipClients, or an empty list if no SipClients are in the data store
+     * @throws SipClientRetrievalException Implementations are expected to throw SipClientRetrievalExcpetion on error.
+     */
+    List<SipClientDto> getAllSipClientsForCompanies(List<Long> companyIds);
+
+    /**
      * Create a new SipClient. The {$code id} attribute of {$code newSipClient} will be ignored if set. The returned
      * {$code SipClient} has its {$code id} attribute set to unique value.
      *

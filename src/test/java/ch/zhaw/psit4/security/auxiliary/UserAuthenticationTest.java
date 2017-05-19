@@ -78,14 +78,12 @@ public class UserAuthenticationTest {
 
     @Test
     public void testDetails() throws Exception {
-        assertThat(userAuthentication.getDetails(), equalTo(adminDetails));
+        assertThat(userAuthentication.getDetails(), nullValue());
     }
 
     @Test
     public void testPrincipal() throws Exception {
-        assertThat(userAuthentication.getPrincipal(), equalTo(
-                AdminData.getAdminUsername(1)
-        ));
+        assertThat(userAuthentication.getPrincipal(), equalTo(adminDetails));
     }
 
     @Test

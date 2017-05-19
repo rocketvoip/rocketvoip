@@ -37,6 +37,9 @@ import ch.zhaw.psit4.dto.CompanyDto;
 import ch.zhaw.psit4.dto.DialPlanDto;
 import ch.zhaw.psit4.dto.actions.DialActionDto;
 import ch.zhaw.psit4.dto.actions.SayAlphaActionDto;
+import ch.zhaw.psit4.security.auxiliary.AdminDetails;
+import ch.zhaw.psit4.security.auxiliary.SecurityConstants;
+import ch.zhaw.psit4.security.jwt.TokenHandler;
 import ch.zhaw.psit4.services.implementation.CompanyServiceImpl;
 import ch.zhaw.psit4.services.implementation.DialPlanServiceImpl;
 import ch.zhaw.psit4.testsupport.convenience.Json;
@@ -77,6 +80,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertNull;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -87,9 +91,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
 @Import(BeanConfiguration.class)
-public class DialPlanControllerIT {
+public class DialPlanControllerOperatorIT {
     private static final int NON_EXISTING_DIAL_PLAN_ID = 100;
     private static final String V1_DIAL_PLANS_PATH = "/v1/dialplans";
+
+    @Autowired
+    private TokenHandler tokenHandler;
 
     @Autowired
     private WebApplicationContext wac;
@@ -100,17 +107,31 @@ public class DialPlanControllerIT {
 
     @Before
     public void setUp() throws Exception {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
+        this.mockMvc = MockMvcBuilders
+                .webAppContextSetup(this.wac)
+                .apply(springSecurity())
+                .defaultRequest(MockMvcRequestBuilders
+                        .get("/")
+                        .accept(MediaType.APPLICATION_JSON_UTF8)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                )
+                .build();
+
         databaseFixtureBuilder1 = wac.getBean(DatabaseFixtureBuilder.class);
         databaseFixtureBuilder2 = wac.getBean(DatabaseFixtureBuilder.class);
     }
 
     @Test
     public void getAllDialPlansEmpty() throws Exception {
+        databaseFixtureBuilder1
+                .setCompany(1)
+                .addOperator(1)
+                .build();
+        String authToken = getTokenForOperator1Company1();
+
         mockMvc.perform(
                 MockMvcRequestBuilders.get(V1_DIAL_PLANS_PATH)
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
         ).andExpect(
                 status().isOk()
         ).andExpect(
@@ -120,10 +141,15 @@ public class DialPlanControllerIT {
 
     @Test
     public void getNonExistingDialPlan() throws Exception {
+        databaseFixtureBuilder1
+                .setCompany(1)
+                .addOperator(1)
+                .build();
+        String authToken = getTokenForOperator1Company1();
+
         mockMvc.perform(
                 MockMvcRequestBuilders.get(V1_DIAL_PLANS_PATH + "/{id}", NON_EXISTING_DIAL_PLAN_ID)
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
         ).andExpect(
                 status().isNotFound()
         ).andExpect(
@@ -133,176 +159,81 @@ public class DialPlanControllerIT {
 
     @Test
     public void deleteNonExistingDialPlan() throws Exception {
+        databaseFixtureBuilder1
+                .setCompany(1)
+                .addOperator(1)
+                .build();
+        String authToken = getTokenForOperator1Company1();
+
         mockMvc.perform(
                 MockMvcRequestBuilders.delete(V1_DIAL_PLANS_PATH + "/{id}", NON_EXISTING_DIAL_PLAN_ID)
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
         ).andExpect(
                 status().isNotFound()
         ).andExpect(
-                jsonPath("$.reason").value(startsWith("Could not delete dial plan with id " +
+                jsonPath("$.reason").value(startsWith("Could not find dial plan with id " +
                         NON_EXISTING_DIAL_PLAN_ID))
         );
     }
 
     @Test
-    public void updateNonExistingDialPlan() throws Exception {
+    public void updateDialPlanWithNullCompany() throws Exception {
+        databaseFixtureBuilder1
+                .setCompany(1)
+                .addOperator(1)
+                .build();
+        String authToken = getTokenForOperator1Company1();
+
         DialPlanDto dialPlanDto = DialPlanDtoGenerator.createTestDialPlanDto((CompanyDto) null, 1);
         mockMvc.perform(
                 MockMvcRequestBuilders.put(V1_DIAL_PLANS_PATH + "/{id}", NON_EXISTING_DIAL_PLAN_ID)
                         .content(Json.toJson(dialPlanDto))
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
         ).andExpect(
                 status().isBadRequest()
         );
     }
 
     @Test
-    public void createInvalidDialPlan() throws Exception {
-        DialPlanDto dialPlanDto = new DialPlanDto();
-        mockMvc.perform(
-                MockMvcRequestBuilders.post(V1_DIAL_PLANS_PATH)
-                        .content(Json.toJson(dialPlanDto))
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
-        ).andExpect(
-                status().isBadRequest()
-        );
-    }
-
-    @Test
-    public void createDialPlan() throws Exception {
-        databaseFixtureBuilder2.setCompany(2).addSipClient(1).addSipClient(2).build();
-        CompanyDto companyDto = CompanyServiceImpl.companyEntityToCompanyDto(
-                databaseFixtureBuilder2.getFirstCompany()
-        );
-
-        DialPlanDto testDialPlanDto = DialPlanDtoGenerator.createTestDialPlanDto(companyDto, 3);
-
-        List<SipClient> sipClientList = new ArrayList<>(databaseFixtureBuilder2.getSipClientList().values());
-
-
-        List<ActionDto> actionDtos = createActions(databaseFixtureBuilder2);
-
-        testDialPlanDto.setActions(actionDtos);
-
-        String creationResponse = mockMvc.perform(
-                MockMvcRequestBuilders.post(V1_DIAL_PLANS_PATH)
-                        .content(Json.toJson(testDialPlanDto))
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
-        ).andExpect(
-                MockMvcResultMatchers.status().isCreated()
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.id").value(CoreMatchers.not(
-                        CoreMatchers.equalTo(testDialPlanDto.getId())))
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.name").value(CoreMatchers.equalTo(testDialPlanDto.getName()))
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.phone").value(CoreMatchers.equalTo(testDialPlanDto.getPhone()))
-        ).andReturn().getResponse().getContentAsString();
-
-        DialPlanDto createdDialPlanDto = Json.toObjectTypeSafe(creationResponse, DialPlanDto.class);
-
-        String response = mockMvc.perform(
-                MockMvcRequestBuilders.get(V1_DIAL_PLANS_PATH + "/{id}", createdDialPlanDto.getId())
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
-        ).andExpect(
-                status().isOk()
-        ).andReturn().getResponse().getContentAsString();
-
-        // assert DialPlan
-        DialPlanDto actualDialPlan = Json.toObjectTypeSafe(response, DialPlanDto.class);
-
-        assertThat(createdDialPlanDto, dialPlanDtoEqualTo(actualDialPlan));
-
-        assertActions(actionDtos, actualDialPlan.getActions());
-
-
-    }
-
-    @Test
-    public void deleteDialPlanWithNoActions() throws Exception {
-        databaseFixtureBuilder1.setCompany(1).addSipClient(1).addDialPlan(1).build();
-        DialPlanDto createdDialPlan = DialPlanServiceImpl.dialPlanEntityToDialPlanDtoIgnoreActions(
-                databaseFixtureBuilder1.getDialPlanList().get(1)
-        );
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.delete(V1_DIAL_PLANS_PATH + "/{id}", createdDialPlan.getId())
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
-        ).andExpect(
-                status().isNoContent()
-        );
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.get(V1_DIAL_PLANS_PATH + "/{id}", createdDialPlan.getId())
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
-        ).andExpect(
-                status().isNotFound()
-        );
-    }
-
-    @Test
-    public void deleteDialPlanWithActions() throws Exception {
-        int dialPriority = 1;
-        int sayAlphaPriority = 2;
+    public void updateNonExistingDialPlan() throws Exception {
         databaseFixtureBuilder1
                 .setCompany(1)
-                .addSipClient(1)
-                .addDialPlan(1)
-                .addDial(1, dialPriority, 1, new int[]{1})
-                .addSayAlpha(1, sayAlphaPriority, 1)
+                .addOperator(1)
                 .build();
+        String authToken = getTokenForOperator1Company1();
 
-        DialPlanDto createdDialPlan = DialPlanServiceImpl.dialPlanEntityToDialPlanDtoIgnoreActions(
-                databaseFixtureBuilder1.getDialPlanList().get(1)
-        );
-        Long dialPlanId = databaseFixtureBuilder1.getDialPlanList().get(1).getId();
-        assertThat(dialPlanId, is(not(equalTo(0))));
-
-        Long dialId = databaseFixtureBuilder1.getDialList().get(1).getId();
-        assertThat(dialId, is(not(equalTo(0))));
-
-        Long sayAlphaId = databaseFixtureBuilder1.getSayAlphaList().get(1).getId();
-        assertThat(sayAlphaId, is(not(equalTo(0))));
-
+        DialPlanDto dialPlanDto = DialPlanDtoGenerator.createTestDialPlanDto(databaseFixtureBuilder1.getFirstCompany
+                (), 1);
         mockMvc.perform(
-                MockMvcRequestBuilders.delete(V1_DIAL_PLANS_PATH + "/{id}", createdDialPlan.getId())
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
-        ).andExpect(
-                status().isNoContent()
-        );
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.get(V1_DIAL_PLANS_PATH + "/{id}", createdDialPlan.getId())
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                MockMvcRequestBuilders.put(V1_DIAL_PLANS_PATH + "/{id}", NON_EXISTING_DIAL_PLAN_ID)
+                        .content(Json.toJson(dialPlanDto))
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
         ).andExpect(
                 status().isNotFound()
         );
-
-        Dial dial = databaseFixtureBuilder1.getDialRepository().findOne(dialId);
-        assertNull(dial);
-
-        SayAlpha sayAlpha = databaseFixtureBuilder1.getSayAlphaRepository().findOne(sayAlphaId);
-        assertNull(sayAlpha);
     }
+
 
     @Test
     public void updateDialPlan() throws Exception {
         databaseFixtureBuilder1
                 .setCompany(1)
+                .addOperator(1)
                 .addSipClient(1)
                 .addDialPlan(1)
                 .addDial(1, 1, 1, new int[]{1})
                 .addSayAlpha(2, 2, 1)
                 .build();
+        databaseFixtureBuilder2
+                .setCompany(2)
+                .addOperator(2)
+                .addSipClient(1)
+                .addDialPlan(1)
+                .addDial(1, 1, 1, new int[]{1})
+                .addSayAlpha(2, 2, 1)
+                .build();
+
+        String authToken = getTokenForOperator2Company2();
 
         DialPlanDto existingDialPlan = DialPlanServiceImpl.dialPlanEntityToDialPlanDtoIgnoreActions(
                 databaseFixtureBuilder1.getDialPlanList().get(1)
@@ -319,9 +250,8 @@ public class DialPlanControllerIT {
 
         String putResult = mockMvc.perform(
                 MockMvcRequestBuilders.put(V1_DIAL_PLANS_PATH + "/{id}", existingDialPlan.getId())
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(Json.toJson(updatedDialPlan))
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
         ).andExpect(
                 status().isOk()
         ).andReturn().getResponse().getContentAsString();
@@ -331,8 +261,7 @@ public class DialPlanControllerIT {
 
         String response = mockMvc.perform(
                 MockMvcRequestBuilders.get(V1_DIAL_PLANS_PATH + "/{id}", existingDialPlan.getId())
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
         ).andExpect(
                 status().isOk()
         ).andReturn().getResponse().getContentAsString();
@@ -343,6 +272,171 @@ public class DialPlanControllerIT {
 
         assertActions(actionDtos, actualDialPlan.getActions());
 
+    }
+
+    @Test
+    public void createInvalidDialPlan() throws Exception {
+        databaseFixtureBuilder1
+                .setCompany(1)
+                .addOperator(1)
+                .build();
+        String authToken = getTokenForOperator1Company1();
+
+        DialPlanDto dialPlanDto = new DialPlanDto();
+        mockMvc.perform(
+                MockMvcRequestBuilders.post(V1_DIAL_PLANS_PATH)
+                        .content(Json.toJson(dialPlanDto))
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
+        ).andExpect(
+                status().isBadRequest()
+        );
+    }
+
+    @Test
+    public void createDialPlan() throws Exception {
+        databaseFixtureBuilder1
+                .setCompany(1)
+                .addOperator(1)
+                .build();
+
+        databaseFixtureBuilder2
+                .setCompany(2)
+                .addOperator(2)
+                .addSipClient(1)
+                .addSipClient(2)
+                .build();
+        String authToken = getTokenForOperator1Company1();
+
+        CompanyDto companyDto = CompanyServiceImpl.companyEntityToCompanyDto(
+                databaseFixtureBuilder2.getFirstCompany()
+        );
+
+        DialPlanDto testDialPlanDto = DialPlanDtoGenerator.createTestDialPlanDto(companyDto, 3);
+
+        List<SipClient> sipClientList = new ArrayList<>(databaseFixtureBuilder2.getSipClientList().values());
+
+
+        List<ActionDto> actionDtos = createActions(databaseFixtureBuilder2);
+
+        testDialPlanDto.setActions(actionDtos);
+
+        String creationResponse = mockMvc.perform(
+                MockMvcRequestBuilders.post(V1_DIAL_PLANS_PATH)
+                        .content(Json.toJson(testDialPlanDto))
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
+        ).andExpect(
+                MockMvcResultMatchers.status().isCreated()
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.id").value(CoreMatchers.not(
+                        CoreMatchers.equalTo(testDialPlanDto.getId())))
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.name").value(CoreMatchers.equalTo(testDialPlanDto.getName()))
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.phone").value(CoreMatchers.equalTo(testDialPlanDto.getPhone()))
+        ).andReturn().getResponse().getContentAsString();
+
+        DialPlanDto createdDialPlanDto = Json.toObjectTypeSafe(creationResponse, DialPlanDto.class);
+
+        String response = mockMvc.perform(
+                MockMvcRequestBuilders.get(V1_DIAL_PLANS_PATH + "/{id}", createdDialPlanDto.getId())
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
+        ).andExpect(
+                status().isOk()
+        ).andReturn().getResponse().getContentAsString();
+
+        // assert DialPlan
+        DialPlanDto actualDialPlan = Json.toObjectTypeSafe(response, DialPlanDto.class);
+
+        assertThat(createdDialPlanDto, dialPlanDtoEqualTo(actualDialPlan));
+
+        assertActions(actionDtos, actualDialPlan.getActions());
+
+
+    }
+
+    @Test
+    public void deleteDialPlanWithNoActions() throws Exception {
+        databaseFixtureBuilder1
+                .setCompany(1)
+                .addOperator(1)
+                .addSipClient(1)
+                .addDialPlan(1)
+                .build();
+        databaseFixtureBuilder2
+                .setCompany(2)
+                .addOperator(2)
+                .build();
+
+        String authToken = getTokenForOperator2Company2();
+
+        DialPlanDto createdDialPlan = DialPlanServiceImpl.dialPlanEntityToDialPlanDtoIgnoreActions(
+                databaseFixtureBuilder1.getDialPlanList().get(1)
+        );
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete(V1_DIAL_PLANS_PATH + "/{id}", createdDialPlan.getId())
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
+        ).andExpect(
+                status().isNoContent()
+        );
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get(V1_DIAL_PLANS_PATH + "/{id}", createdDialPlan.getId())
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
+        ).andExpect(
+                status().isNotFound()
+        );
+    }
+
+    @Test
+    public void deleteDialPlanWithActions() throws Exception {
+        int dialPriority = 1;
+        int sayAlphaPriority = 2;
+        databaseFixtureBuilder1
+                .setCompany(1)
+                .addSipClient(1)
+                .addDialPlan(1)
+                .addDial(1, dialPriority, 1, new int[]{1})
+                .addSayAlpha(1, sayAlphaPriority, 1)
+                .build();
+        databaseFixtureBuilder2
+                .setCompany(2)
+                .addOperator(2)
+                .build();
+
+        String authToken = getTokenForOperator2Company2();
+
+        DialPlanDto createdDialPlan = DialPlanServiceImpl.dialPlanEntityToDialPlanDtoIgnoreActions(
+                databaseFixtureBuilder1.getDialPlanList().get(1)
+        );
+        Long dialPlanId = databaseFixtureBuilder1.getDialPlanList().get(1).getId();
+        assertThat(dialPlanId, is(not(equalTo(0))));
+
+        Long dialId = databaseFixtureBuilder1.getDialList().get(1).getId();
+        assertThat(dialId, is(not(equalTo(0))));
+
+        Long sayAlphaId = databaseFixtureBuilder1.getSayAlphaList().get(1).getId();
+        assertThat(sayAlphaId, is(not(equalTo(0))));
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete(V1_DIAL_PLANS_PATH + "/{id}", createdDialPlan.getId())
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
+        ).andExpect(
+                status().isNoContent()
+        );
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get(V1_DIAL_PLANS_PATH + "/{id}", createdDialPlan.getId())
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
+        ).andExpect(
+                status().isNotFound()
+        );
+
+        Dial dial = databaseFixtureBuilder1.getDialRepository().findOne(dialId);
+        assertNull(dial);
+
+        SayAlpha sayAlpha = databaseFixtureBuilder1.getSayAlphaRepository().findOne(sayAlphaId);
+        assertNull(sayAlpha);
     }
 
     private List<ActionDto> createActions(DatabaseFixtureBuilder dbBuilder) {
@@ -400,6 +494,16 @@ public class DialPlanControllerIT {
 
         assertThat(expectedDialActionDto, dialActionEqualTo(actualDialActionDto));
         assertThat(expectedSayAlphaActionDto, sayAlphaActionEqualTo(actualSayAlphaActionDto));
+    }
+
+    private String getTokenForOperator1Company1() {
+        return tokenHandler.createTokenForUser(new AdminDetails(databaseFixtureBuilder1.getOperatorList()
+                .get(1)));
+    }
+
+    private String getTokenForOperator2Company2() {
+        return tokenHandler.createTokenForUser(new AdminDetails(databaseFixtureBuilder2.getOperatorList()
+                .get(2)));
     }
 
 }

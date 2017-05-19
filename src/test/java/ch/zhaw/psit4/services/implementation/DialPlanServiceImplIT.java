@@ -51,12 +51,13 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static ch.zhaw.psit4.testsupport.matchers.DialPlanDtoEqualTo.dialPlanDtoEqualTo;
 import static ch.zhaw.psit4.testsupport.matchers.DialPlanDtoPartialMatcher.dialPlanDtoAlmostEqualTo;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -78,8 +79,19 @@ public class DialPlanServiceImplIT {
     public void setUp() throws Exception {
         databaseFixtureBuilder1 = applicationContext.getBean(DatabaseFixtureBuilder.class);
         databaseFixtureBuilder2 = applicationContext.getBean(DatabaseFixtureBuilder.class);
-        databaseFixtureBuilder1.setCompany(1).addSipClient(1).addDialPlan(1).addDialPlan(2).build();
-        databaseFixtureBuilder2.setCompany(2).addSipClient(2).addDialPlan(3).build();
+
+        databaseFixtureBuilder1
+                .setCompany(1)
+                .addSipClient(1)
+                .addDialPlan(1)
+                .addDialPlan(2)
+                .build();
+
+        databaseFixtureBuilder2
+                .setCompany(2)
+                .addSipClient(2)
+                .addDialPlan(3)
+                .build();
     }
 
     @Test
@@ -100,6 +112,76 @@ public class DialPlanServiceImplIT {
 
         assertThat(actualDialPlanDtoList, containsInAnyOrder(dialPlanDtoEqualTo(dialPlanDto1),
                 dialPlanDtoEqualTo(dialPlanDto2), dialPlanDtoEqualTo(dialPlanDto3)));
+
+    }
+
+    @Test
+    public void getAllDialPlansForCompaniesEmptyList() throws Exception {
+        List<DialPlanDto> actual = dialPlanServiceInterface.getAllDialPlansForCompanies(Collections.emptyList());
+        assertThat(actual, hasSize(0));
+    }
+
+    @Test
+    public void getAllDialPlansForCompany1() throws Exception {
+        List<Long> companyIds = new ArrayList<>();
+        companyIds.add(databaseFixtureBuilder1.getFirstCompany().getId());
+
+        List<DialPlanDto> actual = dialPlanServiceInterface.getAllDialPlansForCompanies(companyIds);
+        assertThat(actual, hasSize(2));
+
+        DialPlanDto dialPlanDto1 = DialPlanServiceImpl.dialPlanEntityToDialPlanDtoIgnoreActions(
+                databaseFixtureBuilder1.getDialPlanList().get(1)
+        );
+        DialPlanDto dialPlanDto2 = DialPlanServiceImpl.dialPlanEntityToDialPlanDtoIgnoreActions(
+                databaseFixtureBuilder1.getDialPlanList().get(2)
+        );
+
+        assertThat(actual, containsInAnyOrder(
+                dialPlanDtoEqualTo(dialPlanDto1),
+                dialPlanDtoEqualTo(dialPlanDto2)
+                )
+        );
+    }
+
+    @Test
+    public void getAllDialPlansForCompany2() throws Exception {
+        List<Long> companyIds = new ArrayList<>();
+        companyIds.add(databaseFixtureBuilder2.getFirstCompany().getId());
+
+        List<DialPlanDto> actual = dialPlanServiceInterface.getAllDialPlansForCompanies(companyIds);
+        assertThat(actual, hasSize(1));
+
+        DialPlanDto dialPlanDto3 = DialPlanServiceImpl.dialPlanEntityToDialPlanDtoIgnoreActions(
+                databaseFixtureBuilder2.getDialPlanList().get(3)
+        );
+
+        assertThat(actual, contains(dialPlanDtoEqualTo(dialPlanDto3)));
+    }
+
+    @Test
+    public void getAllDialPlansForCompanyAllCompanies() throws Exception {
+        List<Long> companyIds = new ArrayList<>();
+        companyIds.add(databaseFixtureBuilder2.getFirstCompany().getId());
+        companyIds.add(databaseFixtureBuilder1.getFirstCompany().getId());
+
+        List<DialPlanDto> actual = dialPlanServiceInterface.getAllDialPlansForCompanies(companyIds);
+        assertThat(actual, hasSize(3));
+        DialPlanDto dialPlanDto1 = DialPlanServiceImpl.dialPlanEntityToDialPlanDtoIgnoreActions(
+                databaseFixtureBuilder1.getDialPlanList().get(1)
+        );
+        DialPlanDto dialPlanDto2 = DialPlanServiceImpl.dialPlanEntityToDialPlanDtoIgnoreActions(
+                databaseFixtureBuilder1.getDialPlanList().get(2)
+        );
+        DialPlanDto dialPlanDto3 = DialPlanServiceImpl.dialPlanEntityToDialPlanDtoIgnoreActions(
+                databaseFixtureBuilder2.getDialPlanList().get(3)
+        );
+
+        assertThat(actual, containsInAnyOrder(
+                dialPlanDtoEqualTo(dialPlanDto1),
+                dialPlanDtoEqualTo(dialPlanDto2),
+                dialPlanDtoEqualTo(dialPlanDto3)
+                )
+        );
 
     }
 

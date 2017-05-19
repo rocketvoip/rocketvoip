@@ -53,6 +53,15 @@ public interface CompanyServiceInterface {
     List<CompanyDto> getAllCompanies();
 
     /**
+     * Retrieves companies by id.
+     *
+     * @param ids list of company IDs
+     * @return list of all Company, or an empty list if no companies are found
+     * @throws CompanyRetrievalException Implementations are expected to throw this exception on error.
+     */
+    List<CompanyDto> getCompaniesById(List<Long> ids);
+
+    /**
      * Creates a new company. The {$code id} attribute of {$code newCompany} will be ignored if set.
      *
      * @param newCompany the company to be created
