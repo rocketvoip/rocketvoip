@@ -77,16 +77,29 @@ public class LoginIT {
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .apply(springSecurity())
+                .defaultRequest(
+                        post("/")
+                                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                )
                 .build();
 
         databaseFixtureBuilder = context.getBean(DatabaseFixtureBuilder.class);
     }
 
     @Test
+    public void emptyBody() throws Exception {
+        mockMvc.perform(
+                post("/v1/login")
+        ).andExpect(
+                status().isUnauthorized()
+        );
+    }
+
+    @Test
     public void testUnknownUser() throws Exception {
         String loginJsonStream = makeAuthenticationJsonStream("doesnotexist", "bla");
         mockMvc.perform(
-                post("/v1/login").contentType(MediaType.APPLICATION_JSON_UTF8).content(loginJsonStream)
+                post("/v1/login").content(loginJsonStream)
         ).andExpect(
                 status().isUnauthorized()
         );
@@ -100,7 +113,7 @@ public class LoginIT {
                 .getAdminPassword(1)
         );
         mockMvc.perform(
-                post("/v1/login").contentType(MediaType.APPLICATION_JSON_UTF8).content(loginJsonStream)
+                post("/v1/login").content(loginJsonStream)
         ).andExpect(
                 status().isOk()
         ).andExpect(
@@ -116,7 +129,7 @@ public class LoginIT {
                 OperatorAdminData.getOperatorAdminPassword(1)
         );
         mockMvc.perform(
-                post("/v1/login").contentType(MediaType.APPLICATION_JSON_UTF8).content(loginJsonStream)
+                post("/v1/login").content(loginJsonStream)
         ).andExpect(
                 status().isOk()
         ).andExpect(

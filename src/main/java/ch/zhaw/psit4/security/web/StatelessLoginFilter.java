@@ -39,8 +39,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -75,12 +77,17 @@ public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter
     @Override
     public Authentication attemptAuthentication(HttpServletRequest httpServletRequest, HttpServletResponse
             httpServletResponse) throws IOException, ServletException {
-        final LoginData loginData = OBJECT_MAPPER.readValue(httpServletRequest.getInputStream(), LoginData.class);
-        final UsernamePasswordAuthenticationToken authenticationToken = loginData
-                .toUsernamePasswordAuthenticationToken();
+        try {
+            final LoginData loginData = OBJECT_MAPPER.readValue(httpServletRequest.getInputStream(), LoginData.class);
+            final UsernamePasswordAuthenticationToken authenticationToken = loginData
+                    .toUsernamePasswordAuthenticationToken();
 
-        OUR_LOGGER.debug("Trying to authenticate user '{}'", loginData.getUsername());
-        return getAuthenticationManager().authenticate(authenticationToken);
+            OUR_LOGGER.debug("Trying to authenticate user '{}'", loginData.getUsername());
+            return getAuthenticationManager().authenticate(authenticationToken);
+        } catch (Exception e) {
+            OUR_LOGGER.error("Error encountered while authenticating user.", e);
+            throw new AuthenticationServiceException("Error while authenticating. Try again.");
+        }
     }
 
     @Override
@@ -96,6 +103,12 @@ public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter
         populateResponseWithInformation(response, authenticatedUser);
 
         OUR_LOGGER.info("Successfully authenticated '{}'", authenticatedUser.getUsername());
+    }
+
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
+                                              AuthenticationException failed) throws IOException, ServletException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
 
     private void populateResponseWithInformation(HttpServletResponse response, UserDetails authenticatedUser) {
