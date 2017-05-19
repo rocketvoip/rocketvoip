@@ -35,7 +35,6 @@ import ch.zhaw.psit4.services.interfaces.CompanyServiceInterface;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -56,9 +55,7 @@ public class CompanyController {
     }
 
     @GetMapping(path = "/companies")
-    public ResponseEntity<List<CompanyDto>> getAllCompanies() {
-        final ReferenceMonitor referenceMonitor = new ReferenceMonitor(SecurityContextHolder.getContext());
-
+    public ResponseEntity<List<CompanyDto>> getAllCompanies(ReferenceMonitor referenceMonitor) {
         if (referenceMonitor.isOperator()) {
             return new ResponseEntity<>(companyServiceInterface.getAllCompanies(), HttpStatus.OK);
         }
@@ -68,8 +65,7 @@ public class CompanyController {
     }
 
     @GetMapping(path = "/companies/{id}")
-    public ResponseEntity<CompanyDto> getCompany(@PathVariable long id) {
-        final ReferenceMonitor referenceMonitor = new ReferenceMonitor(SecurityContextHolder.getContext());
+    public ResponseEntity<CompanyDto> getCompany(@PathVariable long id, ReferenceMonitor referenceMonitor) {
         referenceMonitor.inAllowedCompaniesOrThrow(id);
 
         return new ResponseEntity<>
@@ -77,8 +73,7 @@ public class CompanyController {
     }
 
     @DeleteMapping(path = "/companies/{id}")
-    public ResponseEntity<Void> deleteCompany(@PathVariable long id) {
-        final ReferenceMonitor referenceMonitor = new ReferenceMonitor(SecurityContextHolder.getContext());
+    public ResponseEntity<Void> deleteCompany(@PathVariable long id, ReferenceMonitor referenceMonitor) {
         referenceMonitor.isOperatorOrThrow();
 
         companyServiceInterface.deleteCompany(id);
@@ -86,8 +81,9 @@ public class CompanyController {
     }
 
     @PutMapping(path = "/companies/{id}")
-    public ResponseEntity<CompanyDto> updateCompany(@PathVariable long id, @RequestBody CompanyDto companyDto) {
-        final ReferenceMonitor referenceMonitor = new ReferenceMonitor(SecurityContextHolder.getContext());
+    public ResponseEntity<CompanyDto> updateCompany(@PathVariable long id,
+                                                    @RequestBody CompanyDto companyDto,
+                                                    ReferenceMonitor referenceMonitor) {
         referenceMonitor.isOperatorOrThrow();
 
         companyDto.setId(id);
@@ -95,8 +91,8 @@ public class CompanyController {
     }
 
     @PostMapping(path = "/companies")
-    public ResponseEntity<CompanyDto> createCompany(@RequestBody CompanyDto companyDto) {
-        final ReferenceMonitor referenceMonitor = new ReferenceMonitor(SecurityContextHolder.getContext());
+    public ResponseEntity<CompanyDto> createCompany(@RequestBody CompanyDto companyDto, ReferenceMonitor
+            referenceMonitor) {
         referenceMonitor.isOperatorOrThrow();
 
         return new ResponseEntity<>(
