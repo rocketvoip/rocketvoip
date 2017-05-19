@@ -91,22 +91,20 @@ public class DialApp implements AsteriskApplicationInterface {
         StringBuilder stringBuilder = new StringBuilder();
 
         stringBuilder.append("Dial(");
-        for (int index = 1; index <= sipClientList.size(); index++) {
 
-            SipClient sipClient = sipClientList.get(index - 1);
+        sipClientList.forEach(
+                sipClient -> {
+                    stringBuilder.append(technology.toString());
+                    stringBuilder.append('/');
+                    stringBuilder.append(sipClient.getLabel());
+                    stringBuilder.append("&");
+                }
+        );
 
-            if (technology == Technology.SIP) {
-                stringBuilder.append("SIP/");
-            } else if (technology == Technology.PSIP) {
-                stringBuilder.append("PSIP/");
-            }
+        // We have a trailing '&', trim that away. If the sipClientList is empty, we remove the opening brace from
+        // 'Dial('. We don't concern us with that case, since validate() will fail anyway.
+        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
 
-            stringBuilder.append(sipClient.getLabel());
-
-            if (sipClientList.size() > index) {
-                stringBuilder.append("&");
-            }
-        }
         stringBuilder.append(", ");
         stringBuilder.append(timeout);
 
@@ -134,6 +132,7 @@ public class DialApp implements AsteriskApplicationInterface {
             throw new ValidationException("sipClientList is null");
         }
 
+        // toApplicationCall() counts on this check.
         if (sipClientList.isEmpty()) {
             throw new ValidationException("sipClientList is empty");
         }
@@ -147,5 +146,8 @@ public class DialApp implements AsteriskApplicationInterface {
         }
     }
 
-    public enum Technology {SIP, PSIP}
+    public enum Technology {
+        SIP,
+        PSIP
+    }
 }
