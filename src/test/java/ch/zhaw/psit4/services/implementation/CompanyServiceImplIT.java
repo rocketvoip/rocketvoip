@@ -48,12 +48,13 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static ch.zhaw.psit4.testsupport.matchers.CompanyDtoEqualTo.companyDtoEqualTo;
 import static ch.zhaw.psit4.testsupport.matchers.CompanyDtoPartialMatcher.companyDtoAlmostEqualTo;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -97,6 +98,77 @@ public class CompanyServiceImplIT {
                 companyDtoAlmostEqualTo(companyDto2)
         ));
 
+    }
+
+    @Test
+    public void getCompaniesByIdEmptyList() throws Exception {
+        databaseFixtureBuilder
+                .addCompany(1)
+                .addCompany(2)
+                .addCompany(3)
+                .addCompany(4)
+                .build();
+        List<CompanyDto> actual = companyServiceImpl.getCompaniesById(Collections.emptyList());
+        assertThat(actual, is(empty()));
+    }
+
+    @Test
+    public void getCompaniesByIdNonExistingId() throws Exception {
+        databaseFixtureBuilder
+                .addCompany(1)
+                .addCompany(2)
+                .addCompany(3)
+                .addCompany(4)
+                .build();
+        List<CompanyDto> actual = companyServiceImpl.getCompaniesById(
+                Arrays.asList(NON_EXISTENT_COMPANY_ID)
+        );
+        assertThat(actual, is(empty()));
+    }
+
+    @Test
+    public void getCompaniesByIdOneId() throws Exception {
+        databaseFixtureBuilder
+                .addCompany(1)
+                .addCompany(2)
+                .addCompany(3)
+                .addCompany(4)
+                .build();
+        List<CompanyDto> actual = companyServiceImpl.getCompaniesById(
+                Arrays.asList(databaseFixtureBuilder.getCompany(1).getId())
+        );
+        assertThat(actual, hasSize(1));
+
+        assertThat(actual.get(0), equalTo(
+                CompanyServiceImpl.companyEntityToCompanyDto(
+                        databaseFixtureBuilder.getCompany(1)
+                )
+                )
+        );
+    }
+
+    @Test
+    public void getCompaniesByIdMultipleIds() throws Exception {
+        databaseFixtureBuilder
+                .addCompany(1)
+                .addCompany(2)
+                .addCompany(3)
+                .addCompany(4)
+                .build();
+
+        List<CompanyDto> actual = companyServiceImpl.getCompaniesById(
+                Arrays.asList(
+                        databaseFixtureBuilder.getCompany(1).getId(),
+                        databaseFixtureBuilder.getCompany(4).getId()
+                )
+        );
+
+        assertThat(actual, hasSize(2));
+        assertThat(actual, containsInAnyOrder(
+                equalTo(CompanyServiceImpl.companyEntityToCompanyDto(databaseFixtureBuilder.getCompany(1))),
+                equalTo(CompanyServiceImpl.companyEntityToCompanyDto(databaseFixtureBuilder.getCompany(4)))
+                )
+        );
     }
 
     @Test

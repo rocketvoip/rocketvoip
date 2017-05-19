@@ -44,8 +44,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static ch.zhaw.psit4.services.implementation.CompanyServiceImpl.companyDtoToCompanyEntity;
 import static ch.zhaw.psit4.services.implementation.CompanyServiceImpl.companyEntityToCompanyDto;
@@ -126,12 +127,17 @@ public class DialPlanServiceImpl implements DialPlanServiceInterface {
 
     @Override
     public List<DialPlanDto> getAllDialPlans() {
-        List<DialPlanDto> dialPlanDtoList = new ArrayList<>();
-        for (DialPlan dialPlan : dialPlanRepository.findAll()) {
-            DialPlanDto dialPlanDto = dialPlanEntityToDialPlanDto(dialPlan);
-            dialPlanDtoList.add(dialPlanDto);
-        }
-        return dialPlanDtoList;
+        return StreamSupport.stream(dialPlanRepository.findAll().spliterator(), false)
+                .map(this::dialPlanEntityToDialPlanDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<DialPlanDto> getAllDialPlansForCompanies(List<Long> companyIds) {
+        return dialPlanRepository.findAllByCompanyIdIsIn(companyIds)
+                .stream()
+                .map(this::dialPlanEntityToDialPlanDto)
+                .collect(Collectors.toList());
     }
 
     @Override

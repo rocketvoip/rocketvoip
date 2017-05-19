@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package ch.zhaw.psit4.security.auxiliary;
+package ch.zhaw.psit4.security.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -40,7 +40,7 @@ import javax.validation.constraints.Size;
  * @author Rafael Ostertag
  */
 @Validated
-public class LoginData {
+public class LoginDataDto {
     @NotNull
     @Size(min = 8)
     @JsonProperty

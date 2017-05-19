@@ -58,13 +58,14 @@ public class UserAuthentication implements Authentication {
     }
 
     @Override
-    public UserDetails getDetails() {
-        return userDetails;
+    public Object getDetails() {
+        // We don't use details so far, thus returning null.
+        return null;
     }
 
     @Override
     public Object getPrincipal() {
-        return userDetails.getUsername();
+        return userDetails;
     }
 
     @Override

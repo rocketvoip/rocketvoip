@@ -30,13 +30,17 @@
 package ch.zhaw.psit4.security.auxiliary;
 
 import ch.zhaw.psit4.data.jpa.entities.Admin;
+import ch.zhaw.psit4.data.jpa.entities.Company;
 import ch.zhaw.psit4.testsupport.fixtures.database.AdminEntity;
+import ch.zhaw.psit4.testsupport.fixtures.database.CompanyEntity;
 import ch.zhaw.psit4.testsupport.fixtures.database.OperatorAdminEntity;
 import org.junit.Test;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -91,6 +95,36 @@ public class AdminDetailsTest {
         Admin admin = OperatorAdminEntity.createOperatorAdmin(1);
         AdminDetails adminDetails = new AdminDetails(admin);
         assertThat(adminDetails.isSuperAdmin(), equalTo(true));
+    }
+
+    @Test
+    public void testNullCompaniesInAdminEntity() {
+        Admin admin = OperatorAdminEntity.createOperatorAdmin(1);
+        AdminDetails adminDetails = new AdminDetails(admin);
+        assertThat(adminDetails.getCompanyIds(), hasSize(0));
+    }
+
+    @Test
+    public void testEmptyCompaniesListInAdminEntity() {
+        Admin admin = OperatorAdminEntity.createOperatorAdmin(1);
+        admin.setCompany(Collections.emptyList());
+
+        AdminDetails adminDetails = new AdminDetails(admin);
+        assertThat(adminDetails.getCompanyIds(), hasSize(0));
+    }
+
+    @Test
+    public void testSingleCompanyInAdminEntity() {
+        Company company = CompanyEntity.createCompany(1);
+        company.setId(1L);
+
+        Admin admin = OperatorAdminEntity.createOperatorAdmin(1);
+        admin.setCompany(Collections.emptyList());
+        admin.setCompany(Arrays.asList(company));
+
+        AdminDetails adminDetails = new AdminDetails(admin);
+        assertThat(adminDetails.getCompanyIds(), hasSize(1));
+        assertThat(adminDetails.getCompanyIds().get(0), equalTo(1L));
     }
 
 }

@@ -30,6 +30,9 @@
 package ch.zhaw.psit4.web;
 
 import ch.zhaw.psit4.dto.CompanyDto;
+import ch.zhaw.psit4.security.auxiliary.AdminDetails;
+import ch.zhaw.psit4.security.auxiliary.SecurityConstants;
+import ch.zhaw.psit4.security.jwt.TokenHandler;
 import ch.zhaw.psit4.services.implementation.CompanyServiceImpl;
 import ch.zhaw.psit4.testsupport.convenience.Json;
 import ch.zhaw.psit4.testsupport.fixtures.database.BeanConfiguration;
@@ -53,6 +56,7 @@ import static ch.zhaw.psit4.testsupport.matchers.CompanyDtoEqualTo.companyDtoEqu
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayContainingInAnyOrder;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -63,9 +67,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
 @Import(BeanConfiguration.class)
-public class CompanyControllerIT {
+public class CompanyControllerOperatorIT {
     private static final String V1_COMPANIES_PATH = "/v1/companies";
     private static final int NON_EXISTING_COMPANY_ID = 100;
+
+    @Autowired
+    private TokenHandler tokenHandler;
 
     @Autowired
     private WebApplicationContext wac;
@@ -78,7 +85,15 @@ public class CompanyControllerIT {
 
     @Before
     public void setUp() throws Exception {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
+        this.mockMvc = MockMvcBuilders
+                .webAppContextSetup(this.wac)
+                .defaultRequest(
+                        MockMvcRequestBuilders.get("/")
+                                .accept(MediaType.APPLICATION_JSON_UTF8)
+                                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                )
+                .apply(springSecurity())
+                .build();
 
         databaseFixtureBuilder1 = wac.getBean(DatabaseFixtureBuilder.class);
         databaseFixtureBuilder2 = wac.getBean(DatabaseFixtureBuilder.class);
@@ -86,10 +101,14 @@ public class CompanyControllerIT {
 
     @Test
     public void getAllCompaniesEmpty() throws Exception {
+        databaseFixtureBuilder1
+                .addOperator(1)
+                .build();
+        String authToken = getTokenForOperator1Company1();
+
         mockMvc.perform(
                 MockMvcRequestBuilders.get(V1_COMPANIES_PATH)
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
         ).andExpect(
                 status().isOk()
         ).andExpect(
@@ -99,10 +118,14 @@ public class CompanyControllerIT {
 
     @Test
     public void getNonExistingCompany() throws Exception {
+        databaseFixtureBuilder1
+                .addOperator(1)
+                .build();
+        String authToken = getTokenForOperator1Company1();
+
         mockMvc.perform(
                 MockMvcRequestBuilders.get(V1_COMPANIES_PATH + "/{id}", NON_EXISTING_COMPANY_ID)
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
         ).andExpect(
                 status().isNotFound()
         ).andExpect(
@@ -112,10 +135,14 @@ public class CompanyControllerIT {
 
     @Test
     public void deleteNonExistingCompany() throws Exception {
+        databaseFixtureBuilder1
+                .addOperator(1)
+                .build();
+        String authToken = getTokenForOperator1Company1();
+
         mockMvc.perform(
                 MockMvcRequestBuilders.delete(V1_COMPANIES_PATH + "/{id}", NON_EXISTING_COMPANY_ID)
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
         ).andExpect(
                 status().isNotFound()
         ).andExpect(
@@ -126,13 +153,17 @@ public class CompanyControllerIT {
 
     @Test
     public void updateNonExistingCompany() throws Exception {
+        databaseFixtureBuilder1
+                .addOperator(1)
+                .build();
+        String authToken = getTokenForOperator1Company1();
+
         CompanyDto companyDto = CompanyDtoGenerator.getCompanyDto(1);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.put(V1_COMPANIES_PATH + "/{id}", NON_EXISTING_COMPANY_ID)
                         .content(Json.toJson(companyDto))
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
         ).andExpect(
                 status().isBadRequest()
         );
@@ -140,12 +171,16 @@ public class CompanyControllerIT {
 
     @Test
     public void createInvalidCompany() throws Exception {
+        databaseFixtureBuilder1
+                .addOperator(1)
+                .build();
+        String authToken = getTokenForOperator1Company1();
+
         CompanyDto companyDto = new CompanyDto();
         mockMvc.perform(
                 MockMvcRequestBuilders.post(V1_COMPANIES_PATH)
                         .content(Json.toJson(companyDto))
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
         ).andExpect(
                 status().isBadRequest()
         );
@@ -153,13 +188,17 @@ public class CompanyControllerIT {
 
     @Test
     public void createCompany() throws Exception {
+        databaseFixtureBuilder1
+                .addOperator(1)
+                .build();
+        String authToken = getTokenForOperator1Company1();
+
         CompanyDto companyDto = CompanyDtoGenerator.getCompanyDto(1);
 
         String creationResponse = mockMvc.perform(
                 MockMvcRequestBuilders.post(V1_COMPANIES_PATH)
                         .content(Json.toJson(companyDto))
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
         ).andExpect(
                 status().isCreated()
         ).andExpect(
@@ -172,8 +211,7 @@ public class CompanyControllerIT {
 
         String response = mockMvc.perform(
                 MockMvcRequestBuilders.get(V1_COMPANIES_PATH + "/{id}", createdCompanyDto.getId())
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
         ).andExpect(
                 status().isOk()
         ).andReturn().getResponse().getContentAsString();
@@ -184,13 +222,18 @@ public class CompanyControllerIT {
 
     @Test
     public void getAllCompanies() throws Exception {
-        databaseFixtureBuilder1.setCompany(1).build();
-        databaseFixtureBuilder2.setCompany(2).build();
+        databaseFixtureBuilder1
+                .addOperator(1)
+                .setCompany(1)
+                .build();
+        databaseFixtureBuilder2
+                .setCompany(2)
+                .build();
+        String authToken = getTokenForOperator1Company1();
 
         String response = mockMvc.perform(
                 MockMvcRequestBuilders.get(V1_COMPANIES_PATH)
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
         ).andExpect(
                 status().isOk()
         ).andExpect(
@@ -213,7 +256,16 @@ public class CompanyControllerIT {
 
     @Test
     public void updateCompany() throws Exception {
-        databaseFixtureBuilder1.setCompany(1).build();
+        databaseFixtureBuilder1
+                .setCompany(1)
+                .addOperator(1)
+                .build();
+        databaseFixtureBuilder2
+                .setCompany(3)
+                .addOperator(2)
+                .build();
+        String authToken = getTokenForOperator2Company2();
+
         CompanyDto existingCompany = CompanyServiceImpl.companyEntityToCompanyDto(
                 databaseFixtureBuilder1.getFirstCompany()
         );
@@ -223,9 +275,8 @@ public class CompanyControllerIT {
 
         String putResult = mockMvc.perform(
                 MockMvcRequestBuilders.put(V1_COMPANIES_PATH + "/{id}", existingCompany.getId())
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
                         .content(Json.toJson(updatedCompany))
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
         ).andExpect(
                 status().isOk()
         ).andReturn().getResponse().getContentAsString();
@@ -235,8 +286,7 @@ public class CompanyControllerIT {
 
         String response = mockMvc.perform(
                 MockMvcRequestBuilders.get(V1_COMPANIES_PATH + "/{id}", existingCompany.getId())
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
         ).andExpect(
                 status().isOk()
         ).andReturn().getResponse().getContentAsString();
@@ -248,25 +298,40 @@ public class CompanyControllerIT {
 
     @Test
     public void deleteCompany() throws Exception {
-        databaseFixtureBuilder1.setCompany(1).build();
-        CompanyDto existingCompany = CompanyServiceImpl.companyEntityToCompanyDto(
-                databaseFixtureBuilder1.getFirstCompany()
-        );
+        databaseFixtureBuilder1
+                .setCompany(1)
+                .addOperator(1)
+                .build();
+        databaseFixtureBuilder2
+                .setCompany(2)
+                .addOperator(2)
+                .build();
+        String authToken = getTokenForOperator2Company2();
+
+        long existingId = databaseFixtureBuilder1.getFirstCompany().getId();
 
         mockMvc.perform(
-                MockMvcRequestBuilders.delete(V1_COMPANIES_PATH + "/{id}", existingCompany.getId())
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                MockMvcRequestBuilders.delete(V1_COMPANIES_PATH + "/{id}", existingId)
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
         ).andExpect(
                 status().isNoContent()
         );
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get(V1_COMPANIES_PATH + "/{id}", existingCompany.getId())
-                        .accept(MediaType.APPLICATION_JSON_UTF8)
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                MockMvcRequestBuilders.get(V1_COMPANIES_PATH + "/{id}", existingId)
+                        .header(SecurityConstants.AUTH_HEADER_NAME, authToken)
         ).andExpect(
                 status().isNotFound()
         );
+    }
+
+    private String getTokenForOperator1Company1() {
+        return tokenHandler.createTokenForUser(new AdminDetails(databaseFixtureBuilder1.getOperatorList()
+                .get(1)));
+    }
+
+    private String getTokenForOperator2Company2() {
+        return tokenHandler.createTokenForUser(new AdminDetails(databaseFixtureBuilder2.getOperatorList()
+                .get(2)));
     }
 }

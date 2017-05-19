@@ -43,6 +43,8 @@ public interface DialPlanRepository extends CrudRepository<DialPlan, Long> {
 
     List<DialPlan> findAllByPhoneNrNotNull();
 
+    List<DialPlan> findAllByCompanyIdIsIn(List<Long> idList);
+
     DialPlan findFirstById(long id);
 
 }

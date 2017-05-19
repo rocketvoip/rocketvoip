@@ -31,6 +31,7 @@ package ch.zhaw.psit4.dto;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -44,6 +45,7 @@ public class DialPlanDto {
 
     private String name;
 
+    @NotNull
     private CompanyDto company;
 
     private List<ActionDto> actions;
