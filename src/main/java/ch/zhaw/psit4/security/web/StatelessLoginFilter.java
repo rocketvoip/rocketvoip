@@ -78,7 +78,7 @@ public class StatelessLoginFilter extends AbstractAuthenticationProcessingFilter
     public Authentication attemptAuthentication(HttpServletRequest httpServletRequest, HttpServletResponse
             httpServletResponse) throws IOException, ServletException {
         try {
-            final LoginData loginData = OBJECT_MAPPER.readValue(httpServletRequest.getInputStream(), LoginData.class);
+            final LoginDataDto loginData = OBJECT_MAPPER.readValue(httpServletRequest.getInputStream(), LoginDataDto.class);
             final UsernamePasswordAuthenticationToken authenticationToken = loginData
                     .toUsernamePasswordAuthenticationToken();
 
