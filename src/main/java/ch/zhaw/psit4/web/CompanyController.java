@@ -30,7 +30,7 @@
 package ch.zhaw.psit4.web;
 
 import ch.zhaw.psit4.dto.CompanyDto;
-import ch.zhaw.psit4.security.SecurityInformation;
+import ch.zhaw.psit4.security.ReferenceMonitor;
 import ch.zhaw.psit4.services.interfaces.CompanyServiceInterface;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -57,20 +57,20 @@ public class CompanyController {
 
     @GetMapping(path = "/companies")
     public ResponseEntity<List<CompanyDto>> getAllCompanies() {
-        final SecurityInformation securityInformation = new SecurityInformation(SecurityContextHolder.getContext());
+        final ReferenceMonitor referenceMonitor = new ReferenceMonitor(SecurityContextHolder.getContext());
 
-        if (securityInformation.isOperator()) {
+        if (referenceMonitor.isOperator()) {
             return new ResponseEntity<>(companyServiceInterface.getAllCompanies(), HttpStatus.OK);
         }
 
-        return new ResponseEntity<>(companyServiceInterface.getCompaniesById(securityInformation.allowedCompanies()),
+        return new ResponseEntity<>(companyServiceInterface.getCompaniesById(referenceMonitor.allowedCompanies()),
                 HttpStatus.OK);
     }
 
     @GetMapping(path = "/companies/{id}")
     public ResponseEntity<CompanyDto> getCompany(@PathVariable long id) {
-        final SecurityInformation securityInformation = new SecurityInformation(SecurityContextHolder.getContext());
-        securityInformation.inAllowedCompaniesOrThrow(id);
+        final ReferenceMonitor referenceMonitor = new ReferenceMonitor(SecurityContextHolder.getContext());
+        referenceMonitor.inAllowedCompaniesOrThrow(id);
 
         return new ResponseEntity<>
                 (companyServiceInterface.getCompany(id), HttpStatus.OK);
@@ -78,8 +78,8 @@ public class CompanyController {
 
     @DeleteMapping(path = "/companies/{id}")
     public ResponseEntity<Void> deleteCompany(@PathVariable long id) {
-        final SecurityInformation securityInformation = new SecurityInformation(SecurityContextHolder.getContext());
-        securityInformation.isOperatorOrThrow();
+        final ReferenceMonitor referenceMonitor = new ReferenceMonitor(SecurityContextHolder.getContext());
+        referenceMonitor.isOperatorOrThrow();
 
         companyServiceInterface.deleteCompany(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -87,8 +87,8 @@ public class CompanyController {
 
     @PutMapping(path = "/companies/{id}")
     public ResponseEntity<CompanyDto> updateCompany(@PathVariable long id, @RequestBody CompanyDto companyDto) {
-        final SecurityInformation securityInformation = new SecurityInformation(SecurityContextHolder.getContext());
-        securityInformation.isOperatorOrThrow();
+        final ReferenceMonitor referenceMonitor = new ReferenceMonitor(SecurityContextHolder.getContext());
+        referenceMonitor.isOperatorOrThrow();
 
         companyDto.setId(id);
         return new ResponseEntity<>(companyServiceInterface.updateCompany(companyDto), HttpStatus.OK);
@@ -96,8 +96,8 @@ public class CompanyController {
 
     @PostMapping(path = "/companies")
     public ResponseEntity<CompanyDto> createCompany(@RequestBody CompanyDto companyDto) {
-        final SecurityInformation securityInformation = new SecurityInformation(SecurityContextHolder.getContext());
-        securityInformation.isOperatorOrThrow();
+        final ReferenceMonitor referenceMonitor = new ReferenceMonitor(SecurityContextHolder.getContext());
+        referenceMonitor.isOperatorOrThrow();
 
         return new ResponseEntity<>(
                 companyServiceInterface.createCompany(companyDto), HttpStatus.CREATED);

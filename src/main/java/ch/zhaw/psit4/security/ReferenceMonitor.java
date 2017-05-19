@@ -49,12 +49,12 @@ import java.util.List;
  *
  * @author Rafael Ostertag
  */
-public class SecurityInformation {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SecurityInformation.class);
+public class ReferenceMonitor {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReferenceMonitor.class);
 
     private final AdminDetails adminDetails;
 
-    public SecurityInformation(final SecurityContext securityContext) {
+    public ReferenceMonitor(final SecurityContext securityContext) {
         adminDetails = currentPrincipal(securityContext);
     }
 

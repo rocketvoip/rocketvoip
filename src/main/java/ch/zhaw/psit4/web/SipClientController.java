@@ -30,7 +30,7 @@
 package ch.zhaw.psit4.web;
 
 import ch.zhaw.psit4.dto.SipClientDto;
-import ch.zhaw.psit4.security.SecurityInformation;
+import ch.zhaw.psit4.security.ReferenceMonitor;
 import ch.zhaw.psit4.services.interfaces.SipClientServiceInterface;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -57,15 +57,15 @@ public class SipClientController {
 
     @GetMapping
     public ResponseEntity<List<SipClientDto>> getAllSipClient() {
-        final SecurityInformation securityInformation = new SecurityInformation(SecurityContextHolder.getContext());
+        final ReferenceMonitor referenceMonitor = new ReferenceMonitor(SecurityContextHolder.getContext());
 
-        if (securityInformation.isOperator()) {
+        if (referenceMonitor.isOperator()) {
             return new ResponseEntity<>
                     (sipClientServiceInterface.getAllSipClients(), HttpStatus.OK);
         }
 
         return new ResponseEntity<>(
-                sipClientServiceInterface.getAllSipClientsForCompanies(securityInformation.allowedCompanies()),
+                sipClientServiceInterface.getAllSipClientsForCompanies(referenceMonitor.allowedCompanies()),
                 HttpStatus.OK
         );
 
@@ -73,22 +73,22 @@ public class SipClientController {
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<SipClientDto> getSipClient(@PathVariable long id) {
-        final SecurityInformation securityInformation = new SecurityInformation(SecurityContextHolder.getContext());
+        final ReferenceMonitor referenceMonitor = new ReferenceMonitor(SecurityContextHolder.getContext());
 
         SipClientDto sipClient = sipClientServiceInterface.getSipClient(id);
 
-        securityInformation.hasAccessToOrThrow(sipClient);
+        referenceMonitor.hasAccessToOrThrow(sipClient);
 
         return new ResponseEntity<>(sipClient, HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Void> deleteSipCLient(@PathVariable long id) {
-        final SecurityInformation securityInformation = new SecurityInformation(SecurityContextHolder.getContext());
+        final ReferenceMonitor referenceMonitor = new ReferenceMonitor(SecurityContextHolder.getContext());
 
         SipClientDto sipClient = sipClientServiceInterface.getSipClient(id);
 
-        securityInformation.hasAccessToOrThrow(sipClient);
+        referenceMonitor.hasAccessToOrThrow(sipClient);
 
         sipClientServiceInterface.deleteSipClient(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -97,12 +97,12 @@ public class SipClientController {
     @PutMapping(path = "/{id}")
     public ResponseEntity<SipClientDto> updateSipClient(@PathVariable long id,
                                                         @RequestBody @Validated SipClientDto sipClientDto) {
-        final SecurityInformation securityInformation = new SecurityInformation(SecurityContextHolder.getContext());
+        final ReferenceMonitor referenceMonitor = new ReferenceMonitor(SecurityContextHolder.getContext());
 
         sipClientDto.setId(id);
 
         SipClientDto currentSipClient = sipClientServiceInterface.getSipClient(id);
-        securityInformation.hasAccessToOrThrow(currentSipClient);
+        referenceMonitor.hasAccessToOrThrow(currentSipClient);
 
         // Overwrite the supplied company in the Dto
         sipClientDto.setCompany(currentSipClient.getCompany());
@@ -113,10 +113,10 @@ public class SipClientController {
 
     @PostMapping
     public ResponseEntity<SipClientDto> createSipClient(@RequestBody @Validated SipClientDto sipClientDto) {
-        final SecurityInformation securityInformation = new SecurityInformation(SecurityContextHolder.getContext());
+        final ReferenceMonitor referenceMonitor = new ReferenceMonitor(SecurityContextHolder.getContext());
 
         // Since the SipClient does not exist yet, we can only test access to the Company.
-        securityInformation.hasAccessToOrThrow(sipClientDto.getCompany());
+        referenceMonitor.hasAccessToOrThrow(sipClientDto.getCompany());
 
         return new ResponseEntity<>(
                 sipClientServiceInterface.createSipClient(sipClientDto),
