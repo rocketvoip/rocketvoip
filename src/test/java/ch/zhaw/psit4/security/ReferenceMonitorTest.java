@@ -51,7 +51,7 @@ import static org.mockito.Mockito.*;
 /**
  * @author Rafael Ostertag
  */
-public class SecurityInformationTest {
+public class ReferenceMonitorTest {
     private SecurityContext securityContextMock;
     private Authentication authenticationMock;
     private Admin adminMock;
@@ -74,15 +74,15 @@ public class SecurityInformationTest {
         AdminDetails adminDetails = new AdminDetails(adminMock);
         when(authenticationMock.getPrincipal()).thenReturn(adminDetails);
 
-        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
-        assertThat(securityInformation.getAdminDetails(), equalTo(adminDetails));
+        ReferenceMonitor referenceMonitor = new ReferenceMonitor(securityContextMock);
+        assertThat(referenceMonitor.getAdminDetails(), equalTo(adminDetails));
     }
 
     @Test(expected = SecurityException.class)
     public void currentPrincipalNullPrincipal() throws Exception {
         when(authenticationMock.getPrincipal()).thenReturn(null);
 
-        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
+        ReferenceMonitor referenceMonitor = new ReferenceMonitor(securityContextMock);
     }
 
     @Test(expected = SecurityException.class)
@@ -90,17 +90,17 @@ public class SecurityInformationTest {
         UserDetails userDetailsMock = mock(UserDetails.class);
         when(authenticationMock.getPrincipal()).thenReturn(userDetailsMock);
 
-        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
+        ReferenceMonitor referenceMonitor = new ReferenceMonitor(securityContextMock);
     }
 
     @Test
     public void isOperatorTrue() throws Exception {
         when(adminDetailsMock.isSuperAdmin()).thenReturn(true);
 
-        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
+        ReferenceMonitor referenceMonitor = new ReferenceMonitor(securityContextMock);
 
-        assertThat(securityInformation.getAdminDetails(), equalTo(adminDetailsMock));
-        assertThat(securityInformation.isOperator(), equalTo(true));
+        assertThat(referenceMonitor.getAdminDetails(), equalTo(adminDetailsMock));
+        assertThat(referenceMonitor.isOperator(), equalTo(true));
 
         verify(adminDetailsMock).isSuperAdmin();
     }
@@ -109,10 +109,10 @@ public class SecurityInformationTest {
     public void isOperatorFalse() throws Exception {
         when(adminDetailsMock.isSuperAdmin()).thenReturn(false);
 
-        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
+        ReferenceMonitor referenceMonitor = new ReferenceMonitor(securityContextMock);
 
-        assertThat(securityInformation.getAdminDetails(), equalTo(adminDetailsMock));
-        assertThat(securityInformation.isOperator(), equalTo(false));
+        assertThat(referenceMonitor.getAdminDetails(), equalTo(adminDetailsMock));
+        assertThat(referenceMonitor.isOperator(), equalTo(false));
 
         verify(adminDetailsMock).isSuperAdmin();
     }
@@ -121,34 +121,34 @@ public class SecurityInformationTest {
     public void allowedCompanies() throws Exception {
         when(adminDetailsMock.getCompanyIds()).thenReturn(new ArrayList<>());
 
-        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
+        ReferenceMonitor referenceMonitor = new ReferenceMonitor(securityContextMock);
 
-        securityInformation.allowedCompanies();
+        referenceMonitor.allowedCompanies();
         verify(adminDetailsMock).getCompanyIds();
     }
 
     @Test(expected = AccessDeniedException.class)
     public void inAllowedCompaniesOrThrowEmptyList() throws Exception {
         when(adminDetailsMock.getCompanyIds()).thenReturn(new ArrayList<>());
-        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
+        ReferenceMonitor referenceMonitor = new ReferenceMonitor(securityContextMock);
 
-        securityInformation.inAllowedCompaniesOrThrow(1L);
+        referenceMonitor.inAllowedCompaniesOrThrow(1L);
     }
 
     @Test(expected = AccessDeniedException.class)
     public void inAllowedCompaniesOrThrowNotInList() throws Exception {
         when(adminDetailsMock.getCompanyIds()).thenReturn(Arrays.asList(2L, 3L));
-        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
+        ReferenceMonitor referenceMonitor = new ReferenceMonitor(securityContextMock);
 
-        securityInformation.inAllowedCompaniesOrThrow(1L);
+        referenceMonitor.inAllowedCompaniesOrThrow(1L);
     }
 
     @Test
     public void inAllowedCompaniesOrThrowInList() throws Exception {
         when(adminDetailsMock.getCompanyIds()).thenReturn(Arrays.asList(1L, 2L, 3L));
-        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
+        ReferenceMonitor referenceMonitor = new ReferenceMonitor(securityContextMock);
 
-        securityInformation.inAllowedCompaniesOrThrow(1L);
+        referenceMonitor.inAllowedCompaniesOrThrow(1L);
         verify(adminDetailsMock).getCompanyIds();
     }
 
@@ -156,9 +156,9 @@ public class SecurityInformationTest {
     public void inAllowedCompaniesOrThrowOperator() throws Exception {
         when(adminDetailsMock.isSuperAdmin()).thenReturn(true);
         when(adminDetailsMock.getCompanyIds()).thenReturn(Arrays.asList(1L, 2L, 3L));
-        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
+        ReferenceMonitor referenceMonitor = new ReferenceMonitor(securityContextMock);
 
-        securityInformation.inAllowedCompaniesOrThrow(1L);
+        referenceMonitor.inAllowedCompaniesOrThrow(1L);
         verify(adminDetailsMock).isSuperAdmin();
         verify(adminDetailsMock, never()).getCompanyIds();
     }
@@ -166,15 +166,15 @@ public class SecurityInformationTest {
     @Test(expected = AccessDeniedException.class)
     public void isOperatorOrThrowNonOperator() throws Exception {
         when(adminDetailsMock.isSuperAdmin()).thenReturn(false);
-        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
-        securityInformation.isOperatorOrThrow();
+        ReferenceMonitor referenceMonitor = new ReferenceMonitor(securityContextMock);
+        referenceMonitor.isOperatorOrThrow();
     }
 
     @Test
     public void isOperatorOrThrowOperator() throws Exception {
         when(adminDetailsMock.isSuperAdmin()).thenReturn(true);
-        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
-        securityInformation.isOperatorOrThrow();
+        ReferenceMonitor referenceMonitor = new ReferenceMonitor(securityContextMock);
+        referenceMonitor.isOperatorOrThrow();
 
         verify(adminDetailsMock).isSuperAdmin();
     }
@@ -182,16 +182,16 @@ public class SecurityInformationTest {
     @Test(expected = AccessDeniedException.class)
     public void hasAccessToOrThrowNullCompany() throws Exception {
 
-        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
-        securityInformation.hasAccessToOrThrow((CompanyDto) null);
+        ReferenceMonitor referenceMonitor = new ReferenceMonitor(securityContextMock);
+        referenceMonitor.hasAccessToOrThrow((CompanyDto) null);
     }
 
     @Test
     public void companyHasAccessToOrThrowOperatorUser() throws Exception {
         when(adminDetailsMock.isSuperAdmin()).thenReturn(true);
 
-        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
-        securityInformation.hasAccessToOrThrow(new CompanyDto());
+        ReferenceMonitor referenceMonitor = new ReferenceMonitor(securityContextMock);
+        referenceMonitor.hasAccessToOrThrow(new CompanyDto());
 
         verify(adminDetailsMock).isSuperAdmin();
 
@@ -202,13 +202,13 @@ public class SecurityInformationTest {
         when(adminDetailsMock.isSuperAdmin()).thenReturn(false);
         when(adminDetailsMock.getCompanyIds()).thenReturn(Arrays.asList(1L, 2L));
 
-        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
+        ReferenceMonitor referenceMonitor = new ReferenceMonitor(securityContextMock);
 
         CompanyDto companyDto = new CompanyDto();
         companyDto.setName("test");
         companyDto.setId(3L);
 
-        securityInformation.hasAccessToOrThrow(companyDto);
+        referenceMonitor.hasAccessToOrThrow(companyDto);
     }
 
     @Test
@@ -216,13 +216,13 @@ public class SecurityInformationTest {
         when(adminDetailsMock.isSuperAdmin()).thenReturn(false);
         when(adminDetailsMock.getCompanyIds()).thenReturn(Arrays.asList(1L, 2L));
 
-        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
+        ReferenceMonitor referenceMonitor = new ReferenceMonitor(securityContextMock);
 
         CompanyDto companyDto = new CompanyDto();
         companyDto.setName("test");
         companyDto.setId(2L);
 
-        securityInformation.hasAccessToOrThrow(companyDto);
+        referenceMonitor.hasAccessToOrThrow(companyDto);
         verify(adminDetailsMock).getCompanyIds();
     }
 
@@ -230,8 +230,8 @@ public class SecurityInformationTest {
     public void sipClientHasAccessToOrThrowOperator() throws Exception {
         when(adminDetailsMock.isSuperAdmin()).thenReturn(true);
 
-        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
-        securityInformation.hasAccessToOrThrow(new SipClientDto());
+        ReferenceMonitor referenceMonitor = new ReferenceMonitor(securityContextMock);
+        referenceMonitor.hasAccessToOrThrow(new SipClientDto());
 
         verify(adminDetailsMock).isSuperAdmin();
     }
@@ -240,8 +240,8 @@ public class SecurityInformationTest {
     public void sipClientHasAccessToOrThrowAdminUserNullCompany() throws Exception {
         when(adminDetailsMock.isSuperAdmin()).thenReturn(false);
 
-        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
-        securityInformation.hasAccessToOrThrow(new SipClientDto());
+        ReferenceMonitor referenceMonitor = new ReferenceMonitor(securityContextMock);
+        referenceMonitor.hasAccessToOrThrow(new SipClientDto());
     }
 
     @Test(expected = AccessDeniedException.class)
@@ -257,8 +257,8 @@ public class SecurityInformationTest {
         SipClientDto sipClientDto = new SipClientDto();
         sipClientDto.setCompany(companyDto);
 
-        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
-        securityInformation.hasAccessToOrThrow(sipClientDto);
+        ReferenceMonitor referenceMonitor = new ReferenceMonitor(securityContextMock);
+        referenceMonitor.hasAccessToOrThrow(sipClientDto);
     }
 
     @Test
@@ -274,16 +274,16 @@ public class SecurityInformationTest {
         SipClientDto sipClientDto = new SipClientDto();
         sipClientDto.setCompany(companyDto);
 
-        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
-        securityInformation.hasAccessToOrThrow(sipClientDto);
+        ReferenceMonitor referenceMonitor = new ReferenceMonitor(securityContextMock);
+        referenceMonitor.hasAccessToOrThrow(sipClientDto);
     }
 
     @Test
     public void dialPlanHasAccessToOrThrowOperator() throws Exception {
         when(adminDetailsMock.isSuperAdmin()).thenReturn(true);
 
-        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
-        securityInformation.hasAccessToOrThrow(new DialPlanDto());
+        ReferenceMonitor referenceMonitor = new ReferenceMonitor(securityContextMock);
+        referenceMonitor.hasAccessToOrThrow(new DialPlanDto());
 
         verify(adminDetailsMock).isSuperAdmin();
     }
@@ -292,8 +292,8 @@ public class SecurityInformationTest {
     public void dialPlanHasAccessToOrThrowAdminUserNullCompany() throws Exception {
         when(adminDetailsMock.isSuperAdmin()).thenReturn(false);
 
-        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
-        securityInformation.hasAccessToOrThrow(new DialPlanDto());
+        ReferenceMonitor referenceMonitor = new ReferenceMonitor(securityContextMock);
+        referenceMonitor.hasAccessToOrThrow(new DialPlanDto());
     }
 
     @Test(expected = AccessDeniedException.class)
@@ -309,8 +309,8 @@ public class SecurityInformationTest {
         DialPlanDto dialPlanDto = new DialPlanDto();
         dialPlanDto.setCompany(companyDto);
 
-        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
-        securityInformation.hasAccessToOrThrow(dialPlanDto);
+        ReferenceMonitor referenceMonitor = new ReferenceMonitor(securityContextMock);
+        referenceMonitor.hasAccessToOrThrow(dialPlanDto);
     }
 
     @Test
@@ -326,7 +326,7 @@ public class SecurityInformationTest {
         DialPlanDto dialPlanDto = new DialPlanDto();
         dialPlanDto.setCompany(companyDto);
 
-        SecurityInformation securityInformation = new SecurityInformation(securityContextMock);
-        securityInformation.hasAccessToOrThrow(dialPlanDto);
+        ReferenceMonitor referenceMonitor = new ReferenceMonitor(securityContextMock);
+        referenceMonitor.hasAccessToOrThrow(dialPlanDto);
     }
 }

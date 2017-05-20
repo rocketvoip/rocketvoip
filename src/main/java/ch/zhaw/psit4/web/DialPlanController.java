@@ -30,12 +30,11 @@
 package ch.zhaw.psit4.web;
 
 import ch.zhaw.psit4.dto.DialPlanDto;
-import ch.zhaw.psit4.security.SecurityInformation;
+import ch.zhaw.psit4.security.ReferenceMonitor;
 import ch.zhaw.psit4.services.interfaces.DialPlanServiceInterface;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,36 +55,31 @@ public class DialPlanController {
     }
 
     @GetMapping
-    public ResponseEntity<List<DialPlanDto>> getAllDialPlans() {
-        final SecurityInformation securityInformation = new SecurityInformation(SecurityContextHolder.getContext());
-
-        if (securityInformation.isOperator()) {
+    public ResponseEntity<List<DialPlanDto>> getAllDialPlans(ReferenceMonitor referenceMonitor) {
+        if (referenceMonitor.isOperator()) {
             return new ResponseEntity<>(dialPlanServiceInterface.getAllDialPlans(), HttpStatus.OK);
         }
 
         return new ResponseEntity<>(
-                dialPlanServiceInterface.getAllDialPlansForCompanies(securityInformation.allowedCompanies()),
+                dialPlanServiceInterface.getAllDialPlansForCompanies(referenceMonitor.allowedCompanies()),
                 HttpStatus.OK
         );
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<DialPlanDto> getDialPlan(@PathVariable long id) {
-        final SecurityInformation securityInformation = new SecurityInformation(SecurityContextHolder.getContext());
-
+    public ResponseEntity<DialPlanDto> getDialPlan(@PathVariable long id, ReferenceMonitor referenceMonitor) {
         DialPlanDto dialPlanDto = dialPlanServiceInterface.getDialPlan(id);
 
-        securityInformation.hasAccessToOrThrow(dialPlanDto);
+        referenceMonitor.hasAccessToOrThrow(dialPlanDto);
 
         return new ResponseEntity<>(dialPlanDto, HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<Void> deleteDialPlan(@PathVariable long id) {
+    public ResponseEntity<Void> deleteDialPlan(@PathVariable long id, ReferenceMonitor referenceMonitor) {
         DialPlanDto dialPlanDto = dialPlanServiceInterface.getDialPlan(id);
 
-        final SecurityInformation securityInformation = new SecurityInformation(SecurityContextHolder.getContext());
-        securityInformation.hasAccessToOrThrow(dialPlanDto);
+        referenceMonitor.hasAccessToOrThrow(dialPlanDto);
 
         dialPlanServiceInterface.deleteDialPlan(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -93,13 +87,13 @@ public class DialPlanController {
 
     @PutMapping(path = "/{id}")
     public ResponseEntity<DialPlanDto> updateDialPlan(@PathVariable long id,
-                                                      @Validated @RequestBody DialPlanDto dialPlanDto) {
+                                                      @Validated @RequestBody DialPlanDto dialPlanDto,
+                                                      ReferenceMonitor referenceMonitor) {
         dialPlanDto.setId(id);
 
         DialPlanDto existingDto = dialPlanServiceInterface.getDialPlan(id);
 
-        final SecurityInformation securityInformation = new SecurityInformation(SecurityContextHolder.getContext());
-        securityInformation.hasAccessToOrThrow(dialPlanDto);
+        referenceMonitor.hasAccessToOrThrow(dialPlanDto);
 
         // Overwrite the supplied company in the Dto
         dialPlanDto.setCompany(existingDto.getCompany());
@@ -108,11 +102,10 @@ public class DialPlanController {
     }
 
     @PostMapping
-    public ResponseEntity<DialPlanDto> createDialPlan(@Validated @RequestBody DialPlanDto dialPlanDto) {
-        final SecurityInformation securityInformation = new SecurityInformation(SecurityContextHolder.getContext());
-
+    public ResponseEntity<DialPlanDto> createDialPlan(@Validated @RequestBody DialPlanDto dialPlanDto,
+                                                      ReferenceMonitor referenceMonitor) {
         // Since the SipClient does not exist yet, we can only test access to the Company.
-        securityInformation.hasAccessToOrThrow(dialPlanDto.getCompany());
+        referenceMonitor.hasAccessToOrThrow(dialPlanDto.getCompany());
 
         return new ResponseEntity<>(dialPlanServiceInterface.createDialPlan(dialPlanDto), HttpStatus.CREATED);
     }

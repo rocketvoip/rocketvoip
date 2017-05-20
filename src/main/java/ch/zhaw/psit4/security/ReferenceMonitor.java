@@ -37,6 +37,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.Collections;
 import java.util.List;
@@ -49,12 +52,23 @@ import java.util.List;
  *
  * @author Rafael Ostertag
  */
-public class SecurityInformation {
-    private static final Logger LOGGER = LoggerFactory.getLogger(SecurityInformation.class);
+@RequestScope
+@Component
+public class ReferenceMonitor {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReferenceMonitor.class);
 
     private final AdminDetails adminDetails;
 
-    public SecurityInformation(final SecurityContext securityContext) {
+    public ReferenceMonitor() {
+        this(SecurityContextHolder.getContext());
+    }
+
+    /**
+     * Mainly used for Unit Tests.
+     *
+     * @param securityContext
+     */
+    protected ReferenceMonitor(final SecurityContext securityContext) {
         adminDetails = currentPrincipal(securityContext);
     }
 
