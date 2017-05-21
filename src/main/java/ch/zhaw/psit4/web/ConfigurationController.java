@@ -65,9 +65,7 @@ public class ConfigurationController {
     @GetMapping(value = "/configuration/zip")
     public ResponseEntity<byte[]> getAsteriskConfiguration(HttpServletResponse response) {
         HttpHeaders httpHeaders = new HttpHeaders();
-        // TODO: Is there a better way?
         httpHeaders.add(HttpHeaders.CONTENT_TYPE, "application/zip");
-        // TODO: Is there a better way?
         httpHeaders.set(HttpHeaders.CONTENT_DISPOSITION,
                 String.format("attachment; filename=\"%s\"", ZIP_FILE_NAME));
         byte[] returnValue = configServiceInterface.getAsteriskConfiguration().toByteArray();
