@@ -103,8 +103,7 @@ public class AdminDetails implements UserDetails {
 
     @Override
     public Collection<GrantedAuthority> getAuthorities() {
-        // TODO: Return a read-only collection
-        return grantedAuthorityList;
+        return Collections.unmodifiableCollection(grantedAuthorityList);
     }
 
     @Override

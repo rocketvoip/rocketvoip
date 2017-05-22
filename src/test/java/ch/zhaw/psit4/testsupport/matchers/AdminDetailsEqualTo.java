@@ -30,10 +30,11 @@
 package ch.zhaw.psit4.testsupport.matchers;
 
 import ch.zhaw.psit4.security.auxiliary.AdminDetails;
-import org.hamcrest.Description;
-import org.hamcrest.Factory;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
+import org.hamcrest.*;
+
+import java.util.stream.Collectors;
+
+import static org.hamcrest.Matchers.containsInAnyOrder;
 
 /**
  * @author Rafael Ostertag
@@ -56,12 +57,21 @@ public class AdminDetailsEqualTo extends TypeSafeMatcher<AdminDetails> {
                 adminDetails.isAccountNonLocked() == expected.isAccountNonLocked() &&
                 adminDetails.isCredentialsNonExpired() == expected.isCredentialsNonExpired() &&
                 adminDetails.isEnabled() == expected.isEnabled() &&
-                adminDetails.getAuthorities().equals(expected.getAuthorities()) &&
+                authoritiesEquals(adminDetails) &&
                 adminDetails.getFirstname().equals(expected.getFirstname()) &&
                 adminDetails.getLastname().equals(expected.getLastname()) &&
                 adminDetails.getUsername().equals(expected.getUsername()) &&
                 adminDetails.getPassword().equals(expected.getPassword()) &&
                 adminDetails.isSuperAdmin() == expected.isSuperAdmin();
+    }
+
+    private boolean authoritiesEquals(AdminDetails adminDetails) {
+        return containsInAnyOrder(
+                adminDetails.getAuthorities()
+                        .stream()
+                        .map(Matchers::equalTo)
+                        .collect(Collectors.toList())
+        ).matches(expected.getAuthorities());
     }
 
     @Override
